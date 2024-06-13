@@ -1,5 +1,3 @@
-// Entities
-
 // Use-cases
 import { UpdateUserUseCase } from "./update-user";
 
@@ -10,6 +8,7 @@ import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-rep
 
 // Services
 import { makeUser } from "@/test/factories/make-user";
+import { ResourceNotFoundError } from "../errors/resource-not-found";
 
 let repositories: {
   users: InMemoryUsersRepository;
@@ -55,5 +54,17 @@ describe("update user", () => {
     expect(repositories.users.items[0].last_name).toEqual("Silva");
     expect(repositories.users.items[0].password).toEqual("12345678");
     expect(repositories.users.items[0].cpf).toEqual(cpf);
+  });
+
+  it("should not be able to update a non existing user", async () => {
+    const user = makeUser();
+    await repositories.users.create(user);
+
+    await expect(() =>
+      sut.execute({
+        user_id: "idinexistente",
+        first_name: "Sérgio",
+      })
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });
