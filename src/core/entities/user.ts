@@ -1,5 +1,5 @@
 // Entities
-import { Entity } from "@/core/entities/entity";
+import { Entity, EntityRequest } from "@/core/entities/entity";
 
 // Types
 import { Optional } from "@/core/types/optional";
@@ -80,7 +80,9 @@ export class User extends Entity<UserProps> {
     this.props.verified_at = value;
   }
 
-  static create(props: Optional<UserProps, "password" | "verified_at">) {
+  static create(
+    props: Optional<UserProps, "password" | "verified_at"> & EntityRequest
+  ) {
     const user = new User({
       ...props,
       password: props.password ?? null,

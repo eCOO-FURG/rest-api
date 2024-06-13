@@ -1,10 +1,10 @@
 // Entities
-import { User, UserProps } from "@/core/entities/user";
+import { User } from "@/core/entities/user";
 
 // Libs
 import { faker } from "@faker-js/faker";
 
-export function makeUser(props: Partial<UserProps> = {}) {
+export function makeUser(props: Partial<User> = {}) {
   const cpf =
     props.cpf ??
     faker.number
@@ -15,6 +15,7 @@ export function makeUser(props: Partial<UserProps> = {}) {
       .toString();
 
   return User.create({
+    id: props.id,
     first_name: props.first_name ?? faker.person.firstName(),
     last_name: props.last_name ?? faker.person.lastName(),
     email: props.email ?? faker.internet.email(),
@@ -23,5 +24,7 @@ export function makeUser(props: Partial<UserProps> = {}) {
     roles: props.roles ?? ["USER"],
     password: props.password,
     verified_at: props.verified_at,
+    created_at: props.created_at,
+    updated_at: props.updated_at,
   });
 }

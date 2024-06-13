@@ -1,6 +1,6 @@
 // Entities
 import { UUID } from "@/core/entities/value-objects/uuid";
-import { Entity } from "./entity";
+import { Entity, EntityRequest } from "@/core/entities/entity";
 
 interface SessionProps {
   user_id: UUID;
@@ -21,7 +21,7 @@ export class Session extends Entity<SessionProps> {
     return this.props.agent;
   }
 
-  static create(props: SessionProps) {
+  static create(props: SessionProps & EntityRequest) {
     const session = new Session(props);
     return session;
   }
