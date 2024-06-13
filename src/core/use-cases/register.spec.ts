@@ -44,7 +44,7 @@ describe("register", () => {
     );
   });
 
-  it("should be able to able to register", async () => {
+  it("should be able to register", async () => {
     await sut.execute({
       email: "johndoe@example.com",
       phone: "51987654321",
@@ -57,7 +57,7 @@ describe("register", () => {
     expect(repositories.users.items[0]).toBeInstanceOf(User);
   });
 
-  it("should be able to able to register with an empty password", async () => {
+  it("should be able to register with an empty password", async () => {
     await sut.execute({
       email: "johndoe@example.com",
       phone: "51987654321",

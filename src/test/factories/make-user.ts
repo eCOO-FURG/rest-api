@@ -1,10 +1,10 @@
 // Entities
-import { User } from "@/core/entities/user";
+import { User, UserProps } from "@/core/entities/user";
 
 // Libs
 import { faker } from "@faker-js/faker";
 
-export function makeUser(props: Partial<User> = {}) {
+export function makeUser(props: Partial<UserProps> = {}) {
   const cpf =
     props.cpf ??
     faker.number
