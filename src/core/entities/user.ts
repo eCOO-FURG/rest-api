@@ -4,7 +4,7 @@ import { Entity } from "@/core/entities/entity";
 // Types
 import { Optional } from "@/core/types/optional";
 
-interface UserProps {
+export interface UserProps {
   first_name: string;
   last_name: string;
   email: string;

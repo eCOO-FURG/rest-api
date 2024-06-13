@@ -7,4 +7,5 @@ export interface UsersRepository {
   findByPhone(phone: string): Promise<User | null>;
   findByCpf(cpf: string): Promise<User | null>;
   create(user: User): Promise<void>;
+  update(user: User): Promise<void>;
 }

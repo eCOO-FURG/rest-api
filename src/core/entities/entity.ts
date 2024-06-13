@@ -11,7 +11,7 @@ interface EntityProps {
 }
 
 export abstract class Entity<Props> {
-  protected props: Props & EntityProps;
+  protected _props: Props & EntityProps;
 
   get id() {
     return this.props.id;
@@ -37,10 +37,14 @@ export abstract class Entity<Props> {
     this.props.updated_at = new Date();
   }
 
+  get props(): Props & EntityProps {
+    return this._props;
+  }
+
   protected constructor(
     props: Props & Optional<EntityProps, "id" | "created_at" | "updated_at">
   ) {
-    this.props = {
+    this._props = {
       ...props,
       id: props.id ?? new UUID(),
       created_at: props.created_at ?? new Date(),
