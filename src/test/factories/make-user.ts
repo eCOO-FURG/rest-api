@@ -15,6 +15,7 @@ export function makeUser(props: Partial<User> = {}) {
       .toString();
 
   return User.create({
+    id: props.id,
     first_name: props.first_name ?? faker.person.firstName(),
     last_name: props.last_name ?? faker.person.lastName(),
     email: props.email ?? faker.internet.email(),
@@ -23,5 +24,7 @@ export function makeUser(props: Partial<User> = {}) {
     roles: props.roles ?? ["USER"],
     password: props.password,
     verified_at: props.verified_at,
+    created_at: props.created_at,
+    updated_at: props.updated_at,
   });
 }

@@ -1,5 +1,5 @@
 // Entities
-import { Entity } from "@/core/entities/entity";
+import { Entity, EntityRequest } from "@/core/entities/entity";
 
 interface EmailProps {
   to: string;
@@ -25,7 +25,7 @@ export class Email extends Entity<EmailProps> {
     return this.props.view;
   }
 
-  static create(props: EmailProps) {
+  static create(props: EmailProps & EntityRequest) {
     const email = new Email(props);
     return email;
   }

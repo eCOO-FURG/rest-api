@@ -4,6 +4,9 @@ import { UUID } from "@/core/entities/value-objects/uuid";
 // Types
 import { Optional } from "@/core/types/optional";
 
+export interface EntityRequest
+  extends Optional<EntityProps, "id" | "created_at" | "updated_at"> {}
+
 interface EntityProps {
   id: UUID;
   created_at: Date;

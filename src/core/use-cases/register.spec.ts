@@ -13,6 +13,7 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 // Services
 import { MockedEncrypter } from "@/test/cryptography/mocked-encrypter";
 import { MockedMailer } from "@/test/mail/mocked-mailer";
+import { makeUser } from "@/test/factories/make-user";
 
 let repositories: {
   users: InMemoryUsersRepository;
@@ -43,7 +44,7 @@ describe("register", () => {
     );
   });
 
-  it("should be able to able to register", async () => {
+  it("should be able to register", async () => {
     await sut.execute({
       email: "johndoe@example.com",
       phone: "51987654321",
@@ -56,7 +57,7 @@ describe("register", () => {
     expect(repositories.users.items[0]).toBeInstanceOf(User);
   });
 
-  it("should be able to able to register with an empty password", async () => {
+  it("should be able to register with an empty password", async () => {
     await sut.execute({
       email: "johndoe@example.com",
       phone: "51987654321",
@@ -72,21 +73,13 @@ describe("register", () => {
   it("should not be able to register with the same email twice", async () => {
     const email = "johndoe@example.com";
 
-    const user = User.create({
-      email,
-      phone: "51987654321",
-      password: "123456",
-      first_name: "John",
-      last_name: "Doe",
-      cpf: "523.065.281-01",
-      roles: ["USER"],
-    });
+    const user = makeUser({ email });
 
     await repositories.users.create(user);
 
     await expect(() =>
       sut.execute({
-        email,
+        email: "johndoe@example.com",
         phone: "51987654321",
         password: "123456",
         first_name: "Rodrigo",
@@ -99,22 +92,14 @@ describe("register", () => {
   it("should not be able to register with the same cellphone twice", async () => {
     const phone = "51987654321";
 
-    const user = User.create({
-      email: "johndoe@example.com",
-      phone,
-      password: "123456",
-      first_name: "John",
-      last_name: "Doe",
-      cpf: "523.065.281-01",
-      roles: ["USER"],
-    });
+    const user = makeUser({ phone });
 
     await repositories.users.create(user);
 
     await expect(() =>
       sut.execute({
         email: "rodrigogoes@example.com",
-        phone,
+        phone: "51987654321",
         password: "123456",
         first_name: "Rodrigo",
         last_name: "Goes",
@@ -126,15 +111,7 @@ describe("register", () => {
   it("should not be able to register with the same CPF twice", async () => {
     const cpf = "523.065.281-01";
 
-    const user = User.create({
-      email: "johndoe@example.com",
-      phone: "51987654321",
-      password: "123456",
-      first_name: "John",
-      last_name: "Doe",
-      cpf,
-      roles: ["USER"],
-    });
+    const user = makeUser({ cpf });
 
     await repositories.users.create(user);
 
