@@ -1,3 +1,6 @@
+// Entities
+import { User } from "@/core/entities/user";
+
 // Use-cases
 import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
 
@@ -14,7 +17,7 @@ import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-rep
 // Errors
 import { WrongCredentialsError } from "@/core/errors/wrong-credentials";
 import { makeOtp } from "@/test/factories/make-otp";
-import { UserNotVerifiedError } from "../errors/user-not-verified";
+import { UserNotVerifiedError } from "@/core/errors/user-not-verified";
 
 let repositories: {
   users: InMemoryUsersRepository;
@@ -66,6 +69,7 @@ describe("authenticate", () => {
       type: "BASIC",
     });
 
+    expect(result.user).toBeTypeOf(typeof User);
     expect(result.token).toBeTypeOf("string");
     expect(repositories.sessions.items).toHaveLength(1);
   });

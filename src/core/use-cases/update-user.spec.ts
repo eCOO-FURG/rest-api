@@ -8,7 +8,7 @@ import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-rep
 
 // Services
 import { makeUser } from "@/test/factories/make-user";
-import { ResourceNotFoundError } from "../errors/resource-not-found";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 let repositories: {
   users: InMemoryUsersRepository;

@@ -2,7 +2,7 @@
 import { User } from "@/core/entities/user";
 
 // Use-cases
-import { RegisterUseCase } from "./register";
+import { RegisterUseCase } from "@/core/use-cases/register";
 
 // Repositories
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
@@ -12,7 +12,6 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 
 // Services
 import { MockedEncrypter } from "@/test/cryptography/mocked-encrypter";
-import { MockedMailer } from "@/test/mail/mocked-mailer";
 import { makeUser } from "@/test/factories/make-user";
 
 let repositories: {
@@ -21,7 +20,6 @@ let repositories: {
 
 let mocks: {
   encrypter: MockedEncrypter;
-  mailer: MockedMailer;
 };
 
 let sut: RegisterUseCase;
@@ -34,14 +32,9 @@ describe("register", () => {
 
     mocks = {
       encrypter: new MockedEncrypter(),
-      mailer: new MockedMailer(),
     };
 
-    sut = new RegisterUseCase(
-      repositories.users,
-      mocks.encrypter,
-      mocks.mailer
-    );
+    sut = new RegisterUseCase(repositories.users, mocks.encrypter);
   });
 
   it("should be able to register", async () => {

@@ -3,7 +3,7 @@ import { Session } from "@/core/entities/session";
 
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
-import { SessionsRepository } from "../repositories/sessions-repository";
+import { SessionsRepository } from "@/core/repositories/sessions-repository";
 import { OtpsRepository } from "@/core/repositories/otps-repositoy";
 
 // Services
@@ -13,7 +13,7 @@ import { Hasher } from "@/core/cryptography/hasher";
 // Errors
 import { WrongCredentialsError } from "@/core/errors/wrong-credentials";
 import { EmptyPasswordError } from "@/core/errors/empty-password";
-import { UserNotVerifiedError } from "../errors/user-not-verified";
+import { UserNotVerifiedError } from "@/core/errors/user-not-verified";
 
 interface AuthenticateUseCaseRequest {
   email: string;
@@ -81,6 +81,7 @@ export class AuthenticateUseCase {
     const token = await this.hasher.hash({ user_id: user.id.value });
 
     return {
+      user,
       token,
     };
   }
