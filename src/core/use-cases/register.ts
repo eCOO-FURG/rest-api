@@ -1,16 +1,17 @@
 // Entities
 import { User } from "@/core/entities/user";
-import { Email } from "@/core/entities/email";
 
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
 
 // Services
 import { Encrypter } from "@/core/cryptography/encrypter";
-import { Mailer } from "@/core/mail/mailer";
 
 // Errors
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
+
+// Events
+import { DomainEvents } from "../events/domain-events";
 
 interface RegisterUseCaseRequest {
   first_name: string;
@@ -24,8 +25,7 @@ interface RegisterUseCaseRequest {
 export class RegisterUseCase {
   constructor(
     private usersRepository: UsersRepository,
-    private encrypter: Encrypter,
-    private mailer: Mailer
+    private encrypter: Encrypter
   ) {}
 
   async execute({
@@ -70,15 +70,6 @@ export class RegisterUseCase {
 
     await this.usersRepository.create(user);
 
-    const view = await this.mailer.load("welcome", user);
-
-    const mail = Email.create({
-      to: email,
-      from: "suporte@ecoo.com",
-      subject: "Bem-vindo | ecOO",
-      view,
-    });
-
-    await this.mailer.send(mail);
+    DomainEvents.dispatch(user);
   }
 }
