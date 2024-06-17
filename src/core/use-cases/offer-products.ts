@@ -11,6 +11,7 @@ import { OffersRepository } from "@/core/repositories/offers-repository";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
+import { InvalidWeightError } from "@/core/errors/invalid-weight";
 
 // Utils
 import { mostDistant } from "@/core/utils/most-distant";
@@ -62,7 +63,11 @@ export class OfferProductsUseCase {
     });
 
     if (alreadyOffered)
-      throw new ResourceAlreadyExistsError("Oferta de", product.name);
+      throw new ResourceAlreadyExistsError("Oferta de", product_id);
+
+    if (product.pricing === "WEIGHT" && amount % 50 !== 0) {
+      throw new InvalidWeightError("Ofertado", product_id);
+    }
 
     const offer = Offer.create({
       farm_id: farm.id,
