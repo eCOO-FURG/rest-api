@@ -2,7 +2,7 @@
 import { UsersRepository } from "@/core/repositories/users-repository";
 
 // Errors
-import { ResourceNotFoundError } from "../errors/resource-not-found";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 interface UpdateUserUseCaseRequest {
   user_id: string;

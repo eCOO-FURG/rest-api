@@ -11,7 +11,7 @@ import { Encrypter } from "@/core/cryptography/encrypter";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 
 // Events
-import { DomainEvents } from "../events/domain-events";
+import { DomainEvents } from "@/core/events/domain-events";
 
 interface RegisterUseCaseRequest {
   first_name: string;

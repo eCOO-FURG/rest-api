@@ -3,10 +3,10 @@ import { Entity, EntityRequest } from "@/core/entities/entity";
 
 // Types
 import { Optional } from "@/core/types/optional";
-import { OnRegisteredEvent } from "../events/on-registered";
+import { OnRegisteredEvent } from "@/core/events/on-registered";
 
 // Events
-import { DomainEvents } from "../events/domain-events";
+import { DomainEvents } from "@/core/events/domain-events";
 
 export interface UserProps {
   first_name: string;

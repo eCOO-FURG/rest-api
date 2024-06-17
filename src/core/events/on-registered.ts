@@ -1,11 +1,11 @@
 // Entities
-import { Email } from "../entities/email";
+import { Email } from "@/core/entities/email";
 
 // Services
 import { Mailer } from "@/core/mail/mailer";
 
 // Events
-import { DomainEvents } from "./domain-events";
+import { DomainEvents } from "@/core/events/domain-events";
 
 interface OnRegisteredEventRequest {
   first_name: string;

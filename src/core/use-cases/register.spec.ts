@@ -2,7 +2,7 @@
 import { User } from "@/core/entities/user";
 
 // Use-cases
-import { RegisterUseCase } from "./register";
+import { RegisterUseCase } from "@/core/use-cases/register";
 
 // Repositories
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
