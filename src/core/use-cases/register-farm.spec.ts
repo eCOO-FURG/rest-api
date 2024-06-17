@@ -1,9 +1,9 @@
 // Repositories
-import { InMemoryAgribusinessRepository } from "@/test/repositories/in-memory-agribusiness-repository";
+import { InMemoryFarmRepository } from "@/test/repositories/in-memory-farm-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
 // Use-cases
-import { RegisterAgribusinessUseCase } from "./register-agribusiness";
+import { RegisterFarmUseCase } from "./register-farm";
 
 // Errors
 import { ResourceAlreadyExistsError } from "../errors/resource-already-exists";
@@ -12,31 +12,28 @@ import { ResourceAlreadyExistsError } from "../errors/resource-already-exists";
 import { makeUser } from "@/test/factories/make-user";
 
 // Entities
-import { Agribusiness } from "../entities/agribusiness";
+import { Farm } from "../entities/farm";
 
 let repositories: {
   users: InMemoryUsersRepository;
-  agribusiness: InMemoryAgribusinessRepository;
+  farm: InMemoryFarmRepository;
 };
 
-let sut: RegisterAgribusinessUseCase;
+let sut: RegisterFarmUseCase;
 
-describe("create agribusiness", () => {
+describe("create farm", () => {
   beforeEach(() => {
     const usersRepository = new InMemoryUsersRepository();
 
     repositories = {
       users: usersRepository,
-      agribusiness: new InMemoryAgribusinessRepository(usersRepository),
+      farm: new InMemoryFarmRepository(usersRepository),
     };
 
-    sut = new RegisterAgribusinessUseCase(
-      repositories.users,
-      repositories.agribusiness
-    );
+    sut = new RegisterFarmUseCase(repositories.users, repositories.farm);
   });
 
-  it("should be able to create an agribusiness", async () => {
+  it("should be able to create an farm", async () => {
     const user = makeUser();
     await repositories.users.create(user);
 
@@ -47,7 +44,7 @@ describe("create agribusiness", () => {
     });
   });
 
-  it("should not be able to create two agribusiness with the same caf", async () => {
+  it("should not be able to create two farms with the same caf", async () => {
     const user1 = makeUser();
     await repositories.users.create(user1);
 
@@ -56,13 +53,13 @@ describe("create agribusiness", () => {
 
     const caf = "12345678";
 
-    const agribusiness = Agribusiness.create({
+    const farm = Farm.create({
       admin_id: user1.id,
       caf,
       name: "Fazenda Triste",
     });
 
-    await repositories.agribusiness.save(agribusiness);
+    await repositories.farm.save(farm);
 
     await expect(() =>
       sut.execute({
@@ -73,17 +70,17 @@ describe("create agribusiness", () => {
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 
-  it("should not be able to create two agribusiness with same admin", async () => {
+  it("should not be able to create two farms with same admin", async () => {
     const user = makeUser();
     await repositories.users.create(user);
 
-    const agribusiness = Agribusiness.create({
+    const farm = Farm.create({
       admin_id: user.id,
       caf: "12345678",
       name: "Fazenda Triste",
     });
 
-    await repositories.agribusiness.save(agribusiness);
+    await repositories.farm.save(farm);
 
     await expect(() =>
       sut.execute({

@@ -5,14 +5,14 @@ import { Optional } from "../types/optional";
 import { Entity, EntityRequest } from "./entity";
 import { UUID } from "./value-objects/uuid";
 
-export interface AgribusinessProps {
+export interface FarmProps {
   name: string;
   caf: string;
   active: boolean;
   admin_id: UUID;
 }
 
-export class Agribusiness extends Entity<AgribusinessProps> {
+export class Farm extends Entity<FarmProps> {
   get name() {
     return this.props.name;
   }
@@ -41,11 +41,11 @@ export class Agribusiness extends Entity<AgribusinessProps> {
     this.props.active = active;
   }
 
-  static create(props: Optional<AgribusinessProps, "active"> & EntityRequest) {
-    const agribusiness = new Agribusiness({
+  static create(props: Optional<FarmProps, "active"> & EntityRequest) {
+    const farm = new Farm({
       ...props,
       active: props.active ?? true,
     });
-    return agribusiness;
+    return farm;
   }
 }
