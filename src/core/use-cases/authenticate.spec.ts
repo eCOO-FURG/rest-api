@@ -69,7 +69,7 @@ describe("authenticate", () => {
       type: "BASIC",
     });
 
-    expect(result.user).toBeTypeOf(typeof User);
+    expect(result.user).toBeInstanceOf(User);
     expect(result.token).toBeTypeOf("string");
     expect(repositories.sessions.items).toHaveLength(1);
   });
