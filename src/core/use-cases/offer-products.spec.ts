@@ -13,6 +13,15 @@ import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-r
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
+// Errors
+import { ResourceNotFoundError } from "../errors/resource-not-found";
+import { FarmNotActiveError } from "../errors/farm-not-active";
+import { ResourceAlreadyExistsError } from "../errors/resource-already-exists";
+import { InvalidWeightError } from "../errors/invalid-weight";
+
+// Entities
+import { Offer } from "../entities/offer";
+
 let usersRepository: InMemoryUsersRepository;
 
 let repositories: {
@@ -63,5 +72,131 @@ describe("offer products", () => {
     });
 
     expect(repositories.offers.items.length).toBe(1);
+  });
+
+  it("should not be able to offer products from a nonexistent farm", async () => {
+    const cycle = makeCycle();
+    await repositories.cycles.create(cycle);
+
+    const product = makeProduct();
+    await repositories.products.create(product);
+
+    await expect(() =>
+      sut.execute({
+        product_id: product.id.value,
+        cycle_id: cycle.id.value,
+        farm_id: "123",
+        amount: 10,
+        price: 10,
+      })
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it("should not be able to offer products from a not active farm", async () => {
+    const cycle = makeCycle();
+    await repositories.cycles.create(cycle);
+
+    const product = makeProduct();
+    await repositories.products.create(product);
+
+    const farm = makeFarm({ active: false });
+    await repositories.farms.create(farm);
+
+    await expect(() =>
+      sut.execute({
+        product_id: product.id.value,
+        cycle_id: cycle.id.value,
+        farm_id: farm.id.value,
+        amount: 10,
+        price: 10,
+      })
+    ).rejects.toBeInstanceOf(FarmNotActiveError);
+  });
+
+  it("should not be able to offer nonexistent products", async () => {
+    const cycle = makeCycle();
+    await repositories.cycles.create(cycle);
+
+    const farm = makeFarm();
+    await repositories.farms.create(farm);
+
+    await expect(() =>
+      sut.execute({
+        product_id: "123",
+        cycle_id: cycle.id.value,
+        farm_id: farm.id.value,
+        amount: 10,
+        price: 10,
+      })
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it("should not be able to offer products in a nonexistent cycle", async () => {
+    const product = makeProduct();
+    await repositories.products.create(product);
+
+    const farm = makeFarm();
+    await repositories.farms.create(farm);
+
+    await expect(() =>
+      sut.execute({
+        product_id: product.id.value,
+        cycle_id: "123",
+        farm_id: farm.id.value,
+        amount: 10,
+        price: 10,
+      })
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it("the same farm should not be able to offer the same product twice in the same cycle", async () => {
+    const cycle = makeCycle();
+    await repositories.cycles.create(cycle);
+
+    const product = makeProduct();
+    await repositories.products.create(product);
+
+    const farm = makeFarm();
+    await repositories.farms.create(farm);
+
+    const offer = Offer.create({
+      product_id: product.id,
+      cycle_id: cycle.id,
+      farm_id: farm.id,
+      amount: 20,
+      price: 30,
+    });
+    await repositories.offers.create(offer);
+
+    await expect(() =>
+      sut.execute({
+        product_id: product.id.value,
+        cycle_id: cycle.id.value,
+        farm_id: farm.id.value,
+        amount: 10,
+        price: 10,
+      })
+    ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
+  });
+
+  it("should not be able to offer products with invalid weight", async () => {
+    const cycle = makeCycle();
+    await repositories.cycles.create(cycle);
+
+    const product = makeProduct({ pricing: "WEIGHT" });
+    await repositories.products.create(product);
+
+    const farm = makeFarm();
+    await repositories.farms.create(farm);
+
+    await expect(() =>
+      sut.execute({
+        product_id: product.id.value,
+        cycle_id: cycle.id.value,
+        farm_id: farm.id.value,
+        amount: 10,
+        price: 10,
+      })
+    ).rejects.toBeInstanceOf(InvalidWeightError);
   });
 });
