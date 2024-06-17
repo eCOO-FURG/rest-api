@@ -34,7 +34,7 @@ export class InMemoryFarmsRepository implements FarmsRepository {
     return farm;
   }
 
-  async save(farm: Farm): Promise<void> {
+  async create(farm: Farm): Promise<void> {
     this.items.push(farm);
 
     const user = await this.inMemoryUsersRepository.findById(

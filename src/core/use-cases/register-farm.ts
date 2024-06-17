@@ -46,6 +46,6 @@ export class RegisterFarmUseCase {
       name,
     });
 
-    await this.farmRepository.save(farm);
+    await this.farmRepository.create(farm);
   }
 }

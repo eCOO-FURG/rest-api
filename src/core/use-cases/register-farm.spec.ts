@@ -59,7 +59,7 @@ describe("create farm", () => {
       name: "Fazenda Triste",
     });
 
-    await repositories.farm.save(farm);
+    await repositories.farm.create(farm);
 
     await expect(() =>
       sut.execute({
@@ -80,7 +80,7 @@ describe("create farm", () => {
       name: "Fazenda Triste",
     });
 
-    await repositories.farm.save(farm);
+    await repositories.farm.create(farm);
 
     await expect(() =>
       sut.execute({
