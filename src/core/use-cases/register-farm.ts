@@ -6,7 +6,7 @@ import { ResourceAlreadyExistsError } from "../errors/resource-already-exists";
 import { ResourceNotFoundError } from "../errors/resource-not-found";
 
 //Repositories
-import { FarmRepository } from "../repositories/farm-repository";
+import { FarmsRepository } from "../repositories/farms-repository";
 import { UsersRepository } from "../repositories/users-repository";
 
 interface RegisterFarmUseCaseRequest {
@@ -18,7 +18,7 @@ interface RegisterFarmUseCaseRequest {
 export class RegisterFarmUseCase {
   constructor(
     private usersRepository: UsersRepository,
-    private farmRepository: FarmRepository
+    private farmRepository: FarmsRepository
   ) {}
 
   async execute({ user_id, caf, name }: RegisterFarmUseCaseRequest) {

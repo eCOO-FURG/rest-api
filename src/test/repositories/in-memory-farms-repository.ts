@@ -2,10 +2,10 @@
 import { Farm } from "@/core/entities/farm";
 
 // Repositories
-import { FarmRepository } from "@/core/repositories/farm-repository";
+import { FarmsRepository } from "@/core/repositories/farms-repository";
 import { InMemoryUsersRepository } from "./in-memory-users-repository";
 
-export class InMemoryFarmRepository implements FarmRepository {
+export class InMemoryFarmsRepository implements FarmsRepository {
   items: Farm[] = [];
 
   constructor(private inMemoryUsersRepository: InMemoryUsersRepository) {}

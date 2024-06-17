@@ -1,5 +1,5 @@
 // Repositories
-import { InMemoryFarmRepository } from "@/test/repositories/in-memory-farm-repository";
+import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
 // Use-cases
@@ -16,7 +16,7 @@ import { Farm } from "../entities/farm";
 
 let repositories: {
   users: InMemoryUsersRepository;
-  farm: InMemoryFarmRepository;
+  farm: InMemoryFarmsRepository;
 };
 
 let sut: RegisterFarmUseCase;
@@ -27,7 +27,7 @@ describe("create farm", () => {
 
     repositories = {
       users: usersRepository,
-      farm: new InMemoryFarmRepository(usersRepository),
+      farm: new InMemoryFarmsRepository(usersRepository),
     };
 
     sut = new RegisterFarmUseCase(repositories.users, repositories.farm);
@@ -70,7 +70,7 @@ describe("create farm", () => {
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 
-  it("should not be able to create two farms with same admin", async () => {
+  it("should not be able to create two farms with the same admin", async () => {
     const user = makeUser();
     await repositories.users.create(user);
 
