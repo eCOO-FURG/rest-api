@@ -5,7 +5,7 @@ import { Entity, EntityRequest } from "@/core/entities/entity";
 import { Optional } from "@/core/types/optional";
 import { UUID } from "@/core/entities/value-objects/uuid";
 
-interface OfferProps {
+export interface OfferProps extends EntityRequest {
   price: number;
   amount: number;
   description: string | null;
@@ -44,9 +44,11 @@ export class Offer extends Entity<OfferProps> {
     return this.props.delivered_at;
   }
 
-  static create(
-    props: Optional<OfferProps, "description" | "delivered_at"> & EntityRequest
-  ) {
+  set amount(amount: number) {
+    this.props.amount = amount;
+  }
+
+  static create(props: Optional<OfferProps, "description" | "delivered_at">) {
     const offer = new Offer({
       ...props,
       description: props.description ?? null,

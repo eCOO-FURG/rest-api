@@ -63,7 +63,7 @@ export class OfferProductsUseCase {
       throw new ClosedActionError("ofertar", cycle_id);
     }
 
-    const alreadyOffered = await this.offersRepository.find({
+    const alreadyOffered = await this.offersRepository.search({
       cycle_id,
       product_id,
       farm_id,

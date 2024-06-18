@@ -7,7 +7,7 @@ import { Optional } from "@/core/types/optional";
 export interface EntityRequest
   extends Optional<EntityProps, "id" | "created_at" | "updated_at"> {}
 
-interface EntityProps {
+export interface EntityProps {
   id: UUID;
   created_at: Date;
   updated_at: Date | null;
@@ -36,12 +36,12 @@ export abstract class Entity<Props> {
     this.props.updated_at = value;
   }
 
-  public touch() {
-    this.props.updated_at = new Date();
-  }
-
   get props(): Props & EntityProps {
     return this._props;
+  }
+
+  public touch() {
+    this.props.updated_at = new Date();
   }
 
   protected constructor(
