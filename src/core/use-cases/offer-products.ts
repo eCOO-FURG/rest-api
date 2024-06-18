@@ -1,5 +1,6 @@
 // Entities
 import { Offer } from "@/core/entities/offer";
+import { Week } from "@/core/entities/cycle";
 
 // Repositories
 import { FarmsRepository } from "@/core/repositories/farms-repository";
@@ -54,6 +55,12 @@ export class OfferProductsUseCase {
     const cycle = await this.cyclesRepository.findById(cycle_id);
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+
+    const today = (new Date().getDay() + 1) as Week[0];
+
+    if (cycle.offer.includes(today)) {
+      throw new Error();
+    }
 
     const alreadyOffered = await this.offersRepository.find({
       cycle_id,

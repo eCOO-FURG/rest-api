@@ -1,7 +1,7 @@
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
-export type Week = [1?, 2?, 3?, 4?, 5?, 6?, 7?];
+export type Week = (1 | 2 | 3 | 4 | 5 | 6 | 7)[];
 
 export interface CycleProps {
   alias: string;
