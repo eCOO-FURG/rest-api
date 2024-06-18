@@ -13,6 +13,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
+import { ClosedActionError } from "@/core/errors/closed-action";
 
 // Utils
 import { mostDistant } from "@/core/utils/most-distant";
@@ -58,8 +59,8 @@ export class OfferProductsUseCase {
 
     const today = (new Date().getDay() + 1) as Week[0];
 
-    if (cycle.offer.includes(today)) {
-      throw new Error();
+    if (!cycle.offer.includes(today)) {
+      throw new ClosedActionError("ofertar", cycle_id);
     }
 
     const alreadyOffered = await this.offersRepository.find({
@@ -73,7 +74,7 @@ export class OfferProductsUseCase {
       throw new ResourceAlreadyExistsError("Oferta de", product_id);
 
     if (product.pricing === "WEIGHT" && amount % 50 !== 0) {
-      throw new InvalidWeightError("Ofertado", product_id);
+      throw new InvalidWeightError("ofertado", product_id);
     }
 
     const offer = Offer.create({

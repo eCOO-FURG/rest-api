@@ -1,5 +1,5 @@
 export class ResourceNotFoundError extends Error {
-  constructor(name: string, key: string) {
-    super(`${name} ${key} não existe.`);
+  constructor(resource: string, identifier: string) {
+    super(`${resource} ${identifier} não existe.`);
   }
 }

@@ -14,13 +14,15 @@ import { InMemoryProductsRepository } from "@/test/repositories/in-memory-produc
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
 // Errors
-import { ResourceNotFoundError } from "../errors/resource-not-found";
-import { FarmNotActiveError } from "../errors/farm-not-active";
-import { ResourceAlreadyExistsError } from "../errors/resource-already-exists";
-import { InvalidWeightError } from "../errors/invalid-weight";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { FarmNotActiveError } from "@/core/errors/farm-not-active";
+import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
+import { InvalidWeightError } from "@/core/errors/invalid-weight";
 
 // Entities
-import { Offer } from "../entities/offer";
+import { Offer } from "@/core/entities/offer";
+import { Week } from "@/core/entities/cycle";
+import { ClosedActionError } from "../errors/closed-action";
 
 let usersRepository: InMemoryUsersRepository;
 
@@ -149,7 +151,7 @@ describe("offer products", () => {
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
-  it("the same farm should not be able to offer the same product twice in the same cycle", async () => {
+  it("should not be able to offer the same product twice in the same cycle", async () => {
     const cycle = makeCycle();
     await repositories.cycles.create(cycle);
 
@@ -198,5 +200,33 @@ describe("offer products", () => {
         price: 10,
       })
     ).rejects.toBeInstanceOf(InvalidWeightError);
+  });
+
+  it("should not be able to offer products off the cycle offering days", async () => {
+    const today = (new Date().getDay() + 1) as Week[0];
+
+    const offer = [1, 2, 3, 4, 5, 6, 7].filter((day) => day != today);
+
+    const cycle = makeCycle({
+      offer: offer as Week,
+    });
+
+    await repositories.cycles.create(cycle);
+
+    const product = makeProduct();
+    await repositories.products.create(product);
+
+    const farm = makeFarm();
+    await repositories.farms.create(farm);
+
+    await expect(() =>
+      sut.execute({
+        product_id: product.id.value,
+        cycle_id: cycle.id.value,
+        farm_id: farm.id.value,
+        amount: 10,
+        price: 10,
+      })
+    ).rejects.toBeInstanceOf(ClosedActionError);
   });
 });
