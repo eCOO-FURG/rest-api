@@ -14,7 +14,7 @@ interface EntityProps {
 }
 
 export abstract class Entity<Props> {
-  protected _props: Props & EntityProps;
+  private _props: Props & EntityProps;
 
   get id() {
     return this.props.id;
