@@ -5,7 +5,7 @@ import { Optional } from "@/core/types/optional";
 import { Entity, EntityRequest } from "@/core/entities/entity";
 import { UUID } from "@/core/entities/value-objects/uuid";
 
-export interface OtpProps {
+export interface OtpProps extends EntityRequest {
   user_id: UUID;
   value: string;
   used_at: Date | null;
@@ -33,7 +33,7 @@ export class Otp extends Entity<OtpProps> {
     this.touch();
   }
 
-  static create(props: Optional<OtpProps, "used_at"> & EntityRequest) {
+  static create(props: Optional<OtpProps, "used_at">) {
     const otp = new Otp({
       ...props,
       used_at: props.used_at ?? null,

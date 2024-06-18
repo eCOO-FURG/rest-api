@@ -1,7 +1,7 @@
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
-export interface ProductProps {
+export interface ProductProps extends EntityRequest {
   name: string;
   image: string;
   pricing: "UNIT" | "WEIGHT";
@@ -20,7 +20,7 @@ export class Product extends Entity<ProductProps> {
     return this.props.pricing;
   }
 
-  static create(props: ProductProps & EntityRequest) {
+  static create(props: ProductProps) {
     const product = new Product(props);
     return product;
   }

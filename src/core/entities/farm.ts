@@ -1,9 +1,9 @@
-//Types
+// Types
 import { Optional } from "../types/optional";
 
-//Entities
-import { Entity, EntityRequest } from "./entity";
-import { UUID } from "./value-objects/uuid";
+// Entities
+import { Entity, EntityRequest } from "@/core/entities/entity";
+import { UUID } from "@/core/entities/value-objects/uuid";
 
 export interface FarmProps {
   name: string;

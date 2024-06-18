@@ -1,7 +1,7 @@
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
-interface EmailProps {
+interface EmailProps extends EntityRequest {
   to: string;
   from: string;
   subject: string;
@@ -25,7 +25,7 @@ export class Email extends Entity<EmailProps> {
     return this.props.view;
   }
 
-  static create(props: EmailProps & EntityRequest) {
+  static create(props: EmailProps) {
     const email = new Email(props);
     return email;
   }

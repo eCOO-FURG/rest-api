@@ -8,7 +8,7 @@ import { OnRegisteredEvent } from "@/core/events/on-registered";
 // Events
 import { DomainEvents } from "@/core/events/domain-events";
 
-export interface UserProps {
+export interface UserProps extends EntityRequest {
   first_name: string;
   last_name: string;
   email: string;
@@ -84,9 +84,7 @@ export class User extends Entity<UserProps> {
     this.props.verified_at = value;
   }
 
-  static create(
-    props: Optional<UserProps, "password" | "verified_at"> & EntityRequest
-  ) {
+  static create(props: Optional<UserProps, "password" | "verified_at">) {
     const user = new User({
       ...props,
       password: props.password ?? null,
