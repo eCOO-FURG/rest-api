@@ -13,6 +13,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 import { ClosedActionError } from "@/core/errors/closed-action";
 import { InvalidWeightError } from "../errors/invalid-weight";
+import { ResourceAlreadyExistsError } from "../errors/resource-already-exists";
 
 interface OrderProductsUseCaseRequest {
   user_id: string;
@@ -46,6 +47,13 @@ export class OrderProducts {
     if (!cycle.offer.includes(today)) {
       throw new ClosedActionError("comprar", cycle.id.value);
     }
+
+    const alreadyOrdered = await this.ordersRepository.findByOfferId(
+      offer.id.value
+    );
+
+    if (alreadyOrdered)
+      throw new ResourceAlreadyExistsError("Pedido de", offer_id);
 
     if (amount > offer.amount) throw new UnavailableAmountError(offer_id);
 

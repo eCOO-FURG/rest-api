@@ -10,6 +10,16 @@ export class InMemoryOrdersRepository implements OrdersRepository {
 
   constructor(private inMemoryOffersRepository: InMemoryOffersRepository) {}
 
+  async findByOfferId(offer_id: string): Promise<Order | null> {
+    const item = this.items.find((item) => item.offer_id.equals(offer_id));
+
+    if (!item) {
+      return null;
+    }
+
+    return item;
+  }
+
   async create(order: Order): Promise<void> {
     const offer = await this.inMemoryOffersRepository.findById(
       order.offer_id.value
