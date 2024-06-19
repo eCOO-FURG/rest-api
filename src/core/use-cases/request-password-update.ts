@@ -36,7 +36,7 @@ export class RequestPasswordUpdateUseCase {
     const mail = Email.create({
       to: email,
       from: "suporte@ecoo.com",
-      subject: "Ataulização de senha | eCOO",
+      subject: "Atualização de senha | eCOO",
       view,
     });
 
