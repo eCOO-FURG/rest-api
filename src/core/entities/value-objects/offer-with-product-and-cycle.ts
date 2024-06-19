@@ -2,12 +2,14 @@
 import { Product } from "@/core/entities/product";
 import { OfferProps } from "@/core/entities/offer";
 import { Entity } from "@/core/entities/entity";
+import { Cycle } from "@/core/entities/cycle";
 
-interface OfferWithProductProps extends Omit<OfferProps, "product_id"> {
+interface OfferWithProductAndCycleProps extends Omit<OfferProps, "product_id" | "cycle_id"> {
   product: Product;
+  cycle: Cycle;
 }
 
-export class OfferWithProduct extends Entity<OfferWithProductProps> {
+export class OfferWithProductAndCycle extends Entity<OfferWithProductAndCycleProps> {
   get price() {
     return this.props.price;
   }
@@ -28,8 +30,8 @@ export class OfferWithProduct extends Entity<OfferWithProductProps> {
     return this.props.product;
   }
 
-  get cycle_id() {
-    return this.props.cycle_id;
+  get cycle() {
+    return this.props.cycle;
   }
 
   get delivered_at() {
@@ -40,8 +42,8 @@ export class OfferWithProduct extends Entity<OfferWithProductProps> {
     this.props.amount = amount;
   }
 
-  static create(props: OfferWithProductProps) {
-    const offerWithProduct = new OfferWithProduct(props);
+  static create(props: OfferWithProductAndCycleProps) {
+    const offerWithProduct = new OfferWithProductAndCycle(props);
     return offerWithProduct;
   }
 }

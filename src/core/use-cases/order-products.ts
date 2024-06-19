@@ -21,7 +21,7 @@ interface OrderProductsUseCaseRequest {
   amount: number;
 }
 
-export class OrderProducts {
+export class OrderProductsUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private offersRepository: OffersRepository,
@@ -34,18 +34,14 @@ export class OrderProducts {
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
-    const offer = await this.offersRepository.findByIdWithProduct(offer_id);
+    const offer = await this.offersRepository.findByIdWithProductAndCycle(offer_id);
 
     if (!offer) throw new ResourceNotFoundError("Oferta", offer_id);
 
-    const cycle = await this.cyclesRepository.findById(offer.cycle_id.value);
-
-    if (!cycle) throw new ResourceNotFoundError("Ciclo", offer.cycle_id.value);
-
     const today = (new Date().getDay() + 1) as Week[0];
 
-    if (!cycle.offer.includes(today)) {
-      throw new ClosedActionError("comprar", cycle.id.value);
+    if (!offer.cycle.offer.includes(today)) {
+      throw new ClosedActionError("comprar", offer.cycle.id.value);
     }
 
     const alreadyOrdered = await this.ordersRepository.findByOfferId(

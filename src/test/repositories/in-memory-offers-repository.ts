@@ -1,18 +1,19 @@
 // Entities
 import { Offer } from "@/core/entities/offer";
-import { OfferWithProduct } from "@/core/entities/value-objects/offer-with-product";
+import { OfferWithProductAndCycle } from "@/core/entities/value-objects/offer-with-product-and-cycle";
 
 // Repositories
 import {
   OffersRepository,
   OffersRepositorySearchRequest,
 } from "@/core/repositories/offers-repository";
-import { InMemoryProductsRepository } from "./in-memory-products-repository";
+import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
+import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 
 export class InMemoryOffersRepository implements OffersRepository {
   items: Offer[] = [];
 
-  constructor(private inMemoryProductsRepository: InMemoryProductsRepository) {}
+  constructor(private inMemoryProductsRepository: InMemoryProductsRepository, private inMemoryCyclesRepository: InMemoryCyclesRepository) {}
 
   async findById(id: string): Promise<Offer | null> {
     const item = this.items.find((item) => item.id.equals(id));
@@ -24,7 +25,7 @@ export class InMemoryOffersRepository implements OffersRepository {
     return item;
   }
 
-  async findByIdWithProduct(id: string): Promise<OfferWithProduct | null> {
+  async findByIdWithProductAndCycle(id: string): Promise<OfferWithProductAndCycle | null> {
     const offer = this.items.find((offer) => offer.id.equals(id));
 
     if (!offer) return null;
@@ -35,13 +36,17 @@ export class InMemoryOffersRepository implements OffersRepository {
 
     if (!product) return null;
 
-    const offerWithProduct = OfferWithProduct.create({
+    const cycle = await this.inMemoryCyclesRepository.findById(offer.cycle_id.value);
+
+    if (!cycle) return null;
+
+    const offerWithProduct = OfferWithProductAndCycle.create({
       id: offer.id,
-      cycle_id: offer.cycle_id,
       farm_id: offer.farm_id,
       description: offer.description,
       price: offer.price,
       amount: offer.amount,
+      cycle,
       product,
       delivered_at: offer.delivered_at,
       created_at: offer.created_at,
