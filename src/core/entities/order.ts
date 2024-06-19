@@ -2,7 +2,7 @@
 import { Entity, EntityRequest } from "@/core/entities/entity";
 import { UUID } from "@/core/entities/value-objects/uuid";
 
-interface OrderProps extends EntityRequest {
+export interface OrderProps extends EntityRequest {
   user_id: UUID;
   offer_id: UUID;
   amount: number;

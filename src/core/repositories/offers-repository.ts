@@ -8,9 +8,22 @@ export interface OffersRepositorySearchRequest {
   created_at: Date;
 }
 
+export interface OffersRepositorySearchManyRequest {
+  cycle_id: string;
+  farm_id: string;
+  created_at: Date;
+}
+
 export interface OffersRepository {
   findById(id: string): Promise<Offer | null>;
-  findByIdWithProductAndCycle(id: string): Promise<OfferWithProductAndCycle | null>;
+  findByIdWithProductAndCycle(
+    id: string
+  ): Promise<OfferWithProductAndCycle | null>;
+  searchMany({
+    farm_id,
+    cycle_id,
+    created_at,
+  }: OffersRepositorySearchManyRequest): Promise<Offer[]>;
   search({
     cycle_id,
     product_id,

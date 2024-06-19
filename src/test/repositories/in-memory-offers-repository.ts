@@ -5,6 +5,7 @@ import { OfferWithProductAndCycle } from "@/core/entities/value-objects/offer-wi
 // Repositories
 import {
   OffersRepository,
+  OffersRepositorySearchManyRequest,
   OffersRepositorySearchRequest,
 } from "@/core/repositories/offers-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
@@ -13,7 +14,10 @@ import { InMemoryProductsRepository } from "@/test/repositories/in-memory-produc
 export class InMemoryOffersRepository implements OffersRepository {
   items: Offer[] = [];
 
-  constructor(private inMemoryProductsRepository: InMemoryProductsRepository, private inMemoryCyclesRepository: InMemoryCyclesRepository) {}
+  constructor(
+    private inMemoryProductsRepository: InMemoryProductsRepository,
+    private inMemoryCyclesRepository: InMemoryCyclesRepository
+  ) {}
 
   async findById(id: string): Promise<Offer | null> {
     const item = this.items.find((item) => item.id.equals(id));
@@ -25,7 +29,9 @@ export class InMemoryOffersRepository implements OffersRepository {
     return item;
   }
 
-  async findByIdWithProductAndCycle(id: string): Promise<OfferWithProductAndCycle | null> {
+  async findByIdWithProductAndCycle(
+    id: string
+  ): Promise<OfferWithProductAndCycle | null> {
     const offer = this.items.find((offer) => offer.id.equals(id));
 
     if (!offer) return null;
@@ -35,8 +41,9 @@ export class InMemoryOffersRepository implements OffersRepository {
     );
 
     if (!product) return null;
-
-    const cycle = await this.inMemoryCyclesRepository.findById(offer.cycle_id.value);
+    const cycle = await this.inMemoryCyclesRepository.findById(
+      offer.cycle_id.value
+    );
 
     if (!cycle) return null;
 
@@ -73,6 +80,20 @@ export class InMemoryOffersRepository implements OffersRepository {
     if (!offer) return null;
 
     return offer;
+  }
+
+  async searchMany({
+    farm_id,
+    cycle_id,
+    created_at,
+  }: OffersRepositorySearchManyRequest): Promise<Offer[]> {
+    const offers = this.items.filter(
+      (item) =>
+        item.farm_id.equals(farm_id) &&
+        item.cycle_id.equals(cycle_id) &&
+        item.created_at >= created_at
+    );
+    return offers;
   }
 
   async create(offer: Offer): Promise<void> {
