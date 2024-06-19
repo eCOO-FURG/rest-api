@@ -72,16 +72,14 @@ export class User extends Entity<UserProps> {
     this.props.phone = value;
   }
 
-  set password(value: string | null) {
-    this.props.password = value;
+  protect(hash: string){
+    this.props.password = hash
+    this.touch()
   }
 
-  set roles(value: string[]) {
-    this.props.roles = value;
-  }
-
-  set verified_at(value: Date | null) {
-    this.props.verified_at = value;
+  verify(){
+    this.props.verified_at = new Date()
+    this.touch()
   }
 
   static create(props: Optional<UserProps, "password" | "verified_at">) {

@@ -4,6 +4,9 @@ import { UsersRepository } from "@/core/repositories/users-repository";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
+// Services
+import { Encrypter } from "@/core/cryptography/encrypter";
+
 interface UpdateUserUseCaseRequest {
   user_id: string;
   first_name?: string;
@@ -15,7 +18,10 @@ interface UpdateUserUseCaseRequest {
 }
 
 export class UpdateUserUseCase {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(
+    private usersRepository: UsersRepository,
+    private encrypter: Encrypter
+  ) { }
 
   async execute(props: UpdateUserUseCaseRequest) {
     const user = await this.usersRepository.findById(props.user_id);
@@ -31,11 +37,15 @@ export class UpdateUserUseCase {
 
       const key = Object.keys(user.props).find((key) => key === field);
 
-      if (key) {
-        // @ts-ignore
-        user[key] = value;
-        user.touch();
+      if (key === 'password') {
+        const hashed = await this.encrypter.encrypt(value)
+        user.protect(hashed)
+        continue
       }
+
+      // @ts-ignore
+      user[key] = value;
+      user.touch();
     }
 
     await this.usersRepository.update(user);
