@@ -24,7 +24,7 @@ describe("Verify user", () => {
     )
   })
 
-  it("should be able to verify a user", async () => {
+  it("should be able verify a user", async () => {
     const user = makeUser({
       verified_at: null
     })

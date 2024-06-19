@@ -65,7 +65,7 @@ export class RegisterUseCase {
 
     if (password) {
       const hash = await this.encrypter.encrypt(password);
-      user.password = hash;
+      user.protect(hash)
     }
 
     await this.usersRepository.create(user);

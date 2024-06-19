@@ -5,13 +5,18 @@ import { UpdateUserUseCase } from "./update-user";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
 // Errors
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Services
 import { makeUser } from "@/test/factories/make-user";
-import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { MockedEncrypter } from "@/test/cryptography/mocked-encrypter";
 
 let repositories: {
   users: InMemoryUsersRepository;
+};
+
+let mocks: {
+  encrypter: MockedEncrypter;
 };
 
 let sut: UpdateUserUseCase;
@@ -22,7 +27,11 @@ describe("update user", () => {
       users: new InMemoryUsersRepository(),
     };
 
-    sut = new UpdateUserUseCase(repositories.users);
+    mocks = {
+      encrypter: new MockedEncrypter(),
+    };
+
+    sut = new UpdateUserUseCase(repositories.users, mocks.encrypter);
   });
 
   it("should be able to update only one user field", async () => {
@@ -47,12 +56,10 @@ describe("update user", () => {
       user_id: user.id.value,
       first_name: "João",
       last_name: "Silva",
-      password: "12345678",
     });
 
     expect(repositories.users.items[0].first_name).toEqual("João");
     expect(repositories.users.items[0].last_name).toEqual("Silva");
-    expect(repositories.users.items[0].password).toEqual("12345678");
     expect(repositories.users.items[0].cpf).toEqual(cpf);
   });
 
@@ -67,4 +74,21 @@ describe("update user", () => {
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
+
+  it('should hash the password', async () => {
+    const password = '12345678'
+
+    const user = makeUser()
+    await repositories.users.create(user)
+
+    await sut.execute({
+      user_id: user.id.value,
+      password: password
+    });
+
+    const updatedUser = repositories.users.items[0];
+    const isPasswordHashed = updatedUser.password !== password;
+
+    expect(isPasswordHashed).toBeTruthy();
+  })
 });
