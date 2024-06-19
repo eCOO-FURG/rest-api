@@ -20,7 +20,7 @@ export class VerifyUserUsecase{
     }
 
     if(user.verified_at){
-      throw new UserAlreadyVerified("Usuário", user_id)
+      throw new UserAlreadyVerified(user_id)
     }
 
     user.verify()

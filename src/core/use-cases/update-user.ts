@@ -38,7 +38,7 @@ export class UpdateUserUseCase {
       const key = Object.keys(user.props).find((key) => key === field);
 
       if (key === 'password') {
-        const hashed = await this.encrypter.encrypt(value as string)
+        const hashed = await this.encrypter.encrypt(value)
         user.protect(hashed)
         continue
       }

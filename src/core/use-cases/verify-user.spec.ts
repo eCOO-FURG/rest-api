@@ -25,17 +25,15 @@ describe("Verify user", () => {
   })
 
   it("should be able verify a user", async () => {
-    const user = makeUser({
-      verified_at: null
-    })
+    const user = makeUser()
     await usersRepository.create(user)
 
     await sut.execute({
       user_id: user.id.value
     })
 
-    expect(user?.verified_at).not.toBeNull();
-    expect(user?.verified_at).toBeInstanceOf(Date);
+    expect(user.verified_at).not.toBeNull();
+    expect(user.verified_at).toBeInstanceOf(Date);
   })
 
   it("should not be able verify a user if the user does not exist", async () => {
@@ -46,7 +44,7 @@ describe("Verify user", () => {
     ).rejects.toBeInstanceOf(ResourceNotFoundError)
   })
 
-  it("should not be able verify a user if the user is already virified", async () => {
+  it("should not be able to be verified if the user is already verified", async () => {
     const user = makeUser({
       verified_at: new Date()
     })

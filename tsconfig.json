@@ -4,16 +4,10 @@
     "module": "commonjs",
     "baseUrl": "./",
     "paths": {
-      "@/core/*": [
-        "src/core/*"
-      ],
-      "@/test/*": [
-        "src/test/*"
-      ]
+      "@/core/*": ["src/core/*"],
+      "@/test/*": ["src/test/*"]
     },
-    "types": [
-      "vitest/globals"
-    ],
+    "types": ["vitest/globals"],
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
