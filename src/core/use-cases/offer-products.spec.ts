@@ -25,6 +25,8 @@ import { Week } from "@/core/entities/cycle";
 import { ClosedActionError } from "../errors/closed-action";
 
 let usersRepository: InMemoryUsersRepository;
+let cyclesRepository: InMemoryCyclesRepository;
+let productsRepository: InMemoryProductsRepository;
 
 let repositories: {
   farms: InMemoryFarmsRepository;
@@ -38,12 +40,14 @@ let sut: OfferProductsUseCase;
 describe("offer products", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
+    cyclesRepository = new InMemoryCyclesRepository();
+    productsRepository = new InMemoryProductsRepository()
 
     repositories = {
       farms: new InMemoryFarmsRepository(usersRepository),
       products: new InMemoryProductsRepository(),
       cycles: new InMemoryCyclesRepository(),
-      offers: new InMemoryOffersRepository(),
+      offers: new InMemoryOffersRepository(productsRepository, cyclesRepository),
     };
 
     sut = new OfferProductsUseCase(

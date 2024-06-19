@@ -1,5 +1,5 @@
 import { Offer } from "@/core/entities/offer";
-import { OfferWithProduct } from "@/core/entities/value-objects/offer-with-product";
+import { OfferWithProductAndCycle } from "@/core/entities/value-objects/offer-with-product-and-cycle";
 
 export interface OffersRepositorySearchRequest {
   cycle_id: string;
@@ -10,7 +10,7 @@ export interface OffersRepositorySearchRequest {
 
 export interface OffersRepository {
   findById(id: string): Promise<Offer | null>;
-  findByIdWithProduct(id: string): Promise<OfferWithProduct | null>;
+  findByIdWithProductAndCycle(id: string): Promise<OfferWithProductAndCycle | null>;
   search({
     cycle_id,
     product_id,
