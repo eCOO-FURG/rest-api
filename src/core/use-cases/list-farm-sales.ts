@@ -5,7 +5,7 @@ import { OffersRepository } from "@/core/repositories/offers-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { mostDistant } from "../utils/most-distant";
+import { mostPast } from "../utils/most-past";
 import { OrdersRepository } from "../repositories/orders-repository";
 
 interface ListFarmSalesUseCaseRequest {
@@ -33,7 +33,7 @@ export class ListFarmSalesUseCase {
     const offers = await this.offersRepository.searchMany({
       farm_id,
       cycle_id,
-      created_at: mostDistant(cycle.offer),
+      created_at: mostPast(cycle.offer),
     });
 
     const offersIds = offers.map((offer) => offer.id.value);

@@ -1,6 +1,6 @@
 import { Week } from "@/core/entities/cycle";
 
-export function mostDistant(days: Week) {
+export function mostFuture(days: Week) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 

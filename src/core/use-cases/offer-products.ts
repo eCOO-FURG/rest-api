@@ -16,7 +16,7 @@ import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { ClosedActionError } from "@/core/errors/closed-action";
 
 // Utils
-import { mostDistant } from "@/core/utils/most-distant";
+import { mostPast } from "@/core/utils/most-past";
 
 interface OfferProductsUseCaseRequest {
   farm_id: string;
@@ -67,7 +67,7 @@ export class OfferProductsUseCase {
       cycle_id,
       product_id,
       farm_id,
-      created_at: mostDistant(cycle.offer),
+      created_at: mostPast(cycle.offer),
     });
 
     if (alreadyOffered)
