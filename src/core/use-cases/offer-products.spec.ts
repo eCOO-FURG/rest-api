@@ -54,12 +54,9 @@ describe("offer products", () => {
         offersRepository,
         productsRepository
       ),
-      products: new InMemoryProductsRepository(),
-      cycles: new InMemoryCyclesRepository(),
-      offers: new InMemoryOffersRepository(
-        productsRepository,
-        cyclesRepository
-      ),
+      products: productsRepository,
+      cycles: cyclesRepository,
+      offers: offersRepository,
     };
 
     sut = new OfferProductsUseCase(
