@@ -5,7 +5,6 @@ import { Week } from "@/core/entities/cycle";
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
 import { OffersRepository } from "@/core/repositories/offers-repository";
-import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { OrdersRepository } from "@/core/repositories/orders-repository";
 
 // Errors
@@ -25,7 +24,6 @@ export class OrderProductsUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private offersRepository: OffersRepository,
-    private cyclesRepository: CyclesRepository,
     private ordersRepository: OrdersRepository
   ) {}
 
@@ -34,7 +32,9 @@ export class OrderProductsUseCase {
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
-    const offer = await this.offersRepository.findByIdWithProductAndCycle(offer_id);
+    const offer = await this.offersRepository.findByIdWithProductAndCycle(
+      offer_id
+    );
 
     if (!offer) throw new ResourceNotFoundError("Oferta", offer_id);
 
