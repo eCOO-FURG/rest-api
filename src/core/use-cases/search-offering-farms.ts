@@ -6,7 +6,7 @@ import { FarmsRepository } from "@/core/repositories/farms-repository";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Utils
-import { mostDistant } from "@/core/utils/most-distant";
+import { mostPast } from "@/core/utils/most-past";
 
 interface SearchOfferingFarmsUseCaseRequest {
   cycle_id: string;
@@ -33,7 +33,7 @@ export class SearchOfferingFarmsUseCase {
       cycle_id: cycle.id.value,
       page,
       product,
-      created_at: mostDistant(cycle.offer),
+      created_at: mostPast(cycle.offer),
     });
 
     return {
