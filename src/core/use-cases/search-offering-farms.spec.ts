@@ -33,11 +33,11 @@ describe("searh offering farms", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
     cyclesRepository = new InMemoryCyclesRepository();
+    productsRepository = new InMemoryProductsRepository();
     offersRepository = new InMemoryOffersRepository(
       productsRepository,
       cyclesRepository
     );
-    productsRepository = new InMemoryProductsRepository();
 
     repositories = {
       farms: new InMemoryFarmsRepository(
