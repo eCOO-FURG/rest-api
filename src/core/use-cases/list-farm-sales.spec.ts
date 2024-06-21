@@ -42,7 +42,11 @@ describe("list farm sales", () => {
     );
 
     repositories = {
-      farms: new InMemoryFarmsRepository(usersRepository),
+      farms: new InMemoryFarmsRepository(
+        usersRepository,
+        offersRepository,
+        productsRepository
+      ),
       cycles: cyclesRepository,
       offers: offersRepository,
       orders: new InMemoryOrdersRepository(offersRepository),

@@ -27,6 +27,7 @@ import { ClosedActionError } from "../errors/closed-action";
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
+let offersRepository: InMemoryOffersRepository;
 
 let repositories: {
   farms: InMemoryFarmsRepository;
@@ -41,13 +42,24 @@ describe("offer products", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
     cyclesRepository = new InMemoryCyclesRepository();
-    productsRepository = new InMemoryProductsRepository()
+    productsRepository = new InMemoryProductsRepository();
+    offersRepository = new InMemoryOffersRepository(
+      productsRepository,
+      cyclesRepository
+    );
 
     repositories = {
-      farms: new InMemoryFarmsRepository(usersRepository),
+      farms: new InMemoryFarmsRepository(
+        usersRepository,
+        offersRepository,
+        productsRepository
+      ),
       products: new InMemoryProductsRepository(),
       cycles: new InMemoryCyclesRepository(),
-      offers: new InMemoryOffersRepository(productsRepository, cyclesRepository),
+      offers: new InMemoryOffersRepository(
+        productsRepository,
+        cyclesRepository
+      ),
     };
 
     sut = new OfferProductsUseCase(
