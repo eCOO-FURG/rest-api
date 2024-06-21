@@ -19,6 +19,7 @@ import { UnauthorizedError } from "@/core/errors/unauthorized";
 let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
 let usersRepository: InMemoryUsersRepository;
+let offersRepository: InMemoryOffersRepository;
 
 let repositories: {
   offers: InMemoryOffersRepository;
@@ -38,7 +39,11 @@ describe("update offer", () => {
         productsRepository,
         cyclesRepository
       ),
-      farms: new InMemoryFarmsRepository(usersRepository),
+      farms: new InMemoryFarmsRepository(
+        usersRepository,
+        offersRepository,
+        productsRepository
+      ),
     };
     sut = new UpdateOfferUseCase(repositories.farms, repositories.offers);
   });

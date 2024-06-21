@@ -3,8 +3,8 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { UnauthorizedError } from "@/core/errors/unauthorized";
 
 // Repositories
-import { FarmsRepository } from "../repositories/farms-repository";
-import { OffersRepository } from "../repositories/offers-repository";
+import { FarmsRepository } from "@/core/repositories/farms-repository";
+import { OffersRepository } from "@/core/repositories/offers-repository";
 
 interface DeleteOfferUseCaseRequest {
   farm_id: string;

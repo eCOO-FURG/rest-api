@@ -6,17 +6,20 @@ import { InMemoryProductsRepository } from "@/test/repositories/in-memory-produc
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
 // Use-cases
-import { DeleteOfferUseCase } from "./delete-offer";
+import { DeleteOfferUseCase } from "@/core/use-cases/delete-offer";
 
 // Services
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeOffer } from "@/test/factories/make-offer";
-import { ResourceNotFoundError } from "../errors/resource-not-found";
-import { UnauthorizedError } from "../errors/unauthorized";
+
+// Errors
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { UnauthorizedError } from "@/core/errors/unauthorized";
 
 let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
 let usersRepository: InMemoryUsersRepository;
+let offersRepository: InMemoryOffersRepository;
 
 let repositories: {
   offers: InMemoryOffersRepository;
@@ -36,7 +39,11 @@ describe("delete offer", () => {
         productsRepository,
         cyclesRepository
       ),
-      farms: new InMemoryFarmsRepository(usersRepository),
+      farms: new InMemoryFarmsRepository(
+        usersRepository,
+        offersRepository,
+        productsRepository
+      ),
     };
     sut = new DeleteOfferUseCase(repositories.farms, repositories.offers);
   });
