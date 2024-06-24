@@ -85,15 +85,30 @@ export class InMemoryOffersRepository implements OffersRepository {
   async searchMany({
     farm_id,
     cycle_id,
+    page,
+    product,
     created_at,
   }: OffersRepositorySearchManyRequest): Promise<Offer[]> {
+    const products = this.inMemoryProductsRepository.items.filter((item) =>
+      item.name.includes(product ?? "")
+    );
+
+    const productsIds = products.map((product) => product.id);
+
     const offers = this.items.filter(
       (item) =>
         item.farm_id.equals(farm_id) &&
         item.cycle_id.equals(cycle_id) &&
-        item.created_at >= created_at
+        item.created_at >= created_at &&
+        productsIds.some((id) => id.equals(item.product_id))
     );
-    return offers;
+
+    if (!page) return offers;
+
+    const start = (page - 1) * 20;
+    const end = start + 20;
+
+    return offers.slice(start, end);
   }
 
   async create(offer: Offer): Promise<void> {
