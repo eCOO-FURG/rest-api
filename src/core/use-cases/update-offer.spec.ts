@@ -4,6 +4,8 @@ import { UpdateOfferUseCase } from "@/core/use-cases/update-offer";
 // Services
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeOffer } from "@/test/factories/make-offer";
+import { makeProduct } from "@/test/factories/make-product";
+import { makeCycle } from "@/test/factories/make-cycle";
 
 // Repositories
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
@@ -15,6 +17,11 @@ import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-rep
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { UnauthorizedError } from "@/core/errors/unauthorized";
+import { ClosedActionError } from "@/core/errors/closed-action";
+
+// Entities
+import { Week } from "@/core/entities/cycle";
+import { mostFuture } from "../utils/most-future";
 
 let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
@@ -33,18 +40,20 @@ describe("update offer", () => {
     cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
     usersRepository = new InMemoryUsersRepository();
+    offersRepository = new InMemoryOffersRepository(
+      productsRepository,
+      cyclesRepository
+    );
 
     repositories = {
-      offers: new InMemoryOffersRepository(
-        productsRepository,
-        cyclesRepository
-      ),
+      offers: offersRepository,
       farms: new InMemoryFarmsRepository(
         usersRepository,
         offersRepository,
         productsRepository
       ),
     };
+
     sut = new UpdateOfferUseCase(repositories.farms, repositories.offers);
   });
 
@@ -52,7 +61,17 @@ describe("update offer", () => {
     const farm = makeFarm();
     await repositories.farms.create(farm);
 
-    const offer = makeOffer({ farm_id: farm.id });
+    const product = makeProduct();
+    await productsRepository.create(product);
+
+    const cycle = makeCycle();
+    await cyclesRepository.create(cycle);
+
+    const offer = makeOffer({
+      farm_id: farm.id,
+      product_id: product.id,
+      cycle_id: cycle.id,
+    });
     await repositories.offers.create(offer);
 
     await sut.execute({
@@ -92,7 +111,17 @@ describe("update offer", () => {
     const farm2 = makeFarm();
     await repositories.farms.create(farm2);
 
-    const offer = makeOffer({ farm_id: farm2.id });
+    const product = makeProduct();
+    await productsRepository.create(product);
+
+    const cycle = makeCycle();
+    await cyclesRepository.create(cycle);
+
+    const offer = makeOffer({
+      farm_id: farm2.id,
+      cycle_id: cycle.id,
+      product_id: product.id,
+    });
     await repositories.offers.create(offer);
 
     await expect(
@@ -101,5 +130,37 @@ describe("update offer", () => {
         farm_id: farm.id.value,
       })
     ).rejects.toBeInstanceOf(UnauthorizedError);
+  });
+
+  it("should not be able to update an offer past the cycle offering days", async () => {
+    const today = (new Date().getDay() + 1) as Week[0];
+
+    const offeringDays = [1, 2, 3, 4, 5, 6, 7].filter((day) => day != today);
+
+    const cycle = makeCycle({
+      offer: offeringDays as Week,
+    });
+    await cyclesRepository.create(cycle);
+
+    const farm = makeFarm();
+    await repositories.farms.create(farm);
+
+    const product = makeProduct();
+    await productsRepository.create(product);
+
+    const offer = makeOffer({
+      farm_id: farm.id,
+      product_id: product.id,
+      cycle_id: cycle.id,
+    });
+    await repositories.offers.create(offer);
+
+    await expect(
+      sut.execute({
+        farm_id: farm.id.value,
+        offer_id: offer.id.value,
+        amount: 100,
+      })
+    ).rejects.toBeInstanceOf(ClosedActionError);
   });
 });
