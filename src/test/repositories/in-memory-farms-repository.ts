@@ -101,4 +101,12 @@ export class InMemoryFarmsRepository implements FarmsRepository {
 
     this.items[itemIndex] = farm;
   }
+
+  async searchManyFarms(page: number, query?: string) {
+    if (!query) {
+      return this.items.slice((page - 1) * 20, page * 20);
+    }
+
+    return this.items.filter((item) => item.name.includes(query)).slice((page - 1) * 20, page * 20);
+  }
 }

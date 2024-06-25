@@ -20,4 +20,5 @@ export interface FarmsRepository {
   }: FarmsRepositoryFindManyWithActiveOfferRequest): Promise<Farm[]>;
   create(farm: Farm): Promise<void>;
   update(farm: Farm): Promise<void>;
+  searchManyFarms(page: number, query?: string | undefined): Promise<Farm[]>
 }
