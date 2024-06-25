@@ -1,7 +1,14 @@
-import { RegisterUseCase } from "@/core/use-cases/register";
-import { MockedEncrypter } from "@/test/cryptography/mocked-encrypter";
-import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
+// Libs
 import { asClass, asFunction, createContainer } from "awilix";
+
+// Repositories
+import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
+
+// Services
+import { MockedEncrypter } from "@/test/cryptography/mocked-encrypter";
+
+// Use-cases
+import { RegisterUseCase } from "@/core/use-cases/register";
 
 const container = createContainer();
 
