@@ -5,6 +5,7 @@ import { Farm } from "@/core/entities/farm";
 import {
   FarmsRepository,
   FarmsRepositoryFindManyWithActiveOfferRequest,
+  FarmsRepositorySearchManyRequest,
 } from "@/core/repositories/farms-repository";
 import { InMemoryUsersRepository } from "./in-memory-users-repository";
 import { InMemoryOffersRepository } from "./in-memory-offers-repository";
@@ -102,11 +103,11 @@ export class InMemoryFarmsRepository implements FarmsRepository {
     this.items[itemIndex] = farm;
   }
 
-  async searchManyFarms(page: number, query?: string) {
-    if (!query) {
+  async searchMany({ page, name }: FarmsRepositorySearchManyRequest) {
+    if (!name) {
       return this.items.slice((page - 1) * 20, page * 20);
     }
 
-    return this.items.filter((item) => item.name.includes(query)).slice((page - 1) * 20, page * 20);
+    return this.items.filter((item) => item.name.includes(name)).slice((page - 1) * 20, page * 20);
   }
 }

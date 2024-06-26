@@ -8,6 +8,11 @@ export interface FarmsRepositoryFindManyWithActiveOfferRequest {
   product?: string;
 }
 
+export interface FarmsRepositorySearchManyRequest {
+  page: number;
+  name?: string
+}
+
 export interface FarmsRepository {
   findById(id: string): Promise<Farm | null>;
   findByCaf(caf: string): Promise<Farm | null>;
@@ -20,5 +25,5 @@ export interface FarmsRepository {
   }: FarmsRepositoryFindManyWithActiveOfferRequest): Promise<Farm[]>;
   create(farm: Farm): Promise<void>;
   update(farm: Farm): Promise<void>;
-  searchManyFarms(page: number, query?: string | undefined): Promise<Farm[]>
+  searchMany({ page, name }: FarmsRepositorySearchManyRequest): Promise<Farm[]>
 }

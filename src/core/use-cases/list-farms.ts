@@ -3,14 +3,17 @@ import { FarmsRepository } from "../repositories/farms-repository"
 
 interface ListFarmsRequest{
   page: number
-  query?: string
+  name?: string
 }
 
 export class ListFarmsUsecase{
   constructor(private farmsRepository: FarmsRepository){}
 
-  async execute({ page, query }: ListFarmsRequest){
-    const farms = await this.farmsRepository.searchManyFarms(page, query)
+  async execute({ page, name }: ListFarmsRequest){
+    const farms = await this.farmsRepository.searchMany({
+      page,
+      name
+    })
 
     return {
       farms

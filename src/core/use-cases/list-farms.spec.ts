@@ -71,7 +71,7 @@ describe("list farms", () => {
 
     const { farms } = await sut.execute({
       page: 1,
-      query: 'Fazenda 1'
+      name: 'Fazenda 1'
     })
 
     expect(farms).toHaveLength(1)
