@@ -1,5 +1,5 @@
 // Libs
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
 // Use-cases
@@ -20,7 +20,11 @@ const registerSchema = {
 };
 
 export class RegisterController {
-  static async handle(request: Request, response: Response) {
+  static async handle(
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ) {
     try {
       const { first_name, last_name, cpf, email, phone, password } =
         registerSchema.body.parse(request.body);
@@ -38,9 +42,8 @@ export class RegisterController {
       });
 
       return response.sendStatus(201);
-    } catch (err) {
-      console.log(err);
-      return response.send(500).send();
+    } catch (error) {
+      next(error);
     }
   }
 }
