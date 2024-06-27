@@ -42,7 +42,7 @@ const mappedDomainErrors: {
 ];
 
 export class HttpErrorMapper {
-  static get(error: Error) {
+  static find(error: Error) {
     const found = mappedDomainErrors.find((item) =>
       item.errors.find((constructor) => error instanceof constructor)
     );

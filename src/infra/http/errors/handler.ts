@@ -18,10 +18,10 @@ export const errorHandler = (
     return response.status(400).send({ message: "Erro de validação.", issues });
   }
 
-  const mapped = HttpErrorMapper.get(error);
+  const found = HttpErrorMapper.find(error);
 
-  if (mapped)
-    return response.status(mapped.code).send({ message: mapped.message });
+  if (found)
+    return response.status(found.code).send({ message: found.message });
 
   return response.status(500).send({ message: "💥 Ocorreu um erro interno." });
 };
