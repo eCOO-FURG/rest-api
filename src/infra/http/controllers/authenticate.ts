@@ -13,6 +13,7 @@ const authenticateSchema = {
     type: z.enum(["OTP", "BASIC"]),
   }),
 };
+
 export class AuthenticateController {
   static async handle(
     request: Request,

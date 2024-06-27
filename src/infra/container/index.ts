@@ -15,6 +15,7 @@ import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
 import { InMemoryOtpsRepository } from "@/test/repositories/in-memory-otps-repository";
 import { InMemorySessionsRepository } from "@/test/repositories/in-memory-sessions-repository";
 import { MockedHasher } from "@/test/cryptography/mocked-hasher";
+import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
 
 const container = createContainer();
 
@@ -49,6 +50,10 @@ container.register({
         encrypter,
         hasher
       )
+  ),
+  verifyUserUseCase: asFunction(
+    ({ usersRepository, hasher }) =>
+      new VerifyUserUsecase(usersRepository, hasher)
   ),
 });
 
