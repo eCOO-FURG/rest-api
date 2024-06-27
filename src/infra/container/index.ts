@@ -11,22 +11,45 @@ import { MockedEncrypter } from "@/test/cryptography/mocked-encrypter";
 import { RegisterUseCase } from "@/core/use-cases/register";
 import { OnRegisteredEvent } from "@/core/events/on-registered";
 import { MockedMailer } from "@/test/mail/mocked-mailer";
+import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
+import { InMemoryOtpsRepository } from "@/test/repositories/in-memory-otps-repository";
+import { InMemorySessionsRepository } from "@/test/repositories/in-memory-sessions-repository";
+import { MockedHasher } from "@/test/cryptography/mocked-hasher";
 
 const container = createContainer();
 
 container.register({
   // repositories
   usersRepository: asClass(InMemoryUsersRepository).singleton(),
+  otpsRepository: asClass(InMemoryOtpsRepository).singleton(),
+  sessionsRepository: asClass(InMemorySessionsRepository).singleton(),
   // services
   encrypter: asClass(MockedEncrypter).singleton(),
-  mailer: asClass(MockedMailer),
+  mailer: asClass(MockedMailer).singleton(),
+  hasher: asClass(MockedHasher).singleton(),
+  // events
+  onRegisteredEvent: asFunction(({ mailer }) => new OnRegisteredEvent(mailer)),
   // use-cases
   registerUsecase: asFunction(
     ({ usersRepository, encrypter }) =>
       new RegisterUseCase(usersRepository, encrypter)
   ),
-  // events
-  onRegisteredEvent: asFunction(({ mailer }) => new OnRegisteredEvent(mailer)),
+  authenticateUseCase: asFunction(
+    ({
+      usersRepository,
+      otpsRepository,
+      sessionsRepository,
+      encrypter,
+      hasher,
+    }) =>
+      new AuthenticateUseCase(
+        usersRepository,
+        otpsRepository,
+        sessionsRepository,
+        encrypter,
+        hasher
+      )
+  ),
 });
 
 export default container;

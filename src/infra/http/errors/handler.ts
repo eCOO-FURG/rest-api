@@ -12,16 +12,22 @@ export const errorHandler = (
   if (error instanceof ZodError) {
     const issues = error.issues.map((issue) => ({
       field: issue.path[0],
-      message: issue.message.toLowerCase(),
+      message: issue.message,
     }));
 
     return response.status(400).send({ message: "Erro de validação.", issues });
+  }
+
+  if (error instanceof SyntaxError) {
+    return response.status(400).send({ message: "Sintaxe incorreta." });
   }
 
   const found = HttpErrorMapper.find(error);
 
   if (found)
     return response.status(found.code).send({ message: found.message });
+
+  console.log(error);
 
   return response.status(500).send({ message: "💥 Ocorreu um erro interno." });
 };
