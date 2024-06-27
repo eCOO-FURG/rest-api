@@ -1,9 +1,11 @@
 // Libs
 import { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
-import { HttpErrorMapper } from "./mapper";
 
-export const errorHandler = (
+// Errors
+import { HttpErrorMapper } from "@/infra/http/errors/mapper";
+
+export const handler = (
   error: Error,
   _: Request,
   response: Response,
