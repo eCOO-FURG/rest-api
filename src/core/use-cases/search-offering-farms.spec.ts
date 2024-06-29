@@ -16,6 +16,7 @@ import { makeOffer } from "@/test/factories/make-offer";
 
 // Errors
 import { ResourceNotFoundError } from "../errors/resource-not-found";
+import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 let sut: SearchOfferingFarmsUseCase;
 
@@ -23,6 +24,7 @@ let cyclesRepository: InMemoryCyclesRepository;
 let usersRepository: InMemoryUsersRepository;
 let offersRepository: InMemoryOffersRepository;
 let productsRepository: InMemoryProductsRepository;
+let ordersRepository: InMemoryOrdersRepository
 
 let repositories: {
   farms: InMemoryFarmsRepository;
@@ -38,12 +40,14 @@ describe("searh offering farms", () => {
       productsRepository,
       cyclesRepository
     );
+    ordersRepository = new InMemoryOrdersRepository(offersRepository)
 
     repositories = {
       farms: new InMemoryFarmsRepository(
         usersRepository,
         offersRepository,
-        productsRepository
+        productsRepository,
+        ordersRepository
       ),
       cycles: cyclesRepository,
     };

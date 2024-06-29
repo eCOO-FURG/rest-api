@@ -23,11 +23,13 @@ import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { Offer } from "@/core/entities/offer";
 import { Week } from "@/core/entities/cycle";
 import { ClosedActionError } from "../errors/closed-action";
+import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
+let ordersRepository: InMemoryOrdersRepository
 
 let repositories: {
   farms: InMemoryFarmsRepository;
@@ -47,12 +49,14 @@ describe("offer products", () => {
       productsRepository,
       cyclesRepository
     );
+    ordersRepository = new InMemoryOrdersRepository(offersRepository)
 
     repositories = {
       farms: new InMemoryFarmsRepository(
         usersRepository,
         offersRepository,
-        productsRepository
+        productsRepository,
+        ordersRepository
       ),
       products: productsRepository,
       cycles: cyclesRepository,

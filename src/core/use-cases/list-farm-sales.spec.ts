@@ -21,6 +21,7 @@ let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
+let ordersRepository: InMemoryOrdersRepository
 
 let repositories: {
   farms: InMemoryFarmsRepository;
@@ -40,12 +41,14 @@ describe("list farm sales", () => {
       productsRepository,
       cyclesRepository
     );
+    ordersRepository = new InMemoryOrdersRepository(offersRepository)
 
     repositories = {
       farms: new InMemoryFarmsRepository(
         usersRepository,
         offersRepository,
-        productsRepository
+        productsRepository,
+        ordersRepository
       ),
       cycles: cyclesRepository,
       offers: offersRepository,

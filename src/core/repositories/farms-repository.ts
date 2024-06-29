@@ -1,4 +1,5 @@
 // Entities
+import { UUID } from "crypto";
 import { Farm } from "../entities/farm";
 
 export interface FarmsRepositoryFindManyWithActiveOfferRequest {
@@ -6,6 +7,12 @@ export interface FarmsRepositoryFindManyWithActiveOfferRequest {
   created_at: Date;
   page: number;
   product?: string;
+}
+
+export interface FarmsRepositorySearchManyWithOrdersRequest{
+  cycle_id: UUID;
+  page: number;
+  name?: string
 }
 
 export interface FarmsRepository {
@@ -20,4 +27,5 @@ export interface FarmsRepository {
   }: FarmsRepositoryFindManyWithActiveOfferRequest): Promise<Farm[]>;
   create(farm: Farm): Promise<void>;
   update(farm: Farm): Promise<void>;
+  searchManyWithOrders({ cycle_id, page, name }: FarmsRepositorySearchManyWithOrdersRequest): Promise<Farm[]>
 }
