@@ -10,7 +10,6 @@ import {
 } from "@/core/repositories/offers-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
-import { UUID } from "crypto";
 
 export class InMemoryOffersRepository implements OffersRepository {
   items: Offer[] = [];
@@ -122,15 +121,7 @@ export class InMemoryOffersRepository implements OffersRepository {
     this.items[index] = offer;
   }
 
-  // async findManyOffersWithOrder(cycle_id: UUID): Promise<Offer[]> {
-  //   const orders = await this.inMemoryOrdersRepository.getOrders()
-
-  //   const offersIdWithOrder = orders.map((order) => order.offer_id)
-
-  //   return this.items.filter((offer) => offer.cycle_id.equals(cycle_id) && offersIdWithOrder.includes(offer.id))
-  // }
-
-  async findMany(cycle_id: UUID): Promise<Offer[]> {
+  async findMany(cycle_id: string): Promise<Offer[]> {
     return this.items.filter((offer) => offer.cycle_id.equals(cycle_id))
   }
 }

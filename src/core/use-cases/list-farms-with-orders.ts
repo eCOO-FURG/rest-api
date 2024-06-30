@@ -1,12 +1,14 @@
+// Repositories
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
+
+// Errors
 import { ResourceNotFoundError } from "../errors/resource-not-found";
-import { UUID } from "crypto";
 
 interface ListFarmsWithOrdersProps{
-  cycle_id: UUID;
+  cycle_id: string;
   page: number
-  name: string
+  name?: string
 }
 
 export class ListFarmsWithOrdersUsecase{

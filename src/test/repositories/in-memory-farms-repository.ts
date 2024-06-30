@@ -119,7 +119,7 @@ export class InMemoryFarmsRepository implements FarmsRepository {
     const filteredFarms = this.items.filter((farm) => farmsIdWithOrders.has(farm.id));
 
     if (!name) {
-        return filteredFarms.slice((page - 1) * 20, page * 20);
+      return filteredFarms.slice((page - 1) * 20, page * 20);
     }
 
     return filteredFarms.filter((farm) => farm.name === name).slice((page - 1) * 20, page * 20);

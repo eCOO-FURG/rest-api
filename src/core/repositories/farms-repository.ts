@@ -1,5 +1,4 @@
 // Entities
-import { UUID } from "crypto";
 import { Farm } from "../entities/farm";
 
 export interface FarmsRepositoryFindManyWithActiveOfferRequest {
@@ -10,7 +9,7 @@ export interface FarmsRepositoryFindManyWithActiveOfferRequest {
 }
 
 export interface FarmsRepositorySearchManyWithOrdersRequest{
-  cycle_id: UUID;
+  cycle_id: string;
   page: number;
   name?: string
 }
