@@ -1,6 +1,5 @@
 import { Offer } from "@/core/entities/offer";
 import { OfferWithProductAndCycle } from "@/core/entities/value-objects/offer-with-product-and-cycle";
-import { UUID } from "crypto";
 
 export interface OffersRepositorySearchRequest {
   cycle_id: string;
@@ -36,5 +35,4 @@ export interface OffersRepository {
   }: OffersRepositorySearchRequest): Promise<Offer | null>;
   create(offer: Offer): Promise<void>;
   update(offer: Offer): Promise<void>;
-  findMany(cycle_id: UUID): Promise<Offer[]>
 }

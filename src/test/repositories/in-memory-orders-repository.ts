@@ -77,8 +77,4 @@ export class InMemoryOrdersRepository implements OrdersRepository {
 
     await this.inMemoryOffersRepository.update(offer);
   }
-
-  async findMany(): Promise<Order[]> {
-    return this.items.map((order) => order)
-  }
 }

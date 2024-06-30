@@ -120,8 +120,4 @@ export class InMemoryOffersRepository implements OffersRepository {
 
     this.items[index] = offer;
   }
-
-  async findMany(cycle_id: string): Promise<Offer[]> {
-    return this.items.filter((offer) => offer.cycle_id.equals(cycle_id))
-  }
 }

@@ -106,23 +106,23 @@ export class InMemoryFarmsRepository implements FarmsRepository {
   }
 
   async searchManyWithOrders({ cycle_id, page, name }: FarmsRepositorySearchManyWithOrdersRequest): Promise<Farm[]> {
-    const orders = await this.inMemomyOrdersRepository.findMany();
-
-    const offers = await this.inMemoryOffersRepository.findMany(cycle_id);
-
-    const offersIdWithOrder = new Set(orders.map((order) => order.offer_id));
-
-    const offersWithOrders = offers.filter((offer) => offer.cycle_id.equals(cycle_id) && offersIdWithOrder.has(offer.id));
-
-    const farmsIdWithOrders = new Set(offersWithOrders.map((offer) => offer.farm_id));
-
-    const filteredFarms = this.items.filter((farm) => farmsIdWithOrders.has(farm.id));
-
+    const orders = await this.inMemomyOrdersRepository.items;
+  
+    const offers = await this.inMemoryOffersRepository.items.filter((offer) => offer.cycle_id.equals(cycle_id));
+  
+    const offersIdWithOrder = orders.map((order) => order.offer_id);
+  
+    const offersWithOrders = offers.filter((offer) => offer.cycle_id.equals(cycle_id) && offersIdWithOrder.includes(offer.id));
+  
+    const farmsIdWithOrders = offersWithOrders.map((offer) => offer.farm_id);
+  
+    const filteredFarms = this.items.filter((farm) => farmsIdWithOrders.includes(farm.id));
+  
     if (!name) {
       return filteredFarms.slice((page - 1) * 20, page * 20);
     }
-
+  
     return filteredFarms.filter((farm) => farm.name === name).slice((page - 1) * 20, page * 20);
   }
-
+  
 }

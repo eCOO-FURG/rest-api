@@ -19,40 +19,41 @@ import { makeOrder } from "@/test/factories/make-order"
 // Errors
 import { ResourceNotFoundError } from "../errors/resource-not-found"
 
-let farmsRepository: InMemoryFarmsRepository
 let offersRepository: InMemoryOffersRepository
 let ordersRepository: InMemoryOrdersRepository
+let productsRepository: InMemoryProductsRepository
+let usersRepository: InMemoryUsersRepository
+let cyclesRepository: InMemoryCyclesRepository
 
 let sut: ListFarmsWithOrdersUsecase
 
 let repositories: {
-  products:InMemoryProductsRepository,
+  farms: InMemoryFarmsRepository
   cycles: InMemoryCyclesRepository,
-  users: InMemoryUsersRepository,
 }
 
 describe('list farms with orders', () => {
   beforeEach(() => {
+    usersRepository = new InMemoryUsersRepository()
+    productsRepository = new InMemoryProductsRepository()
+    cyclesRepository = new InMemoryCyclesRepository()
+    offersRepository = new InMemoryOffersRepository(
+      productsRepository,
+      cyclesRepository
+    )
+    ordersRepository = new InMemoryOrdersRepository(offersRepository)
+
     repositories = {
-      products: new InMemoryProductsRepository(),
-      cycles: new InMemoryCyclesRepository(),
-      users: new InMemoryUsersRepository()
+      cycles: cyclesRepository,
+      farms: new InMemoryFarmsRepository(
+        usersRepository,
+        offersRepository, 
+        productsRepository,
+        ordersRepository
+      )
     }
 
-    offersRepository = new InMemoryOffersRepository(
-      repositories.products, 
-      repositories.cycles
-    )
-
-    ordersRepository = new InMemoryOrdersRepository(offersRepository)
-    farmsRepository = new InMemoryFarmsRepository(
-      repositories.users, 
-      offersRepository, 
-      repositories.products, 
-      ordersRepository
-    )
-
-    sut = new ListFarmsWithOrdersUsecase(repositories.cycles, farmsRepository)
+    sut = new ListFarmsWithOrdersUsecase(repositories.cycles, repositories.farms)
   })
 
   it('should not be able to list farms with orders from a cycle that does not exists', async () => {
@@ -69,13 +70,13 @@ describe('list farms with orders', () => {
       name: 'Fazenda 1'
     })
 
-    await farmsRepository.create(farm)
+    await repositories.farms.create(farm)
 
     const cycle = makeCycle()
     await repositories.cycles.create(cycle)
 
     const product = makeProduct()
-    await repositories.products.create(product)
+    await productsRepository.create(product)
 
     const offer = makeOffer({
       farm_id: farm.id,
@@ -107,14 +108,14 @@ describe('list farms with orders', () => {
     await repositories.cycles.create(cycle)
 
     const product = makeProduct()
-    await repositories.products.create(product)
+    await productsRepository.create(product)
 
     for(let i = 1; i <= 10; i++){
       const farm = makeFarm({
         name: `Fazenda ${i}`
       })
 
-      await farmsRepository.create(farm)
+      await repositories.farms.create(farm)
 
       const offer = makeOffer({
         farm_id: farm.id,
@@ -148,14 +149,14 @@ describe('list farms with orders', () => {
     await repositories.cycles.create(cycle)
 
     const product = makeProduct()
-    await repositories.products.create(product)
+    await productsRepository.create(product)
 
     for(let i = 1; i <= 22; i++){
       const farm = makeFarm({
         name: `Fazenda ${i}`
       })
 
-      await farmsRepository.create(farm)
+      await repositories.farms.create(farm)
 
       const offer = makeOffer({
         farm_id: farm.id,
