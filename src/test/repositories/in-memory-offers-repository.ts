@@ -1,3 +1,5 @@
+import { UUID } from "@/core/entities/value-objects/uuid";
+
 // Entities
 import { Offer } from "@/core/entities/offer";
 import { OfferWithProductAndCycle } from "@/core/entities/value-objects/offer-with-product-and-cycle";
@@ -10,14 +12,32 @@ import {
 } from "@/core/repositories/offers-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
+import { makeOffer } from "../factories/make-offer";
+
+const FAKE_OFFERS = [
+  makeOffer({
+    id: new UUID("44a7c9e7-fb14-45cc-82b3-a3a30255ef3d"),
+    farm_id: new UUID("f28a5d0c-456b-43c4-8f22-6858002910bd"),
+    product_id: new UUID("105902b1-1b3a-4d5b-8027-ee9c4dbbc0b5"),
+    cycle_id: new UUID("7852191e-8633-4cbc-ac78-8dda0f7a9eb4"),
+  }),
+];
 
 export class InMemoryOffersRepository implements OffersRepository {
-  items: Offer[] = [];
+  items: Offer[] = FAKE_OFFERS;
 
   constructor(
     private inMemoryProductsRepository: InMemoryProductsRepository,
     private inMemoryCyclesRepository: InMemoryCyclesRepository
   ) {}
+
+  async findManyByCycleId(cycle_id: string): Promise<Offer[]> {
+    const offers = this.items.filter(({ cycle_id: item_cycle_id }) =>
+      item_cycle_id.equals(cycle_id)
+    );
+
+    return offers;
+  }
 
   async findById(id: string): Promise<Offer | null> {
     const item = this.items.find((item) => item.id.equals(id));

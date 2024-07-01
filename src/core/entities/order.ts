@@ -6,6 +6,7 @@ export interface OrderProps extends EntityRequest {
   user_id: UUID;
   offer_id: UUID;
   amount: number;
+  status?: "pending" | "cancelled" | "complete";
 }
 
 export class Order extends Entity<OrderProps> {
@@ -21,8 +22,12 @@ export class Order extends Entity<OrderProps> {
     return this.props.amount;
   }
 
+  get status() {
+    return this.props.status;
+  }
+
   static create(props: OrderProps) {
-    const order = new Order(props);
+    const order = new Order({ ...props, status: props.status || "pending" });
     return order;
   }
 }

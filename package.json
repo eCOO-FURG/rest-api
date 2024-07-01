@@ -14,9 +14,11 @@
   "description": "",
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
+    "@types/lodash": "^4.17.6",
     "@types/node": "^20.14.2",
     "awilix": "^10.0.2",
     "express": "^4.19.2",
+    "lodash": "^4.17.21",
     "tsx": "^4.15.7",
     "typescript": "^5.4.5",
     "zod": "^3.23.8"

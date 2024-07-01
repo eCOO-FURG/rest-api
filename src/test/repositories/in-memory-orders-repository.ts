@@ -1,3 +1,5 @@
+import { UUID } from "@/core/entities/value-objects/uuid";
+
 // Entities
 import { Order } from "@/core/entities/order";
 import { OrderWithOffer } from "@/core/entities/value-objects/order-with-offer";
@@ -6,13 +8,28 @@ import { OrderWithOffer } from "@/core/entities/value-objects/order-with-offer";
 import { OrdersRepository } from "@/core/repositories/orders-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 
+import { makeOrder } from "../factories/make-order";
+
+const FAKE_ORDERS: readonly [string, Order][] = [
+  [
+    "083404cd-4552-441e-bba3-8e7e49ffeeef",
+    makeOrder({
+      id: new UUID("083404cd-4552-441e-bba3-8e7e49ffeeef"),
+      user_id: new UUID("7369a6ce-b4c9-4a7a-b523-9be6f8f385a1"),
+      offer_id: new UUID("44a7c9e7-fb14-45cc-82b3-a3a30255ef3d"),
+      amount: 100,
+      status: "pending",
+    }),
+  ],
+];
+
 export class InMemoryOrdersRepository implements OrdersRepository {
-  items: Order[] = [];
+  items = new Map<Order["id"]["value"], Order>(FAKE_ORDERS);
 
   constructor(private inMemoryOffersRepository: InMemoryOffersRepository) {}
 
   async findByOfferId(offer_id: string): Promise<Order | null> {
-    const item = this.items.find((item) => item.offer_id.equals(offer_id));
+    const item = this.items.get(offer_id);
 
     if (!item) {
       return null;
@@ -24,7 +41,7 @@ export class InMemoryOrdersRepository implements OrdersRepository {
   async findManyWithOfferByOffersIds(
     offers_ids: string[]
   ): Promise<OrderWithOffer[]> {
-    const orders = this.items.filter((item) =>
+    const orders = Array.from(this.items.values()).filter((item) =>
       offers_ids.includes(item.offer_id.value)
     );
 
@@ -71,10 +88,29 @@ export class InMemoryOrdersRepository implements OrdersRepository {
 
     if (!offer) return;
 
-    this.items.push(order);
+    this.items.set(order.id.value, order);
 
     offer.amount -= order.amount;
 
     await this.inMemoryOffersRepository.update(offer);
+  }
+
+  async update(order: Order): Promise<Order> {
+    const { amount } = this.items.get(order.id.value) as Order;
+
+    if (this.items.get(order.id.value)) {
+      const offer = await this.inMemoryOffersRepository.findById(
+        order.offer_id.value
+      );
+      if (!offer) throw new Error("Offer not found");
+
+      const amountDifference = Math.abs(amount - order.amount);
+      offer.amount -= amountDifference;
+      await this.inMemoryOffersRepository.update(offer);
+    }
+
+    this.items.set(order.id.value, order);
+
+    return order;
   }
 }
