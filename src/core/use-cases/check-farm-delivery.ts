@@ -76,7 +76,5 @@ export class CheckFarmDeliveryUseCase {
     });
 
     await Promise.all(updateStatusPromises);
-
-    // ver questão do amount
   }
 }
