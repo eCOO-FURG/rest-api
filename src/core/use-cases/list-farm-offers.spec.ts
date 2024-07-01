@@ -16,11 +16,13 @@ import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-rep
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
+let ordersRepository: InMemoryOrdersRepository
 
 let repositories: {
   farms: InMemoryFarmsRepository;
@@ -38,13 +40,15 @@ describe("list farm offers", () => {
       productsRepository,
       cyclesRepository
     );
+    ordersRepository = new InMemoryOrdersRepository(offersRepository)
     usersRepository = new InMemoryUsersRepository();
 
     repositories = {
       farms: new InMemoryFarmsRepository(
         usersRepository,
         offersRepository,
-        productsRepository
+        productsRepository,
+        ordersRepository
       ),
       cycles: cyclesRepository,
       offers: offersRepository,

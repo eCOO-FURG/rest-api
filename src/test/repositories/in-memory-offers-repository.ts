@@ -16,7 +16,7 @@ export class InMemoryOffersRepository implements OffersRepository {
 
   constructor(
     private inMemoryProductsRepository: InMemoryProductsRepository,
-    private inMemoryCyclesRepository: InMemoryCyclesRepository
+    private inMemoryCyclesRepository: InMemoryCyclesRepository,
   ) {}
 
   async findById(id: string): Promise<Offer | null> {

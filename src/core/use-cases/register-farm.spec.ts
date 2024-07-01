@@ -16,11 +16,13 @@ import { makeUser } from "@/test/factories/make-user";
 
 // Entities
 import { Farm } from "../entities/farm";
+import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
+let ordersRepository: InMemoryOrdersRepository
 
 let repositories: {
   users: InMemoryUsersRepository;
@@ -38,13 +40,15 @@ describe("create farm", () => {
       productsRepository,
       cyclesRepository
     );
+    ordersRepository = new InMemoryOrdersRepository(offersRepository)
 
     repositories = {
       users: usersRepository,
       farm: new InMemoryFarmsRepository(
         usersRepository,
         offersRepository,
-        productsRepository
+        productsRepository,
+        ordersRepository
       ),
     };
 
