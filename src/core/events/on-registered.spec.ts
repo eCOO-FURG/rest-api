@@ -7,14 +7,15 @@ import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-rep
 // Services
 import { MockedEncrypter } from "@/test/cryptography/mocked-encrypter";
 import { MockedMailer } from "@/test/mail/mocked-mailer";
+import { MockedHasher } from "@/test/cryptography/mocked-hasher";
 
 // Events
+import { DomainEvents } from "./domain-events";
 import { OnRegisteredEvent } from "./on-registered";
 
 // Test
 import { MockInstance } from "vitest";
 import { waitFor } from "@/test/utils/wait-for";
-import { DomainEvents } from "./domain-events";
 
 let repositories: {
   users: InMemoryUsersRepository;
@@ -23,6 +24,7 @@ let repositories: {
 let mocks: {
   encrypter: MockedEncrypter;
   mailer: MockedMailer;
+  hasher: MockedHasher;
 };
 
 let sut: RegisterUseCase;
@@ -38,10 +40,11 @@ describe("on account created", () => {
     mocks = {
       encrypter: new MockedEncrypter(),
       mailer: new MockedMailer(),
+      hasher: new MockedHasher(),
     };
 
     sut = new RegisterUseCase(repositories.users, mocks.encrypter);
-    new OnRegisteredEvent(mocks.mailer);
+    new OnRegisteredEvent(mocks.mailer, mocks.hasher);
 
     spy = vi.spyOn(DomainEvents, "dispatch");
   });

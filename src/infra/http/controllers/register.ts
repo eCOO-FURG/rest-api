@@ -29,6 +29,8 @@ export class RegisterController {
       const { first_name, last_name, cpf, email, phone, password } =
         registerSchema.body.parse(request.body);
 
+      container.resolve("onRegisteredEvent");
+
       const registerUseCase =
         container.resolve<RegisterUseCase>("registerUsecase");
 

@@ -3,8 +3,8 @@ import { Router } from "express";
 
 // Controllers
 import { RegisterController } from "@/infra/http/controllers/register";
-import { AuthenticateController } from "../controllers/authenticate";
-import { VerifyUserController } from "../controllers/verify-user";
+import { AuthenticateController } from "@/infra/http/controllers/authenticate";
+import { VerifyUserController } from "@/infra/http/controllers/verify-user";
 
 export const router = Router();
 

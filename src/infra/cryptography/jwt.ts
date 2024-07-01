@@ -1,0 +1,15 @@
+// Libs
+import * as jwtService from "jsonwebtoken";
+
+// Services
+import { Hasher } from "@/core/cryptography/hasher";
+
+export class Jwt implements Hasher {
+  async hash(payload: Record<string, string>): Promise<string> {
+    return jwtService.sign(payload, "secret");
+  }
+
+  async decode(value: string): Promise<Record<string, string>> {
+    return jwtService.decode(value) as Record<string, string>;
+  }
+}

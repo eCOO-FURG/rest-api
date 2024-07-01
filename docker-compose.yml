@@ -1,0 +1,29 @@
+version: "3"
+services:
+  smtp4dev:
+    container_name: ecoo-smtp
+    image: rnwood/smtp4dev:v3
+    ports:
+      - "3010:80"
+      - "2525:25"
+    profiles: ["dev"]
+    logging:
+      driver: "none"
+
+  server: &server
+    container_name: ecoo-server
+    network_mode: "host"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/app/src
+    restart: always
+    profiles: ["deploy"]
+
+  dev-server:
+    <<: *server
+    container_name: ecoo-server
+    depends_on:
+      - smtp4dev
+    profiles: ["dev"]
