@@ -5,6 +5,7 @@ import { z } from "zod";
 // Container
 import container from "@/infra/container";
 import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
+import { UserPresenter } from "../presenters/user-presenter";
 
 const authenticateSchema = {
   body: z.object({
@@ -41,7 +42,9 @@ export class AuthenticateController {
         agent: request.headers["user-agent"] ?? "not-identified",
       });
 
-      return response.status(201).send({ token, user });
+      return response
+        .status(201)
+        .send({ token, user: UserPresenter.toHttp(user) });
     } catch (error) {
       next(error);
     }
