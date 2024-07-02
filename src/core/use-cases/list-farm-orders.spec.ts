@@ -1,5 +1,5 @@
 // Use-cases
-import { ListFarmSalesUseCase } from "@/core/use-cases/list-farm-sales";
+import { ListFarmSalesUseCase } from "@/core/use-cases/list-farm-orders";
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeOffer } from "@/test/factories/make-offer";
@@ -21,7 +21,7 @@ let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
-let ordersRepository: InMemoryOrdersRepository
+let ordersRepository: InMemoryOrdersRepository;
 
 let repositories: {
   farms: InMemoryFarmsRepository;
@@ -41,7 +41,7 @@ describe("list farm sales", () => {
       productsRepository,
       cyclesRepository
     );
-    ordersRepository = new InMemoryOrdersRepository(offersRepository)
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
     repositories = {
       farms: new InMemoryFarmsRepository(
