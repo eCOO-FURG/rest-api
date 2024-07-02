@@ -9,6 +9,7 @@ export class UserPresenter {
       email: user.email,
       phone: user.phone,
       roles: user.roles,
+      verified_at: user.verified_at,
       created_at: user.created_at,
       updated_at: user.updated_at,
     };
