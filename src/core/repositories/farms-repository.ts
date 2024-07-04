@@ -12,6 +12,11 @@ export interface FarmsRepositorySearchManyRequest {
   page: number;
   name?: string
 }
+export interface FarmsRepositorySearchManyWithOrdersRequest{
+  cycle_id: string;
+  page: number;
+  name?: string
+}
 
 export interface FarmsRepository {
   findById(id: string): Promise<Farm | null>;
@@ -26,4 +31,5 @@ export interface FarmsRepository {
   create(farm: Farm): Promise<void>;
   update(farm: Farm): Promise<void>;
   searchMany({ page, name }: FarmsRepositorySearchManyRequest): Promise<Farm[]>
+  searchManyWithOrders({ cycle_id, page, name }: FarmsRepositorySearchManyWithOrdersRequest): Promise<Farm[]>
 }

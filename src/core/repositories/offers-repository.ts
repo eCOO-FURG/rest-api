@@ -12,6 +12,8 @@ export interface OffersRepositorySearchManyRequest {
   cycle_id: string;
   farm_id: string;
   created_at: Date;
+  product?: string;
+  page?: number;
 }
 
 export interface OffersRepository {
@@ -23,6 +25,8 @@ export interface OffersRepository {
     farm_id,
     cycle_id,
     created_at,
+    product,
+    page,
   }: OffersRepositorySearchManyRequest): Promise<Offer[]>;
   search({
     cycle_id,
@@ -31,4 +35,5 @@ export interface OffersRepository {
   }: OffersRepositorySearchRequest): Promise<Offer | null>;
   create(offer: Offer): Promise<void>;
   update(offer: Offer): Promise<void>;
+  delete(offer: Offer): Promise<void>;
 }
