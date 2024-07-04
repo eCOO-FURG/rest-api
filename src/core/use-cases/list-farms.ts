@@ -1,7 +1,7 @@
 // Repositories
 import { FarmsRepository } from "../repositories/farms-repository"
 
-interface ListFarmsRequest{
+interface ListFarmsUseCaseRequest{
   page: number
   name?: string
 }
@@ -9,7 +9,7 @@ interface ListFarmsRequest{
 export class ListFarmsUsecase{
   constructor(private farmsRepository: FarmsRepository){}
 
-  async execute({ page, name }: ListFarmsRequest){
+  async execute({ page, name }: ListFarmsUseCaseRequest){
     const farms = await this.farmsRepository.searchMany({
       page,
       name
