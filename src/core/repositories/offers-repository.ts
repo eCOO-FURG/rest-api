@@ -35,4 +35,5 @@ export interface OffersRepository {
   }: OffersRepositorySearchRequest): Promise<Offer | null>;
   create(offer: Offer): Promise<void>;
   update(offer: Offer): Promise<void>;
+  delete(offer: Offer): Promise<void>;
 }
