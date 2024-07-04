@@ -6,7 +6,9 @@
     "start": "tsx watch src/infra/server.ts",
     "test": "vitest run --dir src/core/",
     "test:watch": "vitest --dir src/core/",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "docker": "docker-compose --profile dev up",
+    "docker:deploy": "docker-compose --profile deploy up"
   },
   "keywords": [],
   "author": "",
