@@ -20,6 +20,7 @@ import { RegisterUseCase } from "@/core/use-cases/register";
 import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
 import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
 import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
+import { OrderProductsUseCase } from "@/core/use-cases/order-products";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
@@ -103,6 +104,18 @@ container.register({
     ({ usersRepository, farmsRepository }) =>
       new RegisterFarmUseCase(usersRepository, farmsRepository)
   ),
+  orderProductsUsecase: asFunction(
+    ({ 
+      usersRepository, 
+      offersRepository, 
+      ordersRepository 
+    }) => 
+      new OrderProductsUseCase(
+        usersRepository, 
+        offersRepository, 
+        ordersRepository
+      )
+  )
 });
 
 export default container;

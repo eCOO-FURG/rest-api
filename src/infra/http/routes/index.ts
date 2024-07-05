@@ -6,6 +6,7 @@ import { registerController } from "@/infra/http/controllers/register";
 import { authenticateController } from "@/infra/http/controllers/authenticate";
 import { verifyUserController } from "@/infra/http/controllers/verify-user";
 import { registerFarmController } from "@/infra/http/controllers/register-farm";
+import { orderProductsController } from "@/infra/http/controllers/order-products";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -18,4 +19,4 @@ router.get("/users/verify", verifyUserController);
 
 router.post("/farms", ensureAuthenticated, registerFarmController);
 
-router.post("/orders");
+router.post("/orders", ensureAuthenticated, orderProductsController);
