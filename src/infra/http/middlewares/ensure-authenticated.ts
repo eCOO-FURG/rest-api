@@ -51,7 +51,7 @@ export async function ensureAuthenticated(
       );
 
       if (!session) {
-        return response.status(401).send({ message: "Não autorizado." });
+        return response.status(401).send({ message: "Sessão expirada." });
       }
 
       const refresh = sign({ user_id }, "secret");
