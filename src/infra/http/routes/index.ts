@@ -5,8 +5,10 @@ import { Router } from "express";
 import { registerController } from "@/infra/http/controllers/register";
 import { authenticateController } from "@/infra/http/controllers/authenticate";
 import { verifyUserController } from "@/infra/http/controllers/verify-user";
-import { registerFarmController } from "../controllers/register-farm";
-import { ensureAuthenticated } from "../middlewares/ensure-authenticated";
+import { registerFarmController } from "@/infra/http/controllers/register-farm";
+
+// Middlewares
+import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
 
 export const router = Router();
 
