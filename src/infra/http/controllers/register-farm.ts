@@ -15,28 +15,26 @@ const registerFarmSchema = {
   }),
 };
 
-export class RegisterFarmController {
-  static async handle(
-    request: Request,
-    response: Response,
-    next: NextFunction
-  ) {
-    try {
-      const { name, caf } = registerFarmSchema.body.parse(request.body);
+export async function registerFarmController(
+  request: Request,
+  response: Response,
+  next: NextFunction
+) {
+  try {
+    const { name, caf } = registerFarmSchema.body.parse(request.body);
 
-      const registerFarmUseCase = container.resolve<RegisterFarmUseCase>(
-        "registerFarmUseCase"
-      );
+    const registerFarmUseCase = container.resolve<RegisterFarmUseCase>(
+      "registerFarmUseCase"
+    );
 
-      await registerFarmUseCase.execute({
-        user_id: request.user_id,
-        caf,
-        name,
-      });
+    await registerFarmUseCase.execute({
+      user_id: request.user_id,
+      caf,
+      name,
+    });
 
-      return response.sendStatus(201);
-    } catch (error) {
-      next(error);
-    }
+    return response.sendStatus(201);
+  } catch (error) {
+    next(error);
   }
 }
