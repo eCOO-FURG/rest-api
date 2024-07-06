@@ -3,12 +3,14 @@ import { OrderProps } from "@/core/entities/order";
 import { OfferProps } from "@/core/entities/offer";
 import { Product } from "@/core/entities/product";
 import { Entity } from "@/core/entities/entity";
+import { Optional } from "@/core/types/optional";
 
 interface OfferWithProductProps extends Omit<OfferProps, "product_id"> {
   product: Product;
 }
 
-interface OrderWithOfferProps extends Omit<OrderProps, "offer_id"> {
+interface OrderWithOfferProps
+  extends Omit<Optional<OrderProps, "status">, "offer_id"> {
   offer: OfferWithProductProps;
 }
 
