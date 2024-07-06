@@ -10,7 +10,7 @@ export function makeOtp(props: Partial<Otp> = {}) {
     id: props.id,
     user_id: props.user_id ?? new UUID(),
     value: props.value ?? faker.internet.password.toString(),
-    used_at: props.used_at ?? null,
+    used: props.used ?? false,
     created_at: props.created_at,
     updated_at: props.updated_at,
   });

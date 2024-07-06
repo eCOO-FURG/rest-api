@@ -1,5 +1,5 @@
 // Use-cases
-import { ListFarmSalesUseCase } from "@/core/use-cases/list-farm-sales";
+import { ListFarmSalesUseCase } from "@/core/use-cases/list-farm-orders";
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeOffer } from "@/test/factories/make-offer";

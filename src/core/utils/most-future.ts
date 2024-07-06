@@ -5,16 +5,18 @@ export function mostFuture(days: Week) {
   today.setHours(0, 0, 0, 0);
 
   const dates = days.map((day) => {
-    const ahead = (day - today.getDay() + 7) % 7;
+    const ago = (today.getDay() - day + 7) % 7;
 
-    const date = new Date(today.getTime() + (ahead + 1) * 24 * 60 * 60 * 1000);
+    const date = new Date(today.getTime() - (ago + 1) * 24 * 60 * 60 * 1000);
 
-    date.setUTCHours(0, 0, 0, 0);
+    date.setUTCHours(23, 59, 59, 999);
 
     return date;
   });
 
-  const mostDistant = dates.sort((a, b) => b.getTime() - a.getTime())[0];
+  const mostDistant = dates.sort((a, b) => a.getTime() - b.getTime())[
+    dates.length - 1
+  ];
 
   return mostDistant;
 }

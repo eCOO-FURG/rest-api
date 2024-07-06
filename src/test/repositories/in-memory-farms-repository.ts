@@ -6,6 +6,7 @@ import { OrderWithOffer } from "@/core/entities/value-objects/order-with-offer";
 import {
   FarmsRepository,
   FarmsRepositoryFindManyWithActiveOfferRequest,
+  FarmsRepositorySearchManyWithOrdersRequest,
 } from "@/core/repositories/farms-repository";
 import { InMemoryUsersRepository } from "./in-memory-users-repository";
 import { InMemoryOffersRepository } from "./in-memory-offers-repository";
@@ -125,5 +126,38 @@ export class InMemoryFarmsRepository implements FarmsRepository {
     const itemIndex = this.items.findIndex((item) => item.id.equals(farm.id));
 
     this.items[itemIndex] = farm;
+  }
+
+  async searchManyWithOrders({
+    cycle_id,
+    page,
+    name,
+  }: FarmsRepositorySearchManyWithOrdersRequest): Promise<Farm[]> {
+    const orders = Array.from(this.inMemoryOrdersRepository.items.values());
+
+    const offers = this.inMemoryOffersRepository.items.filter((offer) =>
+      offer.cycle_id.equals(cycle_id)
+    );
+
+    const offersIdWithOrder = orders.map((order) => order.offer_id);
+
+    const offersWithOrders = offers.filter(
+      (offer) =>
+        offer.cycle_id.equals(cycle_id) && offersIdWithOrder.includes(offer.id)
+    );
+
+    const farmsIdWithOrders = offersWithOrders.map((offer) => offer.farm_id);
+
+    const filteredFarms = this.items.filter((farm) =>
+      farmsIdWithOrders.includes(farm.id)
+    );
+
+    if (!name) {
+      return filteredFarms.slice((page - 1) * 20, page * 20);
+    }
+
+    return filteredFarms
+      .filter((farm) => farm.name === name)
+      .slice((page - 1) * 20, page * 20);
   }
 }

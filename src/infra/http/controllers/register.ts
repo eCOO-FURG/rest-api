@@ -19,31 +19,31 @@ const registerSchema = {
   }),
 };
 
-export class RegisterController {
-  static async handle(
-    request: Request,
-    response: Response,
-    next: NextFunction
-  ) {
-    try {
-      const { first_name, last_name, cpf, email, phone, password } =
-        registerSchema.body.parse(request.body);
+export async function registerController(
+  request: Request,
+  response: Response,
+  next: NextFunction
+) {
+  try {
+    const { first_name, last_name, cpf, email, phone, password } =
+      registerSchema.body.parse(request.body);
 
-      const registerUseCase =
-        container.resolve<RegisterUseCase>("registerUsecase");
+    container.resolve("onRegisteredEvent");
 
-      await registerUseCase.execute({
-        first_name,
-        last_name,
-        cpf,
-        email,
-        phone,
-        password,
-      });
+    const registerUseCase =
+      container.resolve<RegisterUseCase>("registerUsecase");
 
-      return response.sendStatus(201);
-    } catch (error) {
-      next(error);
-    }
+    await registerUseCase.execute({
+      first_name,
+      last_name,
+      cpf,
+      email,
+      phone,
+      password,
+    });
+
+    return response.sendStatus(201);
+  } catch (error) {
+    next(error);
   }
 }

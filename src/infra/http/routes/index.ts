@@ -2,14 +2,30 @@
 import { Router } from "express";
 
 // Controllers
-import { RegisterController } from "@/infra/http/controllers/register";
-import { AuthenticateController } from "../controllers/authenticate";
-import { VerifyUserController } from "../controllers/verify-user";
 import { CheckFarmDeliveryController } from "../controllers/check-farm-delivery";
+import { registerController } from "@/infra/http/controllers/register";
+import { authenticateController } from "@/infra/http/controllers/authenticate";
+import { verifyUserController } from "@/infra/http/controllers/verify-user";
+import { registerFarmController } from "@/infra/http/controllers/register-farm";
+import { offerProductsController } from "../controllers/offer-products";
+
+// Middlewares
+import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
+import { ensureFarmAdmin } from "../middlewares/ensure-farm-admin";
 
 export const router = Router();
 
-router.post("/users", RegisterController.handle);
-router.post("/users/auth", AuthenticateController.handle);
-router.get("/users/verify", VerifyUserController.handle);
+router.post("/users", registerController);
+router.post("/users/auth", authenticateController);
+router.get("/users/verify", verifyUserController);
+
 router.post("/offers/check-delivery", CheckFarmDeliveryController.handle);
+
+router.post("/farms", ensureAuthenticated, registerFarmController);
+
+router.post(
+  "/offers",
+  ensureAuthenticated,
+  ensureFarmAdmin,
+  offerProductsController
+);

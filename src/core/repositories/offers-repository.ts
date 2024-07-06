@@ -36,4 +36,5 @@ export interface OffersRepository {
   create(offer: Offer): Promise<void>;
   update(offer: Offer): Promise<void>;
   updateMany(offers: Offer[]): Promise<void>;
+  delete(offer: Offer): Promise<void>;
 }

@@ -14,23 +14,21 @@ const verifyUserSchema = {
   }),
 };
 
-export class VerifyUserController {
-  static async handle(
-    request: Request,
-    response: Response,
-    next: NextFunction
-  ) {
-    try {
-      const { token } = verifyUserSchema.query.parse(request.query);
+export async function verifyUserController(
+  request: Request,
+  response: Response,
+  next: NextFunction
+) {
+  try {
+    const { token } = verifyUserSchema.query.parse(request.query);
 
-      const verifyUserUseCase =
-        container.resolve<VerifyUserUsecase>("verifyUserUseCase");
+    const verifyUserUseCase =
+      container.resolve<VerifyUserUsecase>("verifyUserUseCase");
 
-      await verifyUserUseCase.execute({ token });
+    await verifyUserUseCase.execute({ token });
 
-      return response.status(200).send();
-    } catch (error) {
-      next(error);
-    }
+    return response.status(200).send();
+  } catch (error) {
+    next(error);
   }
 }

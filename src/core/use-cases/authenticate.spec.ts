@@ -93,7 +93,7 @@ describe("authenticate", () => {
 
     expect(result.token).toBeTypeOf("string");
     expect(repositories.sessions.items).toHaveLength(1);
-    expect(repositories.otps.items[0].used_at).toBeTruthy();
+    expect(repositories.otps.items[0].used).toBeTruthy();
   });
 
   it("should not be able to authenticate with wrong basic credentials", async () => {

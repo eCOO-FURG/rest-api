@@ -50,16 +50,9 @@ export class InMemoryOffersRepository implements OffersRepository {
     if (!cycle) return null;
 
     const offerWithProduct = OfferWithProductAndCycle.create({
-      id: offer.id,
-      farm_id: offer.farm_id,
-      description: offer.description,
-      price: offer.price,
-      amount: offer.amount,
+      ...offer.props,
       cycle,
       product,
-      delivered_at: offer.delivered_at,
-      created_at: offer.created_at,
-      updated_at: offer.updated_at,
     });
 
     return offerWithProduct;
@@ -129,5 +122,13 @@ export class InMemoryOffersRepository implements OffersRepository {
     });
 
     Promise.all(updateOffersPromises);
+  }
+
+  async delete(offer: Offer): Promise<void> {
+    const index = this.items.findIndex((item) => item.id.equals(offer.id));
+
+    if (index < 0) return;
+
+    this.items.splice(index, 1);
   }
 }
