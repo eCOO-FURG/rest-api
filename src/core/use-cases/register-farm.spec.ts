@@ -4,6 +4,7 @@ import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-rep
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
+import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 // Use-cases
 import { RegisterFarmUseCase } from "./register-farm";
@@ -21,6 +22,7 @@ let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
+let ordersRepository: InMemoryOrdersRepository;
 
 let repositories: {
   users: InMemoryUsersRepository;
@@ -38,13 +40,15 @@ describe("create farm", () => {
       productsRepository,
       cyclesRepository
     );
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
     repositories = {
       users: usersRepository,
       farm: new InMemoryFarmsRepository(
         usersRepository,
         offersRepository,
-        productsRepository
+        productsRepository,
+        ordersRepository
       ),
     };
 

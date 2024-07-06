@@ -13,6 +13,7 @@ import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-rep
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
+import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -21,11 +22,13 @@ let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
+let ordersRepository: InMemoryOrdersRepository;
 
 let repositories: {
   farms: InMemoryFarmsRepository;
   cycles: InMemoryCyclesRepository;
   offers: InMemoryOffersRepository;
+  orders: InMemoryOrdersRepository;
 };
 
 let sut: ListFarmOffersUseCase;
@@ -39,15 +42,18 @@ describe("list farm offers", () => {
       cyclesRepository
     );
     usersRepository = new InMemoryUsersRepository();
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
     repositories = {
       farms: new InMemoryFarmsRepository(
         usersRepository,
         offersRepository,
-        productsRepository
+        productsRepository,
+        ordersRepository
       ),
       cycles: cyclesRepository,
       offers: offersRepository,
+      orders: ordersRepository,
     };
 
     sut = new ListFarmOffersUseCase(
@@ -80,6 +86,7 @@ describe("list farm offers", () => {
       product: "App",
       page: 1,
     });
+    ordersRepository;
 
     expect(result.farmWithOffers.offers).toHaveLength(1);
   });

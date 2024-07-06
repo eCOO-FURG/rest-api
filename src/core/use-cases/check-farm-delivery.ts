@@ -11,6 +11,11 @@ import { MissingOfferDeliveryStatusError } from "@/core/errors/missing-offer-del
 // Entities
 import { Offer } from "../entities/offer";
 import { Order } from "../entities/order";
+import { OrderWithOffer } from "../entities/value-objects/order-with-offer";
+import { UUID } from "../entities/value-objects/uuid";
+
+// Utils
+import { mostPast } from "../utils/most-past";
 
 interface CheckFarmDeliveryUseCaseRequest {
   cycle_id: string;
@@ -37,45 +42,59 @@ export class CheckFarmDeliveryUseCase {
     const farm = await this.farmsRepository.findById(farm_id);
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
-    const cycleOffers = await this.offersRepository.findManyByCycleId(cycle_id);
-    const cycleOffersMap = cycleOffers.reduce((map, offer) => {
-      map.set(offer.id.value, offer);
-      return map;
-    }, new Map<string, Offer>());
+    const cycleOrders = await this.farmsRepository.searchOrders({
+      farm_id,
+      cycle_id,
+      created_at: mostPast(cycle.offer),
+    });
 
-    const cycleOrders =
-      await this.ordersRepository.findManyWithOfferByOffersIds(
-        Array.from(cycleOffersMap.keys())
-      );
+    const offersToUpdate = new Map();
+    const ordersToUpdate = new Map();
 
-    let checkedOffers = new Set<string>([]);
-    const updateStatusPromises = cycleOrders.map(async (order) => {
+    cycleOrders.forEach(async (order: OrderWithOffer) => {
       const offerId = order.offer.id?.value;
       if (!offerId) return;
 
-      if (!checkedOffers.has(offerId)) {
-        if (!offers_fulfillment[offerId])
-          throw new MissingOfferDeliveryStatusError(
-            order.offer.product.name,
-            order.id.value
-          );
-      }
-      checkedOffers.add(offerId);
-
+      if (!offers_fulfillment[offerId])
+        throw new MissingOfferDeliveryStatusError(
+          order.offer.product.name,
+          order.id.value
+        );
       const status = offers_fulfillment[offerId];
 
-      if (status === "cancelled") {
-        const offer = cycleOffersMap.get(offerId) as Offer;
+      const {
+        price,
+        description,
+        farm_id,
+        product,
+        cycle_id,
+        id,
+        amount,
+        delivered_at,
+      } = offersToUpdate.get(order.offer.id?.value) || order.offer;
+      const newOffer = Offer.create({
+        id,
+        description,
+        price,
+        farm_id,
+        product_id: product.id,
+        cycle_id,
+        delivered_at: delivered_at || new Date(),
+        amount: status === "cancelled" ? amount + order.amount : amount,
+      });
+      offersToUpdate.set(id?.value, newOffer);
 
-        await this.offersRepository.update({
-          ...offer,
-          amount: (offer.amount -= order.amount),
-        } as Offer);
-      }
-
-      await this.ordersRepository.update({ ...order, status } as Order);
+      const updatedOrder = Order.create({
+        ...order,
+        user_id: order.user_id,
+        offer_id: order.offer.id as UUID,
+        amount: order.amount,
+        status,
+      });
+      ordersToUpdate.set(order.id.value, updatedOrder);
     });
 
-    await Promise.all(updateStatusPromises);
+    await this.offersRepository.updateMany(Array.from(offersToUpdate.values()));
+    await this.ordersRepository.updateMany(Array.from(ordersToUpdate.values()));
   }
 }

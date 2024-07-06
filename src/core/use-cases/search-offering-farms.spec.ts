@@ -7,6 +7,7 @@ import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-rep
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
+import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 // Services
 import { makeCycle } from "@/test/factories/make-cycle";
@@ -23,6 +24,7 @@ let cyclesRepository: InMemoryCyclesRepository;
 let usersRepository: InMemoryUsersRepository;
 let offersRepository: InMemoryOffersRepository;
 let productsRepository: InMemoryProductsRepository;
+let ordersRepository: InMemoryOrdersRepository;
 
 let repositories: {
   farms: InMemoryFarmsRepository;
@@ -38,12 +40,14 @@ describe("searh offering farms", () => {
       productsRepository,
       cyclesRepository
     );
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
     repositories = {
       farms: new InMemoryFarmsRepository(
         usersRepository,
         offersRepository,
-        productsRepository
+        productsRepository,
+        ordersRepository
       ),
       cycles: cyclesRepository,
     };

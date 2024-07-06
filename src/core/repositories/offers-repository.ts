@@ -18,7 +18,6 @@ export interface OffersRepositorySearchManyRequest {
 
 export interface OffersRepository {
   findById(id: string): Promise<Offer | null>;
-  findManyByCycleId(cycle_id: string): Promise<Offer[]>;
   findByIdWithProductAndCycle(
     id: string
   ): Promise<OfferWithProductAndCycle | null>;
@@ -36,4 +35,5 @@ export interface OffersRepository {
   }: OffersRepositorySearchRequest): Promise<Offer | null>;
   create(offer: Offer): Promise<void>;
   update(offer: Offer): Promise<void>;
+  updateMany(offers: Offer[]): Promise<void>;
 }

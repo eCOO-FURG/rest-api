@@ -33,11 +33,17 @@ container.register({
   sessionsRepository: asClass(InMemorySessionsRepository).singleton(),
   cyclesRepository: asClass(InMemoryCyclesRepository).singleton(),
   farmsRepository: asFunction(
-    ({ usersRepository, offersRepository, productsRepository }) =>
+    ({
+      usersRepository,
+      offersRepository,
+      productsRepository,
+      ordersRepository,
+    }) =>
       new InMemoryFarmsRepository(
         usersRepository,
         offersRepository,
-        productsRepository
+        productsRepository,
+        ordersRepository
       )
   ).singleton(),
   offersRepository: asFunction(

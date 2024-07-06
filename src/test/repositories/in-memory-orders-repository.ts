@@ -78,22 +78,9 @@ export class InMemoryOrdersRepository implements OrdersRepository {
     await this.inMemoryOffersRepository.update(offer);
   }
 
-  async update(order: Order): Promise<Order> {
-    const { amount } = this.items.get(order.id.value) as Order;
-
-    if (this.items.get(order.id.value)) {
-      const offer = await this.inMemoryOffersRepository.findById(
-        order.offer_id.value
-      );
-      if (!offer) throw new Error("Offer not found");
-
-      const amountDifference = Math.abs(amount - order.amount);
-      offer.amount -= amountDifference;
-      await this.inMemoryOffersRepository.update(offer);
-    }
-
-    this.items.set(order.id.value, order);
-
-    return order;
+  async updateMany(orders: Order[]): Promise<void> {
+    orders.forEach((order) => {
+      this.items.set(order.id.value, order);
+    });
   }
 }
