@@ -1,19 +1,20 @@
+// Repositories
 import { CyclesRepository } from "../repositories/cycles-repository";
 import { FarmsRepository } from "../repositories/farms-repository";
 import { OrdersRepository } from "../repositories/orders-repository";
 import { OffersRepository } from "../repositories/offers-repository";
 
+// Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { MissingOfferDeliveryStatusError } from "@/core/errors/missing-offer-delivery-status";
 
-import { Farm } from "../entities/farm";
-import { Cycle } from "../entities/cycle";
+// Entities
 import { Offer } from "../entities/offer";
 import { Order } from "../entities/order";
 
 interface CheckFarmDeliveryUseCaseRequest {
-  cycle_id: Cycle["id"]["_value"];
-  farm_id: Farm["id"]["value"];
+  cycle_id: string;
+  farm_id: string;
   offers_fulfillment: Record<Offer["id"]["value"], Order["status"]>;
 }
 
