@@ -25,6 +25,7 @@ import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-r
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
+import { OfferProductsUseCase } from "@/core/use-cases/offer-products";
 
 const container = createContainer();
 
@@ -102,6 +103,20 @@ container.register({
   registerFarmUseCase: asFunction(
     ({ usersRepository, farmsRepository }) =>
       new RegisterFarmUseCase(usersRepository, farmsRepository)
+  ),
+  offerProductsUseCase: asFunction(
+    ({
+      farmsRepository,
+      productsRepository,
+      offersRepository,
+      cyclesRepository,
+    }) =>
+      new OfferProductsUseCase(
+        farmsRepository,
+        productsRepository,
+        offersRepository,
+        cyclesRepository
+      )
   ),
 });
 
