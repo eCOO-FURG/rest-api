@@ -1,5 +1,3 @@
-import { UUID } from "@/core/entities/value-objects/uuid";
-
 // Entities
 import { Order } from "@/core/entities/order";
 import { OrderWithOffer } from "@/core/entities/value-objects/order-with-offer";
@@ -8,23 +6,8 @@ import { OrderWithOffer } from "@/core/entities/value-objects/order-with-offer";
 import { OrdersRepository } from "@/core/repositories/orders-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 
-import { makeOrder } from "../factories/make-order";
-
-const FAKE_ORDERS: readonly [string, Order][] = [
-  [
-    "083404cd-4552-441e-bba3-8e7e49ffeeef",
-    makeOrder({
-      id: new UUID("083404cd-4552-441e-bba3-8e7e49ffeeef"),
-      user_id: new UUID("7369a6ce-b4c9-4a7a-b523-9be6f8f385a1"),
-      offer_id: new UUID("44a7c9e7-fb14-45cc-82b3-a3a30255ef3d"),
-      amount: 100,
-      status: "pending",
-    }),
-  ],
-];
-
 export class InMemoryOrdersRepository implements OrdersRepository {
-  items = new Map<Order["id"]["value"], Order>(FAKE_ORDERS);
+  items = new Map<Order["id"]["value"], Order>();
 
   constructor(private inMemoryOffersRepository: InMemoryOffersRepository) {}
 
