@@ -8,7 +8,7 @@ import { UUID } from "@/core/entities/value-objects/uuid";
 export interface OtpProps extends EntityRequest {
   user_id: UUID;
   value: string;
-  used_at: Date | null;
+  used: boolean;
 }
 
 export class Otp extends Entity<OtpProps> {
@@ -20,23 +20,23 @@ export class Otp extends Entity<OtpProps> {
     return this.props.value;
   }
 
-  get used_at(): Date | null {
-    return this.props.used_at;
+  get used() {
+    return this.props.used;
   }
 
-  set used_at(value: Date) {
-    this.props.used_at = value;
+  set used(value: boolean) {
+    this.used = value;
   }
 
   expire() {
-    this.used_at = new Date();
+    this.used = true;
     this.touch();
   }
 
-  static create(props: Optional<OtpProps, "used_at">) {
+  static create(props: Optional<OtpProps, "used">) {
     const otp = new Otp({
       ...props,
-      used_at: props.used_at ?? null,
+      used: props.used ?? false,
     });
     return otp;
   }

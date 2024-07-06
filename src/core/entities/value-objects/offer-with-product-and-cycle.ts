@@ -35,8 +35,8 @@ export class OfferWithProductAndCycle extends Entity<OfferWithProductAndCyclePro
     return this.props.cycle;
   }
 
-  get delivered_at() {
-    return this.props.delivered_at;
+  get status() {
+    return this.props.status;
   }
 
   static create(props: OfferWithProductAndCycleProps) {
