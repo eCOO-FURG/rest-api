@@ -43,12 +43,6 @@ export class CheckFarmDeliveryController {
 
       return response.sendStatus(200);
     } catch (error) {
-      if (error instanceof ResourceNotFoundError)
-        return response.sendStatus(404);
-
-      if (error instanceof MissingOfferDeliveryStatusError)
-        return response.sendStatus(400);
-
       next(error);
     }
   }
