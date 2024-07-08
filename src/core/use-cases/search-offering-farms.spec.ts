@@ -24,7 +24,7 @@ let cyclesRepository: InMemoryCyclesRepository;
 let usersRepository: InMemoryUsersRepository;
 let offersRepository: InMemoryOffersRepository;
 let productsRepository: InMemoryProductsRepository;
-let ordersRepository: InMemoryOrdersRepository
+let ordersRepository: InMemoryOrdersRepository;
 
 let repositories: {
   farms: InMemoryFarmsRepository;
@@ -40,7 +40,7 @@ describe("searh offering farms", () => {
       productsRepository,
       cyclesRepository
     );
-    ordersRepository = new InMemoryOrdersRepository(offersRepository)
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
     repositories = {
       farms: new InMemoryFarmsRepository(
@@ -60,7 +60,7 @@ describe("searh offering farms", () => {
 
   it("should be able to list offering farms", async () => {
     const cycle = makeCycle();
-    await repositories.cycles.create(cycle);
+    repositories.cycles.items.push(cycle);
 
     const product = makeProduct({
       name: "Potato",

@@ -71,6 +71,7 @@ container.register({
     return new Nodemailer(transporter);
   }),
   hasher: asClass(Jwt).singleton(),
+
   // events
   onRegisteredEvent: asFunction(
     ({ mailer, hasher }) => new OnRegisteredEvent(mailer, hasher)

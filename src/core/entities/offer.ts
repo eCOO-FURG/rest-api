@@ -12,7 +12,7 @@ export interface OfferProps extends EntityRequest {
   farm_id: UUID;
   cycle_id: UUID;
   product_id: UUID;
-  status: "pending" | "cancelled" | "received";
+  status: "PENDING" | "CANCELLED" | "RECEIVED";
 }
 
 export class Offer extends Entity<OfferProps> {
@@ -56,7 +56,7 @@ export class Offer extends Entity<OfferProps> {
     const offer = new Offer({
       ...props,
       description: props.description ?? null,
-      status: props.status ?? "pending",
+      status: props.status ?? "PENDING",
     });
 
     return offer;

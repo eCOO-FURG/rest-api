@@ -7,8 +7,8 @@
     "test": "vitest run --dir src/core/",
     "test:watch": "vitest --dir src/core/",
     "test:coverage": "vitest run --coverage",
-    "docker": "docker-compose --profile dev up",
-    "docker:deploy": "docker-compose --profile deploy up"
+    "docker": "docker-compose --profile development up",
+    "docker:deploy": "docker-compose --profile deploy up -d"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +16,7 @@
   "description": "",
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
+    "@prisma/client": "^5.16.1",
     "@types/node": "^20.14.2",
     "awilix": "^10.0.2",
     "ejs": "^3.1.10",
@@ -34,5 +35,8 @@
     "prisma": "^5.16.1",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^1.6.0"
+  },
+  "prisma": {
+    "schema": "src/infra/database/schema.prisma"
   }
 }
