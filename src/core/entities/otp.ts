@@ -24,12 +24,8 @@ export class Otp extends Entity<OtpProps> {
     return this.props.used;
   }
 
-  set used(value: boolean) {
-    this.used = value;
-  }
-
   expire() {
-    this.used = true;
+    this.props.used = true;
     this.touch();
   }
 

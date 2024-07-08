@@ -22,11 +22,13 @@ import { ClosedActionError } from "@/core/errors/closed-action";
 // Entities
 import { Week } from "@/core/entities/cycle";
 import { mostFuture } from "../utils/most-future";
+import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
 let usersRepository: InMemoryUsersRepository;
 let offersRepository: InMemoryOffersRepository;
+let ordersRepository: InMemoryOrdersRepository;
 
 let repositories: {
   offers: InMemoryOffersRepository;
@@ -44,13 +46,15 @@ describe("update offer", () => {
       productsRepository,
       cyclesRepository
     );
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
     repositories = {
       offers: offersRepository,
       farms: new InMemoryFarmsRepository(
         usersRepository,
         offersRepository,
-        productsRepository
+        productsRepository,
+        ordersRepository
       ),
     };
 
@@ -65,7 +69,7 @@ describe("update offer", () => {
     await productsRepository.create(product);
 
     const cycle = makeCycle();
-    await cyclesRepository.create(cycle);
+    cyclesRepository.items.push(cycle);
 
     const offer = makeOffer({
       farm_id: farm.id,
@@ -115,7 +119,7 @@ describe("update offer", () => {
     await productsRepository.create(product);
 
     const cycle = makeCycle();
-    await cyclesRepository.create(cycle);
+    cyclesRepository.items.push(cycle);
 
     const offer = makeOffer({
       farm_id: farm2.id,
@@ -140,7 +144,7 @@ describe("update offer", () => {
     const cycle = makeCycle({
       offer: offeringDays as Week,
     });
-    await cyclesRepository.create(cycle);
+    cyclesRepository.items.push(cycle);
 
     const farm = makeFarm();
     await repositories.farms.create(farm);

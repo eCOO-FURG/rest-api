@@ -65,7 +65,7 @@ describe("order product", () => {
     await repositories.users.create(user);
 
     const cycle = makeCycle();
-    await cyclesRepository.create(cycle);
+    cyclesRepository.items.push(cycle);
 
     const product = makeProduct();
     await repositories.products.create(product);
@@ -146,7 +146,7 @@ describe("order product", () => {
       offer: offerDays as Week,
     });
 
-    await cyclesRepository.create(cycle);
+    cyclesRepository.items.push(cycle);
 
     const product = makeProduct();
     await repositories.products.create(product);
@@ -173,7 +173,7 @@ describe("order product", () => {
     await repositories.users.create(user);
 
     const cycle = makeCycle();
-    await cyclesRepository.create(cycle);
+    cyclesRepository.items.push(cycle);
 
     const product = makeProduct();
     await repositories.products.create(product);
@@ -206,7 +206,7 @@ describe("order product", () => {
     await repositories.users.create(user);
 
     const cycle = makeCycle();
-    await cyclesRepository.create(cycle);
+    cyclesRepository.items.push(cycle);
 
     const product = makeProduct();
     await repositories.products.create(product);
@@ -233,7 +233,7 @@ describe("order product", () => {
     await repositories.users.create(user);
 
     const cycle = makeCycle();
-    await cyclesRepository.create(cycle);
+    cyclesRepository.items.push(cycle);
 
     const product = makeProduct({
       pricing: "WEIGHT",
