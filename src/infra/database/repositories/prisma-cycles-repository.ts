@@ -5,8 +5,8 @@ import { Cycle } from "@/core/entities/cycle";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
 
 // Services
-import { prisma } from "../prisma-service";
-import { PrismaCycleMapper } from "../mappers/prisma-cycle-mapper";
+import { prisma } from "@/infra/database/prisma-service";
+import { PrismaCycleMapper } from "@/infra/database/mappers/prisma-cycle-mapper";
 
 export class PrismaCyclesRepository implements CyclesRepository {
   async findById(id: string): Promise<Cycle | null> {

@@ -5,7 +5,7 @@ import { Otp } from "@/core/entities/otp";
 import { OtpsRepository } from "@/core/repositories/otps-repositoy";
 
 // Services
-import { PrismaOtpMapper } from "../mappers/prisma-otp-mapper";
+import { PrismaOtpMapper } from "@/infra/database/mappers/prisma-otp-mapper";
 import { prisma } from "@/infra/database/prisma-service";
 
 export class PrismaOtpsRepository implements OtpsRepository {

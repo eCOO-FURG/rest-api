@@ -9,8 +9,8 @@ import { OrdersRepository } from "@/core/repositories/orders-repository";
 import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
-import { PrismaOrderMapper } from "../mappers/prisma-order-mapper";
-import { PrismaOrderWithOfferMapper } from "../mappers/prisma-order-with-offer-mapper";
+import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
+import { PrismaOrderWithOfferMapper } from "@/infra/database/mappers/prisma-order-with-offer-mapper";
 
 export class PismaOrdersRepository implements OrdersRepository {
   async findByOfferId(offer_id: string): Promise<Order | null> {

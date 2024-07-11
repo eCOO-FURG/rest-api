@@ -6,7 +6,7 @@ import { ProductsRepository } from "@/core/repositories/products-repository";
 
 // Services
 import { prisma } from "@/infra/database/prisma-service";
-import { PrismaProductMapper } from "../mappers/prisma-product-mapper";
+import { PrismaProductMapper } from "@/infra/database/mappers/prisma-product-mapper";
 
 export class PrismaProductRepository implements ProductsRepository {
   async findById(id: string): Promise<Product | null> {
