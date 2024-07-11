@@ -13,9 +13,9 @@ import { PrismaOrdersRepository } from "@/infra//database/repositories/prisma-or
 import { PrismaFarmsRepository } from "../database/repositories/prisma-farms-repository";
 
 // Services
-import { MockedEncrypter } from "@/test/cryptography/mocked-encrypter";
-import { Nodemailer } from "../mail/nodemailer";
-import { Jwt } from "../cryptography/jwt";
+import { BcrypterHasher } from "@/infra/cryptography/bcrypt";
+import { Nodemailer } from "@/infra/mail/nodemailer";
+import { Jwt } from "@/infra/cryptography/jwt";
 
 // Events
 import { OnRegisteredEvent } from "@/core/events/on-registered";
@@ -45,7 +45,8 @@ container.register({
   farmsRepository: asClass(PrismaFarmsRepository).singleton(),
 
   // services
-  encrypter: asClass(MockedEncrypter).singleton(),
+  encrypter: asClass(BcrypterHasher).singleton(),
+  hasher: asClass(Jwt).singleton(),
   mailer: asFunction(() => {
     if (["production", "staging"].includes(env.ENV)) {
       const transporter = createTransport({
@@ -76,12 +77,12 @@ container.register({
 
     return new Nodemailer(transporter);
   }),
-  hasher: asClass(Jwt).singleton(),
 
   // events
   onRegisteredEvent: asFunction(
     ({ mailer, hasher }) => new OnRegisteredEvent(mailer, hasher)
   ),
+
   // use-cases
   registerUsecase: asFunction(
     ({ usersRepository, encrypter }) =>
