@@ -47,12 +47,32 @@ container.register({
   // services
   encrypter: asClass(MockedEncrypter).singleton(),
   mailer: asFunction(() => {
-    const options = {
+    if (["production", "staging"].includes(env.ENV)) {
+      const transporter = createTransport({
+        host: env.SMTP_HOST,
+        port: env.SMTP_PORT,
+        auth: {
+          user: env.ECOO_EMAIL,
+          pass: env.ECOO_EMAIL_PASSWORD,
+        },
+      });
+
+      const fallback = createTransport({
+        host: env.SMTP_FALLBACK_HOST,
+        port: env.SMTP_PORT,
+        auth: {
+          user: env.ECOO_FALLBACK_EMAIL,
+          pass: env.ECOO_FALLBACK_EMAIL_PASSWORD,
+        },
+      });
+
+      return new Nodemailer(transporter, fallback);
+    }
+
+    const transporter = createTransport({
       host: env.SMTP_HOST,
       port: env.SMTP_PORT,
-    };
-
-    const transporter = createTransport(options);
+    });
 
     return new Nodemailer(transporter);
   }),

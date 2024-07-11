@@ -5,19 +5,26 @@ import { z } from "zod";
 const deploy = z.object({
   ENV: z.enum(["development", "test", "staging", "production"]),
   SERVER_PORT: z.coerce.number().default(3333),
+  SERVER_URL: z.string().min(1),
   FRONT_URL: z.string().min(1),
   DATABASE_URL: z.string().min(1),
   JWT_SECRET: z.string().min(1),
   SMTP_HOST: z.string().min(1),
+  SMTP_FALLBACK_HOST: z.string().min(1),
   SMTP_PORT: z.coerce.number().min(1),
   ECOO_EMAIL: z.string().min(1),
   ECOO_EMAIL_PASSWORD: z.string().min(1),
+  ECOO_FALLBACK_EMAIL: z.string().min(1),
+  ECOO_FALLBACK_EMAIL_PASSWORD: z.string().min(1),
   SENTRY_DSN: z.string().min(1),
 });
 
 const development = deploy.omit({
-  ECOO_EMAIL_PASSWORD: true,
   SENTRY_DSN: true,
+  SMTP_FALLBACK_HOST: true,
+  ECOO_FALLBACK_EMAIL: true,
+  ECOO_FALLBACK_EMAIL_PASSWORD: true,
+  ECOO_EMAIL_PASSWORD: true,
 });
 
 const test = development.omit({

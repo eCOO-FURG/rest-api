@@ -9,8 +9,6 @@ export type MailerLoadRequest = {
   };
 };
 
-export type Props = {};
-
 export interface Mailer {
   send(email: Email): Promise<void>;
   load({ view, props }: MailerLoadRequest): Promise<string>;
