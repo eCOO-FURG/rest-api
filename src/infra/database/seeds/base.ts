@@ -7,6 +7,12 @@ import { prisma } from "@/infra/database/prisma-service";
 // Data
 import categories from "@/infra/database/seeds/data/categories.json";
 
+// Libs
+import { hash } from "bcryptjs";
+
+// Env
+import { env } from "@/infra/env";
+
 async function seed() {
   await Promise.all([
     prisma.product.deleteMany(),
@@ -32,16 +38,18 @@ async function seed() {
     },
   });
 
-  const everyDay = [1, 2, 3, 4, 5, 6, 7];
+  if (env.ENV === "development") {
+    const everyDay = [1, 2, 3, 4, 5, 6, 7];
 
-  await prisma.cycle.create({
-    data: {
-      alias: "Livre",
-      offer: everyDay,
-      order: everyDay,
-      deliver: everyDay,
-    },
-  });
+    await prisma.cycle.create({
+      data: {
+        alias: "Livre",
+        offer: everyDay,
+        order: everyDay,
+        deliver: everyDay,
+      },
+    });
+  }
 
   await prisma.user.create({
     data: {
@@ -50,6 +58,7 @@ async function seed() {
       email: "admin@ecoo.org.br",
       cpf: "",
       roles: ["USER", "ADMIN"],
+      password: await hash(env.ECOO_EMAIL_PASSWORD, 8),
       phone: "",
       verified_at: new Date(),
     },

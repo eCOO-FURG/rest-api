@@ -27,6 +27,9 @@ import { InMemoryProductsRepository } from "@/test/repositories/in-memory-produc
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { OfferProductsUseCase } from "@/core/use-cases/offer-products";
 
+// Env
+import { env } from "@/infra/env";
+
 const container = createContainer();
 
 container.register({
@@ -62,8 +65,8 @@ container.register({
   encrypter: asClass(MockedEncrypter).singleton(),
   mailer: asFunction(() => {
     const options = {
-      host: "localhost",
-      port: 2525,
+      host: env.SMTP_HOST,
+      port: env.SMTP_PORT,
     };
 
     const transporter = createTransport(options);
