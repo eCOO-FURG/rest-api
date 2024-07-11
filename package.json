@@ -18,6 +18,7 @@
     "@faker-js/faker": "^8.4.1",
     "@prisma/client": "^5.16.1",
     "@types/node": "^20.14.2",
+    "tsx": "^4.15.7",
     "awilix": "^10.0.2",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
