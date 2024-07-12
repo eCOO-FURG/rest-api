@@ -32,9 +32,9 @@ async function seed() {
   await prisma.cycle.create({
     data: {
       alias: "Semanal",
-      offer: [1, 7],
+      offer: [1, 6, 7],
       order: [2, 3, 4],
-      deliver: [5, 6],
+      deliver: [5],
     },
   });
 
