@@ -116,18 +116,11 @@ model Cycle {
   @@map("cycles")
 }
 
-enum STATUS {
-  PENDING
-  CANCELLED
-  RECEIVED
-}
-
 model Offer {
   id          String  @id @default(uuid())
   price       Decimal @db.Decimal(10, 2)
   amount      Decimal @db.Decimal(10, 2)
   description String? @db.VarChar(240)
-  status      STATUS
 
   farm_id String
   farm    Farm   @relation(fields: [farm_id], references: [id], onDelete: Cascade)
@@ -146,9 +139,16 @@ model Offer {
   @@map("offers")
 }
 
+enum STATUS {
+  PENDING
+  CANCELLED
+  RECEIVED
+}
+
 model Order {
   id     String  @id @default(uuid())
   amount Decimal @db.Decimal(10, 2)
+  status STATUS
 
   user_id  String
   customer User   @relation(fields: [user_id], references: [id], onDelete: Cascade)

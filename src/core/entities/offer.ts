@@ -12,7 +12,6 @@ export interface OfferProps extends EntityRequest {
   farm_id: UUID;
   cycle_id: UUID;
   product_id: UUID;
-  status: "PENDING" | "CANCELLED" | "RECEIVED";
 }
 
 export class Offer extends Entity<OfferProps> {
@@ -40,23 +39,14 @@ export class Offer extends Entity<OfferProps> {
     return this.props.cycle_id;
   }
 
-  get status() {
-    return this.props.status;
-  }
-
-  set amount(amount: number) {
-    this.props.amount = amount;
-  }
-
   set price(price: number) {
     this.props.price = price;
   }
 
-  static create(props: Optional<OfferProps, "description" | "status">) {
+  static create(props: Optional<OfferProps, "description">) {
     const offer = new Offer({
       ...props,
       description: props.description ?? null,
-      status: props.status ?? "PENDING",
     });
 
     return offer;

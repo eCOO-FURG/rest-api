@@ -12,7 +12,7 @@ import { mostPast } from "@/core/utils/most-past";
 interface HandleOrdersDeliveryUseCaseRequest {
   cycle_id: string;
   farm_id: string;
-  status: "cancelled" | "complete";
+  status: "RECEIVED" | "CANCELLED";
 }
 
 export class HandleOrdersDeliveryUseCase {

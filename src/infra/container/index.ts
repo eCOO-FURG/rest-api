@@ -108,7 +108,7 @@ container.register({
     ({ usersRepository, hasher }) =>
       new VerifyUserUsecase(usersRepository, hasher)
   ),
-  checkFarmDeliveryUseCase: asFunction(
+  handleOrdersDeliveryUseCase: asFunction(
     ({ cyclesRepository, farmsRepository, ordersRepository }) =>
       new HandleOrdersDeliveryUseCase(
         cyclesRepository,

@@ -9,7 +9,7 @@ export interface OrderProps extends EntityRequest {
   user_id: UUID;
   offer_id: UUID;
   amount: number;
-  status: "pending" | "cancelled" | "complete";
+  status: "PENDING" | "CANCELLED" | "RECEIVED";
 }
 
 export class Order extends Entity<OrderProps> {
@@ -34,7 +34,7 @@ export class Order extends Entity<OrderProps> {
   }
 
   static create(props: Optional<OrderProps, "status">) {
-    const order = new Order({ ...props, status: props.status || "pending" });
+    const order = new Order({ ...props, status: props.status ?? "RECEIVED" });
     return order;
   }
 }
