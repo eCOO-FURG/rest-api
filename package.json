@@ -17,6 +17,8 @@
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
     "@prisma/client": "^5.16.1",
+    "@sentry/node": "^8.17.0",
+    "@sentry/profiling-node": "^8.17.0",
     "@types/node": "^20.14.2",
     "awilix": "^10.0.2",
     "bcryptjs": "^2.4.3",

@@ -7,7 +7,12 @@ import { Mailer, MailerLoadRequest } from "@/core/mail/mailer";
 // Libs
 import { Transporter } from "nodemailer";
 import { renderFile } from "ejs";
-import { env } from "../env";
+
+// Env
+import { env } from "@/infra/env";
+
+// Loggs
+import { Logger } from "@/infra/logs/sentry";
 
 export class Nodemailer implements Mailer {
   constructor(
@@ -23,7 +28,7 @@ export class Nodemailer implements Mailer {
         html: email.content,
       });
     } catch (error) {
-      console.log(error);
+      Logger.log(error);
       if (this.fallback) {
         try {
           await this.fallback.sendMail({
@@ -32,7 +37,7 @@ export class Nodemailer implements Mailer {
             html: email.content,
           });
         } catch (error) {
-          console.log(error);
+          Logger.log(error);
         }
       }
     }

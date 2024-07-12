@@ -5,6 +5,9 @@ import { ZodError } from "zod";
 // Errors
 import { HttpErrorMapper } from "@/infra/http/errors/mapper";
 
+// Logs
+import { Logger } from "@/infra/logs/sentry";
+
 export const handler = (
   error: Error,
   _: Request,
@@ -29,7 +32,7 @@ export const handler = (
   if (found)
     return response.status(found.code).send({ message: found.message });
 
-  console.log(error);
+  Logger.log(error);
 
   return response.status(500).send({ message: "💥 Ocorreu um erro interno." });
 };
