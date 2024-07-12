@@ -24,7 +24,6 @@ const development = deploy.omit({
   SMTP_FALLBACK_HOST: true,
   ECOO_FALLBACK_EMAIL: true,
   ECOO_FALLBACK_EMAIL_PASSWORD: true,
-  ECOO_EMAIL_PASSWORD: true,
 });
 
 const test = development.omit({
