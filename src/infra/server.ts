@@ -9,7 +9,6 @@ import { handler } from "@/infra/http/errors/handler";
 
 // Env
 import { env } from "@/infra/env";
-import { Logger } from "./logs/sentry";
 
 const server = express();
 
