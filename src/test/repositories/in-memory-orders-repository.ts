@@ -13,8 +13,14 @@ export class InMemoryOrdersRepository implements OrdersRepository {
   items: Order[] = [];
 
   constructor(private inMemoryOffersRepository: InMemoryOffersRepository) {}
-  async findByOfferId(offer_id: string): Promise<Order | null> {
-    const item = this.items.find((item) => item.id.equals(offer_id));
+
+  async findByOfferIdAndUserId(
+    offer_id: string,
+    user_id: string
+  ): Promise<Order | null> {
+    const item = this.items.find(
+      (item) => item.offer_id.equals(offer_id) && item.user_id.equals(user_id)
+    );
 
     if (!item) {
       return null;

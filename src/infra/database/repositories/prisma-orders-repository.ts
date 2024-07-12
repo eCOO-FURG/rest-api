@@ -16,10 +16,14 @@ import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper"
 import { PrismaOrderWithOfferMapper } from "@/infra/database/mappers/prisma-order-with-offer-mapper";
 
 export class PrismaOrdersRepository implements OrdersRepository {
-  async findByOfferId(offer_id: string): Promise<Order | null> {
+  async findByOfferIdAndUserId(
+    offer_id: string,
+    user_id: string
+  ): Promise<Order | null> {
     const order = await prisma.order.findFirst({
       where: {
         offer_id,
+        user_id,
       },
     });
 

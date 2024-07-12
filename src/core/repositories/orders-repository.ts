@@ -9,7 +9,10 @@ export interface OrdersRepositoryFindManyByFarmIdInCycle {
 }
 
 export interface OrdersRepository {
-  findByOfferId(offer_id: string): Promise<Order | null>;
+  findByOfferIdAndUserId(
+    offer_id: string,
+    user_id: string
+  ): Promise<Order | null>;
   findManyWithOfferByOffersIds(offers_ids: string[]): Promise<OrderWithOffer[]>;
   findManyByFarmIdInCycle({
     farm_id,
