@@ -7,8 +7,10 @@
     "test": "vitest run --dir src/core/",
     "test:watch": "vitest --dir src/core/",
     "test:coverage": "vitest run --coverage",
-    "docker": "docker-compose --profile development up",
-    "docker:deploy": "docker-compose --profile deploy up -d"
+    "dev": "docker-compose --profile development up",
+    "dev:build": "docker-compose --profile development up --build",
+    "deploy": "docker-compose --profile deploy up -d",
+    "deploy:build": "docker-compose --profile deploy up -d --build"
   },
   "keywords": [],
   "author": "",
