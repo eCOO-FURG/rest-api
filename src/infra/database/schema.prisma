@@ -5,19 +5,20 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("POSTGRES_URL")
+  url      = env("DATABASE_URL")
 }
 
 enum ROLE {
   PRODUCER
   USER
+  ADMIN
 }
 
 model User {
   id          String    @id @default(uuid())
   first_name  String
   last_name   String
-  cpf         String
+  cpf         String    @unique
   email       String    @unique
   phone       String    @unique
   password    String?
@@ -28,8 +29,9 @@ model User {
   updated_at DateTime?
 
   sessions Session[]
+  orders   Order[]
+  otps     Otp[]
   farm     Farm?
-  Order    Order[]
 
   @@map("users")
 }
@@ -48,11 +50,14 @@ model Session {
   @@map("sessions")
 }
 
-model OTP {
+model Otp {
   id String @id @default(uuid())
 
   value String
   used  Boolean @default(false)
+
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   created_at DateTime  @default(now())
   updated_at DateTime?
@@ -71,6 +76,8 @@ model Farm {
 
   created_at DateTime  @default(now())
   updated_at DateTime?
+
+  offers Offer[]
 
   @@map("farms")
 }
@@ -123,6 +130,7 @@ model Offer {
   status      STATUS
 
   farm_id String
+  farm    Farm   @relation(fields: [farm_id], references: [id], onDelete: Cascade)
 
   cycle_id String
   cycle    Cycle  @relation(fields: [cycle_id], references: [id], onDelete: Cascade)
@@ -140,7 +148,6 @@ model Offer {
 
 model Order {
   id     String  @id @default(uuid())
-  price  Decimal @db.Decimal(10, 2)
   amount Decimal @db.Decimal(10, 2)
 
   user_id  String

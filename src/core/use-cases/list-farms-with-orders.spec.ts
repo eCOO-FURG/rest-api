@@ -76,7 +76,7 @@ describe("list farms with orders", () => {
     await repositories.farms.create(farm);
 
     const cycle = makeCycle();
-    await repositories.cycles.create(cycle);
+    repositories.cycles.items.push(cycle);
 
     const product = makeProduct();
     await productsRepository.create(product);
@@ -106,7 +106,7 @@ describe("list farms with orders", () => {
 
   it("should be able to search farms with orders", async () => {
     const cycle = makeCycle();
-    await repositories.cycles.create(cycle);
+    repositories.cycles.items.push(cycle);
 
     const product = makeProduct();
     await productsRepository.create(product);
@@ -145,7 +145,7 @@ describe("list farms with orders", () => {
 
   it("should be able to list paginated farms with orders", async () => {
     const cycle = makeCycle();
-    await repositories.cycles.create(cycle);
+    repositories.cycles.items.push(cycle);
 
     const product = makeProduct();
     await productsRepository.create(product);

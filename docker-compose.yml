@@ -1,12 +1,23 @@
 version: "3"
 services:
-  smtp4dev:
+  database:
+    container_name: ecoo-database
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ecoo_db
+    ports:
+      - "5432:5432"
+    profiles: ["development", "deploy"]
+
+  smtp:
     container_name: ecoo-smtp
     image: rnwood/smtp4dev:v3
     ports:
       - "3010:80"
       - "2525:25"
-    profiles: ["dev"]
+    profiles: ["development"]
     logging:
       driver: "none"
 
@@ -21,9 +32,8 @@ services:
     restart: always
     profiles: ["deploy"]
 
-  dev-server:
+  development-server:
     <<: *server
-    container_name: ecoo-server
     depends_on:
-      - smtp4dev
-    profiles: ["dev"]
+      - smtp
+    profiles: ["development"]

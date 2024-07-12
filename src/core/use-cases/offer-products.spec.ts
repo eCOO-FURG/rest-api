@@ -74,7 +74,7 @@ describe("offer products", () => {
 
   it("should be able to offer products", async () => {
     const cycle = makeCycle();
-    await repositories.cycles.create(cycle);
+    repositories.cycles.items.push(cycle);
 
     const product = makeProduct();
     await repositories.products.create(product);
@@ -96,7 +96,7 @@ describe("offer products", () => {
 
   it("should not be able to offer products from a nonexistent farm", async () => {
     const cycle = makeCycle();
-    await repositories.cycles.create(cycle);
+    repositories.cycles.items.push(cycle);
 
     const product = makeProduct();
     await repositories.products.create(product);
@@ -114,7 +114,7 @@ describe("offer products", () => {
 
   it("should not be able to offer products from a not active farm", async () => {
     const cycle = makeCycle();
-    await repositories.cycles.create(cycle);
+    repositories.cycles.items.push(cycle);
 
     const product = makeProduct();
     await repositories.products.create(product);
@@ -135,7 +135,7 @@ describe("offer products", () => {
 
   it("should not be able to offer nonexistent products", async () => {
     const cycle = makeCycle();
-    await repositories.cycles.create(cycle);
+    repositories.cycles.items.push(cycle);
 
     const farm = makeFarm();
     await repositories.farms.create(farm);
@@ -171,7 +171,7 @@ describe("offer products", () => {
 
   it("should not be able to offer the same product twice in the same cycle", async () => {
     const cycle = makeCycle();
-    await repositories.cycles.create(cycle);
+    repositories.cycles.items.push(cycle);
 
     const product = makeProduct();
     await repositories.products.create(product);
@@ -201,7 +201,7 @@ describe("offer products", () => {
 
   it("should not be able to offer products with invalid weight", async () => {
     const cycle = makeCycle();
-    await repositories.cycles.create(cycle);
+    repositories.cycles.items.push(cycle);
 
     const product = makeProduct({ pricing: "WEIGHT" });
     await repositories.products.create(product);
@@ -229,7 +229,7 @@ describe("offer products", () => {
       offer: offer as Week,
     });
 
-    await repositories.cycles.create(cycle);
+    repositories.cycles.items.push(cycle);
 
     const product = makeProduct();
     await repositories.products.create(product);

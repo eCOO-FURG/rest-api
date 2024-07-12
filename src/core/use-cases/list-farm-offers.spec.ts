@@ -69,7 +69,7 @@ describe("list farm offers", () => {
     await repositories.farms.create(farm);
 
     const cycle = makeCycle();
-    await repositories.cycles.create(cycle);
+    repositories.cycles.items.push(cycle);
 
     const product = makeProduct({ name: "Apple" });
     await productsRepository.create(product);
@@ -108,7 +108,7 @@ describe("list farm offers", () => {
 
   it("should not be able to list offers from a cycle that does not exists", async () => {
     const cycle = makeCycle();
-    await repositories.cycles.create(cycle);
+    repositories.cycles.items.push(cycle);
 
     await expect(() =>
       sut.execute({

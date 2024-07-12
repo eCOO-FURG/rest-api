@@ -3,14 +3,19 @@ import { asClass, asFunction, createContainer } from "awilix";
 import { createTransport } from "nodemailer";
 
 // Repositories
-import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
-import { InMemoryOtpsRepository } from "@/test/repositories/in-memory-otps-repository";
-import { InMemorySessionsRepository } from "@/test/repositories/in-memory-sessions-repository";
+import { PrismaUsersRepository } from "@/infra//database/repositories/prisma-users-repository";
+import { PrismaOtpsRepository } from "@/infra//database/repositories/prisma-otps-repository";
+import { PrismaSessionsRepository } from "@/infra//database/repositories/prisma-sessions-repository";
+import { PrismaCyclesRepository } from "@/infra//database/repositories/prisma-cycles-repository";
+import { PrismaProductRepository } from "@/infra//database/repositories/prisma-products-repository";
+import { PrismaOffersRepository } from "@/infra//database/repositories/prisma-offers-repository";
+import { PrismaOrdersRepository } from "@/infra//database/repositories/prisma-orders-repository";
+import { PrismaFarmsRepository } from "../database/repositories/prisma-farms-repository";
 
 // Services
-import { MockedEncrypter } from "@/test/cryptography/mocked-encrypter";
-import { Nodemailer } from "../mail/nodemailer";
-import { Jwt } from "../cryptography/jwt";
+import { BcrypterHasher } from "@/infra/cryptography/bcrypt";
+import { Nodemailer } from "@/infra/mail/nodemailer";
+import { Jwt } from "@/infra/cryptography/jwt";
 
 // Events
 import { OnRegisteredEvent } from "@/core/events/on-registered";
@@ -22,61 +27,64 @@ import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
 import { CheckFarmDeliveryUseCase } from "@/core/use-cases/check-farm-delivery";
 
 import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
-import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
-import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
-import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
+
 import { OfferProductsUseCase } from "@/core/use-cases/offer-products";
+
+// Env
+import { env } from "@/infra/env";
 
 const container = createContainer();
 
 container.register({
   // repositories
-  usersRepository: asClass(InMemoryUsersRepository).singleton(),
-  otpsRepository: asClass(InMemoryOtpsRepository).singleton(),
-  sessionsRepository: asClass(InMemorySessionsRepository).singleton(),
-  cyclesRepository: asClass(InMemoryCyclesRepository).singleton(),
-  productsRepository: asClass(InMemoryProductsRepository).singleton(),
-  offersRepository: asFunction(
-    ({ productsRepository, cyclesRepository }) =>
-      new InMemoryOffersRepository(productsRepository, cyclesRepository)
-  ).singleton(),
-  ordersRepository: asFunction(
-    ({ offersRepository }) => new InMemoryOrdersRepository(offersRepository)
-  ).singleton(),
-  farmsRepository: asFunction(
-    ({
-      usersRepository,
-      offersRepository,
-      productsRepository,
-      ordersRepository,
-    }) =>
-      new InMemoryFarmsRepository(
-        usersRepository,
-        offersRepository,
-        productsRepository,
-        ordersRepository
-      )
-  ).singleton(),
+  usersRepository: asClass(PrismaUsersRepository).singleton(),
+  otpsRepository: asClass(PrismaOtpsRepository).singleton(),
+  sessionsRepository: asClass(PrismaSessionsRepository).singleton(),
+  cyclesRepository: asClass(PrismaCyclesRepository).singleton(),
+  productsRepository: asClass(PrismaProductRepository).singleton(),
+  offersRepository: asClass(PrismaOffersRepository).singleton(),
+  ordersRepository: asClass(PrismaOrdersRepository).singleton(),
+  farmsRepository: asClass(PrismaFarmsRepository).singleton(),
 
   // services
-  encrypter: asClass(MockedEncrypter).singleton(),
+  encrypter: asClass(BcrypterHasher).singleton(),
+  hasher: asClass(Jwt).singleton(),
   mailer: asFunction(() => {
-    const options = {
-      host: "localhost",
-      port: 2525,
-    };
+    if (["production", "staging"].includes(env.ENV)) {
+      const transporter = createTransport({
+        host: env.SMTP_HOST,
+        port: env.SMTP_PORT,
+        auth: {
+          user: env.ECOO_EMAIL,
+          pass: env.ECOO_EMAIL_PASSWORD,
+        },
+      });
 
-    const transporter = createTransport(options);
+      const fallback = createTransport({
+        host: env.SMTP_FALLBACK_HOST,
+        port: env.SMTP_PORT,
+        auth: {
+          user: env.ECOO_FALLBACK_EMAIL,
+          pass: env.ECOO_FALLBACK_EMAIL_PASSWORD,
+        },
+      });
+
+      return new Nodemailer(transporter, fallback);
+    }
+
+    const transporter = createTransport({
+      host: env.SMTP_HOST,
+      port: env.SMTP_PORT,
+    });
 
     return new Nodemailer(transporter);
   }),
-  hasher: asClass(Jwt).singleton(),
+
   // events
   onRegisteredEvent: asFunction(
     ({ mailer, hasher }) => new OnRegisteredEvent(mailer, hasher)
   ),
+
   // use-cases
   registerUsecase: asFunction(
     ({ usersRepository, encrypter }) =>

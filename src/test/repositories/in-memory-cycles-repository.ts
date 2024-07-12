@@ -16,8 +16,4 @@ export class InMemoryCyclesRepository implements CyclesRepository {
 
     return cycle;
   }
-
-  async create(cycle: Cycle): Promise<void> {
-    this.items.push(cycle);
-  }
 }

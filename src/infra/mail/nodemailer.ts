@@ -7,9 +7,13 @@ import { Mailer, MailerLoadRequest } from "@/core/mail/mailer";
 // Libs
 import { Transporter } from "nodemailer";
 import { renderFile } from "ejs";
+import { env } from "../env";
 
 export class Nodemailer implements Mailer {
-  constructor(private transporter: Transporter) {}
+  constructor(
+    private transporter: Transporter,
+    private fallback?: Transporter
+  ) {}
 
   async send(email: Email): Promise<void> {
     try {
@@ -20,13 +24,24 @@ export class Nodemailer implements Mailer {
       });
     } catch (error) {
       console.log(error);
+      if (this.fallback) {
+        try {
+          await this.fallback.sendMail({
+            to: email.to,
+            subject: email.subject,
+            html: email.content,
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
     }
   }
 
   async load({ view, props }: MailerLoadRequest): Promise<string> {
     if (view == "welcome") {
       Object.assign(props, {
-        url: `localhost:3333/users/verify?token=${props.token}`,
+        url: `${env.SERVER_URL}:${env.SERVER_PORT}/users/verify?token=${props.token}`,
       });
     }
 

@@ -60,7 +60,7 @@ describe("searh offering farms", () => {
 
   it("should be able to list offering farms", async () => {
     const cycle = makeCycle();
-    await repositories.cycles.create(cycle);
+    repositories.cycles.items.push(cycle);
 
     const product = makeProduct({
       name: "Potato",
