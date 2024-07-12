@@ -1,6 +1,5 @@
 // Entities
 import { Farm } from "@/core/entities/farm";
-import { OrderWithOffer } from "@/core/entities/value-objects/order-with-offer";
 
 // Repositories
 import {
@@ -8,10 +7,10 @@ import {
   FarmsRepositoryFindManyWithActiveOfferRequest,
   FarmsRepositorySearchManyWithOrdersRequest,
 } from "@/core/repositories/farms-repository";
-import { InMemoryUsersRepository } from "./in-memory-users-repository";
-import { InMemoryOffersRepository } from "./in-memory-offers-repository";
-import { InMemoryProductsRepository } from "./in-memory-products-repository";
-import { InMemoryOrdersRepository } from "./in-memory-orders-repository";
+import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
+import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
+import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
+import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 export class InMemoryFarmsRepository implements FarmsRepository {
   items: Farm[] = [];
@@ -22,29 +21,6 @@ export class InMemoryFarmsRepository implements FarmsRepository {
     private inMemoryProductsRepository: InMemoryProductsRepository,
     private inMemoryOrdersRepository: InMemoryOrdersRepository
   ) {}
-  async searchOrders(params: {
-    created_at: Date;
-    cycle_id: string;
-    farm_id: string;
-  }): Promise<OrderWithOffer[]> {
-    const { farm_id, cycle_id, created_at } = params;
-
-    const farm = await this.findById(farm_id);
-    if (!farm) return [];
-
-    const offers = await this.inMemoryOffersRepository.searchMany({
-      created_at,
-      cycle_id,
-      farm_id,
-    });
-
-    const orders = this.inMemoryOrdersRepository.findManyWithOfferByOffersIds(
-      offers.map((offer) => offer.id.value)
-    );
-
-    return orders;
-  }
-
   async findById(id: string): Promise<Farm | null> {
     const farm = this.items.find((item) => item.id.equals(id));
 

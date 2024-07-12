@@ -3,7 +3,10 @@ import { Order } from "@/core/entities/order";
 import { OrderWithOffer } from "@/core/entities/value-objects/order-with-offer";
 
 // Repositories
-import { OrdersRepository } from "@/core/repositories/orders-repository";
+import {
+  OrdersRepository,
+  OrdersRepositoryFindManyByFarmIdInCycle,
+} from "@/core/repositories/orders-repository";
 
 // Services
 import { prisma } from "@/infra/database/prisma-service";
@@ -46,8 +49,34 @@ export class PrismaOrdersRepository implements OrdersRepository {
     return orders.map((order) => PrismaOrderWithOfferMapper.toDomain(order));
   }
 
+  async findManyByFarmIdInCycle({
+    farm_id,
+    cycle_id,
+    created_at,
+  }: OrdersRepositoryFindManyByFarmIdInCycle): Promise<Order[]> {
+    const orders = await prisma.order.findMany({
+      where: {
+        offer: {
+          farm_id,
+          cycle_id,
+          created_at: {
+            gte: created_at,
+          },
+        },
+      },
+    });
+
+    return orders.map((order) => PrismaOrderMapper.toDomain(order));
+  }
+
   async create(order: Order): Promise<void> {
     const data = PrismaOrderMapper.toPrisma(order);
     await prisma.order.create({ data });
+  }
+
+  async updateMany(orders: Order[]): Promise<void> {
+    const data = orders.map((order) => PrismaOrderMapper.toPrisma(order));
+
+    await prisma.order.updateMany({ data });
   }
 }

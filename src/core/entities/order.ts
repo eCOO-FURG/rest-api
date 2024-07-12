@@ -29,6 +29,10 @@ export class Order extends Entity<OrderProps> {
     return this.props.status;
   }
 
+  set status(value: OrderProps["status"]) {
+    this.props.status = value;
+  }
+
   static create(props: Optional<OrderProps, "status">) {
     const order = new Order({ ...props, status: props.status || "pending" });
     return order;
