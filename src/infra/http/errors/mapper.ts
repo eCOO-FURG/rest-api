@@ -9,6 +9,7 @@ import { UserAlreadyVerified } from "@/core/errors/user-already-verified";
 import { WrongCredentialsError } from "@/core/errors/wrong-credentials";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
+import { MissingOfferDeliveryStatusError } from "@/core/errors/missing-offer-delivery-status";
 
 type Constructor<T> = new (...args: any[]) => T;
 
@@ -18,7 +19,12 @@ const mappedDomainErrors: {
 }[] = [
   {
     code: 400,
-    errors: [WrongCredentialsError, WrongCredentialsError, InvalidWeightError],
+    errors: [
+      WrongCredentialsError,
+      WrongCredentialsError,
+      InvalidWeightError,
+      MissingOfferDeliveryStatusError,
+    ],
   },
   {
     code: 403,

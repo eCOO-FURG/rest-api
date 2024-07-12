@@ -24,6 +24,8 @@ import { OnRegisteredEvent } from "@/core/events/on-registered";
 import { RegisterUseCase } from "@/core/use-cases/register";
 import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
 import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
+import { CheckFarmDeliveryUseCase } from "@/core/use-cases/check-farm-delivery";
+
 import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
 
 import { OfferProductsUseCase } from "@/core/use-cases/offer-products";
@@ -107,6 +109,20 @@ container.register({
   verifyUserUseCase: asFunction(
     ({ usersRepository, hasher }) =>
       new VerifyUserUsecase(usersRepository, hasher)
+  ),
+  checkFarmDeliveryUseCase: asFunction(
+    ({
+      cyclesRepository,
+      farmsRepository,
+      offersRepository,
+      ordersRepository,
+    }) =>
+      new CheckFarmDeliveryUseCase(
+        cyclesRepository,
+        farmsRepository,
+        offersRepository,
+        ordersRepository
+      )
   ),
   registerFarmUseCase: asFunction(
     ({ usersRepository, farmsRepository }) =>

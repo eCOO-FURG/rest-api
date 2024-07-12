@@ -7,6 +7,7 @@ import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-rep
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
+import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 // Services
 import { makeCycle } from "@/test/factories/make-cycle";
@@ -16,7 +17,6 @@ import { makeOffer } from "@/test/factories/make-offer";
 
 // Errors
 import { ResourceNotFoundError } from "../errors/resource-not-found";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 let sut: SearchOfferingFarmsUseCase;
 

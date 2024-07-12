@@ -1,5 +1,5 @@
 // Entities
-import { Farm } from "../entities/farm";
+import { Farm } from "@/core/entities/farm";
 
 export interface FarmsRepositoryFindManyWithActiveOfferRequest {
   cycle_id: string;
@@ -8,10 +8,10 @@ export interface FarmsRepositoryFindManyWithActiveOfferRequest {
   product?: string;
 }
 
-export interface FarmsRepositorySearchManyWithOrdersRequest{
+export interface FarmsRepositorySearchManyWithOrdersRequest {
   cycle_id: string;
   page: number;
-  name?: string
+  name?: string;
 }
 
 export interface FarmsRepository {
@@ -26,5 +26,9 @@ export interface FarmsRepository {
   }: FarmsRepositoryFindManyWithActiveOfferRequest): Promise<Farm[]>;
   create(farm: Farm): Promise<void>;
   update(farm: Farm): Promise<void>;
-  searchManyWithOrders({ cycle_id, page, name }: FarmsRepositorySearchManyWithOrdersRequest): Promise<Farm[]>
+  searchManyWithOrders({
+    cycle_id,
+    page,
+    name,
+  }: FarmsRepositorySearchManyWithOrdersRequest): Promise<Farm[]>;
 }

@@ -2,6 +2,7 @@
 import { Router } from "express";
 
 // Controllers
+import { CheckFarmDeliveryController } from "../controllers/check-farm-delivery";
 import { registerController } from "@/infra/http/controllers/register";
 import { authenticateController } from "@/infra/http/controllers/authenticate";
 import { verifyUserController } from "@/infra/http/controllers/verify-user";
@@ -17,6 +18,8 @@ export const router = Router();
 router.post("/users", registerController);
 router.post("/users/auth", authenticateController);
 router.get("/users/verify", verifyUserController);
+
+router.post("/offers/check-delivery", CheckFarmDeliveryController.handle);
 
 router.post("/farms", ensureAuthenticated, registerFarmController);
 
