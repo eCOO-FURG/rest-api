@@ -1,7 +1,11 @@
+// Services
 import { asFunction, AwilixContainer } from "awilix";
+
+// Use-cases
 import { RegisterUseCase } from "@/core/use-cases/register";
 import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
 import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
+import { HandleOrdersDeliveryUseCase } from "@/core/use-cases/handle-orders-delivery";
 import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
 import { OfferProductsUseCase } from "@/core/use-cases/offer-products";
 
@@ -30,6 +34,14 @@ export default (container: AwilixContainer) => {
     verifyUserUseCase: asFunction(
       ({ usersRepository, hasher }) =>
         new VerifyUserUsecase(usersRepository, hasher)
+    ),
+    handleOrdersDeliveryUseCase: asFunction(
+      ({ cyclesRepository, farmsRepository, ordersRepository }) =>
+        new HandleOrdersDeliveryUseCase(
+          cyclesRepository,
+          farmsRepository,
+          ordersRepository
+        )
     ),
     registerFarmUseCase: asFunction(
       ({ usersRepository, farmsRepository }) =>

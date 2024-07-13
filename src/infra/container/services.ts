@@ -1,22 +1,44 @@
+// Services
 import { asClass, asFunction, AwilixContainer } from "awilix";
 import { createTransport } from "nodemailer";
-import { MockedEncrypter } from "@/test/cryptography/mocked-encrypter";
 import { Nodemailer } from "@/infra/mail/nodemailer";
 import { Jwt } from "@/infra/cryptography/jwt";
+import { BcrypterHasher } from "@/infra/cryptography/bcrypt";
+import { env } from "@/infra/env";
 
 export default (container: AwilixContainer) => {
   container.register({
-    encrypter: asClass(MockedEncrypter).singleton(),
+    encrypter: asClass(BcrypterHasher).singleton(),
+    hasher: asClass(Jwt).singleton(),
     mailer: asFunction(() => {
-      const options = {
-        host: "localhost",
-        port: 2525,
-      };
+      if (["production", "staging"].includes(env.ENV)) {
+        const transporter = createTransport({
+          host: env.SMTP_HOST,
+          port: env.SMTP_PORT,
+          auth: {
+            user: env.ECOO_EMAIL,
+            pass: env.ECOO_EMAIL_PASSWORD,
+          },
+        });
 
-      const transporter = createTransport(options);
+        const fallback = createTransport({
+          host: env.SMTP_FALLBACK_HOST,
+          port: env.SMTP_PORT,
+          auth: {
+            user: env.ECOO_FALLBACK_EMAIL,
+            pass: env.ECOO_FALLBACK_EMAIL_PASSWORD,
+          },
+        });
+
+        return new Nodemailer(transporter, fallback);
+      }
+
+      const transporter = createTransport({
+        host: env.SMTP_HOST,
+        port: env.SMTP_PORT,
+      });
 
       return new Nodemailer(transporter);
     }),
-    hasher: asClass(Jwt).singleton(),
   });
 };

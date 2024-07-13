@@ -1,40 +1,23 @@
-import { asClass, asFunction, AwilixContainer } from "awilix";
-import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
-import { InMemoryOtpsRepository } from "@/test/repositories/in-memory-otps-repository";
-import { InMemorySessionsRepository } from "@/test/repositories/in-memory-sessions-repository";
-import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
-import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
-import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
+import { asClass, AwilixContainer } from "awilix";
+
+import { PrismaCyclesRepository } from "../database/repositories/prisma-cycles-repository";
+import { PrismaFarmsRepository } from "../database/repositories/prisma-farms-repository";
+import { PrismaOffersRepository } from "../database/repositories/prisma-offers-repository";
+import { PrismaOrdersRepository } from "../database/repositories/prisma-orders-repository";
+import { PrismaOtpsRepository } from "../database/repositories/prisma-otps-repository";
+import { PrismaProductRepository } from "../database/repositories/prisma-products-repository";
+import { PrismaSessionsRepository } from "../database/repositories/prisma-sessions-repository";
+import { PrismaUsersRepository } from "../database/repositories/prisma-users-repository";
 
 export default (container: AwilixContainer) => {
   container.register({
-    usersRepository: asClass(InMemoryUsersRepository).singleton(),
-    otpsRepository: asClass(InMemoryOtpsRepository).singleton(),
-    sessionsRepository: asClass(InMemorySessionsRepository).singleton(),
-    cyclesRepository: asClass(InMemoryCyclesRepository).singleton(),
-    productsRepository: asClass(InMemoryProductsRepository).singleton(),
-    offersRepository: asFunction(
-      ({ productsRepository, cyclesRepository }) =>
-        new InMemoryOffersRepository(productsRepository, cyclesRepository)
-    ).singleton(),
-    ordersRepository: asFunction(
-      ({ offersRepository }) => new InMemoryOrdersRepository(offersRepository)
-    ).singleton(),
-    farmsRepository: asFunction(
-      ({
-        usersRepository,
-        offersRepository,
-        productsRepository,
-        ordersRepository,
-      }) =>
-        new InMemoryFarmsRepository(
-          usersRepository,
-          offersRepository,
-          productsRepository,
-          ordersRepository
-        )
-    ).singleton(),
+    usersRepository: asClass(PrismaUsersRepository).singleton(),
+    otpsRepository: asClass(PrismaOtpsRepository).singleton(),
+    sessionsRepository: asClass(PrismaSessionsRepository).singleton(),
+    cyclesRepository: asClass(PrismaCyclesRepository).singleton(),
+    productsRepository: asClass(PrismaProductRepository).singleton(),
+    offersRepository: asClass(PrismaOffersRepository).singleton(),
+    ordersRepository: asClass(PrismaOrdersRepository).singleton(),
+    farmsRepository: asClass(PrismaFarmsRepository).singleton(),
   });
 };
