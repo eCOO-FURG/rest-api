@@ -9,6 +9,7 @@ export function makeFarm(props: Partial<Farm> = {}) {
     name: props.name ?? faker.company.name(),
     caf: props.caf ?? faker.number.bigInt().toString(),
     active: props.active ?? true,
+    tax: props.tax,
     created_at: props.created_at,
     updated_at: props.updated_at,
   });

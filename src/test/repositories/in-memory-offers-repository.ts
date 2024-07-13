@@ -1,3 +1,5 @@
+import { UUID } from "@/core/entities/value-objects/uuid";
+
 // Entities
 import { Offer } from "@/core/entities/offer";
 import { OfferWithProductAndCycle } from "@/core/entities/value-objects/offer-with-product-and-cycle";
@@ -16,7 +18,7 @@ export class InMemoryOffersRepository implements OffersRepository {
 
   constructor(
     private inMemoryProductsRepository: InMemoryProductsRepository,
-    private inMemoryCyclesRepository: InMemoryCyclesRepository,
+    private inMemoryCyclesRepository: InMemoryCyclesRepository
   ) {}
 
   async findById(id: string): Promise<Offer | null> {
@@ -112,6 +114,14 @@ export class InMemoryOffersRepository implements OffersRepository {
     const index = this.items.findIndex((item) => item.id.equals(offer.id));
 
     this.items[index] = offer;
+  }
+
+  async updateMany(offers: Offer[]): Promise<void> {
+    const updateOffersPromises = offers.map((offer) => {
+      this.update(offer);
+    });
+
+    Promise.all(updateOffersPromises);
   }
 
   async delete(offer: Offer): Promise<void> {

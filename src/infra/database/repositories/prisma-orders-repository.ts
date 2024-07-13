@@ -3,7 +3,10 @@ import { Order } from "@/core/entities/order";
 import { OrderWithOffer } from "@/core/entities/value-objects/order-with-offer";
 
 // Repositories
-import { OrdersRepository } from "@/core/repositories/orders-repository";
+import {
+  OrdersRepository,
+  OrdersRepositoryFindManyByFarmIdInCycle,
+} from "@/core/repositories/orders-repository";
 
 // Services
 import { prisma } from "@/infra/database/prisma-service";
@@ -12,11 +15,15 @@ import { prisma } from "@/infra/database/prisma-service";
 import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
 import { PrismaOrderWithOfferMapper } from "@/infra/database/mappers/prisma-order-with-offer-mapper";
 
-export class PismaOrdersRepository implements OrdersRepository {
-  async findByOfferId(offer_id: string): Promise<Order | null> {
+export class PrismaOrdersRepository implements OrdersRepository {
+  async findByOfferIdAndUserId(
+    offer_id: string,
+    user_id: string
+  ): Promise<Order | null> {
     const order = await prisma.order.findFirst({
       where: {
         offer_id,
+        user_id,
       },
     });
 
@@ -46,8 +53,34 @@ export class PismaOrdersRepository implements OrdersRepository {
     return orders.map((order) => PrismaOrderWithOfferMapper.toDomain(order));
   }
 
+  async findManyByFarmIdInCycle({
+    farm_id,
+    cycle_id,
+    created_at,
+  }: OrdersRepositoryFindManyByFarmIdInCycle): Promise<Order[]> {
+    const orders = await prisma.order.findMany({
+      where: {
+        offer: {
+          farm_id,
+          cycle_id,
+          created_at: {
+            gte: created_at,
+          },
+        },
+      },
+    });
+
+    return orders.map((order) => PrismaOrderMapper.toDomain(order));
+  }
+
   async create(order: Order): Promise<void> {
     const data = PrismaOrderMapper.toPrisma(order);
     await prisma.order.create({ data });
+  }
+
+  async updateMany(orders: Order[]): Promise<void> {
+    const data = orders.map((order) => PrismaOrderMapper.toPrisma(order));
+
+    await prisma.order.updateMany({ data });
   }
 }
