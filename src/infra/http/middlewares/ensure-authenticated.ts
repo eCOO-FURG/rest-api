@@ -7,7 +7,7 @@ import { sign, verify } from "jsonwebtoken";
 import container from "@/infra/container";
 
 // Repositories
-import { InMemorySessionsRepository } from "@/test/repositories/in-memory-sessions-repository";
+import { PrismaSessionsRepository } from "@/infra/database/repositories/prisma-sessions-repository";
 
 const jwtPayloadSchema = z.object({
   user_id: z.string(),
@@ -38,17 +38,16 @@ export async function ensureAuthenticated(
 
     if (expired) {
       const sessionsRepository =
-        container.resolve<InMemorySessionsRepository>("sessionsRepository");
+        container.resolve<PrismaSessionsRepository>("sessionsRepository");
 
       const hour = new Date(Date.now() + 60 * 60 * 1000);
 
-      const session = sessionsRepository.items.find(
-        (item) =>
-          item.user_id.equals(user_id) &&
-          item.ip === request.ip &&
-          item.agent === (request.headers["user-agent"] ?? "not-identified") &&
-          new Date(item.created_at) < hour
-      );
+      const session = await sessionsRepository.search({
+        user_id,
+        ip: request.ip!,
+        agent: request.headers["user-agent"] ?? "not-identified",
+        since: hour,
+      });
 
       if (!session) {
         return response.status(401).send({ message: "Sessão expirada." });

@@ -5,7 +5,7 @@ import { NextFunction, Request, Response } from "express";
 import container from "@/infra/container";
 
 // Repositories
-import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
+import { PrismaFarmsRepository } from "@/infra/database/repositories/prisma-farms-repository";
 
 export async function ensureFarmAdmin(
   request: Request,
@@ -15,11 +15,9 @@ export async function ensureFarmAdmin(
   const user_id = request.user_id;
 
   const farmsRepository =
-    container.resolve<InMemoryFarmsRepository>("farmsRepository");
+    container.resolve<PrismaFarmsRepository>("farmsRepository");
 
-  const farm = farmsRepository.items.find((item) =>
-    item.admin_id.equals(user_id)
-  );
+  const farm = await farmsRepository.findByAdminId(user_id);
 
   if (!farm) {
     return response
