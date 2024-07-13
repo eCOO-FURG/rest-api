@@ -7,6 +7,7 @@ import { authenticateController } from "@/infra/http/controllers/authenticate";
 import { verifyUserController } from "@/infra/http/controllers/verify-user";
 import { registerFarmController } from "@/infra/http/controllers/register-farm";
 import { offerProductsController } from "../controllers/offer-products";
+import { updateUserController } from "../controllers/update-user";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -26,3 +27,5 @@ router.post(
   ensureFarmAdmin,
   offerProductsController
 );
+
+router.post("/update-user", ensureAuthenticated, updateUserController)

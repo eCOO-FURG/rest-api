@@ -26,6 +26,7 @@ import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-r
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { OfferProductsUseCase } from "@/core/use-cases/offer-products";
+import { UpdateUserUseCase } from "@/core/use-cases/update-user";
 
 const container = createContainer();
 
@@ -119,6 +120,12 @@ container.register({
         cyclesRepository
       )
   ),
+  updateUserUsecase: asFunction(
+    ({
+      usersRepository,
+      encrypter
+    }) => new UpdateUserUseCase(usersRepository, encrypter)
+  )
 });
 
 export default container;
