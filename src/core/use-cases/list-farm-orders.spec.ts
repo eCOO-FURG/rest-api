@@ -68,7 +68,7 @@ describe("list farm sales", () => {
     await repositories.farms.create(farm);
 
     const cycle = makeCycle();
-    await repositories.cycles.create(cycle);
+    repositories.cycles.items.push(cycle);
 
     const product = makeProduct();
     await productsRepository.create(product);

@@ -8,6 +8,9 @@ import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
 // Container
 import container from "@/infra/container";
 
+// Env
+import { env } from "@/infra/env";
+
 const verifyUserSchema = {
   query: z.object({
     token: z.string(),
@@ -27,7 +30,7 @@ export async function verifyUserController(
 
     await verifyUserUseCase.execute({ token });
 
-    return response.status(200).send();
+    return response.redirect(301, `${env.FRONT_URL}/login`);
   } catch (error) {
     next(error);
   }

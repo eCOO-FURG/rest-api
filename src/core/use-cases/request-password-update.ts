@@ -31,13 +31,17 @@ export class RequestPasswordUpdateUseCase {
 
     const token = await this.hasher.hash({ user_id: user.id.value });
 
-    const view = await this.mailer.load("password-update", token);
+    const view = await this.mailer.load({
+      view: "password-update",
+      props: {
+        token,
+      },
+    });
 
     const mail = Email.create({
       to: email,
-      from: "suporte@ecoo.com",
       subject: "Atualização de senha | eCOO",
-      view,
+      content: view,
     });
 
     await this.mailer.send(mail);

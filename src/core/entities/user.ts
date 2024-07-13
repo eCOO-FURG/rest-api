@@ -8,6 +8,8 @@ import { OnRegisteredEvent } from "@/core/events/on-registered";
 // Events
 import { DomainEvents } from "@/core/events/domain-events";
 
+type Role = "USER" | "PRODUCER" | "ADMIN";
+
 export interface UserProps extends EntityRequest {
   first_name: string;
   last_name: string;
@@ -15,7 +17,7 @@ export interface UserProps extends EntityRequest {
   cpf: string;
   phone: string;
   password: string | null;
-  roles: string[];
+  roles: Role[];
   verified_at: Date | null;
 }
 
@@ -72,14 +74,14 @@ export class User extends Entity<UserProps> {
     this.props.phone = value;
   }
 
-  protect(hash: string){
-    this.props.password = hash
-    this.touch()
+  protect(hash: string) {
+    this.props.password = hash;
+    this.touch();
   }
 
-  verify(){
-    this.props.verified_at = new Date()
-    this.touch()
+  verify() {
+    this.props.verified_at = new Date();
+    this.touch();
   }
 
   static create(props: Optional<UserProps, "password" | "verified_at">) {

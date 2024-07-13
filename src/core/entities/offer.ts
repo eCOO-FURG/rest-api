@@ -12,7 +12,6 @@ export interface OfferProps extends EntityRequest {
   farm_id: UUID;
   cycle_id: UUID;
   product_id: UUID;
-  delivered_at: Date | null;
 }
 
 export class Offer extends Entity<OfferProps> {
@@ -40,23 +39,18 @@ export class Offer extends Entity<OfferProps> {
     return this.props.cycle_id;
   }
 
-  get delivered_at() {
-    return this.props.delivered_at;
+  set price(price: number) {
+    this.props.price = price;
   }
 
   set amount(amount: number) {
     this.props.amount = amount;
   }
 
-  set price(price: number) {
-    this.props.price = price;
-  }
-
-  static create(props: Optional<OfferProps, "description" | "delivered_at">) {
+  static create(props: Optional<OfferProps, "description">) {
     const offer = new Offer({
       ...props,
       description: props.description ?? null,
-      delivered_at: props.delivered_at ?? null,
     });
 
     return offer;

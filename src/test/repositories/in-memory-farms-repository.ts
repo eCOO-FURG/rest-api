@@ -7,10 +7,10 @@ import {
   FarmsRepositoryFindManyWithActiveOfferRequest,
   FarmsRepositorySearchManyWithOrdersRequest,
 } from "@/core/repositories/farms-repository";
-import { InMemoryUsersRepository } from "./in-memory-users-repository";
-import { InMemoryOffersRepository } from "./in-memory-offers-repository";
-import { InMemoryProductsRepository } from "./in-memory-products-repository";
-import { InMemoryOrdersRepository } from "./in-memory-orders-repository";
+import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
+import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
+import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
+import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 export class InMemoryFarmsRepository implements FarmsRepository {
   items: Farm[] = [];
@@ -19,9 +19,8 @@ export class InMemoryFarmsRepository implements FarmsRepository {
     private inMemoryUsersRepository: InMemoryUsersRepository,
     private inMemoryOffersRepository: InMemoryOffersRepository,
     private inMemoryProductsRepository: InMemoryProductsRepository,
-    private inMemomyOrdersRepository: InMemoryOrdersRepository
+    private inMemoryOrdersRepository: InMemoryOrdersRepository
   ) {}
-
   async findById(id: string): Promise<Farm | null> {
     const farm = this.items.find((item) => item.id.equals(id));
 
@@ -105,24 +104,36 @@ export class InMemoryFarmsRepository implements FarmsRepository {
     this.items[itemIndex] = farm;
   }
 
-  async searchManyWithOrders({ cycle_id, page, name }: FarmsRepositorySearchManyWithOrdersRequest): Promise<Farm[]> {
-    const orders = await this.inMemomyOrdersRepository.items;
-  
-    const offers = await this.inMemoryOffersRepository.items.filter((offer) => offer.cycle_id.equals(cycle_id));
-  
+  async searchManyWithOrders({
+    cycle_id,
+    page,
+    name,
+  }: FarmsRepositorySearchManyWithOrdersRequest): Promise<Farm[]> {
+    const orders = Array.from(this.inMemoryOrdersRepository.items.values());
+
+    const offers = this.inMemoryOffersRepository.items.filter((offer) =>
+      offer.cycle_id.equals(cycle_id)
+    );
+
     const offersIdWithOrder = orders.map((order) => order.offer_id);
-  
-    const offersWithOrders = offers.filter((offer) => offer.cycle_id.equals(cycle_id) && offersIdWithOrder.includes(offer.id));
-  
+
+    const offersWithOrders = offers.filter(
+      (offer) =>
+        offer.cycle_id.equals(cycle_id) && offersIdWithOrder.includes(offer.id)
+    );
+
     const farmsIdWithOrders = offersWithOrders.map((offer) => offer.farm_id);
-  
-    const filteredFarms = this.items.filter((farm) => farmsIdWithOrders.includes(farm.id));
-  
+
+    const filteredFarms = this.items.filter((farm) =>
+      farmsIdWithOrders.includes(farm.id)
+    );
+
     if (!name) {
       return filteredFarms.slice((page - 1) * 20, page * 20);
     }
-  
-    return filteredFarms.filter((farm) => farm.name === name).slice((page - 1) * 20, page * 20);
+
+    return filteredFarms
+      .filter((farm) => farm.name === name)
+      .slice((page - 1) * 20, page * 20);
   }
-  
 }

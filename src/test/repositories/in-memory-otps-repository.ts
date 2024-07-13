@@ -9,7 +9,7 @@ export class InMemoryOtpsRepository implements OtpsRepository {
 
   async findValid(user_id: string): Promise<Otp | null> {
     const valid = this.items.find(
-      (item) => item.user_id.equals(user_id) && item.used_at === null
+      (item) => item.user_id.equals(user_id) && item.used === false
     );
 
     if (!valid) return null;

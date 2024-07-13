@@ -13,21 +13,22 @@ import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-rep
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
+import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
-let ordersRepository: InMemoryOrdersRepository
+let ordersRepository: InMemoryOrdersRepository;
 
 let repositories: {
   farms: InMemoryFarmsRepository;
   cycles: InMemoryCyclesRepository;
   offers: InMemoryOffersRepository;
+  orders: InMemoryOrdersRepository;
 };
 
 let sut: ListFarmOffersUseCase;
@@ -40,8 +41,9 @@ describe("list farm offers", () => {
       productsRepository,
       cyclesRepository
     );
-    ordersRepository = new InMemoryOrdersRepository(offersRepository)
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
     usersRepository = new InMemoryUsersRepository();
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
     repositories = {
       farms: new InMemoryFarmsRepository(
@@ -52,6 +54,7 @@ describe("list farm offers", () => {
       ),
       cycles: cyclesRepository,
       offers: offersRepository,
+      orders: ordersRepository,
     };
 
     sut = new ListFarmOffersUseCase(
@@ -66,7 +69,7 @@ describe("list farm offers", () => {
     await repositories.farms.create(farm);
 
     const cycle = makeCycle();
-    await repositories.cycles.create(cycle);
+    repositories.cycles.items.push(cycle);
 
     const product = makeProduct({ name: "Apple" });
     await productsRepository.create(product);
@@ -84,6 +87,7 @@ describe("list farm offers", () => {
       product: "App",
       page: 1,
     });
+    ordersRepository;
 
     expect(result.farmWithOffers.offers).toHaveLength(1);
   });
@@ -104,7 +108,7 @@ describe("list farm offers", () => {
 
   it("should not be able to list offers from a cycle that does not exists", async () => {
     const cycle = makeCycle();
-    await repositories.cycles.create(cycle);
+    repositories.cycles.items.push(cycle);
 
     await expect(() =>
       sut.execute({

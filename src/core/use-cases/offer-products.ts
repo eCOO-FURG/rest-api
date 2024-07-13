@@ -82,7 +82,7 @@ export class OfferProductsUseCase {
       product_id: product.id,
       cycle_id: cycle.id,
       amount,
-      price,
+      price: price + (price * farm.tax) / 100,
       description,
     });
 
