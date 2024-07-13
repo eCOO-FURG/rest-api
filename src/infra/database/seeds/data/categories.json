@@ -1,0 +1,1063 @@
+[
+  {
+    "name": "Hortaliças, legumes e verduras",
+    "items": [
+      {
+        "name": "Abóbora Cabotiá",
+        "pricing": "UNIT",
+        "image": "abobora_cabotia.jpg"
+      },
+      {
+        "name": "Abóbora Moranga",
+        "pricing": "UNIT",
+        "image": "abobora_moranga.jpg"
+      },
+      {
+        "name": "Abóbora Paulista",
+        "pricing": "UNIT",
+        "image": "abobora_paulista.jpg"
+      },
+      {
+        "name": "Abobrinha Brasileira",
+        "pricing": "UNIT",
+        "image": "abobrinha_brasileira.jpg"
+      },
+      {
+        "name": "Abobrinha Italiana",
+        "pricing": "UNIT",
+        "image": "abobrinha_italiana.jpg"
+      },
+      {
+        "name": "Acelga",
+        "pricing": "UNIT",
+        "image": "acelga.jpg"
+      },
+      {
+        "name": "Agrião",
+        "pricing": "UNIT",
+        "image": "agriao.jpg"
+      },
+      {
+        "name": "Aipim",
+        "pricing": "WEIGHT",
+        "image": "aipim.jpg"
+      },
+      {
+        "name": "Alcachofra",
+        "pricing": "UNIT",
+        "image": "alcachofra.jpg"
+      },
+      {
+        "name": "Alecrim",
+        "pricing": "UNIT",
+        "image": "alecrim.jpg"
+      },
+      {
+        "name": "Alface Americana",
+        "pricing": "UNIT",
+        "image": "alface_americana.jpg"
+      },
+      {
+        "name": "Alface Crespa",
+        "pricing": "UNIT",
+        "image": "alface_crespa.jpg"
+      },
+      {
+        "name": "Alface Lisa",
+        "pricing": "UNIT",
+        "image": "alface_lisa.jpg"
+      },
+      {
+        "name": "Alface Mimosa",
+        "pricing": "UNIT",
+        "image": "alface_mimosa.jpg"
+      },
+      {
+        "name": "Alface Quatro Estações",
+        "pricing": "UNIT",
+        "image": "alface_quatro_estacoes.jpg"
+      },
+      {
+        "name": "Alface Roxa",
+        "pricing": "UNIT",
+        "image": "alface_roxa.jpg"
+      },
+      {
+        "name": "Alho",
+        "pricing": "UNIT",
+        "image": "alho.jpg"
+      },
+      {
+        "name": "Alho Poró",
+        "pricing": "UNIT",
+        "image": "alho_poro.jpg"
+      },
+      {
+        "name": "Batata Baroa",
+        "pricing": "WEIGHT",
+        "image": "batata_baroa.jpg"
+      },
+      {
+        "name": "Batata Branca",
+        "pricing": "WEIGHT",
+        "image": "batata_branca.jpg"
+      },
+      {
+        "name": "Batata Doce Abóbora",
+        "pricing": "WEIGHT",
+        "image": "batata_doce_abobora.jpg"
+      },
+      {
+        "name": "Batata Doce Amarela",
+        "pricing": "WEIGHT",
+        "image": "batata_doce_amarela.jpg"
+      },
+      {
+        "name": "Batata Doce Branca",
+        "pricing": "WEIGHT",
+        "image": "batata_doce_branca.jpg"
+      },
+      {
+        "name": "Batata Doce Rosada",
+        "pricing": "WEIGHT",
+        "image": "batata_doce_rosada.jpg"
+      },
+      {
+        "name": "Batata Rosa",
+        "pricing": "WEIGHT",
+        "image": "batata_rosa.jpg"
+      },
+      {
+        "name": "Berinjela Comum",
+        "pricing": "UNIT",
+        "image": "berinjela_comum.jpg"
+      },
+      {
+        "name": "Berinjela Japonesa",
+        "pricing": "UNIT",
+        "image": "berinjela_japonesa.jpg"
+      },
+      {
+        "name": "Beterraba",
+        "pricing": "WEIGHT",
+        "image": "beterraba.jpg"
+      },
+      {
+        "name": "Brócolis",
+        "pricing": "UNIT",
+        "image": "brocolis.jpg"
+      },
+      {
+        "name": "Cebola",
+        "pricing": "WEIGHT",
+        "image": "cebola.jpg"
+      },
+      {
+        "name": "Cebola Roxa",
+        "pricing": "WEIGHT",
+        "image": "cebola_roxa.jpg"
+      },
+      {
+        "name": "Cebolinha",
+        "pricing": "UNIT",
+        "image": "cebolinha.jpg"
+      },
+      {
+        "name": "Cenoura",
+        "pricing": "WEIGHT",
+        "image": "cenoura.jpg"
+      },
+      {
+        "name": "Chuchu",
+        "pricing": "WEIGHT",
+        "image": "chuchu.jpg"
+      },
+      {
+        "name": "Coentro",
+        "pricing": "UNIT",
+        "image": "coentro.jpg"
+      },
+      {
+        "name": "Cogumelo",
+        "pricing": "UNIT",
+        "image": "cogumelo.jpg"
+      },
+      {
+        "name": "Cogumelo Paris",
+        "pricing": "UNIT",
+        "image": "cogumelo_paris.jpg"
+      },
+      {
+        "name": "Cogumelo Portobello",
+        "pricing": "UNIT",
+        "image": "cogumelo_portobello.jpg"
+      },
+      {
+        "name": "Couve",
+        "pricing": "UNIT",
+        "image": "couve.jpg"
+      },
+      {
+        "name": "Couve Bruxelas",
+        "pricing": "UNIT",
+        "image": "couve_bruxelas.jpg"
+      },
+      {
+        "name": "Couve-Flor",
+        "pricing": "UNIT",
+        "image": "couve_flor.jpg"
+      },
+      {
+        "name": "Erva-Doce",
+        "pricing": "UNIT",
+        "image": "erva_doce.jpg"
+      },
+      {
+        "name": "Espinafre",
+        "pricing": "UNIT",
+        "image": "espinafre.jpg"
+      },
+      {
+        "name": "Gengibre",
+        "pricing": "UNIT",
+        "image": "gengibre.jpg"
+      },
+      {
+        "name": "Hortelã",
+        "pricing": "UNIT",
+        "image": "hortela.jpg"
+      },
+      {
+        "name": "Inhame",
+        "pricing": "WEIGHT",
+        "image": "inhame.jpg"
+      },
+      {
+        "name": "Louro",
+        "pricing": "UNIT",
+        "image": "louro.jpg"
+      },
+      {
+        "name": "Manjericão",
+        "pricing": "UNIT",
+        "image": "manjericao.jpg"
+      },
+      {
+        "name": "Microverdes",
+        "pricing": "UNIT",
+        "image": "microverdes.jpg"
+      },
+      {
+        "name": "Microverdes Amaranto",
+        "pricing": "UNIT",
+        "image": "microverde_amaranto.jpg"
+      },
+      {
+        "name": "Microverdes Beterraba",
+        "pricing": "UNIT",
+        "image": "microverde_beterraba.jpg"
+      },
+      {
+        "name": "Microverdes Couve",
+        "pricing": "UNIT",
+        "image": "microverde_couve.jpg"
+      },
+      {
+        "name": "Microverdes Mostarda",
+        "pricing": "UNIT",
+        "image": "microverde_mostarda.jpg"
+      },
+      {
+        "name": "Microverdes Repolho",
+        "pricing": "UNIT",
+        "image": "microverde_repolho.jpg"
+      },
+      {
+        "name": "Microverdes Rúcula",
+        "pricing": "UNIT",
+        "image": "microverde_rucula.jpg"
+      },
+      {
+        "name": "Mostarda",
+        "pricing": "UNIT",
+        "image": "mostarda.jpg"
+      },
+      {
+        "name": "Nabo",
+        "pricing": "UNIT",
+        "image": "nabo.jpg"
+      },
+      {
+        "name": "Palmito",
+        "pricing": "WEIGHT",
+        "image": "palmito.jpg"
+      },
+      {
+        "name": "Pepino",
+        "pricing": "UNIT",
+        "image": "pepino.jpg"
+      },
+      {
+        "name": "Pimenta Cambuci",
+        "pricing": "WEIGHT",
+        "image": "pimenta_cambuci.jpg"
+      },
+      {
+        "name": "Pimenta Dedo-de-moça",
+        "pricing": "WEIGHT",
+        "image": "pimenta_dedo_de_moca.jpg"
+      },
+      {
+        "name": "Pimenta Malagueta",
+        "pricing": "WEIGHT",
+        "image": "pimenta_malagueta.jpg"
+      },
+      {
+        "name": "Pimenta Vermelha",
+        "pricing": "WEIGHT",
+        "image": "pimenta_vermelha.jpg"
+      },
+      {
+        "name": "Pimentão Amarelo",
+        "pricing": "UNIT",
+        "image": "pimentao_amarelo.jpg"
+      },
+      {
+        "name": "Pimentão Verde",
+        "pricing": "UNIT",
+        "image": "pimentao_verde.jpg"
+      },
+      {
+        "name": "Pimentão Vermelho",
+        "pricing": "UNIT",
+        "image": "pimentao_vermelho.jpg"
+      },
+
+      {
+        "name": "Quiabo",
+        "pricing": "WEIGHT",
+        "image": "quiabo.jpg"
+      },
+      {
+        "name": "Rabanete",
+        "pricing": "WEIGHT",
+        "image": "rabanete.jpg"
+      },
+      {
+        "name": "Repolho",
+        "pricing": "UNIT",
+        "image": "repolho.jpg"
+      },
+      {
+        "name": "Rúcula",
+        "pricing": "UNIT",
+        "image": "rucula.jpg"
+      },
+      {
+        "name": "Salsa",
+        "pricing": "UNIT",
+        "image": "salsa.jpg"
+      },
+      {
+        "name": "Salsão",
+        "pricing": "UNIT",
+        "image": "salsao.jpg"
+      },
+      {
+        "name": "Tempero Verde",
+        "pricing": "UNIT",
+        "image": "tempero_verde.jpg"
+      },
+      {
+        "name": "Tomate Cereja",
+        "pricing": "WEIGHT",
+        "image": "tomate_cereja.jpg"
+      },
+      {
+        "name": "Tomate Gaúcho",
+        "pricing": "WEIGHT",
+        "image": "tomate_gaucho.jpg"
+      },
+      {
+        "name": "Tomate Italiano",
+        "pricing": "WEIGHT",
+        "image": "tomate_italiano.jpg"
+      },
+      {
+        "name": "Tomate Longa Vida",
+        "pricing": "WEIGHT",
+        "image": "tomate_longa_vida.jpg"
+      },
+      {
+        "name": "Tomate Xepa",
+        "pricing": "WEIGHT",
+        "image": "tomate_xepa.jpg"
+      },
+      {
+        "name": "Tomilho",
+        "pricing": "UNIT",
+        "image": "tomilho.jpg"
+      },
+      {
+        "name": "Vagem",
+        "pricing": "WEIGHT",
+        "image": "vagem.jpg"
+      }
+    ]
+  },
+  {
+    "name": "Frutas",
+    "items": [
+      {
+        "name": "Abacate",
+        "pricing": "WEIGHT",
+        "image": "abacate.jpg"
+      },
+      {
+        "name": "Abacaxi",
+        "pricing": "WEIGHT",
+        "image": "abacaxi.jpg"
+      },
+      {
+        "name": "Acerola",
+        "pricing": "WEIGHT",
+        "image": "acerola.jpg"
+      },
+      {
+        "name": "Ameixa",
+        "pricing": "WEIGHT",
+        "image": "ameixa.jpg"
+      },
+      {
+        "name": "Amora",
+        "pricing": "WEIGHT",
+        "image": "amora.jpg"
+      },
+      {
+        "name": "Araçá",
+        "pricing": "WEIGHT",
+        "image": "araca.jpg"
+      },
+      {
+        "name": "Banana Caturra",
+        "pricing": "WEIGHT",
+        "image": "banana_caturra.jpg"
+      },
+      {
+        "name": "Banana Maçã",
+        "pricing": "WEIGHT",
+        "image": "banana_maca.jpg"
+      },
+      {
+        "name": "Banana Nanica",
+        "pricing": "WEIGHT",
+        "image": "banana_nanica.jpg"
+      },
+      {
+        "name": "Banana Prata",
+        "pricing": "WEIGHT",
+        "image": "banana_prata.jpg"
+      },
+      {
+        "name": "Bergamota",
+        "pricing": "WEIGHT",
+        "image": "bergamota.jpg"
+      },
+      {
+        "name": "Butiá",
+        "pricing": "WEIGHT",
+        "image": "butia.jpg"
+      },
+      {
+        "name": "Caqui",
+        "pricing": "WEIGHT",
+        "image": "caqui.jpg"
+      },
+      {
+        "name": "Carambola",
+        "pricing": "WEIGHT",
+        "image": "carambola.jpg"
+      },
+      {
+        "name": "Cereja",
+        "pricing": "WEIGHT",
+        "image": "cereja.jpg"
+      },
+      {
+        "name": "Figo",
+        "pricing": "WEIGHT",
+        "image": "figo.jpg"
+      },
+      {
+        "name": "Framboesa",
+        "pricing": "WEIGHT",
+        "image": "framboesa.jpg"
+      },
+      {
+        "name": "Goiaba",
+        "pricing": "WEIGHT",
+        "image": "goiaba.jpg"
+      },
+      {
+        "name": "Jabuticaba",
+        "pricing": "WEIGHT",
+        "image": "jabuticaba.jpg"
+      },
+      {
+        "name": "Laranja do Céu",
+        "pricing": "WEIGHT",
+        "image": "laranja_do_ceu.jpg"
+      },
+      {
+        "name": "Laranja Pera",
+        "pricing": "WEIGHT",
+        "image": "laranja_pera.jpg"
+      },
+      {
+        "name": "Laranja Umbigo",
+        "pricing": "WEIGHT",
+        "image": "laranja_umbigo.jpg"
+      },
+      {
+        "name": "Limão Bergamota",
+        "pricing": "WEIGHT",
+        "image": "limao_bergamota.jpg"
+      },
+      {
+        "name": "Limão Taiti",
+        "pricing": "WEIGHT",
+        "image": "limao_taiti.jpg"
+      },
+      {
+        "name": "Maçã Nacional Fuji",
+        "pricing": "WEIGHT",
+        "image": "maca_fuji.jpg"
+      },
+      {
+        "name": "Maçã Nacional Gala",
+        "pricing": "WEIGHT",
+        "image": "maca_gala.jpg"
+      },
+      {
+        "name": "Mamão Formosa",
+        "pricing": "UNIT",
+        "image": "mamao_formosa.jpg"
+      },
+      {
+        "name": "Mamão Papaya",
+        "pricing": "UNIT",
+        "image": "mamao_papaya.jpg"
+      },
+      {
+        "name": "Manga",
+        "pricing": "WEIGHT",
+        "image": "manga.jpg"
+      },
+      {
+        "name": "Maracujá Azedo",
+        "pricing": "WEIGHT",
+        "image": "maracuja_azedo.jpg"
+      },
+      {
+        "name": "Maracujá Doce",
+        "pricing": "WEIGHT",
+        "image": "maracuja_doce.jpg"
+      },
+      {
+        "name": "Melancia",
+        "pricing": "UNIT",
+        "image": "melancia.jpg"
+      },
+      {
+        "name": "Melão Amarelo",
+        "pricing": "UNIT",
+        "image": "melao_amarelo.jpg"
+      },
+      {
+        "name": "Melão Casca de Carvalho",
+        "pricing": "UNIT",
+        "image": "melao_casca_de_carvalho.jpg"
+      },
+      {
+        "name": "Morango",
+        "pricing": "WEIGHT",
+        "image": "morango.jpg"
+      },
+      {
+        "name": "Pera",
+        "pricing": "WEIGHT",
+        "image": "pera.jpg"
+      },
+      {
+        "name": "Uva",
+        "pricing": "WEIGHT",
+        "image": "uva.jpg"
+      }
+    ]
+  },
+  {
+    "name": "Cereais e grãos",
+    "items": [
+      {
+        "name": "Amendoim",
+        "pricing": "WEIGHT",
+        "image": "amendoim.jpg"
+      },
+      {
+        "name": "Arroz Branco",
+        "pricing": "WEIGHT",
+        "image": "arroz_branco.jpg"
+      },
+      {
+        "name": "Arroz Cateto",
+        "pricing": "WEIGHT",
+        "image": "arroz_cateto.jpg"
+      },
+      {
+        "name": "Arroz Integral",
+        "pricing": "WEIGHT",
+        "image": "arroz_integral.jpg"
+      },
+      {
+        "name": "Arroz Parboilizado",
+        "pricing": "WEIGHT",
+        "image": "arroz_parboilizado.jpg"
+      },
+      {
+        "name": "Arroz Polido",
+        "pricing": "WEIGHT",
+        "image": "arroz_polido.jpg"
+      },
+      {
+        "name": "Chia",
+        "pricing": "WEIGHT",
+        "image": "chia.jpg"
+      },
+      {
+        "name": "Ervilha Comum",
+        "pricing": "WEIGHT",
+        "image": "ervilha_comum.jpg"
+      },
+      {
+        "name": "Ervilha Torta",
+        "pricing": "WEIGHT",
+        "image": "ervilha_torta.jpg"
+      },
+      {
+        "name": "Farinha de Centeio",
+        "pricing": "WEIGHT",
+        "image": "farinha_de_centeio.jpg"
+      },
+      {
+        "name": "Farinha de Milho",
+        "pricing": "WEIGHT",
+        "image": "farinha_de_milho.jpg"
+      },
+      {
+        "name": "Farinha de Trigo Branca",
+        "pricing": "WEIGHT",
+        "image": "farinha_de_trigo_branca.jpg"
+      },
+      {
+        "name": "Farinha de Trigo Integral",
+        "pricing": "WEIGHT",
+        "image": "farinha_de_trigo_integral.jpg"
+      },
+      {
+        "name": "Favas",
+        "pricing": "WEIGHT",
+        "image": "fava.jpg"
+      },
+      {
+        "name": "Feijão Azuki",
+        "pricing": "WEIGHT",
+        "image": "feijao_azuki.jpg"
+      },
+      {
+        "name": "Feijão Branco",
+        "pricing": "WEIGHT",
+        "image": "feijao_azuki.jpg"
+      },
+      {
+        "name": "Feijão Carioca",
+        "pricing": "WEIGHT",
+        "image": "feijao_carioca.jpg"
+      },
+      {
+        "name": "Feijão Fradinho",
+        "pricing": "WEIGHT",
+        "image": "feijao_fradinho.jpg"
+      },
+      {
+        "name": "Feijão Preto",
+        "pricing": "WEIGHT",
+        "image": "feijao_preto.jpg"
+      },
+      {
+        "name": "Feijão Vermelho",
+        "pricing": "WEIGHT",
+        "image": "feijao_vermelho.jpg"
+      },
+      {
+        "name": "Flocos de Aveia Fino",
+        "pricing": "WEIGHT",
+        "image": "flocos_de_aveia_fino.jpg"
+      },
+      {
+        "name": "Flocos de Aveia Grosso",
+        "pricing": "WEIGHT",
+        "image": "flocos_de_aveia_grosso.jpg"
+      },
+      {
+        "name": "Grão de Bico",
+        "pricing": "WEIGHT",
+        "image": "grao_de_bico.jpg"
+      },
+      {
+        "name": "Lentilha",
+        "pricing": "WEIGHT",
+        "image": "lentilha.jpg"
+      },
+      {
+        "name": "Linhaça Dourada",
+        "pricing": "WEIGHT",
+        "image": "linhaca_dourada.jpg"
+      },
+      {
+        "name": "Milho",
+        "pricing": "WEIGHT",
+        "image": "milho.jpg"
+      },
+      {
+        "name": "Semente de Funcho",
+        "pricing": "WEIGHT",
+        "image": "semente_de_funcho.jpg"
+      },
+      {
+        "name": "Semente de Girassol",
+        "pricing": "WEIGHT",
+        "image": "sementes_de_girassol.jpg"
+      },
+      {
+        "name": "Soja",
+        "pricing": "WEIGHT",
+        "image": "soja.jpg"
+      }
+    ]
+  },
+  {
+    "name": "Origem animal",
+    "items": [
+      {
+        "name": "Banha",
+        "pricing": "WEIGHT",
+        "image": "banha.jpg"
+      },
+      {
+        "name": "Boi",
+        "pricing": "WEIGHT",
+        "image": "boi.jpg"
+      },
+      {
+        "name": "Galinha",
+        "pricing": "WEIGHT",
+        "image": "galinha.jpg"
+      },
+      {
+        "name": "Leite",
+        "pricing": "WEIGHT",
+        "image": "leite.jpg"
+      },
+      {
+        "name": "Mel",
+        "pricing": "WEIGHT",
+        "image": "mel.jpg"
+      },
+      {
+        "name": "Ovelha",
+        "pricing": "WEIGHT",
+        "image": "ovelha.jpg"
+      },
+      {
+        "name": "Ovo Branco",
+        "pricing": "UNIT",
+        "image": "ovo_branco.jpg"
+      },
+      {
+        "name": "Ovo Colonial",
+        "pricing": "UNIT",
+        "image": "ovo_colonial.jpg"
+      },
+      {
+        "name": "Ovo de Codorna",
+        "pricing": "UNIT",
+        "image": "ovo_codorna.jpg"
+      },
+      {
+        "name": "Ovo vermelho",
+        "pricing": "UNIT",
+        "image": "ovo_vermelho.jpg"
+      },
+      {
+        "name": "Porco",
+        "pricing": "WEIGHT",
+        "image": "porco.jpg"
+      },
+      {
+        "name": "Queijo Colonial",
+        "pricing": "UNIT",
+        "image": "queijo_colonial.jpg"
+      },
+      {
+        "name": "Queijo Gouda",
+        "pricing": "UNIT",
+        "image": "queijo_gouda.jpg"
+      },
+      {
+        "name": "Queijo Mussarela Fatiado",
+        "pricing": "WEIGHT",
+        "image": "queijo_mussarela_fatiado.jpg"
+      },
+      {
+        "name": "Queijo Prato Fatiado",
+        "pricing": "WEIGHT",
+        "image": "queijo_prato_fatiado.jpg"
+      },
+      {
+        "name": "Ricota",
+        "pricing": "WEIGHT",
+        "image": "ricota.jpg"
+      }
+    ]
+  },
+  {
+    "name": "Artesanais e não perecíveis",
+    "items": [
+      {
+        "name": "Bala de Banana",
+        "pricing": "UNIT",
+        "image": "bala_de_banana.jpg"
+      },
+      {
+        "name": "Barra de Banana",
+        "pricing": "UNIT",
+        "image": "barra_de_banana.jpg"
+      },
+      {
+        "name": "Café Torrado e Moido",
+        "pricing": "UNIT",
+        "image": "cafe_torrado_e_moido.jpg"
+      },
+      {
+        "name": "Cookies",
+        "pricing": "UNIT",
+        "image": "cookies.jpg"
+      },
+      {
+        "name": "Erva-Mate",
+        "pricing": "WEIGHT",
+        "image": "erva_mate.jpg"
+      },
+      {
+        "name": "Extrato de Tomate",
+        "pricing": "UNIT",
+        "image": "extrato_de_tomate.jpg"
+      },
+      {
+        "name": "Geleia de Abacaxi com Gengibre",
+        "pricing": "UNIT",
+        "image": "geleia_abacaxi_com_gengibre.jpg"
+      },
+      {
+        "name": "Geleia de Abacaxi com Pimenta",
+        "pricing": "UNIT",
+        "image": "geleia_abacaxi_com_pimenta.jpg"
+      },
+      {
+        "name": "Geleia de Banana com Rum",
+        "pricing": "UNIT",
+        "image": "geleia_banana_com_rum.jpg"
+      },
+      {
+        "name": "Geleia de Laranja com Damasco",
+        "pricing": "UNIT",
+        "image": "geleia_laranja_com_damasco.jpg"
+      },
+      {
+        "name": "Geleia de Laranja com Especiarias",
+        "pricing": "UNIT",
+        "image": "geleia_laranja_com_especiarias.jpg"
+      },
+      {
+        "name": "Geleia de Maçã com Canela",
+        "pricing": "UNIT",
+        "image": "geleia_maca_com_canela.jpg"
+      },
+      {
+        "name": "Geleia de Manga com Maracujá",
+        "pricing": "UNIT",
+        "image": "geleia_manga_com_maracuja.jpg"
+      },
+      {
+        "name": "Geleia de Manga com Maracujá e Pimenta",
+        "pricing": "UNIT",
+        "image": "geleia_manga_com_maracuja_e_pimenta.jpg"
+      },
+      {
+        "name": "Geleia de Morango",
+        "pricing": "UNIT",
+        "image": "geleia_morango.jpg"
+      },
+      {
+        "name": "Geleia de Morango com Chia",
+        "pricing": "UNIT",
+        "image": "geleia_morango_com_chia.jpg"
+      },
+      {
+        "name": "Geleia de Morango com Pimenta",
+        "pricing": "UNIT",
+        "image": "geleia_morango_com_pimenta.jpg"
+      },
+      {
+        "name": "Geleia de Morango com Vinho",
+        "pricing": "UNIT",
+        "image": "geleia_morango_com_vinho.jpg"
+      },
+      {
+        "name": "Geleia de Morango com Jeropiga",
+        "pricing": "UNIT",
+        "image": "geleia_morango_com_jeropiga.jpg"
+      },
+      {
+        "name": "Geleia de Morango com Maracujá",
+        "pricing": "UNIT",
+        "image": "geleia_morango_com_maracuja.jpg"
+      },
+      {
+        "name": "Geleia de Tomate com Manjericão",
+        "pricing": "UNIT",
+        "image": "geleia_tomate_com_manjericao.jpg"
+      },
+      {
+        "name": "Húmus",
+        "pricing": "WEIGHT",
+        "image": "humus.jpg"
+      },
+      {
+        "name": "Jurupiga Especial",
+        "pricing": "WEIGHT",
+        "image": "jurupiga_especial.jpg"
+      },
+      {
+        "name": "Jurupiga Tradicional",
+        "pricing": "WEIGHT",
+        "image": "jurupiga_tradicional.jpg"
+      },
+      {
+        "name": "Molho de Tomate",
+        "pricing": "WEIGHT",
+        "image": "molho_de_tomate.jpg"
+      },
+      {
+        "name": "Pão Caseiro",
+        "pricing": "UNIT",
+        "image": "pao_caseiro.jpg"
+      },
+      {
+        "name": "Patê de Alho",
+        "pricing": "UNIT",
+        "image": "pate_de_alho.jpg"
+      },
+      {
+        "name": "Patê de Beterraba",
+        "pricing": "UNIT",
+        "image": "pate_de_beterraba.jpg"
+      },
+      {
+        "name": "Patê de Brócolis",
+        "pricing": "UNIT",
+        "image": "pate_de_brocolis.jpg"
+      },
+      {
+        "name": "Sal Marinho",
+        "pricing": "WEIGHT",
+        "image": "sal_marinho.jpg"
+      },
+      {
+        "name": "Vinagre de Maçã",
+        "pricing": "WEIGHT",
+        "image": "vinagre_de_maca.jpg"
+      },
+      {
+        "name": "Vinagre de Uva",
+        "pricing": "WEIGHT",
+        "image": "vinagre_de_uva.jpg"
+      }
+    ]
+  },
+  {
+    "name": "Peixes",
+    "items": [
+      {
+        "name": "Bagre",
+        "pricing": "WEIGHT",
+        "image": "bagre.jpg"
+      },
+      {
+        "name": "Burriquete",
+        "pricing": "WEIGHT",
+        "image": "burriquete.jpg"
+      },
+      {
+        "name": "Camarão",
+        "pricing": "WEIGHT",
+        "image": "camarao.jpg"
+      },
+      {
+        "name": "Corvina",
+        "pricing": "WEIGHT",
+        "image": "corvina.jpg"
+      },
+      {
+        "name": "Jundiá",
+        "pricing": "WEIGHT",
+        "image": "jundia.jpg"
+      },
+      {
+        "name": "Linguado",
+        "pricing": "WEIGHT",
+        "image": "linguado.jpg"
+      },
+      {
+        "name": "Miraguaia",
+        "pricing": "WEIGHT",
+        "image": "miraguaia.jpg"
+      },
+      {
+        "name": "Peixe Rei",
+        "pricing": "WEIGHT",
+        "image": "peixe_rei.jpg"
+      },
+      {
+        "name": "Pintado",
+        "pricing": "WEIGHT",
+        "image": "pintado.jpg"
+      },
+      {
+        "name": "Siri",
+        "pricing": "WEIGHT",
+        "image": "siri.jpg"
+      },
+      {
+        "name": "Tainha",
+        "pricing": "WEIGHT",
+        "image": "tainha.jpg"
+      },
+      {
+        "name": "Traíra",
+        "pricing": "WEIGHT",
+        "image": "traira.jpg"
+      }
+    ]
+  }
+]

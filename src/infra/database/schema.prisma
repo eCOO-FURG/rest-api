@@ -1,0 +1,163 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ROLE {
+  PRODUCER
+  USER
+  ADMIN
+}
+
+model User {
+  id          String    @id @default(uuid())
+  first_name  String
+  last_name   String
+  cpf         String    @unique
+  email       String    @unique
+  phone       String    @unique
+  password    String?
+  roles       ROLE[]    @default([USER])
+  verified_at DateTime?
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  sessions Session[]
+  orders   Order[]
+  otps     Otp[]
+  farm     Farm?
+
+  @@map("users")
+}
+
+model Session {
+  id    String @id @default(uuid())
+  ip    String
+  agent String
+
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  @@map("sessions")
+}
+
+model Otp {
+  id String @id @default(uuid())
+
+  value String
+  used  Boolean @default(false)
+
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  @@map("otps")
+}
+
+model Farm {
+  id     String  @id @default(uuid())
+  name   String
+  caf    String  @unique
+  active Boolean @default(false)
+
+  admin_id String @unique
+  admin    User   @relation(fields: [admin_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  offers Offer[]
+
+  @@map("farms")
+}
+
+enum PRICING {
+  UNIT
+  WEIGHT
+}
+
+model Product {
+  id      String  @id @default(uuid())
+  name    String
+  image   String
+  pricing PRICING
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  offers Offer[]
+
+  @@map("products")
+}
+
+model Cycle {
+  id      String @id @default(uuid())
+  alias   String @unique
+  offer   Int[]
+  order   Int[]
+  deliver Int[]
+
+  offers Offer[]
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  @@map("cycles")
+}
+
+enum STATUS {
+  PENDING
+  CANCELLED
+  RECEIVED
+}
+
+model Offer {
+  id          String  @id @default(uuid())
+  price       Decimal @db.Decimal(10, 2)
+  amount      Decimal @db.Decimal(10, 2)
+  description String? @db.VarChar(240)
+  status      STATUS
+
+  farm_id String
+  farm    Farm   @relation(fields: [farm_id], references: [id], onDelete: Cascade)
+
+  cycle_id String
+  cycle    Cycle  @relation(fields: [cycle_id], references: [id], onDelete: Cascade)
+
+  product_id String
+  product    Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  orders Order[]
+
+  @@map("offers")
+}
+
+model Order {
+  id     String  @id @default(uuid())
+  amount Decimal @db.Decimal(10, 2)
+
+  user_id  String
+  customer User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  offer_id String
+  offer    Offer  @relation(fields: [offer_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  @@map("orders")
+}

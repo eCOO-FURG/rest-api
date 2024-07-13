@@ -12,7 +12,7 @@ export interface OfferProps extends EntityRequest {
   farm_id: UUID;
   cycle_id: UUID;
   product_id: UUID;
-  delivered_at: Date | null;
+  status: "PENDING" | "CANCELLED" | "RECEIVED";
 }
 
 export class Offer extends Entity<OfferProps> {
@@ -40,8 +40,8 @@ export class Offer extends Entity<OfferProps> {
     return this.props.cycle_id;
   }
 
-  get delivered_at() {
-    return this.props.delivered_at;
+  get status() {
+    return this.props.status;
   }
 
   set amount(amount: number) {
@@ -52,11 +52,11 @@ export class Offer extends Entity<OfferProps> {
     this.props.price = price;
   }
 
-  static create(props: Optional<OfferProps, "description" | "delivered_at">) {
+  static create(props: Optional<OfferProps, "description" | "status">) {
     const offer = new Offer({
       ...props,
       description: props.description ?? null,
-      delivered_at: props.delivered_at ?? null,
+      status: props.status ?? "PENDING",
     });
 
     return offer;
