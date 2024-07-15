@@ -9,7 +9,7 @@ import { PrismaSessionsRepository } from "@/infra//database/repositories/prisma-
 import { PrismaCyclesRepository } from "@/infra//database/repositories/prisma-cycles-repository";
 import { PrismaProductRepository } from "@/infra//database/repositories/prisma-products-repository";
 import { PrismaOffersRepository } from "@/infra//database/repositories/prisma-offers-repository";
-import { PismaOrdersRepository } from "@/infra//database/repositories/prisma-orders-repository";
+import { PrismaOrdersRepository } from "@/infra//database/repositories/prisma-orders-repository";
 import { PrismaFarmsRepository } from "../database/repositories/prisma-farms-repository";
 
 // Services
@@ -42,7 +42,7 @@ container.register({
   cyclesRepository: asClass(PrismaCyclesRepository).singleton(),
   productsRepository: asClass(PrismaProductRepository).singleton(),
   offersRepository: asClass(PrismaOffersRepository).singleton(),
-  ordersRepository: asClass(PismaOrdersRepository).singleton(),
+  ordersRepository: asClass(PrismaOrdersRepository).singleton(),
   farmsRepository: asClass(PrismaFarmsRepository).singleton(),
 
   // services
