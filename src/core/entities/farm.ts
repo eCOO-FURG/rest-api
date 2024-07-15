@@ -10,6 +10,7 @@ export interface FarmProps {
   caf: string;
   active: boolean;
   admin_id: UUID;
+  tax: number;
 }
 
 export class Farm extends Entity<FarmProps> {
@@ -41,10 +42,15 @@ export class Farm extends Entity<FarmProps> {
     this.props.active = active;
   }
 
-  static create(props: Optional<FarmProps, "active"> & EntityRequest) {
+  get tax() {
+    return this.props.tax;
+  }
+
+  static create(props: Optional<FarmProps, "active" | "tax"> & EntityRequest) {
     const farm = new Farm({
       ...props,
       active: props.active ?? true,
+      tax: props.tax ?? 20,
     });
     return farm;
   }

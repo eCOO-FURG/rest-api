@@ -44,8 +44,9 @@ export class OrderProductsUseCase {
       throw new ClosedActionError("comprar", offer.cycle.id.value);
     }
 
-    const alreadyOrdered = await this.ordersRepository.findByOfferId(
-      offer.id.value
+    const alreadyOrdered = await this.ordersRepository.findByOfferIdAndUserId(
+      offer.id.value,
+      user.id.value
     );
 
     if (alreadyOrdered)
