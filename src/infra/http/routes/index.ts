@@ -36,8 +36,8 @@ router.post(
   offerProductsController
 );
 
-router.post(
-  "/update-offers", 
+router.patch(
+  "/offers/update", 
   ensureAuthenticated, 
   ensureFarmAdmin, 
   updateOfferController
