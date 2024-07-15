@@ -70,6 +70,7 @@ model Farm {
   name   String
   caf    String  @unique
   active Boolean @default(false)
+  tax    Float
 
   admin_id String @unique
   admin    User   @relation(fields: [admin_id], references: [id], onDelete: Cascade)
