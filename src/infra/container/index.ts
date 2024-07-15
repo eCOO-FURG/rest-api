@@ -9,7 +9,7 @@ import { PrismaSessionsRepository } from "@/infra//database/repositories/prisma-
 import { PrismaCyclesRepository } from "@/infra//database/repositories/prisma-cycles-repository";
 import { PrismaProductRepository } from "@/infra//database/repositories/prisma-products-repository";
 import { PrismaOffersRepository } from "@/infra//database/repositories/prisma-offers-repository";
-import { PrismaOrdersRepository } from "@/infra//database/repositories/prisma-orders-repository";
+import { PismaOrdersRepository } from "@/infra//database/repositories/prisma-orders-repository";
 import { PrismaFarmsRepository } from "../database/repositories/prisma-farms-repository";
 
 // Services
@@ -26,6 +26,7 @@ import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
 import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
 import { HandleOrdersDeliveryUseCase } from "@/core/use-cases/handle-orders-delivery";
 import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
+import { OrderProductsUseCase } from "@/core/use-cases/order-products";
 import { OfferProductsUseCase } from "@/core/use-cases/offer-products";
 
 // Env
@@ -41,7 +42,7 @@ container.register({
   cyclesRepository: asClass(PrismaCyclesRepository).singleton(),
   productsRepository: asClass(PrismaProductRepository).singleton(),
   offersRepository: asClass(PrismaOffersRepository).singleton(),
-  ordersRepository: asClass(PrismaOrdersRepository).singleton(),
+  ordersRepository: asClass(PismaOrdersRepository).singleton(),
   farmsRepository: asClass(PrismaFarmsRepository).singleton(),
 
   // services
@@ -119,6 +120,18 @@ container.register({
   registerFarmUseCase: asFunction(
     ({ usersRepository, farmsRepository }) =>
       new RegisterFarmUseCase(usersRepository, farmsRepository)
+  ),
+  orderProductsUsecase: asFunction(
+    ({ 
+      usersRepository, 
+      offersRepository, 
+      ordersRepository 
+    }) => 
+      new OrderProductsUseCase(
+        usersRepository, 
+        offersRepository, 
+        ordersRepository
+      )
   ),
   offerProductsUseCase: asFunction(
     ({
