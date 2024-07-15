@@ -1,9 +1,13 @@
-// Services
+// Libs
 import { asClass, asFunction, AwilixContainer } from "awilix";
 import { createTransport } from "nodemailer";
+
+// Services
 import { Nodemailer } from "@/infra/mail/nodemailer";
 import { Jwt } from "@/infra/cryptography/jwt";
 import { BcrypterHasher } from "@/infra/cryptography/bcrypt";
+
+// Env
 import { env } from "@/infra/env";
 
 export default (container: AwilixContainer) => {

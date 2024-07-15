@@ -1,5 +1,7 @@
+// Libs
 import { asClass, AwilixContainer } from "awilix";
 
+// Repositories
 import { PrismaCyclesRepository } from "@/infra/database/repositories/prisma-cycles-repository";
 import { PrismaFarmsRepository } from "@/infra/database/repositories/prisma-farms-repository";
 import { PrismaOffersRepository } from "@/infra/database/repositories/prisma-offers-repository";
