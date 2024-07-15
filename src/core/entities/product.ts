@@ -4,7 +4,7 @@ import { Entity, EntityRequest } from "@/core/entities/entity";
 export interface ProductProps extends EntityRequest {
   name: string;
   image: string;
-  pricing: "UNIT" | "WEIGHT";
+  pricing: "UNIT" | "WEIGHT" | "MILILITER";
 }
 
 export class Product extends Entity<ProductProps> {

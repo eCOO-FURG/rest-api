@@ -85,6 +85,7 @@ model Farm {
 enum PRICING {
   UNIT
   WEIGHT
+  MILILITER
 }
 
 model Product {

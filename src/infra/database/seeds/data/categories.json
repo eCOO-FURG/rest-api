@@ -765,7 +765,7 @@
       },
       {
         "name": "Leite",
-        "pricing": "WEIGHT",
+        "pricing": "MILILITER",
         "image": "leite.jpg"
       },
       {
@@ -945,12 +945,12 @@
       },
       {
         "name": "Jurupiga Especial",
-        "pricing": "WEIGHT",
+        "pricing": "MILILITER",
         "image": "jurupiga_especial.jpg"
       },
       {
         "name": "Jurupiga Tradicional",
-        "pricing": "WEIGHT",
+        "pricing": "MILILITER",
         "image": "jurupiga_tradicional.jpg"
       },
       {
@@ -985,12 +985,12 @@
       },
       {
         "name": "Vinagre de Maçã",
-        "pricing": "WEIGHT",
+        "pricing": "MILILITER",
         "image": "vinagre_de_maca.jpg"
       },
       {
         "name": "Vinagre de Uva",
-        "pricing": "WEIGHT",
+        "pricing": "MILILITER",
         "image": "vinagre_de_uva.jpg"
       }
     ]
