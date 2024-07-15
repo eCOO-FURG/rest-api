@@ -11,8 +11,8 @@ import {
 
 // Services
 import { prisma } from "@/infra/database/prisma-service";
-import { PrismaOfferMapper } from "../mappers/prisma-offer-mapper";
-import { PrismaOfferWithProductAndCycleMapper } from "../mappers/prisma-offer-with-product-and-cycle-mapper";
+import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
+import { PrismaOfferWithProductAndCycleMapper } from "@/infra/database/mappers/prisma-offer-with-product-and-cycle-mapper";
 
 export class PrismaOffersRepository implements OffersRepository {
   async findById(id: string): Promise<Offer | null> {

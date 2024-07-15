@@ -3,7 +3,7 @@ import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-r
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 
 // Errors
-import { ResourceNotFoundError } from "../errors/resource-not-found";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 interface ListFarmsWithOrdersProps {
   cycle_id: string;

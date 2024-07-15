@@ -1,5 +1,5 @@
 // Use-cases
-import { UpdateUserUseCase } from "./update-user";
+import { UpdateUserUseCase } from "@/core/use-cases/update-user";
 
 // Repositories
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
@@ -75,20 +75,20 @@ describe("update user", () => {
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
-  it('should hash the password', async () => {
-    const password = '12345678'
+  it("should hash the password", async () => {
+    const password = "12345678";
 
-    const user = makeUser()
-    await repositories.users.create(user)
+    const user = makeUser();
+    await repositories.users.create(user);
 
     await sut.execute({
       user_id: user.id.value,
-      password: password
+      password: password,
     });
 
     const updatedUser = repositories.users.items[0];
     const isPasswordHashed = updatedUser.password !== password;
 
     expect(isPasswordHashed).toBeTruthy();
-  })
+  });
 });

@@ -18,12 +18,7 @@ const updateUserSchema = {
     password: z.string().min(8).optional(),
   }).refine((data) => {
     return Object.values(data).some((value) => value !== undefined)
-  }, {
-    message: "Pelo menos um campo deve ser fornecido."
   }),
-  params: z.object({
-    user_id: z.string(),
-  })
 }
 
 export async function updateUserController(
@@ -41,12 +36,10 @@ export async function updateUserController(
       password 
     } = updateUserSchema.body.parse(request.body)
 
-    const { user_id } = updateUserSchema.params.parse(request.params)
-
     const updateUserUsecase = container.resolve<UpdateUserUseCase>("updateUserUsecase")
 
     await updateUserUsecase.execute({
-      user_id,
+      user_id: request.user_id,
       first_name,
       last_name,
       cpf,

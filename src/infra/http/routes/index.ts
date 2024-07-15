@@ -7,13 +7,13 @@ import { authenticateController } from "@/infra/http/controllers/authenticate";
 import { verifyUserController } from "@/infra/http/controllers/verify-user";
 import { registerFarmController } from "@/infra/http/controllers/register-farm";
 import { orderProductsController } from "@/infra/http/controllers/order-products";
-import { offerProductsController } from "../controllers/offer-products";
 import { updateUserController } from "../controllers/update-user";
+import { offerProductsController } from "@/infra/http/controllers/offer-products";
 import { handleOrdersDeliveryController } from "@/infra/http/controllers/handle-orders-delivery";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
-import { ensureFarmAdmin } from "../middlewares/ensure-farm-admin";
+import { ensureFarmAdmin } from "@/infra/http/middlewares/ensure-farm-admin";
 
 export const router = Router();
 
@@ -38,4 +38,4 @@ router.post(
   offerProductsController
 );
 
-router.post("/update-user", ensureAuthenticated, updateUserController)
+router.patch("/users", ensureAuthenticated, updateUserController)
