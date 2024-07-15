@@ -41,7 +41,7 @@ export async function ensureAuthenticated(
       const sessionsRepository =
         container.resolve<PrismaSessionsRepository>("sessionsRepository");
 
-      const hour = new Date(Date.now() + 60 * 60 * 1000);
+      const hour = new Date(Date.now() - 60 * 60 * 1000);
 
       const session = await sessionsRepository.search({
         user_id,
