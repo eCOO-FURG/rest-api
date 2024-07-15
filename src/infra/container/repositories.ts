@@ -1,13 +1,13 @@
 import { asClass, AwilixContainer } from "awilix";
 
-import { PrismaCyclesRepository } from "../database/repositories/prisma-cycles-repository";
-import { PrismaFarmsRepository } from "../database/repositories/prisma-farms-repository";
-import { PrismaOffersRepository } from "../database/repositories/prisma-offers-repository";
-import { PrismaOrdersRepository } from "../database/repositories/prisma-orders-repository";
-import { PrismaOtpsRepository } from "../database/repositories/prisma-otps-repository";
-import { PrismaProductRepository } from "../database/repositories/prisma-products-repository";
-import { PrismaSessionsRepository } from "../database/repositories/prisma-sessions-repository";
-import { PrismaUsersRepository } from "../database/repositories/prisma-users-repository";
+import { PrismaCyclesRepository } from "@/infra/database/repositories/prisma-cycles-repository";
+import { PrismaFarmsRepository } from "@/infra/database/repositories/prisma-farms-repository";
+import { PrismaOffersRepository } from "@/infra/database/repositories/prisma-offers-repository";
+import { PrismaOrdersRepository } from "@/infra/database/repositories/prisma-orders-repository";
+import { PrismaOtpsRepository } from "@/infra/database/repositories/prisma-otps-repository";
+import { PrismaProductRepository } from "@/infra/database/repositories/prisma-products-repository";
+import { PrismaSessionsRepository } from "@/infra/database/repositories/prisma-sessions-repository";
+import { PrismaUsersRepository } from "@/infra/database/repositories/prisma-users-repository";
 
 export default (container: AwilixContainer) => {
   container.register({
