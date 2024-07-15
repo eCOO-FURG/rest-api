@@ -8,6 +8,7 @@ import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
 import { HandleOrdersDeliveryUseCase } from "@/core/use-cases/handle-orders-delivery";
 import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
 import { OfferProductsUseCase } from "@/core/use-cases/offer-products";
+import { OrderProductsUseCase } from "@/core/use-cases/order-products";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -61,5 +62,6 @@ export default (container: AwilixContainer) => {
           cyclesRepository
         )
     ),
+    orderPoductsUseCase: asFunction(({usersRepository, offersRepository, ordersRepository}) => new OrderProductsUseCase(usersRepository, offersRepository, ordersRepository))
   });
 };

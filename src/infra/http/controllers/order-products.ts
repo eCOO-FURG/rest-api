@@ -10,7 +10,6 @@ import container from "@/infra/container";
 
 const orderProductsSchema = {
   body: z.object({
-    user_id: z.string(),
     offer_id: z.string(),
     amount: z.coerce.number()
   })
@@ -18,14 +17,14 @@ const orderProductsSchema = {
 
 export async function orderProductsController(request: Request, response: Response, next: NextFunction){
   try{
-    const { user_id , offer_id, amount } = orderProductsSchema.body.parse(request.body)
+    const { offer_id, amount } = orderProductsSchema.body.parse(request.body)
 
     const orderProductsUsecase = container.resolve<OrderProductsUseCase>(
-      'orderProductsUsecase'
+      'orderPoductsUseCase'
     )
 
     await orderProductsUsecase.execute({
-      user_id,
+      user_id: request.user_id,
       offer_id,
       amount
     })
