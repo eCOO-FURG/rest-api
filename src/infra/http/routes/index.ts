@@ -6,6 +6,7 @@ import { registerController } from "@/infra/http/controllers/register";
 import { authenticateController } from "@/infra/http/controllers/authenticate";
 import { verifyUserController } from "@/infra/http/controllers/verify-user";
 import { registerFarmController } from "@/infra/http/controllers/register-farm";
+import { orderProductsController } from "@/infra/http/controllers/order-products";
 import { offerProductsController } from "@/infra/http/controllers/offer-products";
 import { handleOrdersDeliveryController } from "@/infra/http/controllers/handle-orders-delivery";
 
@@ -28,6 +29,7 @@ router.patch(
 
 router.post("/farms", ensureAuthenticated, registerFarmController);
 
+router.post("/orders", ensureAuthenticated, orderProductsController);
 router.post(
   "/offers",
   ensureAuthenticated,
