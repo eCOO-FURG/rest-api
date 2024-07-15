@@ -7,7 +7,7 @@ import { Mailer } from "@/core/mail/mailer";
 
 // Events
 import { DomainEvents } from "@/core/events/domain-events";
-import { Hasher } from "../cryptography/hasher";
+import { Hasher } from "@/core/cryptography/hasher";
 
 interface OnRegisteredEventRequest {
   id: UUID;

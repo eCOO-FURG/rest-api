@@ -15,8 +15,6 @@ const updateOfferSchema = {
     price: z.number().optional()
   }).refine((data) => {
     return Object.values(data).some((value) => value !== undefined)
-  }, {
-    message: "Pelo menos um campo deve ser fornecido."
   })
 }
 

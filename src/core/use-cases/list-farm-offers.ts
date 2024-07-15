@@ -8,7 +8,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Utils
 import { mostPast } from "@/core/utils/most-past";
-import { FarmWithOffers } from "../entities/value-objects/farm-with-offers";
+import { FarmWithOffers } from "@/core/entities/value-objects/farm-with-offers";
 
 interface ListFarmsOffersUseCaseRequest {
   farm_id: string;
