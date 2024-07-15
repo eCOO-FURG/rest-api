@@ -16,7 +16,7 @@ import { makeProduct } from "@/test/factories/make-product";
 import { makeOffer } from "@/test/factories/make-offer";
 
 // Errors
-import { ResourceNotFoundError } from "../errors/resource-not-found";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 let sut: SearchOfferingFarmsUseCase;
 

@@ -23,7 +23,7 @@ import { InvalidWeightError } from "@/core/errors/invalid-weight";
 // Entities
 import { Offer } from "@/core/entities/offer";
 import { Week } from "@/core/entities/cycle";
-import { ClosedActionError } from "../errors/closed-action";
+import { ClosedActionError } from "@/core/errors/closed-action";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;

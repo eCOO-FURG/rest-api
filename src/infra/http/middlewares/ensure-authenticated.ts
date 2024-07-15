@@ -8,6 +8,7 @@ import container from "@/infra/container";
 
 // Repositories
 import { PrismaSessionsRepository } from "@/infra/database/repositories/prisma-sessions-repository";
+import { env } from "@/infra/env";
 
 const jwtPayloadSchema = z.object({
   user_id: z.string(),
@@ -28,7 +29,7 @@ export async function ensureAuthenticated(
 
     const [, token] = authHeader.split(" ");
 
-    const payload = verify(token, "secret", { ignoreExpiration: true });
+    const payload = verify(token, env.JWT_SECRET, { ignoreExpiration: true });
 
     const { user_id, iat } = jwtPayloadSchema.parse(payload);
 

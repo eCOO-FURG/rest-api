@@ -7,8 +7,8 @@ import {
   FarmsRepositoryFindManyWithActiveOfferRequest,
   FarmsRepositorySearchManyWithOrdersRequest,
 } from "@/core/repositories/farms-repository";
-import { prisma } from "../prisma-service";
-import { PrismaFarmMapper } from "../mappers/prisma-farm-mapper";
+import { prisma } from "@/infra/database/prisma-service";
+import { PrismaFarmMapper } from "@/infra/database/mappers/prisma-farm-mapper";
 
 export class PrismaFarmsRepository implements FarmsRepository {
   async findById(id: string): Promise<Farm | null> {

@@ -10,8 +10,8 @@ import { MockedMailer } from "@/test/mail/mocked-mailer";
 import { MockedHasher } from "@/test/cryptography/mocked-hasher";
 
 // Events
-import { DomainEvents } from "./domain-events";
-import { OnRegisteredEvent } from "./on-registered";
+import { DomainEvents } from "@/core/events/domain-events";
+import { OnRegisteredEvent } from "@/core/events/on-registered";
 
 // Test
 import { MockInstance } from "vitest";

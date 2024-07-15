@@ -1,6 +1,6 @@
 import { FarmProps } from "@/core/entities/farm";
 import { Offer } from "@/core/entities/offer";
-import { Entity } from "../entity";
+import { Entity } from "@/core/entities/entity";
 
 interface FarmWithOffersProps extends FarmProps {
   offers: Offer[];
