@@ -2,7 +2,7 @@
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
 // Use-cases
-import { VerifyUserUsecase } from "./verify-user";
+import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
 
 // Services
 import { MockedHasher } from "@/test/cryptography/mocked-hasher";
@@ -11,7 +11,7 @@ import { makeUser } from "@/test/factories/make-user";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { UserAlreadyVerified } from "@/core/errors/user-already-verified";
-import { WrongCredentialsError } from "../errors/wrong-credentials";
+import { WrongCredentialsError } from "@/core/errors/wrong-credentials";
 
 let usersRepository: InMemoryUsersRepository;
 let hasher: MockedHasher;

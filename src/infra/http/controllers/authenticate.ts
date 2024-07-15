@@ -5,7 +5,7 @@ import { z } from "zod";
 // Container
 import container from "@/infra/container";
 import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
-import { UserPresenter } from "../presenters/user-presenter";
+import { UserPresenter } from "@/infra/http/presenters/user-presenter";
 
 const authenticateSchema = {
   body: z.object({

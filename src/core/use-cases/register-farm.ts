@@ -1,13 +1,13 @@
 // Entities
-import { Farm } from "../entities/farm";
+import { Farm } from "@/core/entities/farm";
 
 // Errors
-import { ResourceAlreadyExistsError } from "../errors/resource-already-exists";
-import { ResourceNotFoundError } from "../errors/resource-not-found";
+import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Repositories
-import { FarmsRepository } from "../repositories/farms-repository";
-import { UsersRepository } from "../repositories/users-repository";
+import { FarmsRepository } from "@/core/repositories/farms-repository";
+import { UsersRepository } from "@/core/repositories/users-repository";
 
 interface RegisterFarmUseCaseRequest {
   user_id: string;

@@ -5,8 +5,8 @@ import { OffersRepository } from "@/core/repositories/offers-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { mostPast } from "../utils/most-past";
-import { OrdersRepository } from "../repositories/orders-repository";
+import { mostPast } from "@/core/utils/most-past";
+import { OrdersRepository } from "@/core/repositories/orders-repository";
 
 interface ListFarmSalesUseCaseRequest {
   farm_id: string;
