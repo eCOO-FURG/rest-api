@@ -27,6 +27,7 @@ import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
 import { HandleOrdersDeliveryUseCase } from "@/core/use-cases/handle-orders-delivery";
 import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
 import { OfferProductsUseCase } from "@/core/use-cases/offer-products";
+import { UpdateOfferUseCase } from "@/core/use-cases/update-offer";
 
 // Env
 import { env } from "@/infra/env";
@@ -134,6 +135,15 @@ container.register({
         cyclesRepository
       )
   ),
+  updateOfferUsecase: asFunction(
+    ({
+      farmsRepository,
+      offersRepository
+    }) => new UpdateOfferUseCase(
+      farmsRepository, 
+      offersRepository
+    )
+  )
 });
 
 export default container;
