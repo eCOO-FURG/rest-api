@@ -10,6 +10,7 @@ import { ClosedActionError } from "@/core/errors/closed-action";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
+import { InvalidVolumeError } from "@/core/errors/invalid-volume";
 
 // Services
 import { makeOffer } from "@/test/factories/make-offer";
@@ -228,7 +229,7 @@ describe("order product", () => {
     ).rejects.toBeInstanceOf(UnavailableAmountError);
   });
 
-  it("should not be able create an order with an invalid amount", async () => {
+  it("should not be able create an order with an invalid weight amount", async () => {
     const user = makeUser();
     await repositories.users.create(user);
 
@@ -255,5 +256,34 @@ describe("order product", () => {
         amount: 27,
       })
     ).rejects.toBeInstanceOf(InvalidWeightError);
+  });
+
+  it("should not be able create an order with an invalid volume amount", async () => {
+    const user = makeUser();
+    await repositories.users.create(user);
+
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
+    const product = makeProduct({
+      pricing: "MILILITER",
+    });
+    await repositories.products.create(product);
+
+    const offer = makeOffer({
+      product_id: product.id,
+      cycle_id: cycle.id,
+      amount: 500,
+    });
+
+    await repositories.offers.create(offer);
+
+    await expect(() =>
+      sut.execute({
+        user_id: user.id.value,
+        offer_id: offer.id.value,
+        amount: 27,
+      })
+    ).rejects.toBeInstanceOf(InvalidVolumeError);
   });
 });

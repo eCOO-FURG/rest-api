@@ -14,6 +14,7 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { ClosedActionError } from "@/core/errors/closed-action";
+import { InvalidVolumeError } from "@/core/errors/invalid-volume";
 
 // Utils
 import { mostPast } from "@/core/utils/most-past";
@@ -75,6 +76,10 @@ export class OfferProductsUseCase {
 
     if (product.pricing === "WEIGHT" && amount % 100 !== 0) {
       throw new InvalidWeightError("ofertado", product_id);
+    }
+
+    if (product.pricing === "MILILITER" && amount % 100 !== 0) {
+      throw new InvalidVolumeError("ofertado", product_id);
     }
 
     const offer = Offer.create({

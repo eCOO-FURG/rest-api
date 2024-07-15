@@ -19,6 +19,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
+import { InvalidVolumeError } from "@/core/errors/invalid-volume";
 
 // Entities
 import { Offer } from "@/core/entities/offer";
@@ -88,6 +89,27 @@ describe("offer products", () => {
       amount: 10,
       price: 10,
       description: "Novo.",
+    });
+
+    expect(repositories.offers.items.length).toBe(1);
+  });
+
+  it("should be able to offer products with mililiter pricing", async () => {
+    const cycle = makeCycle();
+    repositories.cycles.items.push(cycle);
+
+    const product = makeProduct({ pricing: "MILILITER" });
+    await repositories.products.create(product);
+
+    const farm = makeFarm();
+    await repositories.farms.create(farm);
+
+    await sut.execute({
+      product_id: product.id.value,
+      cycle_id: cycle.id.value,
+      farm_id: farm.id.value,
+      amount: 100,
+      price: 10,
     });
 
     expect(repositories.offers.items.length).toBe(1);
@@ -217,6 +239,27 @@ describe("offer products", () => {
         price: 10,
       })
     ).rejects.toBeInstanceOf(InvalidWeightError);
+  });
+
+  it("should not be able to offer products with invalid volume", async () => {
+    const cycle = makeCycle();
+    repositories.cycles.items.push(cycle);
+
+    const product = makeProduct({ pricing: "MILILITER" });
+    await repositories.products.create(product);
+
+    const farm = makeFarm();
+    await repositories.farms.create(farm);
+
+    await expect(() =>
+      sut.execute({
+        product_id: product.id.value,
+        cycle_id: cycle.id.value,
+        farm_id: farm.id.value,
+        amount: 10,
+        price: 10,
+      })
+    ).rejects.toBeInstanceOf(InvalidVolumeError);
   });
 
   it("should not be able to offer products off the cycle offering days", async () => {

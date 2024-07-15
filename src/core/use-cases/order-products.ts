@@ -13,6 +13,7 @@ import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 import { ClosedActionError } from "@/core/errors/closed-action";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
+import { InvalidVolumeError } from "@/core/errors/invalid-volume";
 
 interface OrderProductsUseCaseRequest {
   user_id: string;
@@ -56,6 +57,10 @@ export class OrderProductsUseCase {
 
     if (offer.product.pricing === "WEIGHT" && amount % 100 !== 0) {
       throw new InvalidWeightError("solicitado", offer.product.id.value);
+    }
+
+    if (offer.product.pricing === "MILILITER" && amount % 100 !== 0) {
+      throw new InvalidVolumeError("ofertado", offer.product.id.value);
     }
 
     const order = Order.create({
