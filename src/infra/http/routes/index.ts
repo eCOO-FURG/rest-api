@@ -8,6 +8,7 @@ import { verifyUserController } from "@/infra/http/controllers/verify-user";
 import { registerFarmController } from "@/infra/http/controllers/register-farm";
 import { offerProductsController } from "../controllers/offer-products";
 import { handleOrdersDeliveryController } from "@/infra/http/controllers/handle-orders-delivery";
+import { updateOfferController } from "../controllers/update-offer";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -34,3 +35,10 @@ router.post(
   ensureFarmAdmin,
   offerProductsController
 );
+
+router.post(
+  "/update-offers", 
+  ensureAuthenticated, 
+  ensureFarmAdmin, 
+  updateOfferController
+)
