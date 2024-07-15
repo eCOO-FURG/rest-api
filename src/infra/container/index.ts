@@ -28,6 +28,7 @@ import { HandleOrdersDeliveryUseCase } from "@/core/use-cases/handle-orders-deli
 import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
 import { OfferProductsUseCase } from "@/core/use-cases/offer-products";
 import { UpdateOfferUseCase } from "@/core/use-cases/update-offer";
+import { ListFarmsWithOrdersUsecase } from "@/core/use-cases/list-farms-with-orders";
 
 // Env
 import { env } from "@/infra/env";
@@ -143,7 +144,16 @@ container.register({
       farmsRepository, 
       offersRepository
     )
-  )
+  ),
+  listFarmsWithOrdersUsecase: asFunction(
+    ({
+      cyclesRepository,
+      farmsRepository
+    }) => new ListFarmsWithOrdersUsecase(
+      cyclesRepository, 
+      farmsRepository
+    )
+  ),
 });
 
 export default container;
