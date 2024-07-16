@@ -13,12 +13,15 @@ import { handleOrdersDeliveryController } from "@/infra/http/controllers/handle-
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
 import { ensureFarmAdmin } from "@/infra/http/middlewares/ensure-farm-admin";
+import { requestOtpController } from "../controllers/request-otp";
 
 export const router = Router();
 
 router.post("/users", registerController);
-router.post("/users/auth", authenticateController);
 router.get("/users/verify", verifyUserController);
+
+router.post("/auth", authenticateController);
+router.post("/auth/otp", requestOtpController);
 
 router.patch(
   "/orders",
@@ -30,6 +33,7 @@ router.patch(
 router.post("/farms", ensureAuthenticated, registerFarmController);
 
 router.post("/orders", ensureAuthenticated, orderProductsController);
+
 router.post(
   "/offers",
   ensureAuthenticated,

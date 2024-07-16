@@ -9,6 +9,7 @@ import { HandleOrdersDeliveryUseCase } from "@/core/use-cases/handle-orders-deli
 import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
 import { OfferProductsUseCase } from "@/core/use-cases/offer-products";
 import { OrderProductsUseCase } from "@/core/use-cases/order-products";
+import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -62,6 +63,7 @@ export default (container: AwilixContainer) => {
           cyclesRepository
         )
     ),
-    orderPoductsUseCase: asFunction(({usersRepository, offersRepository, ordersRepository}) => new OrderProductsUseCase(usersRepository, offersRepository, ordersRepository))
+    orderPoductsUseCase: asFunction(({ usersRepository, offersRepository, ordersRepository }) => new OrderProductsUseCase(usersRepository, offersRepository, ordersRepository)),
+    requestOtpUseCase: asFunction(({ usersRepository, otpProvider, otpsRepository }) => new RequestOtpUseCase(usersRepository, otpProvider, otpsRepository))
   });
 };

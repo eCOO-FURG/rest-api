@@ -5,6 +5,10 @@ import { Optional } from "@/core/types/optional";
 import { Entity, EntityRequest } from "@/core/entities/entity";
 import { UUID } from "@/core/entities/value-objects/uuid";
 
+// Events
+import { DomainEvents } from "@/core/events/domain-events";
+import { OnOtpRequestEvent } from "@/core/events/on-otp-request";
+
 export interface OtpProps extends EntityRequest {
   user_id: UUID;
   value: string;
@@ -34,6 +38,13 @@ export class Otp extends Entity<OtpProps> {
       ...props,
       used: props.used ?? false,
     });
+
+    const fresh = !props.id;
+
+    if (fresh) {
+      DomainEvents.events.push({ entity: otp, name: OnOtpRequestEvent.name })
+    }
+
     return otp;
   }
 }

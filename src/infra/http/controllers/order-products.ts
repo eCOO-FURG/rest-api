@@ -15,22 +15,22 @@ const orderProductsSchema = {
   })
 }
 
-export async function orderProductsController(request: Request, response: Response, next: NextFunction){
-  try{
+export async function orderProductsController(request: Request, response: Response, next: NextFunction) {
+  try {
     const { offer_id, amount } = orderProductsSchema.body.parse(request.body)
 
-    const orderProductsUsecase = container.resolve<OrderProductsUseCase>(
+    const orderProductsUseCase = container.resolve<OrderProductsUseCase>(
       'orderPoductsUseCase'
     )
 
-    await orderProductsUsecase.execute({
+    await orderProductsUseCase.execute({
       user_id: request.user_id,
       offer_id,
       amount
     })
 
     return response.sendStatus(201)
-  } catch(error){
+  } catch (error) {
     next(error)
   }
 }
