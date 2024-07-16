@@ -46,7 +46,7 @@ export async function updateUserController(
       phone
     })
 
-    return response.sendStatus(200)
+    return response.sendStatus(204)
   } catch(error){
     next(error)
   }

@@ -21,6 +21,7 @@ import { requestOtpController } from "@/infra/http/controllers/request-otp";
 export const router = Router();
 
 router.post("/users", registerController);
+router.patch("/users", ensureAuthenticated, updateUserController)
 router.get("/users/verify", verifyUserController);
 router.get("/me", ensureAuthenticated, getUserController);
 
@@ -45,7 +46,6 @@ router.post(
   offerProductsController
 );
 
-router.patch("/users", ensureAuthenticated, updateUserController)
 router.patch(
   "/offers", 
   ensureAuthenticated, 

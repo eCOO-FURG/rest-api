@@ -10,9 +10,11 @@ import { z } from "zod"
 
 const updateOfferSchema = {
   body: z.object({
-    offer_id: z.string(),
     amount: z.number(),
     price: z.number()
+  }),
+  params: z.object({
+    offer_id: z.string(),
   })
 }
 
@@ -22,7 +24,8 @@ export async function updateOfferController(
   next: NextFunction
 ) {
   try{
-    const { offer_id, amount, price } = updateOfferSchema.body.parse(request.body)
+    const { amount, price } = updateOfferSchema.body.parse(request.body)
+    const { offer_id } = updateOfferSchema.params.parse(request.params)
 
     const updateOfferUsecase = container.resolve<UpdateOfferUseCase>('updateOfferUseCase')
   
