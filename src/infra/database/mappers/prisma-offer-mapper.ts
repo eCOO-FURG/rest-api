@@ -17,14 +17,18 @@ export class PrismaOfferMapper {
       price: raw.price.toNumber(),
     });
   }
-
+  
   static toPrisma(offer: Offer): Prisma.OfferUncheckedCreateInput {
     return {
-      ...offer.props,
       id: offer.id.value,
       cycle_id: offer.cycle_id.value,
       farm_id: offer.farm_id.value,
       product_id: offer.product_id.value,
+      description: offer.description,
+      amount: offer.amount,
+      price: offer.price,
+      updated_at: offer.updated_at,
+      created_at: offer.created_at,
     };
   }
 }
