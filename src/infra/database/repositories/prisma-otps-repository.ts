@@ -9,11 +9,12 @@ import { PrismaOtpMapper } from "@/infra/database/mappers/prisma-otp-mapper";
 import { prisma } from "@/infra/database/prisma-service";
 
 export class PrismaOtpsRepository implements OtpsRepository {
-  async findValid(user_id: string): Promise<Otp | null> {
+  async findValid(user_id: string, value: string): Promise<Otp | null> {
     const otp = await prisma.otp.findFirst({
       where: {
         user_id,
         used: false,
+        value
       },
     });
 

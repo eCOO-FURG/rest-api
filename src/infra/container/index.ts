@@ -1,7 +1,7 @@
-// Services
+// Libs
 import { createContainer } from "awilix";
 
-// Repositories
+// Container
 import registerRepositories from "@/infra/container/repositories";
 import registerServices from "@/infra/container/services";
 import registerEvents from "@/infra/container/events";

@@ -27,6 +27,8 @@ export class DomainEvents {
 
     const handler = this.handlers[this.events[event].name];
 
+    console.log(this.events, this.handlers);
+
     if (!handler) return;
 
     handler(this.events[event].entity);

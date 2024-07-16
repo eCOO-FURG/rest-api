@@ -34,7 +34,7 @@ export class OnRegisteredEvent {
 
     const mail = Email.create({
       to: email,
-      subject: "Bem-vindo | ecOO",
+      subject: "Bem-vindo | eCOO",
       content: view,
     });
 
