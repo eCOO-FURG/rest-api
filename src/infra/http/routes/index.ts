@@ -10,6 +10,7 @@ import { orderProductsController } from "@/infra/http/controllers/order-products
 import { updateUserController } from "@/infra/http/controllers/update-user";
 import { offerProductsController } from "@/infra/http/controllers/offer-products";
 import { handleOrdersDeliveryController } from "@/infra/http/controllers/handle-orders-delivery";
+import { listFarmsWithOrdersController } from "@/infra/http/controllers/list-farms-with-orders";
 import { updateOfferController } from "@/infra/http/controllers/update-offer";
 import { getUserController } from "@/infra/http/controllers/get-profile";
 import { requestOtpController } from "@/infra/http/controllers/request-otp";
@@ -20,6 +21,8 @@ import { listFarmOrdersController } from "@/infra/http/controllers/list-farm-ord
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
 import { ensureFarmAdmin } from "@/infra/http/middlewares/ensure-farm-admin";
 import { ensureAdmin } from "@/infra/http/middlewares/ensure-admin";
+import { listCyclesController } from "@/infra/http/controllers/list-cycles";
+import { searchOfferingFarmsController } from "@/infra/http/controllers/search-offering-farms";
 
 export const router = Router();
 
@@ -31,13 +34,6 @@ router.get("/me", ensureAuthenticated, getUserController);
 router.post("/auth", authenticateController);
 router.post("/auth/otp", requestOtpController);
 
-router.patch(
-  "/orders",
-  ensureAuthenticated,
-  ensureFarmAdmin,
-  handleOrdersDeliveryController
-);
-
 router.post("/farms", ensureAuthenticated, registerFarmController);
 
 router.post("/orders", ensureAuthenticated, orderProductsController);
@@ -47,6 +43,7 @@ router.patch(
   ensureAdmin,
   handleOrdersDeliveryController
 );
+router.get("/orders", ensureAuthenticated, listFarmsWithOrdersController);
 router.get("/orders/:farm_id", ensureAuthenticated, listFarmOrdersController);
 
 router.post(
@@ -55,7 +52,7 @@ router.post(
   ensureFarmAdmin,
   offerProductsController
 );
-
+router.get("/offers", searchOfferingFarmsController);
 router.patch(
   "/offers/:offer_id",
   ensureAuthenticated,

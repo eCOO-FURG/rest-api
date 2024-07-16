@@ -19,7 +19,7 @@ export class ListFarmOrdersUseCase {
     private cyclesRepository: CyclesRepository,
     private offersRepository: OffersRepository,
     private ordersRepository: OrdersRepository
-  ) {}
+  ) { }
 
   async execute({ farm_id, cycle_id }: ListFarmOrdersUseCaseRequest) {
     const farm = await this.farmsRepository.findById(farm_id);

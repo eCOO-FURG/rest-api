@@ -9,8 +9,8 @@ export class CyclePresenter {
       offer: cycle.offer,
       order: cycle.order,
       deliver: cycle.deliver,
-      createdAt: cycle.created_at,
-      updatedAt: cycle.updated_at,
+      created_at: cycle.created_at,
+      updated_at: cycle.updated_at,
     };
   }
 }
