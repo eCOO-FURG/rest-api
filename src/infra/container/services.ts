@@ -6,6 +6,7 @@ import { createTransport } from "nodemailer";
 import { Nodemailer } from "@/infra/mail/nodemailer";
 import { Jwt } from "@/infra/cryptography/jwt";
 import { BcrypterHasher } from "@/infra/cryptography/bcrypt";
+import { OtpGenerator } from "@/infra/cryptography/otp-generator";
 
 // Env
 import { env } from "@/infra/env";
@@ -14,6 +15,7 @@ export default (container: AwilixContainer) => {
   container.register({
     encrypter: asClass(BcrypterHasher).singleton(),
     hasher: asClass(Jwt).singleton(),
+    otpProvider: asClass(OtpGenerator),
     mailer: asFunction(() => {
       if (["production", "staging"].includes(env.ENV)) {
         const transporter = createTransport({

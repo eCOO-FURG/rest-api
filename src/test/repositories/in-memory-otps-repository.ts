@@ -7,9 +7,9 @@ import { OtpsRepository } from "@/core/repositories/otps-repositoy";
 export class InMemoryOtpsRepository implements OtpsRepository {
   items: Otp[] = [];
 
-  async findValid(user_id: string): Promise<Otp | null> {
+  async findValid(user_id: string, value: string): Promise<Otp | null> {
     const valid = this.items.find(
-      (item) => item.user_id.equals(user_id) && item.used === false
+      (item) => item.user_id.equals(user_id) && item.used === false && item.value === value
     );
 
     if (!valid) return null;

@@ -14,8 +14,10 @@ import { DomainEvents } from "@/core/events/domain-events";
 import { OnRegisteredEvent } from "@/core/events/on-registered";
 
 // Test
-import { MockInstance } from "vitest";
 import { waitFor } from "@/test/utils/wait-for";
+
+// Libs
+import { MockInstance } from "vitest";
 
 let repositories: {
   users: InMemoryUsersRepository;

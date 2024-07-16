@@ -44,6 +44,9 @@ importers:
       nodemailer:
         specifier: ^6.9.14
         version: 6.9.14
+      otp-generator:
+        specifier: ^4.0.1
+        version: 4.0.1
       tsx:
         specifier: ^4.15.7
         version: 4.16.2
@@ -69,6 +72,9 @@ importers:
       '@types/nodemailer':
         specifier: ^6.4.15
         version: 6.4.15
+      '@types/otp-generator':
+        specifier: ^4.0.2
+        version: 4.0.2
       prisma:
         specifier: ^5.16.1
         version: 5.16.1
@@ -746,6 +752,9 @@ packages:
   '@types/nodemailer@6.4.15':
     resolution: {integrity: sha512-0EBJxawVNjPkng1zm2vopRctuWVCxk34JcIlRuXSf54habUWdz1FB7wHDqOqvDa8Mtpt0Q3LTXQkAs2LNyK5jQ==}
 
+  '@types/otp-generator@4.0.2':
+    resolution: {integrity: sha512-9+qqWzuFb332hXPbLgjUyOXlbcaTQkmkmqQjTduvNuOmPV5fW+iLv70JsVEhdUy0DWi4kY34++HDCaWl6N0AYg==}
+
   '@types/pg-pool@2.0.4':
     resolution: {integrity: sha512-qZAvkv1K3QbmHHFYSNRYPkRjOWRLBYrL4B9c+wG0GSVGBw0NtJwPcgx/DSddeDJvRGMHCEQ4VMEVfuJ/0gZ3XQ==}
 
@@ -1309,6 +1318,10 @@ packages:
     engines: {node: '>18.0.0'}
     peerDependencies:
       '@opentelemetry/api': ^1.6.0
+
+  otp-generator@4.0.1:
+    resolution: {integrity: sha512-2TJ52vUftA0+J3eque4wwVtpaL4/NdIXDL0gFWFJFVUAZwAN7+9tltMhL7GCNYaHJtuONoier8Hayyj4HLbSag==}
+    engines: {node: '>=14.10.0'}
 
   p-limit@5.0.0:
     resolution: {integrity: sha512-/Eaoq+QyLSiXQ4lyYV23f14mZRQcXnxfHrN0vCai+ak9G0pp9iEQukIIZq5NccEvwRB8PUnZT0KsOoDCINS1qQ==}
@@ -2283,6 +2296,8 @@ snapshots:
     dependencies:
       '@types/node': 20.14.2
 
+  '@types/otp-generator@4.0.2': {}
+
   '@types/pg-pool@2.0.4':
     dependencies:
       '@types/pg': 8.6.1
@@ -2921,6 +2936,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
     optional: true
+
+  otp-generator@4.0.1: {}
 
   p-limit@5.0.0:
     dependencies:
