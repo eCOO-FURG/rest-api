@@ -19,6 +19,7 @@ import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticat
 import { ensureFarmAdmin } from "@/infra/http/middlewares/ensure-farm-admin";
 import { ensureAdmin } from "@/infra/http/middlewares/ensure-admin";
 import { listCyclesController } from "@/infra/http/controllers/list-cycles";
+import { searchOfferingFarmsController } from "@/infra/http/controllers/search-offering-farms";
 
 export const router = Router();
 
@@ -29,13 +30,6 @@ router.get("/me", ensureAuthenticated, getUserController);
 
 router.post("/auth", authenticateController);
 router.post("/auth/otp", requestOtpController);
-
-router.patch(
-  "/orders",
-  ensureAuthenticated,
-  ensureFarmAdmin,
-  handleOrdersDeliveryController
-);
 
 router.post("/farms", ensureAuthenticated, registerFarmController);
 
@@ -53,7 +47,7 @@ router.post(
   ensureFarmAdmin,
   offerProductsController
 );
-
+router.get("/offers", searchOfferingFarmsController)
 router.patch(
   "/offers/:offer_id",
   ensureAuthenticated,
