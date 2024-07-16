@@ -11,10 +11,8 @@ import { z } from "zod"
 const updateOfferSchema = {
   body: z.object({
     offer_id: z.string(),
-    amount: z.number().optional(),
-    price: z.number().optional()
-  }).refine((data) => {
-    return Object.values(data).some((value) => value !== undefined)
+    amount: z.number(),
+    price: z.number()
   })
 }
 

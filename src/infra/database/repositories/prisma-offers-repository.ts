@@ -95,10 +95,6 @@ export class PrismaOffersRepository implements OffersRepository {
 
   async update(offer: Offer): Promise<void> {
     const data = PrismaOfferMapper.toPrisma(offer);
-    console.log({
-      offer,
-      data
-    })
     await prisma.offer.update({ where: { id: offer.id.value }, data });
   }
 
