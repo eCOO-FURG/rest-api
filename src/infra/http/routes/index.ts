@@ -32,25 +32,11 @@ router.get("/me", ensureAuthenticated, getUserController);
 router.post("/auth", authenticateController);
 router.post("/auth/otp", requestOtpController);
 
-router.patch(
-  "/orders",
-  ensureAuthenticated,
-  ensureFarmAdmin,
-  handleOrdersDeliveryController
-);
-
 router.post(
-  "/farms", 
-  ensureAuthenticated, 
+  "/farms",
+  ensureAuthenticated,
   registerFarmController
 );
-
-router.get(
-  "/orders", 
-  ensureAuthenticated, 
-  listFarmsWithOrdersController
-)
-router.post("/farms", ensureAuthenticated, registerFarmController);
 
 router.post("/orders", ensureAuthenticated, orderProductsController);
 router.patch(
@@ -59,6 +45,11 @@ router.patch(
   ensureAdmin,
   handleOrdersDeliveryController
 );
+router.get(
+  "/orders",
+  ensureAuthenticated,
+  listFarmsWithOrdersController
+)
 
 router.post(
   "/offers",
