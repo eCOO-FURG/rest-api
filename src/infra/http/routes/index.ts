@@ -16,13 +16,12 @@ import { getUserController } from "@/infra/http/controllers/get-profile";
 import { requestOtpController } from "@/infra/http/controllers/request-otp";
 import { listCyclesController } from "@/infra/http/controllers/list-cycles";
 import { listFarmOrdersController } from "@/infra/http/controllers/list-farm-orders";
+import { searchOfferingFarmsController } from "@/infra/http/controllers/search-offering-farms";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
 import { ensureFarmAdmin } from "@/infra/http/middlewares/ensure-farm-admin";
 import { ensureAdmin } from "@/infra/http/middlewares/ensure-admin";
-import { listCyclesController } from "@/infra/http/controllers/list-cycles";
-import { searchOfferingFarmsController } from "@/infra/http/controllers/search-offering-farms";
 
 export const router = Router();
 
