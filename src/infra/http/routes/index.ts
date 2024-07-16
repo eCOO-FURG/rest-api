@@ -11,11 +11,12 @@ import { offerProductsController } from "@/infra/http/controllers/offer-products
 import { handleOrdersDeliveryController } from "@/infra/http/controllers/handle-orders-delivery";
 import { updateOfferController } from "../controllers/update-offer";
 import { getUserController } from "@/infra/http/controllers/get-profile";
+import { requestOtpController } from "@/infra/http/controllers/request-otp";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
 import { ensureFarmAdmin } from "@/infra/http/middlewares/ensure-farm-admin";
-import { requestOtpController } from "@/infra/http/controllers/request-otp";
+import { ensureAdmin } from "@/infra/http/middlewares/ensure-admin";
 
 export const router = Router();
 
@@ -45,8 +46,10 @@ router.post(
 );
 
 router.patch(
-  "/offers", 
-  ensureAuthenticated, 
-  ensureFarmAdmin, 
+  "/offers",
+  ensureAuthenticated,
+  ensureFarmAdmin,
   updateOfferController
 )
+router.post("/offers", ensureAuthenticated, ensureFarmAdmin, offerProductsController);
+router.patch("/offers/delivery", ensureAuthenticated, ensureAdmin, handleOrdersDeliveryController)
