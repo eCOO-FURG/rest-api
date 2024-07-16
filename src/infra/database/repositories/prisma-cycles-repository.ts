@@ -22,7 +22,7 @@ export class PrismaCyclesRepository implements CyclesRepository {
   }
 
   async findMany(): Promise<Cycle[]> {
-    const data = await prisma.cycle.findMany({});
+    const data = await prisma.cycle.findMany();
 
     const cycles = data.map((item) => PrismaCycleMapper.toDomain(item));
 
