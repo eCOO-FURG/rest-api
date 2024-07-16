@@ -13,13 +13,18 @@ import { DomainEvents } from "@/core/events/domain-events";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
+// Entities
+import { UUID } from "@/core/entities/value-objects/uuid";
+
 interface OnOtpRequestEventRequest {
-  user_id: string;
+  user_id: UUID;
   value: string;
 }
 
 export class OnOtpRequestEvent {
-  constructor(private usersRepository: UsersRepository, private mailer: Mailer) { }
+  constructor(private usersRepository: UsersRepository, private mailer: Mailer) {
+    this.setup();
+  }
 
   setup() {
     DomainEvents.register(OnOtpRequestEvent.name, this.execute.bind(this))
@@ -29,9 +34,9 @@ export class OnOtpRequestEvent {
     user_id,
     value
   }: OnOtpRequestEventRequest) {
-    const user = await this.usersRepository.findById(user_id);
+    const user = await this.usersRepository.findById(user_id.value);
 
-    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+    if (!user) throw new ResourceNotFoundError("Usuário", user_id.value);
 
     const view = await this.mailer.load({
       view: "otp-request",

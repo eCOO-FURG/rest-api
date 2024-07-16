@@ -18,6 +18,8 @@ export async function requestOtpController(request: Request, response: Response,
   try {
     const { email } = requestOtpSchema.body.parse(request.body)
 
+    container.resolve("onOtpRequestEvent")
+
     const requestOtpUseCase = container.resolve<RequestOtpUseCase>(
       'requestOtpUseCase'
     )
