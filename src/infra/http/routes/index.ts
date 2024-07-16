@@ -9,6 +9,7 @@ import { registerFarmController } from "@/infra/http/controllers/register-farm";
 import { orderProductsController } from "@/infra/http/controllers/order-products";
 import { offerProductsController } from "@/infra/http/controllers/offer-products";
 import { handleOrdersDeliveryController } from "@/infra/http/controllers/handle-orders-delivery";
+import { updateOfferController } from "../controllers/update-offer";
 import { getUserController } from "@/infra/http/controllers/get-profile";
 
 // Middlewares
@@ -42,3 +43,10 @@ router.post(
   ensureFarmAdmin,
   offerProductsController
 );
+
+router.patch(
+  "/offers", 
+  ensureAuthenticated, 
+  ensureFarmAdmin, 
+  updateOfferController
+)
