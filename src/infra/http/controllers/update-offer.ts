@@ -26,7 +26,7 @@ export async function updateOfferController(
   try{
     const { offer_id, amount, price } = updateOfferSchema.body.parse(request.body)
 
-    const updateOfferUsecase = container.resolve<UpdateOfferUseCase>('updateOfferUsecase')
+    const updateOfferUsecase = container.resolve<UpdateOfferUseCase>('updateOfferUseCase')
   
     await updateOfferUsecase.execute({
       farm_id: request.farm_id,

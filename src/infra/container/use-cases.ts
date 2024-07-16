@@ -65,7 +65,7 @@ export default (container: AwilixContainer) => {
           cyclesRepository
         )
     ),
-    updateOfferUsecase: asFunction(
+    updateOfferUseCase: asFunction(
       ({
         farmsRepository,
         offersRepository

@@ -15,6 +15,9 @@ import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper"
 import { PrismaOfferWithProductAndCycleMapper } from "@/infra/database/mappers/prisma-offer-with-product-and-cycle-mapper";
 
 export class PrismaOffersRepository implements OffersRepository {
+  async updateMany(offers: Offer[]): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
   async findById(id: string): Promise<Offer | null> {
     const offer = await prisma.offer.findUnique({ where: { id } });
 
@@ -92,6 +95,10 @@ export class PrismaOffersRepository implements OffersRepository {
 
   async update(offer: Offer): Promise<void> {
     const data = PrismaOfferMapper.toPrisma(offer);
+    console.log({
+      offer,
+      data
+    })
     await prisma.offer.update({ where: { id: offer.id.value }, data });
   }
 
