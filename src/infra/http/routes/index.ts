@@ -18,11 +18,12 @@ import { requestOtpController } from "@/infra/http/controllers/request-otp";
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
 import { ensureFarmAdmin } from "@/infra/http/middlewares/ensure-farm-admin";
 import { ensureAdmin } from "@/infra/http/middlewares/ensure-admin";
+import { listCyclesController } from "@/infra/http/controllers/list-cycles";
 
 export const router = Router();
 
 router.post("/users", registerController);
-router.patch("/users", ensureAuthenticated, updateUserController)
+router.patch("/users", ensureAuthenticated, updateUserController);
 router.get("/users/verify", verifyUserController);
 router.get("/me", ensureAuthenticated, getUserController);
 
@@ -39,7 +40,12 @@ router.patch(
 router.post("/farms", ensureAuthenticated, registerFarmController);
 
 router.post("/orders", ensureAuthenticated, orderProductsController);
-router.patch("/orders", ensureAuthenticated, ensureAdmin, handleOrdersDeliveryController)
+router.patch(
+  "/orders",
+  ensureAuthenticated,
+  ensureAdmin,
+  handleOrdersDeliveryController
+);
 
 router.post(
   "/offers",
@@ -49,8 +55,10 @@ router.post(
 );
 
 router.patch(
-  "/offers/:offer_id", 
-  ensureAuthenticated, 
-  ensureFarmAdmin, 
+  "/offers/:offer_id",
+  ensureAuthenticated,
+  ensureFarmAdmin,
   updateOfferController
-)
+);
+
+router.get("/cycles", listCyclesController);

@@ -13,6 +13,7 @@ import { UpdateOfferUseCase } from "@/core/use-cases/update-offer";
 import { OrderProductsUseCase } from "@/core/use-cases/order-products";
 import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
 import { GetProfileUseCase } from "@/core/use-cases/get-profile";
+import { ListCyclesUseCase } from "@/core/use-cases/list-cycles";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -95,6 +96,9 @@ export default (container: AwilixContainer) => {
     requestOtpUseCase: asFunction(
       ({ usersRepository, otpProvider, otpsRepository }) =>
         new RequestOtpUseCase(usersRepository, otpProvider, otpsRepository)
+    ),
+    listCyclesUseCase: asFunction(
+      ({ cyclesRepository }) => new ListCyclesUseCase(cyclesRepository)
     ),
   });
 };
