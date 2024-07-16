@@ -52,6 +52,7 @@ router.post(
   offerProductsController
 );
 router.get("/offers", searchOfferingFarmsController);
+router.get("/offers/:farm_id", searchOfferingFarmsController);
 router.patch(
   "/offers/:offer_id",
   ensureAuthenticated,

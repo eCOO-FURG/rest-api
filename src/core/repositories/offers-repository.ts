@@ -27,7 +27,7 @@ export interface OffersRepository {
     created_at,
     product,
     page,
-  }: OffersRepositorySearchManyRequest): Promise<Offer[]>;
+  }: OffersRepositorySearchManyRequest): Promise<OfferWithProductAndCycle[]>;
   search({
     cycle_id,
     product_id,

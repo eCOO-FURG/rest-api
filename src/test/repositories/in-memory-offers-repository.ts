@@ -83,7 +83,7 @@ export class InMemoryOffersRepository implements OffersRepository {
     page,
     product,
     created_at,
-  }: OffersRepositorySearchManyRequest): Promise<Offer[]> {
+  }: OffersRepositorySearchManyRequest): Promise<OfferWithProductAndCycle[]> {
     const products = this.inMemoryProductsRepository.items.filter((item) =>
       item.name.includes(product ?? "")
     );
@@ -98,12 +98,28 @@ export class InMemoryOffersRepository implements OffersRepository {
         productsIds.some((id) => id.equals(item.product_id))
     );
 
-    if (!page) return offers;
+    const completeOffers = offers.map((offer) => {
+      const product = this.inMemoryProductsRepository.items.findIndex(
+        (item) => item.id.equals(offer.product_id.value)
+      );
+
+      const cycle = this.inMemoryCyclesRepository.items.findIndex((item) => item.id.equals(offer.cycle_id));
+
+      const offerWithProduct = OfferWithProductAndCycle.create({
+        ...offer.props,
+        cycle: this.inMemoryCyclesRepository.items[cycle],
+        product: this.inMemoryProductsRepository.items[product],
+      });
+
+      return offerWithProduct;
+    })
+
+    if (!page) return completeOffers;
 
     const start = (page - 1) * 20;
     const end = start + 20;
 
-    return offers.slice(start, end);
+    return completeOffers.slice(start, end);
   }
 
   async create(offer: Offer): Promise<void> {

@@ -45,7 +45,7 @@ export class PrismaOffersRepository implements OffersRepository {
     created_at,
     product,
     page,
-  }: OffersRepositorySearchManyRequest): Promise<Offer[]> {
+  }: OffersRepositorySearchManyRequest): Promise<OfferWithProductAndCycle[]> {
     const offers = await prisma.offer.findMany({
       where: {
         farm_id,
@@ -59,11 +59,15 @@ export class PrismaOffersRepository implements OffersRepository {
           },
         },
       },
+      include: {
+        product: true,
+        cycle: true
+      },
       skip: page ? (page - 1) * 20 : 0,
       take: page && 20,
     });
 
-    return offers.map((offer) => PrismaOfferMapper.toDomain(offer));
+    return offers.map((offer) => PrismaOfferWithProductAndCycleMapper.toDomain(offer));
   }
 
   async search({

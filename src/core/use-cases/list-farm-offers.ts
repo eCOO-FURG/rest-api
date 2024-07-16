@@ -8,13 +8,12 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Utils
 import { mostPast } from "@/core/utils/most-past";
-import { FarmWithOffers } from "@/core/entities/value-objects/farm-with-offers";
 
 interface ListFarmsOffersUseCaseRequest {
   farm_id: string;
   cycle_id: string;
-  product?: string;
   page: number;
+  product?: string;
 }
 
 export class ListFarmOffersUseCase {
@@ -22,7 +21,7 @@ export class ListFarmOffersUseCase {
     private farmsRepository: FarmsRepository,
     private cyclesRepository: CyclesRepository,
     private offersRepository: OffersRepository
-  ) {}
+  ) { }
 
   async execute({
     farm_id,
@@ -46,13 +45,9 @@ export class ListFarmOffersUseCase {
       created_at: mostPast(cycle.offer),
     });
 
-    const farmWithOffers = FarmWithOffers.create({
-      ...farm.props,
-      offers,
-    });
-
     return {
-      farmWithOffers,
+      farm,
+      offers
     };
   }
 }

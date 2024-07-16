@@ -89,7 +89,7 @@ describe("list farm offers", () => {
     });
     ordersRepository;
 
-    expect(result.farmWithOffers.offers).toHaveLength(1);
+    expect(result.offers).toHaveLength(1);
   });
 
   it("should not be able to list offers from a farm that does not exists", async () => {
