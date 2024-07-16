@@ -10,6 +10,7 @@ import { orderProductsController } from "@/infra/http/controllers/order-products
 import { updateUserController } from "@/infra/http/controllers/update-user";
 import { offerProductsController } from "@/infra/http/controllers/offer-products";
 import { handleOrdersDeliveryController } from "@/infra/http/controllers/handle-orders-delivery";
+import { listFarmsWithOrdersController } from "@/infra/http/controllers/list-farms-with-orders";
 import { updateOfferController } from "@/infra/http/controllers/update-offer";
 import { getUserController } from "@/infra/http/controllers/get-profile";
 import { requestOtpController } from "@/infra/http/controllers/request-otp";
@@ -31,6 +32,24 @@ router.get("/me", ensureAuthenticated, getUserController);
 router.post("/auth", authenticateController);
 router.post("/auth/otp", requestOtpController);
 
+router.patch(
+  "/orders",
+  ensureAuthenticated,
+  ensureFarmAdmin,
+  handleOrdersDeliveryController
+);
+
+router.post(
+  "/farms", 
+  ensureAuthenticated, 
+  registerFarmController
+);
+
+router.get(
+  "/orders", 
+  ensureAuthenticated, 
+  listFarmsWithOrdersController
+)
 router.post("/farms", ensureAuthenticated, registerFarmController);
 
 router.post("/orders", ensureAuthenticated, orderProductsController);
