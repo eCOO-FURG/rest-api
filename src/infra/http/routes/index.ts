@@ -10,6 +10,7 @@ import { orderProductsController } from "@/infra/http/controllers/order-products
 import { updateUserController } from "../controllers/update-user";
 import { offerProductsController } from "@/infra/http/controllers/offer-products";
 import { handleOrdersDeliveryController } from "@/infra/http/controllers/handle-orders-delivery";
+import { updateOfferController } from "../controllers/update-offer";
 import { getUserController } from "@/infra/http/controllers/get-profile";
 
 // Middlewares
@@ -45,3 +46,9 @@ router.post(
 );
 
 router.patch("/users", ensureAuthenticated, updateUserController)
+router.patch(
+  "/offers", 
+  ensureAuthenticated, 
+  ensureFarmAdmin, 
+  updateOfferController
+)
