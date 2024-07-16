@@ -10,6 +10,7 @@ import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
 import { OfferProductsUseCase } from "@/core/use-cases/offer-products";
 import { OrderProductsUseCase } from "@/core/use-cases/order-products";
 import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
+import { GetProfileUseCase } from "@/core/use-cases/get-profile";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -63,7 +64,20 @@ export default (container: AwilixContainer) => {
           cyclesRepository
         )
     ),
-    orderPoductsUseCase: asFunction(({ usersRepository, offersRepository, ordersRepository }) => new OrderProductsUseCase(usersRepository, offersRepository, ordersRepository)),
-    requestOtpUseCase: asFunction(({ usersRepository, otpProvider, otpsRepository }) => new RequestOtpUseCase(usersRepository, otpProvider, otpsRepository))
+    orderPoductsUseCase: asFunction(
+      ({ usersRepository, offersRepository, ordersRepository }) =>
+        new OrderProductsUseCase(
+          usersRepository,
+          offersRepository,
+          ordersRepository
+        )
+    ),
+    getProfileUseCase: asFunction(
+      ({ usersRepository }) => new GetProfileUseCase(usersRepository)
+    ),
+    requestOtpUseCase: asFunction(
+      ({ usersRepository, otpProvider, otpsRepository }) =>
+        new RequestOtpUseCase(usersRepository, otpProvider, otpsRepository)
+    ),
   });
 };
