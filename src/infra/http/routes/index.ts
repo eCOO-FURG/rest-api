@@ -15,6 +15,7 @@ import { getUserController } from "@/infra/http/controllers/get-profile";
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
 import { ensureFarmAdmin } from "@/infra/http/middlewares/ensure-farm-admin";
 import { requestOtpController } from "@/infra/http/controllers/request-otp";
+import { listCyclesController } from "@/infra/http/controllers/list-cycles";
 
 export const router = Router();
 
@@ -42,3 +43,5 @@ router.post(
   ensureFarmAdmin,
   offerProductsController
 );
+
+router.get("/cycles", ensureAuthenticated, listCyclesController);

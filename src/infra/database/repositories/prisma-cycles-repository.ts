@@ -20,4 +20,12 @@ export class PrismaCyclesRepository implements CyclesRepository {
 
     return PrismaCycleMapper.toDomain(cycle);
   }
+
+  async findMany(): Promise<Cycle[]> {
+    const data = await prisma.cycle.findMany({});
+
+    const cycles = data.map((item) => PrismaCycleMapper.toDomain(item));
+
+    return cycles;
+  }
 }
