@@ -8,6 +8,7 @@ import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
 import { HandleOrdersDeliveryUseCase } from "@/core/use-cases/handle-orders-delivery";
 import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
 import { OfferProductsUseCase } from "@/core/use-cases/offer-products";
+import { UpdateUserUseCase } from "@/core/use-cases/update-user";
 import { UpdateOfferUseCase } from "@/core/use-cases/update-offer";
 import { OrderProductsUseCase } from "@/core/use-cases/order-products";
 import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
@@ -64,6 +65,12 @@ export default (container: AwilixContainer) => {
           offersRepository,
           cyclesRepository
         )
+    ),
+    updateUserUseCase: asFunction(
+      ({
+        usersRepository,
+        encrypter
+      }) => new UpdateUserUseCase(usersRepository, encrypter)
     ),
     updateOfferUseCase: asFunction(
       ({
