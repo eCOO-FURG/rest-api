@@ -1,6 +1,6 @@
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
-import { OtpsRepository } from "../repositories/otps-repositoy";
+import { OtpsRepository } from "@/core/repositories/otps-repositoy";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -10,7 +10,7 @@ import { Otp } from "@/core/entities/otp";
 
 // Services
 import { OtpProvider } from "@/core/cryptography/otp-provider";
-import { DomainEvents } from "../events/domain-events";
+import { DomainEvents } from "@/core/events/domain-events";
 
 interface RequestOtpUseCaseRequest {
   email: string;

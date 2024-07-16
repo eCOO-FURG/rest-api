@@ -1,8 +1,17 @@
-import { Email } from "../entities/email";
-import { ResourceNotFoundError } from "../errors/resource-not-found";
-import { Mailer } from "../mail/mailer";
-import { UsersRepository } from "../repositories/users-repository";
-import { DomainEvents } from "./domain-events";
+// Entities
+import { Email } from "@/core/entities/email";
+
+// Repositories
+import { UsersRepository } from "@/core/repositories/users-repository";
+
+// Services
+import { Mailer } from "@/core/mail/mailer";
+
+// Events
+import { DomainEvents } from "@/core/events/domain-events";
+
+// Errors
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 interface OnOtpRequestEventRequest {
   user_id: string;

@@ -13,7 +13,7 @@ import { handleOrdersDeliveryController } from "@/infra/http/controllers/handle-
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
 import { ensureFarmAdmin } from "@/infra/http/middlewares/ensure-farm-admin";
-import { requestOtpController } from "../controllers/request-otp";
+import { requestOtpController } from "@/infra/http/controllers/request-otp";
 
 export const router = Router();
 
