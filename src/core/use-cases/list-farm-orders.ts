@@ -8,12 +8,12 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { mostPast } from "@/core/utils/most-past";
 import { OrdersRepository } from "@/core/repositories/orders-repository";
 
-interface ListFarmSalesUseCaseRequest {
+interface ListFarmOrdersUseCaseRequest {
   farm_id: string;
   cycle_id: string;
 }
 
-export class ListFarmSalesUseCase {
+export class ListFarmOrdersUseCase {
   constructor(
     private farmsRepository: FarmsRepository,
     private cyclesRepository: CyclesRepository,
@@ -21,7 +21,7 @@ export class ListFarmSalesUseCase {
     private ordersRepository: OrdersRepository
   ) {}
 
-  async execute({ farm_id, cycle_id }: ListFarmSalesUseCaseRequest) {
+  async execute({ farm_id, cycle_id }: ListFarmOrdersUseCaseRequest) {
     const farm = await this.farmsRepository.findById(farm_id);
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
@@ -43,6 +43,7 @@ export class ListFarmSalesUseCase {
     );
 
     return {
+      farm,
       orders,
     };
   }

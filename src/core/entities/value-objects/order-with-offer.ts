@@ -1,16 +1,16 @@
 // Entities
-import { OrderProps } from "@/core/entities/order";
-import { OfferProps } from "@/core/entities/offer";
+import { Order } from "@/core/entities/order";
+import { Offer } from "@/core/entities/offer";
 import { Product } from "@/core/entities/product";
 import { Entity } from "@/core/entities/entity";
 import { Optional } from "@/core/types/optional";
 
-interface OfferWithProductProps extends Omit<OfferProps, "product_id"> {
+interface OfferWithProductProps extends Omit<Offer["props"], "product_id"> {
   product: Product;
 }
 
 interface OrderWithOfferProps
-  extends Omit<Optional<OrderProps, "status">, "offer_id"> {
+  extends Omit<Optional<Order["props"], "status">, "offer_id"> {
   offer: OfferWithProductProps;
 }
 
@@ -25,6 +25,10 @@ export class OrderWithOffer extends Entity<OrderWithOfferProps> {
 
   get amount() {
     return this.props.amount;
+  }
+
+  get status() {
+    return this.props.status;
   }
 
   static create(props: OrderWithOfferProps) {

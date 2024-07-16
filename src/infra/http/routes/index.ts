@@ -13,12 +13,13 @@ import { handleOrdersDeliveryController } from "@/infra/http/controllers/handle-
 import { updateOfferController } from "@/infra/http/controllers/update-offer";
 import { getUserController } from "@/infra/http/controllers/get-profile";
 import { requestOtpController } from "@/infra/http/controllers/request-otp";
+import { listCyclesController } from "@/infra/http/controllers/list-cycles";
+import { listFarmOrdersController } from "@/infra/http/controllers/list-farm-orders";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
 import { ensureFarmAdmin } from "@/infra/http/middlewares/ensure-farm-admin";
 import { ensureAdmin } from "@/infra/http/middlewares/ensure-admin";
-import { listCyclesController } from "@/infra/http/controllers/list-cycles";
 
 export const router = Router();
 
@@ -46,6 +47,7 @@ router.patch(
   ensureAdmin,
   handleOrdersDeliveryController
 );
+router.get("/orders/:farm_id", ensureAuthenticated, listFarmOrdersController);
 
 router.post(
   "/offers",
