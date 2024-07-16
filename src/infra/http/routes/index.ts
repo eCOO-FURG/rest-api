@@ -39,6 +39,7 @@ router.patch(
 router.post("/farms", ensureAuthenticated, registerFarmController);
 
 router.post("/orders", ensureAuthenticated, orderProductsController);
+router.patch("/orders", ensureAuthenticated, ensureAdmin, handleOrdersDeliveryController)
 
 router.post(
   "/offers",
@@ -53,5 +54,3 @@ router.patch(
   ensureFarmAdmin, 
   updateOfferController
 )
-router.post("/offers", ensureAuthenticated, ensureFarmAdmin, offerProductsController);
-router.patch("/offers/delivery", ensureAuthenticated, ensureAdmin, handleOrdersDeliveryController)
