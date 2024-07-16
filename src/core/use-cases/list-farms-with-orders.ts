@@ -1,6 +1,6 @@
 // Repositories
-import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
-import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
+import { PrismaCyclesRepository } from "@/infra/database/repositories/prisma-cycles-repository";
+import { PrismaFarmsRepository } from "@/infra/database/repositories/prisma-farms-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -13,8 +13,8 @@ interface ListFarmsWithOrdersProps {
 
 export class ListFarmsWithOrdersUsecase {
   constructor(
-    private cyclesRepository: InMemoryCyclesRepository,
-    private farmsRepository: InMemoryFarmsRepository
+    private cyclesRepository: PrismaCyclesRepository,
+    private farmsRepository: PrismaFarmsRepository
   ) {}
 
   async execute({ cycle_id, page, name }: ListFarmsWithOrdersProps) {
