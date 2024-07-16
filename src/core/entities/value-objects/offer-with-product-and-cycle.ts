@@ -35,10 +35,6 @@ export class OfferWithProductAndCycle extends Entity<OfferWithProductAndCyclePro
     return this.props.cycle;
   }
 
-  get status() {
-    return this.props.status;
-  }
-
   static create(props: OfferWithProductAndCycleProps) {
     const offerWithProduct = new OfferWithProductAndCycle(props);
     return offerWithProduct;
