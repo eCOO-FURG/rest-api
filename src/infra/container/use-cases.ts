@@ -14,6 +14,8 @@ import { OrderProductsUseCase } from "@/core/use-cases/order-products";
 import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
 import { GetProfileUseCase } from "@/core/use-cases/get-profile";
 import { ListFarmsWithOrdersUsecase } from "@/core/use-cases/list-farms-with-orders";
+import { ListCyclesUseCase } from "@/core/use-cases/list-cycles";
+import { SearchOfferingFarmsUseCase } from "@/core/use-cases/search-offering-farms";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -78,7 +80,7 @@ export default (container: AwilixContainer) => {
         farmsRepository,
         offersRepository
       }) => new UpdateOfferUseCase(
-        farmsRepository, 
+        farmsRepository,
         offersRepository
       )
     ),
@@ -106,5 +108,16 @@ export default (container: AwilixContainer) => {
         farmsRepository
       )
     ),
+    listCyclesUseCase: asFunction(
+      ({ cyclesRepository }) => new ListCyclesUseCase(cyclesRepository)
+    ),
+    searchOfferingFarmsUseCase: asFunction(
+      ({ 
+        cyclesRepository, 
+        farmsRepository 
+      }) => new SearchOfferingFarmsUseCase(
+        cyclesRepository, 
+        farmsRepository
+      ))
   });
 };
