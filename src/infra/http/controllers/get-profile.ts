@@ -7,7 +7,7 @@ import { NextFunction, Request, Response } from "express";
 // Use-cases
 import { GetProfileUseCase } from "@/core/use-cases/get-profile";
 
-// Presenter
+// Presenters
 import { UserPresenter } from "@/infra/http/presenters/user-presenter";
 
 export async function getUserController(
@@ -19,7 +19,9 @@ export async function getUserController(
     const getProfileUseCase =
       container.resolve<GetProfileUseCase>("getProfileUseCase");
 
-    const { user } = await getProfileUseCase.execute({ id: request.user_id });
+    const { user } = await getProfileUseCase.execute({
+      user_id: request.user_id,
+    });
 
     return response.status(200).send(UserPresenter.toHttp(user));
   } catch (error) {

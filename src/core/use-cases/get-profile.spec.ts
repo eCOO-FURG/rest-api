@@ -24,14 +24,14 @@ describe("Get user profile", () => {
     const user = makeUser();
     await usersRepository.create(user);
 
-    const response = await sut.execute({ id: user.id.value });
+    const response = await sut.execute({ user_id: user.id.value });
 
     expect(response).toHaveProperty("user");
   });
 
   it("should not be able to get a user profile if the user does not exist", async () => {
-    await expect(() => sut.execute({ id: "aaaaa" })).rejects.toBeInstanceOf(
-      ResourceNotFoundError
-    );
+    await expect(() =>
+      sut.execute({ user_id: "aaaaa" })
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });
