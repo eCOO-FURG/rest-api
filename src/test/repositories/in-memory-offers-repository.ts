@@ -19,7 +19,7 @@ export class InMemoryOffersRepository implements OffersRepository {
   constructor(
     private inMemoryProductsRepository: InMemoryProductsRepository,
     private inMemoryCyclesRepository: InMemoryCyclesRepository
-  ) {}
+  ) { }
 
   async findById(id: string): Promise<Offer | null> {
     const item = this.items.find((item) => item.id.equals(id));
@@ -114,14 +114,6 @@ export class InMemoryOffersRepository implements OffersRepository {
     const index = this.items.findIndex((item) => item.id.equals(offer.id));
 
     this.items[index] = offer;
-  }
-
-  async updateMany(offers: Offer[]): Promise<void> {
-    const updateOffersPromises = offers.map((offer) => {
-      this.update(offer);
-    });
-
-    Promise.all(updateOffersPromises);
   }
 
   async delete(offer: Offer): Promise<void> {

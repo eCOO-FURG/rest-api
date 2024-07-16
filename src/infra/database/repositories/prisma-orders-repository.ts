@@ -94,6 +94,15 @@ export class PrismaOrdersRepository implements OrdersRepository {
   async updateMany(orders: Order[]): Promise<void> {
     const data = orders.map((order) => PrismaOrderMapper.toPrisma(order));
 
-    await prisma.order.updateMany({ data });
+    for (const item of data) {
+      await prisma.order.update({
+        where: {
+          id: item.id,
+        },
+        data: item
+      })
+    }
+
+    // to-do: update many raw query
   }
 }

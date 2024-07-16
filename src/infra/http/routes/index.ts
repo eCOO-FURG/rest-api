@@ -17,6 +17,7 @@ import { requestOtpController } from "@/infra/http/controllers/request-otp";
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
 import { ensureFarmAdmin } from "@/infra/http/middlewares/ensure-farm-admin";
+import { ensureAdmin } from "@/infra/http/middlewares/ensure-admin";
 
 export const router = Router();
 
@@ -52,3 +53,5 @@ router.patch(
   ensureFarmAdmin, 
   updateOfferController
 )
+router.post("/offers", ensureAuthenticated, ensureFarmAdmin, offerProductsController);
+router.patch("/offers/delivery", ensureAuthenticated, ensureAdmin, handleOrdersDeliveryController)

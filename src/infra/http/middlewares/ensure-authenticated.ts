@@ -24,7 +24,7 @@ export async function ensureAuthenticated(
     const authHeader = request.headers.authorization;
 
     if (!authHeader) {
-      return response.status(401).send({ message: "Não autorizado." });
+      return response.status(401).send({ message: "Sessão expirada." });
     }
 
     const [, token] = authHeader.split(" ");
@@ -62,6 +62,6 @@ export async function ensureAuthenticated(
     request.user_id = user_id;
     next();
   } catch (error) {
-    return response.status(401).send({ message: "Não autorizado." });
+    return response.status(401).send({ message: "Sessão expirada." });
   }
 }
