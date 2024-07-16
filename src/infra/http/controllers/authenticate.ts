@@ -4,8 +4,12 @@ import { z } from "zod";
 
 // Container
 import container from "@/infra/container";
+
+// Use-cases
 import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
-import { UserPresenter } from "../presenters/user-presenter";
+
+// Presenters
+import { UserPresenter } from "@/infra/http/presenters/user-presenter";
 
 const authenticateSchema = {
   body: z.object({

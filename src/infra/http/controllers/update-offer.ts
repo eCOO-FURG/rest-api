@@ -10,13 +10,11 @@ import { z } from "zod"
 
 const updateOfferSchema = {
   body: z.object({
+    amount: z.number(),
+    price: z.number()
+  }),
+  params: z.object({
     offer_id: z.string(),
-    amount: z.number().optional(),
-    price: z.number().optional()
-  }).refine((data) => {
-    return Object.values(data).some((value) => value !== undefined)
-  }, {
-    message: "Pelo menos um campo deve ser fornecido."
   })
 }
 
@@ -26,9 +24,10 @@ export async function updateOfferController(
   next: NextFunction
 ) {
   try{
-    const { offer_id, amount, price } = updateOfferSchema.body.parse(request.body)
+    const { amount, price } = updateOfferSchema.body.parse(request.body)
+    const { offer_id } = updateOfferSchema.params.parse(request.params)
 
-    const updateOfferUsecase = container.resolve<UpdateOfferUseCase>('updateOfferUsecase')
+    const updateOfferUsecase = container.resolve<UpdateOfferUseCase>('updateOfferUseCase')
   
     await updateOfferUsecase.execute({
       farm_id: request.farm_id,

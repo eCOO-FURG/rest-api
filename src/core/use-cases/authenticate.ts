@@ -30,7 +30,7 @@ export class AuthenticateUseCase {
     private sessionsRepository: SessionsRepository,
     private encrypter: Encrypter,
     private hasher: Hasher
-  ) {}
+  ) { }
 
   async execute({
     email,
@@ -58,7 +58,7 @@ export class AuthenticateUseCase {
         break;
 
       case "OTP":
-        const otp = await this.otpsRepository.findValid(user.id.value);
+        const otp = await this.otpsRepository.findValid(user.id.value, password);
 
         if (!otp || otp.value !== password) throw new WrongCredentialsError();
 

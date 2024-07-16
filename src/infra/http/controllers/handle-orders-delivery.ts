@@ -37,7 +37,7 @@ export async function handleOrdersDeliveryController(
       status,
     });
 
-    return response.sendStatus(200);
+    return response.sendStatus(204);
   } catch (error) {
     next(error);
   }

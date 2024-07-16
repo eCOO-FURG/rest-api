@@ -1,5 +1,5 @@
 // Types
-import { Optional } from "../types/optional";
+import { Optional } from "@/core/types/optional";
 
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";

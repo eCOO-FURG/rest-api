@@ -7,16 +7,16 @@ import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-r
 import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 // Use-cases
-import { RegisterFarmUseCase } from "./register-farm";
+import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
 
 // Errors
-import { ResourceAlreadyExistsError } from "../errors/resource-already-exists";
+import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 
 // Services
 import { makeUser } from "@/test/factories/make-user";
 
 // Entities
-import { Farm } from "../entities/farm";
+import { Farm } from "@/core/entities/farm";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;

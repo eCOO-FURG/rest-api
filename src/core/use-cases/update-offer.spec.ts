@@ -21,7 +21,6 @@ import { ClosedActionError } from "@/core/errors/closed-action";
 
 // Entities
 import { Week } from "@/core/entities/cycle";
-import { mostFuture } from "../utils/most-future";
 import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 let cyclesRepository: InMemoryCyclesRepository;

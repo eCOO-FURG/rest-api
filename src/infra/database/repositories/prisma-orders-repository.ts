@@ -75,12 +75,34 @@ export class PrismaOrdersRepository implements OrdersRepository {
 
   async create(order: Order): Promise<void> {
     const data = PrismaOrderMapper.toPrisma(order);
-    await prisma.order.create({ data });
+
+    await prisma.$transaction([
+      prisma.order.create({ data }),
+      prisma.offer.update({
+        where: {
+          id: order.offer_id.value,
+        },
+        data: {
+          amount: {
+            decrement: order.amount
+          }
+        }
+      })
+    ])
   }
 
   async updateMany(orders: Order[]): Promise<void> {
     const data = orders.map((order) => PrismaOrderMapper.toPrisma(order));
 
-    await prisma.order.updateMany({ data });
+    for (const item of data) {
+      await prisma.order.update({
+        where: {
+          id: item.id,
+        },
+        data: item
+      })
+    }
+
+    // to-do: update many raw query
   }
 }

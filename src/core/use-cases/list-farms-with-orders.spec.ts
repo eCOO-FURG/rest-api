@@ -1,5 +1,5 @@
 // Use-cases
-import { ListFarmsWithOrdersUsecase } from "./list-farms-with-orders";
+import { ListFarmsWithOrdersUsecase } from "@/core/use-cases/list-farms-with-orders";
 
 // Repositories
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
@@ -17,7 +17,7 @@ import { makeOffer } from "@/test/factories/make-offer";
 import { makeOrder } from "@/test/factories/make-order";
 
 // Errors
-import { ResourceNotFoundError } from "../errors/resource-not-found";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 let offersRepository: InMemoryOffersRepository;
 let ordersRepository: InMemoryOrdersRepository;
