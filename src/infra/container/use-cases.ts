@@ -16,6 +16,7 @@ import { GetProfileUseCase } from "@/core/use-cases/get-profile";
 import { ListFarmsWithOrdersUsecase } from "@/core/use-cases/list-farms-with-orders";
 import { ListCyclesUseCase } from "@/core/use-cases/list-cycles";
 import { SearchOfferingFarmsUseCase } from "@/core/use-cases/search-offering-farms";
+import { ListFarmOrdersUseCase } from "@/core/use-cases/list-farm-orders";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -70,19 +71,12 @@ export default (container: AwilixContainer) => {
         )
     ),
     updateUserUseCase: asFunction(
-      ({
-        usersRepository,
-        encrypter
-      }) => new UpdateUserUseCase(usersRepository, encrypter)
+      ({ usersRepository, encrypter }) =>
+        new UpdateUserUseCase(usersRepository, encrypter)
     ),
     updateOfferUseCase: asFunction(
-      ({
-        farmsRepository,
-        offersRepository
-      }) => new UpdateOfferUseCase(
-        farmsRepository,
-        offersRepository
-      )
+      ({ farmsRepository, offersRepository }) =>
+        new UpdateOfferUseCase(farmsRepository, offersRepository)
     ),
     orderPoductsUseCase: asFunction(
       ({ usersRepository, offersRepository, ordersRepository }) =>
@@ -118,6 +112,20 @@ export default (container: AwilixContainer) => {
       }) => new SearchOfferingFarmsUseCase(
         cyclesRepository, 
         farmsRepository
-      ))
+      )),
+    listFarmOrdersUseCase: asFunction(
+      ({
+        farmsRepository,
+        cyclesRepository,
+        offersRepository,
+        ordersRepository,
+      }) =>
+        new ListFarmOrdersUseCase(
+          farmsRepository,
+          cyclesRepository,
+          offersRepository,
+          ordersRepository
+        )
+    ),
   });
 };

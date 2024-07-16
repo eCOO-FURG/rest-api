@@ -14,13 +14,14 @@ import { listFarmsWithOrdersController } from "@/infra/http/controllers/list-far
 import { updateOfferController } from "@/infra/http/controllers/update-offer";
 import { getUserController } from "@/infra/http/controllers/get-profile";
 import { requestOtpController } from "@/infra/http/controllers/request-otp";
+import { listCyclesController } from "@/infra/http/controllers/list-cycles";
+import { listFarmOrdersController } from "@/infra/http/controllers/list-farm-orders";
+import { searchOfferingFarmsController } from "@/infra/http/controllers/search-offering-farms";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
 import { ensureFarmAdmin } from "@/infra/http/middlewares/ensure-farm-admin";
 import { ensureAdmin } from "@/infra/http/middlewares/ensure-admin";
-import { listCyclesController } from "@/infra/http/controllers/list-cycles";
-import { searchOfferingFarmsController } from "@/infra/http/controllers/search-offering-farms";
 
 export const router = Router();
 
@@ -32,11 +33,7 @@ router.get("/me", ensureAuthenticated, getUserController);
 router.post("/auth", authenticateController);
 router.post("/auth/otp", requestOtpController);
 
-router.post(
-  "/farms",
-  ensureAuthenticated,
-  registerFarmController
-);
+router.post("/farms", ensureAuthenticated, registerFarmController);
 
 router.post("/orders", ensureAuthenticated, orderProductsController);
 router.patch(
@@ -45,11 +42,8 @@ router.patch(
   ensureAdmin,
   handleOrdersDeliveryController
 );
-router.get(
-  "/orders",
-  ensureAuthenticated,
-  listFarmsWithOrdersController
-)
+router.get("/orders", ensureAuthenticated, listFarmsWithOrdersController);
+router.get("/orders/:farm_id", ensureAuthenticated, listFarmOrdersController);
 
 router.post(
   "/offers",
@@ -57,7 +51,7 @@ router.post(
   ensureFarmAdmin,
   offerProductsController
 );
-router.get("/offers", searchOfferingFarmsController)
+router.get("/offers", searchOfferingFarmsController);
 router.patch(
   "/offers/:offer_id",
   ensureAuthenticated,

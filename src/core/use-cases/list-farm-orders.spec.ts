@@ -1,5 +1,5 @@
 // Use-cases
-import { ListFarmSalesUseCase } from "@/core/use-cases/list-farm-orders";
+import { ListFarmOrdersUseCase } from "@/core/use-cases/list-farm-orders";
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeOffer } from "@/test/factories/make-offer";
@@ -30,7 +30,7 @@ let repositories: {
   orders: InMemoryOrdersRepository;
 };
 
-let sut: ListFarmSalesUseCase;
+let sut: ListFarmOrdersUseCase;
 
 describe("list farm sales", () => {
   beforeEach(() => {
@@ -55,7 +55,7 @@ describe("list farm sales", () => {
       orders: new InMemoryOrdersRepository(offersRepository),
     };
 
-    sut = new ListFarmSalesUseCase(
+    sut = new ListFarmOrdersUseCase(
       repositories.farms,
       repositories.cycles,
       repositories.offers,
