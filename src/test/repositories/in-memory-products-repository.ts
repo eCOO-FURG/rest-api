@@ -2,7 +2,7 @@
 import { Product } from "@/core/entities/product";
 
 // Repositories
-import { ProductsRepository } from "@/core/repositories/products-repository";
+import { ProductsRepository, ProductsRepositorySearchManyRequest } from "@/core/repositories/products-repository";
 
 export class InMemoryProductsRepository implements ProductsRepository {
   items: Product[] = [];
@@ -17,5 +17,13 @@ export class InMemoryProductsRepository implements ProductsRepository {
 
   async create(product: Product): Promise<void> {
     this.items.push(product);
+  }
+
+  async searchMany({ page, name }: ProductsRepositorySearchManyRequest): Promise<Product[]> {
+    if (!name) {
+      return this.items.slice((page - 1) * 20, page * 20)
+    }
+
+    return this.items.filter((product) => product.name === name).slice((page - 1) * 20, page * 20)
   }
 }
