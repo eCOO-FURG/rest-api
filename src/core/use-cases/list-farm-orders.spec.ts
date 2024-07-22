@@ -41,7 +41,7 @@ describe("list farm sales", () => {
       productsRepository,
       cyclesRepository
     );
-    ordersRepository = new InMemoryOrdersRepository(offersRepository);
+    ordersRepository = new InMemoryOrdersRepository(offersRepository, productsRepository);
 
     repositories = {
       farms: new InMemoryFarmsRepository(
@@ -52,7 +52,7 @@ describe("list farm sales", () => {
       ),
       cycles: cyclesRepository,
       offers: offersRepository,
-      orders: new InMemoryOrdersRepository(offersRepository),
+      orders: ordersRepository,
     };
 
     sut = new ListFarmOrdersUseCase(
@@ -86,7 +86,7 @@ describe("list farm sales", () => {
       amount: offer.amount,
     });
 
-    await repositories.orders.create(order);
+    await repositories.orders.createMany([order]);
 
     const result = await sut.execute({
       farm_id: farm.id.value,

@@ -41,7 +41,7 @@ describe("list farms with orders", () => {
       productsRepository,
       cyclesRepository
     );
-    ordersRepository = new InMemoryOrdersRepository(offersRepository);
+    ordersRepository = new InMemoryOrdersRepository(offersRepository, productsRepository);
 
     repositories = {
       cycles: cyclesRepository,
@@ -93,7 +93,7 @@ describe("list farms with orders", () => {
       offer_id: offer.id,
     });
 
-    await ordersRepository.create(order);
+    await ordersRepository.createMany([order]);
 
     const { farms } = await sut.execute({
       cycle_id: cycle.id.value,
@@ -130,7 +130,7 @@ describe("list farms with orders", () => {
         offer_id: offer.id,
       });
 
-      await ordersRepository.create(order);
+      await ordersRepository.createMany([order]);
     }
 
     const { farms } = await sut.execute({
@@ -169,7 +169,7 @@ describe("list farms with orders", () => {
         offer_id: offer.id,
       });
 
-      await ordersRepository.create(order);
+      await ordersRepository.createMany([order]);
     }
 
     const { farms } = await sut.execute({

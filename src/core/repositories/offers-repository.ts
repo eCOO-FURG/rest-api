@@ -18,9 +18,9 @@ export interface OffersRepositorySearchManyRequest {
 
 export interface OffersRepository {
   findById(id: string): Promise<Offer | null>;
-  findByIdWithProductAndCycle(
-    id: string
-  ): Promise<OfferWithProductAndCycle | null>;
+  findManyByIdsWithProductAndCycle(
+    ids: string[]
+  ): Promise<OfferWithProductAndCycle[]>;
   searchMany({
     farm_id,
     cycle_id,

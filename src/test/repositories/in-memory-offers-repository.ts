@@ -1,5 +1,3 @@
-import { UUID } from "@/core/entities/value-objects/uuid";
-
 // Entities
 import { Offer } from "@/core/entities/offer";
 import { OfferWithProductAndCycle } from "@/core/entities/value-objects/offer-with-product-and-cycle";
@@ -31,23 +29,27 @@ export class InMemoryOffersRepository implements OffersRepository {
     return item;
   }
 
-  async findByIdWithProductAndCycle(
-    id: string
-  ): Promise<OfferWithProductAndCycle | null> {
-    const offer = this.items.find((offer) => offer.id.equals(id));
+  async findManyByIdsWithProductAndCycle(
+    ids: string[]
+  ): Promise<OfferWithProductAndCycle[]> {
+    const offers: OfferWithProductAndCycle[] = [];
 
-    if (!offer) return null;
+    for (const id of ids) {
+      const offer = this.items.find((offer) => offer.id.equals(id));
+
+    if (!offer) continue;
 
     const product = await this.inMemoryProductsRepository.findById(
       offer.product_id.value
     );
 
-    if (!product) return null;
+    if (!product) continue;
+
     const cycle = await this.inMemoryCyclesRepository.findById(
       offer.cycle_id.value
     );
 
-    if (!cycle) return null;
+    if (!cycle) continue;
 
     const offerWithProduct = OfferWithProductAndCycle.create({
       ...offer.props,
@@ -55,8 +57,12 @@ export class InMemoryOffersRepository implements OffersRepository {
       product,
     });
 
-    return offerWithProduct;
+      offers.push(offerWithProduct)
+    }
+
+    return offers;
   }
+  
 
   async search({
     cycle_id,

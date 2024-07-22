@@ -8,27 +8,19 @@ import {
   OrdersRepositoryFindManyByFarmIdInCycle,
 } from "@/core/repositories/orders-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
+import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
+
 
 export class InMemoryOrdersRepository implements OrdersRepository {
   items: Order[] = [];
 
-  constructor(private inMemoryOffersRepository: InMemoryOffersRepository) {}
+  constructor(private inMemoryOffersRepository: InMemoryOffersRepository, private inMemoryProductsRepository: InMemoryProductsRepository) {}
 
-  async findByOfferIdAndUserId(
-    offer_id: string,
-    user_id: string
-  ): Promise<Order | null> {
-    const item = this.items.find(
-      (item) => item.offer_id.equals(offer_id) && item.user_id.equals(user_id)
-    );
-
-    if (!item) {
-      return null;
-    }
-
-    return item;
+  async findManyByOfferIdAndUserId(offers_ids: string[], user_id: string): Promise<Order[]> {
+    const orders = this.items.filter((order) => offers_ids.some((id) => order.id.equals(id) && order.user_id.equals(user_id)))
+    return orders;
   }
-
+  
   async findManyWithOfferByOffersIds(
     offers_ids: string[]
   ): Promise<OrderWithOffer[]> {
@@ -36,32 +28,29 @@ export class InMemoryOrdersRepository implements OrdersRepository {
       offers_ids.includes(item.offer_id.value)
     );
 
-    const ordersWithOffer = await Promise.all(
-      orders.map(async (item) => {
-        const offer =
-          await this.inMemoryOffersRepository.findByIdWithProductAndCycle(
-            item.offer_id.value
-          );
+    const merged: OrderWithOffer[] = [];
 
-        if (!offer) return null;
+    for (const order of orders) {
+      const offer = this.inMemoryOffersRepository.items.find((item) => item.id.equals(order.offer_id))
 
-        return OrderWithOffer.create({
-          id: item.id,
-          amount: item.amount,
-          offer: {
-            ...offer.props,
-            cycle_id: offer.cycle.id,
-          },
-          user_id: item.user_id,
-          created_at: item.created_at,
-          updated_at: item.updated_at,
-        });
-      })
-    );
+      if(offer) {
+        const product = this.inMemoryProductsRepository.items.find((item) => item.id.equals(offer.product_id));
 
-    const filtered = ordersWithOffer.flatMap((item) => (!!item ? [item] : []));
+        if(product) {
+          const orderWithOffer = OrderWithOffer.create({
+            ...order.props,
+            offer: {
+              ...offer.props,
+              product
+            }
+          })
 
-    return filtered;
+          merged.push(orderWithOffer)
+        }
+      }
+    }
+
+    return merged;
   }
 
   async findManyByFarmIdInCycle({
@@ -86,18 +75,18 @@ export class InMemoryOrdersRepository implements OrdersRepository {
     return orders;
   }
 
-  async create(order: Order): Promise<void> {
-    const offer = await this.inMemoryOffersRepository.findById(
-      order.offer_id.value
-    );
-
-    if (!offer) return;
-
-    this.items.push(order);
-
-    offer.amount -= order.amount;
-
-    await this.inMemoryOffersRepository.update(offer);
+  async createMany(orders: Order[]): Promise<void> {
+    for (const order of orders) {
+      const offer = await this.inMemoryOffersRepository.findById(
+        order.offer_id.value
+      );
+  
+      if (offer) {
+        this.items.push(order);
+        offer.amount -= order.amount;
+        await this.inMemoryOffersRepository.update(offer);
+      }
+    }
   }
 
   async updateMany(orders: Order[]): Promise<void> {

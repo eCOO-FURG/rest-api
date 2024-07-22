@@ -40,7 +40,7 @@ describe("searh offering farms", () => {
       productsRepository,
       cyclesRepository
     );
-    ordersRepository = new InMemoryOrdersRepository(offersRepository);
+    ordersRepository = new InMemoryOrdersRepository(offersRepository, productsRepository);
 
     repositories = {
       farms: new InMemoryFarmsRepository(

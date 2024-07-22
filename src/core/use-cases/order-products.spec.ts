@@ -50,7 +50,7 @@ describe("order product", () => {
       users: new InMemoryUsersRepository(),
       products: productsRepository,
       offers: offersRepository,
-      orders: new InMemoryOrdersRepository(offersRepository),
+      orders: new InMemoryOrdersRepository(offersRepository, productsRepository),
     };
 
     sut = new OrderProductsUseCase(
@@ -80,8 +80,8 @@ describe("order product", () => {
 
     await sut.execute({
       user_id: user.id.value,
-      offer_id: offer.id.value,
-      amount: 5,
+      request: [{offer_id: offer.id.value,
+        amount: 5,}]
     });
 
     expect(repositories.orders.items.length).toBe(1);
@@ -92,8 +92,10 @@ describe("order product", () => {
     await expect(() =>
       sut.execute({
         user_id: "1234",
-        offer_id: "1234",
+        request: [{
+          offer_id: "1234",
         amount: 5,
+        }]
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
@@ -105,8 +107,10 @@ describe("order product", () => {
     await expect(() =>
       sut.execute({
         user_id: user.id.value,
-        offer_id: "1234",
-        amount: 5,
+        request: [
+          {offer_id: "1234",
+            amount: 5,}
+        ]
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
@@ -128,8 +132,8 @@ describe("order product", () => {
     await expect(() =>
       sut.execute({
         user_id: user.id.value,
-        offer_id: offer.id.value,
-        amount: 5,
+        request: [{offer_id: offer.id.value,
+          amount: 5,}]
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
@@ -162,8 +166,10 @@ describe("order product", () => {
     await expect(() =>
       sut.execute({
         user_id: user.id.value,
-        offer_id: offer.id.value,
+        request: [{
+          offer_id: offer.id.value,
         amount: 5,
+        }]
       })
     ).rejects.toBeInstanceOf(ClosedActionError);
   });
@@ -188,15 +194,19 @@ describe("order product", () => {
 
     await sut.execute({
       user_id: user.id.value,
-      offer_id: offer.id.value,
+      request: [{
+        offer_id: offer.id.value,
       amount: 5,
+      }]
     });
 
     await expect(() =>
       sut.execute({
         user_id: user.id.value,
-        offer_id: offer.id.value,
+        request: [{
+          offer_id: offer.id.value,
         amount: 5,
+        }]
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
@@ -222,8 +232,8 @@ describe("order product", () => {
     await expect(() =>
       sut.execute({
         user_id: user.id.value,
-        offer_id: offer.id.value,
-        amount: 15,
+        request: [{offer_id: offer.id.value,
+          amount: 15,}]
       })
     ).rejects.toBeInstanceOf(UnavailableAmountError);
   });
@@ -251,8 +261,8 @@ describe("order product", () => {
     await expect(() =>
       sut.execute({
         user_id: user.id.value,
-        offer_id: offer.id.value,
-        amount: 27,
+        request: [{offer_id: offer.id.value,
+          amount: 27,}]
       })
     ).rejects.toBeInstanceOf(InvalidWeightError);
   });

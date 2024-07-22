@@ -9,16 +9,16 @@ export interface OrdersRepositoryFindManyByFarmIdInCycle {
 }
 
 export interface OrdersRepository {
-  findByOfferIdAndUserId(
-    offer_id: string,
+  findManyByOfferIdAndUserId(
+    offers_ids: string[],
     user_id: string
-  ): Promise<Order | null>;
+  ): Promise<Order[]>;
   findManyWithOfferByOffersIds(offers_ids: string[]): Promise<OrderWithOffer[]>;
   findManyByFarmIdInCycle({
     farm_id,
     cycle_id,
     created_at,
   }: OrdersRepositoryFindManyByFarmIdInCycle): Promise<Order[]>;
-  create(order: Order): Promise<void>;
+  createMany(orders: Order[]): Promise<void>;
   updateMany(orders: Order[]): Promise<void>;
 }

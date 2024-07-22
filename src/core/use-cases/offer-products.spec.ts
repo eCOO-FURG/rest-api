@@ -49,7 +49,7 @@ describe("offer products", () => {
       productsRepository,
       cyclesRepository
     );
-    ordersRepository = new InMemoryOrdersRepository(offersRepository);
+    ordersRepository = new InMemoryOrdersRepository(offersRepository, productsRepository);
 
     repositories = {
       farms: new InMemoryFarmsRepository(

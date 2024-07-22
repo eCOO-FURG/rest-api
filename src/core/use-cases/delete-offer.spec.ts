@@ -4,6 +4,7 @@ import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-rep
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
+import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 // Use-cases
 import { DeleteOfferUseCase } from "@/core/use-cases/delete-offer";
@@ -20,6 +21,7 @@ let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
 let usersRepository: InMemoryUsersRepository;
 let offersRepository: InMemoryOffersRepository;
+let ordersRepository: InMemoryOrdersRepository;
 
 let repositories: {
   offers: InMemoryOffersRepository;
@@ -33,6 +35,7 @@ describe("delete offer", () => {
     cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
     usersRepository = new InMemoryUsersRepository();
+    ordersRepository: new InMemoryOrdersRepository(offersRepository, productsRepository),
 
     repositories = {
       offers: new InMemoryOffersRepository(
@@ -42,7 +45,8 @@ describe("delete offer", () => {
       farms: new InMemoryFarmsRepository(
         usersRepository,
         offersRepository,
-        productsRepository
+        productsRepository,
+        ordersRepository
       ),
     };
     sut = new DeleteOfferUseCase(repositories.farms, repositories.offers);

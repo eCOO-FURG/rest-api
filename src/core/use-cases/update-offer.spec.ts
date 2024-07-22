@@ -45,7 +45,7 @@ describe("update offer", () => {
       productsRepository,
       cyclesRepository
     );
-    ordersRepository = new InMemoryOrdersRepository(offersRepository);
+    ordersRepository = new InMemoryOrdersRepository(offersRepository, productsRepository);
 
     repositories = {
       offers: offersRepository,

@@ -16,20 +16,22 @@ import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper"
 import { PrismaOrderWithOfferMapper } from "@/infra/database/mappers/prisma-order-with-offer-mapper";
 
 export class PrismaOrdersRepository implements OrdersRepository {
-  async findByOfferIdAndUserId(
-    offer_id: string,
+  
+  async findManyByOfferIdAndUserId(
+    offers_id: string[],
     user_id: string
-  ): Promise<Order | null> {
-    const order = await prisma.order.findFirst({
+  ): Promise<Order[]> {
+    const orders = await prisma.order.findMany({
       where: {
-        offer_id,
+        offer_id: {
+           in: offers_id
+        },
         user_id,
       },
     });
 
-    if (!order) return null;
 
-    return PrismaOrderMapper.toDomain(order);
+    return orders.map((order) => PrismaOrderMapper.toDomain(order));
   }
 
   async findManyWithOfferByOffersIds(
@@ -73,22 +75,26 @@ export class PrismaOrdersRepository implements OrdersRepository {
     return orders.map((order) => PrismaOrderMapper.toDomain(order));
   }
 
-  async create(order: Order): Promise<void> {
-    const data = PrismaOrderMapper.toPrisma(order);
-
-    await prisma.$transaction([
-      prisma.order.create({ data }),
-      prisma.offer.update({
-        where: {
-          id: order.offer_id.value,
-        },
-        data: {
-          amount: {
-            decrement: order.amount
+  async createMany(orders: Order[]): Promise<void> {
+    const transactions = orders.map((order) => {
+      const data = PrismaOrderMapper.toPrisma(order);
+  
+      return [
+        prisma.order.create({ data }),
+        prisma.offer.update({
+          where: {
+            id: order.offer_id.value,
+          },
+          data: {
+            amount: {
+              decrement: order.amount
+            }
           }
-        }
-      })
-    ])
+        })
+      ];
+    }).flat();
+  
+    await prisma.$transaction(transactions);
   }
 
   async updateMany(orders: Order[]): Promise<void> {
