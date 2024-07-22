@@ -17,6 +17,7 @@ import { requestOtpController } from "@/infra/http/controllers/request-otp";
 import { listCyclesController } from "@/infra/http/controllers/list-cycles";
 import { listFarmOrdersController } from "@/infra/http/controllers/list-farm-orders";
 import { searchOfferingFarmsController } from "@/infra/http/controllers/search-offering-farms";
+import { listFarmOffersController } from "@/infra/http/controllers/list-farm-offers";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -52,7 +53,7 @@ router.post(
   offerProductsController
 );
 router.get("/offers", searchOfferingFarmsController);
-router.get("/offers/:farm_id", searchOfferingFarmsController);
+router.get("/offers/:farm_id", listFarmOffersController);
 router.patch(
   "/offers/:offer_id",
   ensureAuthenticated,
