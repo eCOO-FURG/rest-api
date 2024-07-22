@@ -2,7 +2,7 @@
 import { Product } from "@/core/entities/product";
 
 // Repositories
-import { ProductsRepository } from "@/core/repositories/products-repository";
+import { ProductsRepository, ProductsRepositorySearchManyRequest } from "@/core/repositories/products-repository";
 
 // Services
 import { prisma } from "@/infra/database/prisma-service";
@@ -26,5 +26,23 @@ export class PrismaProductRepository implements ProductsRepository {
     await prisma.product.create({
       data,
     });
+  }
+  async searchMany({ page, name }: ProductsRepositorySearchManyRequest): Promise<Product[]> {
+    const skip = (page - 1) * 20
+
+    const products = await prisma.product.findMany({
+      where: {
+        name: {
+          contains: name,
+          mode: "insensitive"
+        }
+      },
+      skip,
+      take: 20
+    })
+
+    const mapperedProducts = products.map((product) => PrismaProductMapper.toDomain(product))
+
+    return mapperedProducts
   }
 }
