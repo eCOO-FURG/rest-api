@@ -144,10 +144,10 @@ describe("order product", () => {
 
     const today = (new Date().getDay() + 1) as Week[0];
 
-    const offerDays = [1, 2, 3, 4, 5, 6, 7].filter((day) => day != today);
+    const orderDays = [1, 2, 3, 4, 5, 6, 7].filter((day) => day != today);
 
     const cycle = makeCycle({
-      offer: offerDays as Week,
+      order: orderDays as Week,
     });
 
     cyclesRepository.items.push(cycle);
@@ -174,7 +174,7 @@ describe("order product", () => {
     ).rejects.toBeInstanceOf(ClosedActionError);
   });
 
-  it("should not be able create an order with same offer", async () => {
+  it("should not be able create two orders for the same offer", async () => {
     const user = makeUser();
     await repositories.users.create(user);
 

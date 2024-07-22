@@ -1,6 +1,5 @@
 // Entities
 import { Order } from "@/core/entities/order";
-import { Product } from "@/core/entities/product";
 import { Week } from "@/core/entities/cycle";
 
 // Repositories
@@ -54,9 +53,9 @@ export class OrderProductsUseCase {
 
       if(item.amount > offer.amount) throw new UnavailableAmountError(offer.id.value);
 
-      if(!this.orderedAmountIsLegal(offer.product.pricing, item.amount)) {
-        throw new InvalidWeightError("solicitado", offer.product.id.value);
-      } 
+      if(offer.product.pricing === 'WEIGHT' && !this.orderedAmountIsLegal(item.amount)) {
+        throw new InvalidWeightError("solicitado", offer.product.id.value)
+      }
 
       const order = Order.create({
         amount: item.amount,
@@ -75,7 +74,7 @@ export class OrderProductsUseCase {
     await this.ordersRepository.createMany(orders);
   }
 
-  private orderedAmountIsLegal(pricing: Product["pricing"], amount: number) {
-    return pricing === "WEIGHT" && amount % 100 !== 0;
+  private orderedAmountIsLegal(amount: number) {
+    return amount % 100 === 0;
   }
 }

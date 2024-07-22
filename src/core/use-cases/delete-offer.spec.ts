@@ -35,7 +35,6 @@ describe("delete offer", () => {
     cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
     usersRepository = new InMemoryUsersRepository();
-    ordersRepository: new InMemoryOrdersRepository(offersRepository, productsRepository),
 
     repositories = {
       offers: new InMemoryOffersRepository(

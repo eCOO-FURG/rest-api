@@ -29,6 +29,33 @@ export class InMemoryOffersRepository implements OffersRepository {
     return item;
   }
 
+  async findByIdWithProductAndCycle(
+    id: string
+  ): Promise<OfferWithProductAndCycle | null> {
+    const offer = this.items.find((offer) => offer.id.equals(id));
+
+    if (!offer) return null;
+
+    const product = await this.inMemoryProductsRepository.findById(
+      offer.product_id.value
+    );
+
+    if (!product) return null;
+    const cycle = await this.inMemoryCyclesRepository.findById(
+      offer.cycle_id.value
+    );
+
+    if (!cycle) return null;
+
+    const offerWithProduct = OfferWithProductAndCycle.create({
+      ...offer.props,
+      cycle,
+      product,
+    });
+
+    return offerWithProduct;
+  }
+
   async findManyByIdsWithProductAndCycle(
     ids: string[]
   ): Promise<OfferWithProductAndCycle[]> {

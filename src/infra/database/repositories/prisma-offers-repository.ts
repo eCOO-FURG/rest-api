@@ -23,6 +23,19 @@ export class PrismaOffersRepository implements OffersRepository {
     return PrismaOfferMapper.toDomain(offer);
   }
 
+  async findByIdWithProductAndCycle(
+    id: string
+  ): Promise<OfferWithProductAndCycle | null> {
+    const offer = await prisma.offer.findUnique({
+      where: { id },
+      include: { product: true, cycle: true },
+    });
+
+    if (!offer) return null;
+
+    return PrismaOfferWithProductAndCycleMapper.toDomain(offer);
+  }
+
   async findManyByIdsWithProductAndCycle(ids: string[]): Promise<OfferWithProductAndCycle[]> {
     const offers = await prisma.offer.findMany({
       where: { id: {

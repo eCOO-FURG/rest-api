@@ -1,11 +1,11 @@
 // Entities
 import { Product } from "@/core/entities/product";
-import { OfferProps } from "@/core/entities/offer";
+import { Offer } from "@/core/entities/offer";
 import { Entity } from "@/core/entities/entity";
 import { Cycle } from "@/core/entities/cycle";
 
 interface OfferWithProductAndCycleProps
-  extends Omit<OfferProps, "product_id" | "cycle_id"> {
+  extends Omit<Offer["props"], "product_id" | "cycle_id"> {
   product: Product;
   cycle: Cycle;
 }
