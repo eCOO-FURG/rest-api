@@ -6,7 +6,10 @@ import { z } from "zod";
 import { SearchOfferingFarmsUseCase } from "@/core/use-cases/search-offering-farms";
 
 // Container
-import container from "@/infra/container";
+import container from "@/infra/container"
+
+// Presenters
+import { FarmPresenter } from "@/infra/http/presenters/farm-presenter";
 
 const searchOfferingFarmsSchema = {
   query: z.object({
@@ -28,13 +31,13 @@ export async function searchOfferingFarmsController(
       "searchOfferingFarmsUseCase"
     );
 
-    await searchOfferingFarmsUseCase.execute({
+    const { farms } = await searchOfferingFarmsUseCase.execute({
       cycle_id,
       product,
       page
     });
 
-    return response.sendStatus(200);
+    return response.status(200).send({ farms: farms.map((farm) => FarmPresenter.toHttp(farm)) });
   } catch (error) {
     next(error);
   }

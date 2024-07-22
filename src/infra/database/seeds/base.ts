@@ -1,3 +1,6 @@
+// Entities
+import { UUID } from "@/core/entities/value-objects/uuid";
+
 // Libs
 import { PRICING } from "@prisma/client";
 
@@ -20,11 +23,27 @@ async function seed() {
     prisma.user.deleteMany(),
   ]);
 
-  for (const { items } of categories) {
+  const cddId = new UUID();
+
+  await prisma.user.create({
+    data: {
+      id: cddId.value,
+      first_name: "Administrador",
+      last_name: "CDD",
+      email: "admin@ecoo.org.br",
+      cpf: "",
+      roles: ["USER", "ADMIN"],
+      password: await hash(env.ECOO_EMAIL_PASSWORD, 8),
+      phone: "",
+      verified_at: new Date(),
+    },
+  });
+
+  for (const { products } of categories) {
     await prisma.product.createMany({
-      data: items.map((item) => ({
-        ...item,
-        pricing: item.pricing as PRICING,
+      data: products.map((product) => ({
+        ...product,
+        pricing: product.pricing as PRICING,
       })),
     });
   }
@@ -41,28 +60,42 @@ async function seed() {
   if (env.ENV === "development") {
     const everyDay = [1, 2, 3, 4, 5, 6, 7];
 
+    const cycleId = new UUID();
+
     await prisma.cycle.create({
       data: {
+        id: cycleId.value,
         alias: "Livre",
         offer: everyDay,
         order: everyDay,
         deliver: everyDay,
       },
     });
-  }
 
-  await prisma.user.create({
-    data: {
-      first_name: "Administrador",
-      last_name: "CDD",
-      email: "admin@ecoo.org.br",
-      cpf: "",
-      roles: ["USER", "ADMIN"],
-      password: await hash(env.ECOO_EMAIL_PASSWORD, 8),
-      phone: "",
-      verified_at: new Date(),
-    },
-  });
+    const products = await prisma.product.findMany();
+
+    await prisma.farm.create({
+      data: {
+        name: "Farm do CDD",
+        caf: "12345678",
+        tax: 20,
+        active: true,
+        admin_id: cddId.value,
+        offers: {
+          createMany: {
+            data: products.map((product) => ({
+              cycle_id: cycleId.value,
+              product_id: product.id,
+              amount: product.pricing === "UNIT"
+              ? Math.floor(Math.random() * 20 + 1)
+              : Math.floor(Math.random() * 20 + 1) * 50,
+              price: "10",
+            }))
+          }
+        }
+      }
+    })
+  }
 }
 
 seed()

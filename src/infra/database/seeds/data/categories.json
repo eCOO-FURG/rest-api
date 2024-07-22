@@ -1,7 +1,7 @@
 [
   {
     "name": "Hortaliças, legumes e verduras",
-    "items": [
+    "products": [
       {
         "name": "Abóbora Cabotiá",
         "pricing": "UNIT",
@@ -407,7 +407,7 @@
   },
   {
     "name": "Frutas",
-    "items": [
+    "products": [
       {
         "name": "Abacate",
         "pricing": "WEIGHT",
@@ -597,7 +597,7 @@
   },
   {
     "name": "Cereais e grãos",
-    "items": [
+    "products": [
       {
         "name": "Amendoim",
         "pricing": "WEIGHT",
@@ -747,7 +747,7 @@
   },
   {
     "name": "Origem animal",
-    "items": [
+    "products": [
       {
         "name": "Banha",
         "pricing": "WEIGHT",
@@ -832,7 +832,7 @@
   },
   {
     "name": "Artesanais e não perecíveis",
-    "items": [
+    "products": [
       {
         "name": "Bala de Banana",
         "pricing": "UNIT",
@@ -997,7 +997,7 @@
   },
   {
     "name": "Peixes",
-    "items": [
+    "products": [
       {
         "name": "Bagre",
         "pricing": "WEIGHT",
