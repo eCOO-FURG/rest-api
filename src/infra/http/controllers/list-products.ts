@@ -14,7 +14,7 @@ import { ProductPresenter } from "@/infra/http/presenters/product-presenter";
 const listProductSchema = {
   query: z.object({
     page: z.coerce.number(),
-    name: z.string().optional(),
+    product: z.string().optional(),
   }),
 };
 
@@ -24,7 +24,7 @@ export async function listProductsController(
   next: NextFunction
 ) {
   try {
-    const { page, name } = listProductSchema.query.parse(request.query);
+    const { page, product } = listProductSchema.query.parse(request.query);
 
     const listProductsUseCase = container.resolve<ListProductsUsecase>(
       "listProductsUseCase"
@@ -32,7 +32,7 @@ export async function listProductsController(
 
     const { products } = await listProductsUseCase.execute({
       page,
-      product: name,
+      product,
     });
 
     return response
