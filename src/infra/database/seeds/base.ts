@@ -86,15 +86,27 @@ async function seed() {
             data: products.map((product) => ({
               cycle_id: cycleId.value,
               product_id: product.id,
-              amount: product.pricing === "UNIT"
-              ? Math.floor(Math.random() * 20 + 1)
-              : Math.floor(Math.random() * 20 + 1) * 50,
+              amount:
+                product.pricing === "UNIT"
+                  ? Math.floor(Math.random() * 20 + 1)
+                  : Math.floor(Math.random() * 20 + 1) * 50,
               price: "10",
-            }))
-          }
-        }
-      }
-    })
+            })),
+          },
+        },
+      },
+    });
+
+    await prisma.user.update({
+      where: {
+        id: cddId.value,
+      },
+      data: {
+        roles: {
+          push: "PRODUCER",
+        },
+      },
+    });
   }
 }
 

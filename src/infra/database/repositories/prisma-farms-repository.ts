@@ -86,6 +86,17 @@ export class PrismaFarmsRepository implements FarmsRepository {
     const data = PrismaFarmMapper.toPrisma(farm);
 
     await prisma.farm.create({ data });
+
+    await prisma.user.update({
+      where: {
+        id: farm.admin_id.value,
+      },
+      data: {
+        roles: {
+          push: "PRODUCER",
+        },
+      },
+    });
   }
 
   async update(farm: Farm): Promise<void> {
