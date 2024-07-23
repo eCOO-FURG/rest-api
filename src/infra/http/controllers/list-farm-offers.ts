@@ -45,14 +45,10 @@ export async function listFarmOffersController(
       product,
     });
 
-    return response
-      .status(200)
-      .send({
-        ...FarmPresenter.toHttp(farm),
-        offers: offers.map((offer) => OfferCompletePresenter.toHttp(offer)),
-      });
-
-    return response.status(200).send();
+    return response.status(200).send({
+      ...FarmPresenter.toHttp(farm),
+      offers: offers.map((offer) => OfferCompletePresenter.toHttp(offer)),
+    });
   } catch (error) {
     next(error);
   }

@@ -20,6 +20,27 @@ export class PrismaProductRepository implements ProductsRepository {
 
     return PrismaProductMapper.toDomain(product);
   }
+
+  async findMany(page: number, name?: string): Promise<Product[]> {
+    const skip = (page - 1) * 20;
+
+    const products = await prisma.product.findMany({
+      where: {
+        name: {
+          contains: name,
+          mode: "insensitive",
+        },
+      },
+      orderBy: {
+        name: "asc",
+      },
+      skip,
+      take: 20,
+    });
+
+    return products.map((product) => PrismaProductMapper.toDomain(product));
+  }
+
   async create(product: Product): Promise<void> {
     const data = PrismaProductMapper.toPrisma(product);
 

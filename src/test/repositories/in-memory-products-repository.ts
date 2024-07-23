@@ -15,6 +15,18 @@ export class InMemoryProductsRepository implements ProductsRepository {
     return product;
   }
 
+  async findMany(page: number, name?: string): Promise<Product[]> {
+    if (!name) {
+      return this.items.slice((page - 1) * 20, page * 20);
+    }
+
+    const filtered = this.items.filter((product) =>
+      product.name.includes(name)
+    );
+
+    return filtered.slice((page - 1) * 20, page * 20);
+  }
+
   async create(product: Product): Promise<void> {
     this.items.push(product);
   }
