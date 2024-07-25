@@ -1,77 +1,113 @@
 // Entities
+import { Cycle, Week } from "@/core/entities/cycle";
+import { Bag } from "@/core/entities/bag";
 import { Order } from "@/core/entities/order";
-import { Week } from "@/core/entities/cycle";
+import { UUID } from "@/core/entities/value-objects/uuid";
 
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
 import { OffersRepository } from "@/core/repositories/offers-repository";
 import { OrdersRepository } from "@/core/repositories/orders-repository";
+import { BagsRepository } from "@/core/repositories/bags-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 import { ClosedActionError } from "@/core/errors/closed-action";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
-import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
+import { CyclesRepository } from "../repositories/cycles-repository";
+
+// Utils
+import { mostPast } from "@/core/utils/most-past";
 
 interface OrderProductsUseCaseRequest {
   user_id: string;
+  cycle_id: string;
   request: {
     offer_id: string;
     amount: number;
-  }[]
+  }[];
 }
 
 export class OrderProductsUseCase {
   constructor(
     private usersRepository: UsersRepository,
+    private cyclesRepository: CyclesRepository,
     private offersRepository: OffersRepository,
-    private ordersRepository: OrdersRepository
+    private ordersRepository: OrdersRepository,
+    private bagsRepository: BagsRepository
   ) {}
 
-  async execute({ user_id, request }: OrderProductsUseCaseRequest) {
+  async execute({ user_id, cycle_id, request }: OrderProductsUseCaseRequest) {
     const user = await this.usersRepository.findById(user_id);
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
-    const offersIds = request.map((order) => order.offer_id)
+    const cycle = await this.cyclesRepository.findById(cycle_id);
+
+    if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+
+    const today = (new Date().getDay() + 1) as Week[0];
+
+    if (!cycle.offer.includes(today)) {
+      throw new ClosedActionError("comprar", cycle_id);
+    }
+
+    const offersIds = request.map((order) => order.offer_id);
 
     const offers = await this.offersRepository.findManyByIdsWithProductAndCycle(
       offersIds
     );
 
-    const today = (new Date().getDay() + 1) as Week[0];
+    const bag = await this.useBag(user.id, cycle);
 
-    const orders: Order[] = []
-    
-    for (const [ index, item ] of request.entries()) {
+    const orders: Order[] = [];
+
+    for (const item of request) {
       const offer = offers.find((offer) => offer.id.equals(item.offer_id));
 
-      if(!offer) throw new ResourceNotFoundError("Oferta", item.offer_id);
+      if (!offer || !offer.cycle.id.equals(cycle_id))
+        throw new ResourceNotFoundError("Oferta", item.offer_id);
 
-      if (!offer.cycle.order.includes(today)) throw new ClosedActionError("comprar", offer.cycle.alias);
+      if (!offer.cycle.order.includes(today))
+        throw new ClosedActionError("comprar", offer.cycle.alias);
 
-      if(item.amount > offer.amount) throw new UnavailableAmountError(offer.id.value);
+      if (item.amount > offer.amount)
+        throw new UnavailableAmountError(offer.id.value);
 
-      if(offer.product.pricing === 'WEIGHT' && !this.orderedAmountIsLegal(item.amount)) {
-        throw new InvalidWeightError("solicitado", offer.product.id.value)
+      if (
+        offer.product.pricing === "WEIGHT" &&
+        !this.orderedAmountIsLegal(item.amount)
+      ) {
+        throw new InvalidWeightError("solicitado", offer.product.id.value);
       }
 
       const order = Order.create({
         amount: item.amount,
         offer_id: offer.id,
-        user_id: user.id,
-      })
+        bag_id: bag.id,
+      });
 
       orders.push(order);
-      orders.slice(index, -1);
     }
 
-    const previous = await this.ordersRepository.findManyByOfferIdAndUserId(offersIds, user_id);
-
-    if(previous.length) throw new ResourceAlreadyExistsError("Pedido de", previous[0].offer_id.value)
-
     await this.ordersRepository.createMany(orders);
+  }
+
+  private async useBag(user_id: UUID, cycle: Cycle) {
+    const exists = await this.bagsRepository.search({
+      user_id: user_id.value,
+      cycle_id: cycle.id.value,
+      since: mostPast(cycle.order),
+    });
+
+    if (exists) return exists;
+
+    const bag = Bag.create({ user_id, cycle_id: cycle.id });
+
+    await this.bagsRepository.create(bag);
+
+    return bag;
   }
 
   private orderedAmountIsLegal(amount: number) {

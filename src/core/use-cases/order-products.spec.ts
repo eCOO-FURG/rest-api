@@ -16,6 +16,7 @@ import { makeOffer } from "@/test/factories/make-offer";
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeUser } from "@/test/factories/make-user";
 import { makeProduct } from "@/test/factories/make-product";
+import { makeBag } from "@/test/factories/make-bag";
 
 // Repositories
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
@@ -23,6 +24,7 @@ import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-r
 import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
+import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
 
 let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
@@ -33,6 +35,8 @@ let repositories: {
   offers: InMemoryOffersRepository;
   orders: InMemoryOrdersRepository;
   products: InMemoryProductsRepository;
+  bags: InMemoryBagsRepository;
+  cycles: InMemoryCyclesRepository;
 };
 
 let sut: OrderProductsUseCase;
@@ -50,13 +54,20 @@ describe("order product", () => {
       users: new InMemoryUsersRepository(),
       products: productsRepository,
       offers: offersRepository,
-      orders: new InMemoryOrdersRepository(offersRepository, productsRepository),
+      orders: new InMemoryOrdersRepository(
+        offersRepository,
+        productsRepository
+      ),
+      bags: new InMemoryBagsRepository(),
+      cycles: cyclesRepository,
     };
 
     sut = new OrderProductsUseCase(
       repositories.users,
+      repositories.cycles,
       repositories.offers,
-      repositories.orders
+      repositories.orders,
+      repositories.bags
     );
   });
 
@@ -80,22 +91,79 @@ describe("order product", () => {
 
     await sut.execute({
       user_id: user.id.value,
-      request: [{offer_id: offer.id.value,
-        amount: 5,}]
+      cycle_id: cycle.id.value,
+      request: [{ offer_id: offer.id.value, amount: 5 }],
     });
 
+    expect(repositories.bags.items.length).toBe(1);
+    expect(repositories.orders.items.length).toBe(1);
+    expect(offer.amount).toBe(5);
+  });
+
+  it("should be add orders to a existing bag if exists", async () => {
+    const user = makeUser();
+    await repositories.users.create(user);
+
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
+    const product = makeProduct();
+    await repositories.products.create(product);
+
+    const bag = makeBag({ user_id: user.id, cycle_id: cycle.id });
+    await repositories.bags.create(bag);
+
+    const offer = makeOffer({
+      product_id: product.id,
+      cycle_id: cycle.id,
+      amount: 10,
+    });
+
+    await repositories.offers.create(offer);
+
+    await sut.execute({
+      user_id: user.id.value,
+      cycle_id: cycle.id.value,
+      request: [{ offer_id: offer.id.value, amount: 5 }],
+    });
+
+    expect(repositories.bags.items.length).toBe(1);
     expect(repositories.orders.items.length).toBe(1);
     expect(offer.amount).toBe(5);
   });
 
   it("should not allow an non existing user to create an order", async () => {
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
     await expect(() =>
       sut.execute({
         user_id: "1234",
-        request: [{
-          offer_id: "1234",
-        amount: 5,
-        }]
+        cycle_id: cycle.id.value,
+        request: [
+          {
+            offer_id: "1234",
+            amount: 5,
+          },
+        ],
+      })
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it("should not create orders from a non existent cycle", async () => {
+    const user = makeUser();
+    repositories.users.items.push(user);
+
+    await expect(() =>
+      sut.execute({
+        user_id: user.id.value,
+        cycle_id: "1234",
+        request: [
+          {
+            offer_id: "1234",
+            amount: 5,
+          },
+        ],
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
@@ -104,18 +172,22 @@ describe("order product", () => {
     const user = makeUser();
     await repositories.users.create(user);
 
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
     await expect(() =>
       sut.execute({
         user_id: user.id.value,
-        request: [
-          {offer_id: "1234",
-            amount: 5,}
-        ]
+        cycle_id: cycle.id.value,
+        request: [{ offer_id: "1234", amount: 5 }],
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
-  it("should not be able create an order from a non existing cycle", async () => {
+  it("should not be able create an order from a cycle different than the requested", async () => {
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
     const user = makeUser();
     await repositories.users.create(user);
 
@@ -132,8 +204,8 @@ describe("order product", () => {
     await expect(() =>
       sut.execute({
         user_id: user.id.value,
-        request: [{offer_id: offer.id.value,
-          amount: 5,}]
+        cycle_id: cycle.id.value,
+        request: [{ offer_id: offer.id.value, amount: 5 }],
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
@@ -166,49 +238,15 @@ describe("order product", () => {
     await expect(() =>
       sut.execute({
         user_id: user.id.value,
-        request: [{
-          offer_id: offer.id.value,
-        amount: 5,
-        }]
+        cycle_id: cycle.id.value,
+        request: [
+          {
+            offer_id: offer.id.value,
+            amount: 5,
+          },
+        ],
       })
     ).rejects.toBeInstanceOf(ClosedActionError);
-  });
-
-  it("should not be able create two orders for the same offer", async () => {
-    const user = makeUser();
-    await repositories.users.create(user);
-
-    const cycle = makeCycle();
-    cyclesRepository.items.push(cycle);
-
-    const product = makeProduct();
-    await repositories.products.create(product);
-
-    const offer = makeOffer({
-      product_id: product.id,
-      cycle_id: cycle.id,
-      amount: 10,
-    });
-
-    await repositories.offers.create(offer);
-
-    await sut.execute({
-      user_id: user.id.value,
-      request: [{
-        offer_id: offer.id.value,
-      amount: 5,
-      }]
-    });
-
-    await expect(() =>
-      sut.execute({
-        user_id: user.id.value,
-        request: [{
-          offer_id: offer.id.value,
-        amount: 5,
-        }]
-      })
-    ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 
   it("should not be able create an order with an amount greater than the offer", async () => {
@@ -232,8 +270,8 @@ describe("order product", () => {
     await expect(() =>
       sut.execute({
         user_id: user.id.value,
-        request: [{offer_id: offer.id.value,
-          amount: 15,}]
+        cycle_id: cycle.id.value,
+        request: [{ offer_id: offer.id.value, amount: 15 }],
       })
     ).rejects.toBeInstanceOf(UnavailableAmountError);
   });
@@ -261,8 +299,8 @@ describe("order product", () => {
     await expect(() =>
       sut.execute({
         user_id: user.id.value,
-        request: [{offer_id: offer.id.value,
-          amount: 27,}]
+        cycle_id: cycle.id.value,
+        request: [{ offer_id: offer.id.value, amount: 27 }],
       })
     ).rejects.toBeInstanceOf(InvalidWeightError);
   });

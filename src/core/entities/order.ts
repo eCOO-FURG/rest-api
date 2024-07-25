@@ -6,19 +6,19 @@ import { UUID } from "@/core/entities/value-objects/uuid";
 import { Optional } from "@/core/types/optional";
 
 export interface OrderProps extends EntityRequest {
-  user_id: UUID;
   offer_id: UUID;
+  bag_id: UUID;
   amount: number;
   status: "PENDING" | "CANCELLED" | "RECEIVED";
 }
 
 export class Order extends Entity<OrderProps> {
-  get user_id() {
-    return this.props.user_id;
-  }
-
   get offer_id() {
     return this.props.offer_id;
+  }
+
+  get bag_id() {
+    return this.props.bag_id;
   }
 
   get amount() {
