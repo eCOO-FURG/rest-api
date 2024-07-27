@@ -74,7 +74,7 @@ router.get(
 
 router.get(
   "/deliveries/report",
-  // ensureAuthenticated,
-  // ensureAdmin,
+  ensureAuthenticated,
+  ensureAdmin,
   printDeliveriesReportController
 );
