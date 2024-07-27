@@ -19,6 +19,7 @@ import { SearchOfferingFarmsUseCase } from "@/core/use-cases/search-offering-far
 import { ListFarmOrdersUseCase } from "@/core/use-cases/list-farm-orders";
 import { ListFarmOffersUseCase } from "@/core/use-cases/list-farm-offers";
 import { ListProductsUsecase } from "@/core/use-cases/list-products";
+import { PrintDeliveriesReportUseCase } from "@/core/use-cases/print-deliveries-report/print-deliveries-report";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -81,11 +82,19 @@ export default (container: AwilixContainer) => {
         new UpdateOfferUseCase(farmsRepository, offersRepository)
     ),
     orderPoductsUseCase: asFunction(
-      ({ usersRepository, offersRepository, ordersRepository }) =>
+      ({
+        usersRepository,
+        cyclesRepository,
+        offersRepository,
+        ordersRepository,
+        bagsRepository,
+      }) =>
         new OrderProductsUseCase(
           usersRepository,
+          cyclesRepository,
           offersRepository,
-          ordersRepository
+          ordersRepository,
+          bagsRepository
         )
     ),
     getProfileUseCase: asFunction(
@@ -130,6 +139,10 @@ export default (container: AwilixContainer) => {
     ),
     listProductsUseCase: asFunction(
       ({ productsRepository }) => new ListProductsUsecase(productsRepository)
+    ),
+    printDeliveriesReport: asFunction(
+      ({ cyclesRepository, pdfService }) =>
+        new PrintDeliveriesReportUseCase(cyclesRepository, pdfService)
     ),
   });
 };

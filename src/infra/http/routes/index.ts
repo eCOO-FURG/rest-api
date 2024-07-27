@@ -19,6 +19,7 @@ import { listFarmOrdersController } from "@/infra/http/controllers/list-farm-ord
 import { searchOfferingFarmsController } from "@/infra/http/controllers/search-offering-farms";
 import { listFarmOffersController } from "@/infra/http/controllers/list-farm-offers";
 import { listProductsController } from "@/infra/http/controllers/list-products";
+import { printDeliveriesReportController } from "../controllers/print-deliveries-report";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -69,4 +70,11 @@ router.get(
   ensureAuthenticated,
   ensureFarmAdmin,
   listProductsController
+);
+
+router.get(
+  "/deliveries/report",
+  // ensureAuthenticated,
+  // ensureAdmin,
+  printDeliveriesReportController
 );
