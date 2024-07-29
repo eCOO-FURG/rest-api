@@ -81,11 +81,19 @@ export default (container: AwilixContainer) => {
         new UpdateOfferUseCase(farmsRepository, offersRepository)
     ),
     orderPoductsUseCase: asFunction(
-      ({ usersRepository, offersRepository, ordersRepository }) =>
+      ({
+        usersRepository,
+        cyclesRepository,
+        offersRepository,
+        ordersRepository,
+        bagsRepository,
+      }) =>
         new OrderProductsUseCase(
           usersRepository,
+          cyclesRepository,
           offersRepository,
-          ordersRepository
+          ordersRepository,
+          bagsRepository
         )
     ),
     getProfileUseCase: asFunction(
