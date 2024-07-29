@@ -23,7 +23,7 @@ export interface BagsRepository {
     type?: T
   ): Promise<BagsRepositoryResponse<T> | null>;
   search<T extends RepositoryResponse = "entity">(
-    filter: BagsRepositorySearchRequest,
+    filters: BagsRepositorySearchRequest,
     type?: T
   ): Promise<BagsRepositoryResponse<T> | null>;
   create(bag: Bag): Promise<void>;

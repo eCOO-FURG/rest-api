@@ -29,8 +29,8 @@ model User {
   updated_at DateTime?
 
   sessions Session[]
-  orders   Order[]
   otps     Otp[]
+  bags     Bag[]
   farm     Farm?
 
   @@map("users")
@@ -110,6 +110,7 @@ model Cycle {
   deliver Int[]
 
   offers Offer[]
+  bags   Bag[]
 
   created_at DateTime  @default(now())
   updated_at DateTime?
@@ -140,22 +141,47 @@ model Offer {
   @@map("offers")
 }
 
-enum STATUS {
+enum BAG_STATUS {
+  PENDING
+  SEPARATED
+  DISPATCHED
+}
+
+model Bag {
+  id      String     @id @default(uuid())
+  address String
+  status  BAG_STATUS
+
+  user_id  String
+  customer User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  cycle_id String
+  cycle    Cycle  @relation(fields: [cycle_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  orders Order[]
+
+  @@map("bags")
+}
+
+enum ORDER_STATUS {
   PENDING
   CANCELLED
   RECEIVED
 }
 
 model Order {
-  id     String  @id @default(uuid())
-  amount Decimal @db.Decimal(10, 2)
-  status STATUS
-
-  user_id  String
-  customer User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  id     String       @id @default(uuid())
+  amount Decimal      @db.Decimal(10, 2)
+  status ORDER_STATUS
 
   offer_id String
   offer    Offer  @relation(fields: [offer_id], references: [id], onDelete: Cascade)
+
+  bag_id String
+  bag    Bag    @relation(fields: [bag_id], references: [id], onDelete: Cascade)
 
   created_at DateTime  @default(now())
   updated_at DateTime?
