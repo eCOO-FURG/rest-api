@@ -1,14 +1,13 @@
 // Entities
-import { Product } from "@/core/entities/product";
-import { Offer } from "@/core/entities/offer";
 import { Entity } from "@/core/entities/entity";
+import { OfferProps } from "@/core/entities/offer";
+import { Product } from "@/core/entities/product";
 
-interface OfferWithProductProps
-  extends Omit<Offer["props"], "product_id"> {
+interface OfferAggregateProps extends Omit<OfferProps, "product_id"> {
   product: Product;
 }
 
-export class OfferWithProduct extends Entity<OfferWithProductProps> {
+export class OfferAggregate extends Entity<OfferAggregateProps> {
   get price() {
     return this.props.price;
   }
@@ -33,8 +32,8 @@ export class OfferWithProduct extends Entity<OfferWithProductProps> {
     return this.props.product;
   }
 
-  static create(props: OfferWithProductProps) {
-    const offerWithProduct = new OfferWithProduct(props);
-    return offerWithProduct;
+  static create(props: OfferAggregateProps) {
+    const offer = new OfferAggregate(props);
+    return offer;
   }
 }

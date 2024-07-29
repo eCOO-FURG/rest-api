@@ -9,6 +9,7 @@ export interface BagProps extends EntityRequest {
   user_id: UUID;
   cycle_id: UUID;
   status: "PENDING" | "SEPARATED" | "DISPATCHED";
+  address: string;
 }
 
 export class Bag extends Entity<BagProps> {

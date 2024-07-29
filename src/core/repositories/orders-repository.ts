@@ -1,12 +1,22 @@
 // Entities
 import { Order } from "@/core/entities/order";
 import { OrderWithOffer } from "@/core/entities/value-objects/order-with-offer";
+import { OrderAggregate } from "../entities/value-objects/order-aggregate";
+
+// Types
+import { RepositoryResponse } from "../types/repository-response";
 
 export interface OrdersRepositoryFindManyByFarmIdInCycle {
   created_at: Date;
   cycle_id: string;
   farm_id: string;
 }
+
+export type OrdersRepositoryResponse<T extends RepositoryResponse> =
+  T extends "entity" ? Order : OrderAggregate;
+
+export type OrdersRepositoryManyResponse<T extends RepositoryResponse> =
+  T extends "entity" ? Order[] : OrderAggregate[];
 
 export interface OrdersRepository {
   findManyByOfferIdAndUserId(
@@ -19,6 +29,10 @@ export interface OrdersRepository {
     cycle_id,
     created_at,
   }: OrdersRepositoryFindManyByFarmIdInCycle): Promise<Order[]>;
+  findManyByBagId<T extends RepositoryResponse = "entity">(
+    bag_id: string,
+    type?: T
+  ): Promise<OrdersRepositoryManyResponse<T>>;
   createMany(orders: Order[]): Promise<void>;
   updateMany(orders: Order[]): Promise<void>;
 }
