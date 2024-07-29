@@ -12,14 +12,14 @@ const orderProductsSchema = {
   body: z.object({
     cycle_id: z.string(),
     address: z.string(),
-    order: z
+    orders: z
       .array(
         z.object({
           offer_id: z.string(),
-          amount: z.number().min(1),
+          amount: z.number(),
         })
       )
-      .refine((products) => !products.length, {
+      .refine((products) => products.length, {
         message: "Pelo menos um pedido deve ser feito.",
       }),
   }),
@@ -31,7 +31,7 @@ export async function orderProductsController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id, address, order } = orderProductsSchema.body.parse(
+    const { cycle_id, address, orders } = orderProductsSchema.body.parse(
       request.body
     );
 
@@ -43,7 +43,7 @@ export async function orderProductsController(
       user_id: request.user_id,
       cycle_id,
       address,
-      request: order,
+      request: orders,
     });
 
     return response.sendStatus(201);
