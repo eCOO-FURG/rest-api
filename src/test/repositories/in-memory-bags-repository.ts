@@ -111,4 +111,10 @@ export class InMemoryBagsRepository implements BagsRepository {
   async create(bag: Bag): Promise<void> {
     this.items.push(bag);
   }
+
+  async update(bag: Bag): Promise<void> {
+    const index = this.items.findIndex((item) => item.id.equals(bag.id));
+
+    this.items[index] = bag;
+  }
 }

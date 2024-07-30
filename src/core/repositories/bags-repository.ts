@@ -36,4 +36,5 @@ export interface BagsRepository {
     type?: T
   ): Promise<BagsRepositoryResponse<T>[]>;
   create(bag: Bag): Promise<void>;
+  update(bag: Bag): Promise<void>;
 }
