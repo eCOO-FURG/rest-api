@@ -19,10 +19,6 @@ export type OrdersRepositoryManyResponse<T extends RepositoryResponse> =
   T extends "entity" ? Order[] : OrderAggregate[];
 
 export interface OrdersRepository {
-  findManyByOfferIdAndUserId(
-    offers_ids: string[],
-    user_id: string
-  ): Promise<Order[]>;
   findManyWithOfferByOffersIds(offers_ids: string[]): Promise<OrderWithOffer[]>;
   findManyByFarmIdInCycle({
     farm_id,

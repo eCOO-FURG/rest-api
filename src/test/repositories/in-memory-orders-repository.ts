@@ -24,18 +24,6 @@ export class InMemoryOrdersRepository implements OrdersRepository {
     private inMemoryProductsRepository: InMemoryProductsRepository
   ) {}
 
-  async findManyByOfferIdAndUserId(
-    offers_ids: string[],
-    user_id: string
-  ): Promise<Order[]> {
-    const orders = this.items.filter((order) =>
-      offers_ids.some(
-        (id) => order.offer_id.equals(id) && order.user_id.equals(user_id)
-      )
-    );
-    return orders;
-  }
-
   async findManyWithOfferByOffersIds(
     offers_ids: string[]
   ): Promise<OrderWithOffer[]> {

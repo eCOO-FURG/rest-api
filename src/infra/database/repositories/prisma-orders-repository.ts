@@ -18,24 +18,6 @@ import { PrismaOrderWithOfferMapper } from "@/infra/database/mappers/prisma-orde
 import { RepositoryResponse } from "@/core/types/repository-response";
 
 export class PrismaOrdersRepository implements OrdersRepository {
-  async findManyByOfferIdAndUserId(
-    offers_id: string[],
-    user_id: string
-  ): Promise<Order[]> {
-    const orders = await prisma.order.findMany({
-      where: {
-        offer_id: {
-          in: offers_id,
-        },
-        user_id,
-      },
-    });
-
-    // to-do: fix return
-
-    return orders.map((order) => PrismaOrderMapper.toDomain(order));
-  }
-
   async findManyWithOfferByOffersIds(
     offers_ids: string[]
   ): Promise<OrderWithOffer[]> {
