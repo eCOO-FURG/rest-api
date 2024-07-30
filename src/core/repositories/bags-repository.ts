@@ -11,11 +11,16 @@ export interface BagsRepositorySearchRequest {
   since?: Date;
 }
 
+export interface BagsRepositorySearchManyRequest {
+  page: number;
+  name?: string;
+  cycle_id?: string;
+  status?: "PENDING" | "SEPARATED" | "DISPATCHED";
+  since?: Date;
+}
+
 export type BagsRepositoryResponse<T extends RepositoryResponse> =
   T extends "entity" ? Bag : BagAggregate;
-
-// export type BagsRepositoryManyResponse<T extends RepositoryResponse> =
-//   T extends "entity" ? Bag[] : BagAggregate[];
 
 export interface BagsRepository {
   findById<T extends RepositoryResponse = "entity">(
@@ -26,6 +31,10 @@ export interface BagsRepository {
     filters: BagsRepositorySearchRequest,
     type?: T
   ): Promise<BagsRepositoryResponse<T> | null>;
+  searchMany<T extends RepositoryResponse = "entity">(
+    filters: BagsRepositorySearchManyRequest,
+    type?: T
+  ): Promise<BagsRepositoryResponse<T>[]>;
   create(bag: Bag): Promise<void>;
   update(bag: Bag): Promise<void>;
 }

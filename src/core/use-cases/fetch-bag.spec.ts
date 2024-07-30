@@ -21,7 +21,7 @@ import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-r
 import { makeOrder } from "@/test/factories/make-order";
 import { makeProduct } from "@/test/factories/make-product";
 import { makeOffer } from "@/test/factories/make-offer";
-import { OrderAggregate } from "../entities/value-objects/order-aggregate";
+import { OrderAggregate } from "@/core/entities/value-objects/order-aggregate";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;

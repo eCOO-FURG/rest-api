@@ -5,6 +5,7 @@ import { Bag } from "@/core/entities/bag";
 import {
   BagsRepository,
   BagsRepositoryResponse,
+  BagsRepositorySearchManyRequest,
   BagsRepositorySearchRequest,
 } from "@/core/repositories/bags-repository";
 
@@ -12,11 +13,11 @@ import {
 import { RepositoryResponse } from "@/core/types/repository-response";
 
 // Mappers
-import { PrismaBagAggreagateMapper } from "../mappers/prisma-bag-aggregate-mapper";
+import { PrismaBagMapper } from "@/infra/database/mappers/prisma-bag-mapper";
+import { PrismaBagAggreagateMapper } from "@/infra/database/mappers/prisma-bag-aggregate-mapper";
 
 // Libs
 import { prisma } from "@/infra/database/prisma-service";
-import { PrismaBagMapper } from "../mappers/prisma-bag-mapper";
 
 export class PrismaBagsRepository implements BagsRepository {
   async findById<T extends RepositoryResponse = "entity">(
@@ -74,9 +75,61 @@ export class PrismaBagsRepository implements BagsRepository {
     ) as BagsRepositoryResponse<T>;
   }
 
+  async searchMany<T extends RepositoryResponse = "entity">(
+    { page, cycle_id, name, since, status }: BagsRepositorySearchManyRequest,
+    type = "entity"
+  ): Promise<BagsRepositoryResponse<T>[]> {
+    const skip = (page - 1) * 20;
+
+    const where = {
+      cycle_id,
+      status,
+      customer: {
+        OR: [
+          {
+            first_name: {
+              contains: name ?? "",
+            },
+          },
+          {
+            last_name: {
+              contains: name ?? "",
+            },
+          },
+        ],
+      },
+    };
+
+    if (since) Object.assign(where, { created_at: { gte: since } });
+
+    if (type === "entity") {
+      const found = await prisma.bag.findMany({
+        where,
+        skip,
+        take: 20,
+      });
+
+      return found.map((bag) =>
+        PrismaBagMapper.toDomain(bag)
+      ) as BagsRepositoryResponse<T>[];
+    }
+
+    const found = await prisma.bag.findMany({
+      where,
+      include: {
+        customer: true,
+      },
+      skip,
+      take: 20,
+    });
+
+    return found.map((bag) =>
+      PrismaBagAggreagateMapper.toDomain(bag)
+    ) as BagsRepositoryResponse<T>[];
+  }
+
   async create(bag: Bag): Promise<void> {
     const data = PrismaBagMapper.toPrisma(bag);
-
     await prisma.bag.create({ data });
   }
 

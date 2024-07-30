@@ -9,13 +9,13 @@ import { UsersRepository } from "@/core/repositories/users-repository";
 import { OffersRepository } from "@/core/repositories/offers-repository";
 import { OrdersRepository } from "@/core/repositories/orders-repository";
 import { BagsRepository } from "@/core/repositories/bags-repository";
+import { CyclesRepository } from "@/core/repositories/cycles-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 import { ClosedActionError } from "@/core/errors/closed-action";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
-import { CyclesRepository } from "../repositories/cycles-repository";
 
 // Utils
 import { mostPast } from "@/core/utils/most-past";

@@ -25,6 +25,10 @@ export class Bag extends Entity<BagProps> {
     return this.props.status;
   }
 
+  get address() {
+    return this.props.address;
+  }
+
   set status(value: "PENDING" | "SEPARATED" | "DISPATCHED") {
     this.props.status = value;
   }

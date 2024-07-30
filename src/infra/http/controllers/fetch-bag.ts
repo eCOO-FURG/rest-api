@@ -8,9 +8,13 @@ import container from "@/infra/container";
 // Use-cases
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 
+// Presenters
+import { BagAggregatePresenter } from "@/infra/http/presenters/bag-aggregate-presenter";
+import { OrderAggregatePresenter } from "@/infra/http/presenters/order-aggregate-presenter";
+
 const fetchBagSchema = {
-  query: z.object({
-    bag_id: z.string(),
+  param: z.object({
+    bag_id: z.string().uuid(),
   }),
 };
 
@@ -20,16 +24,17 @@ export async function fetchBagController(
   next: NextFunction
 ) {
   try {
-    const { bag_id } = fetchBagSchema.query.parse(request.query);
+    const { bag_id } = fetchBagSchema.param.parse(request.params);
 
     const fetchBagUseCase =
       container.resolve<FetchBagUseCase>("fetchBagUseCase");
 
     const { bag, orders } = await fetchBagUseCase.execute({ bag_id });
 
-    return response.status(200).send({ bag, orders });
-
-    // to:do - set presenter
+    return response.status(200).send({
+      ...BagAggregatePresenter.toHttp(bag),
+      orders: orders.map((order) => OrderAggregatePresenter.toHttp(order)),
+    });
   } catch (error) {
     next(error);
   }

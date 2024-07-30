@@ -19,6 +19,8 @@ import { listFarmOrdersController } from "@/infra/http/controllers/list-farm-ord
 import { searchOfferingFarmsController } from "@/infra/http/controllers/search-offering-farms";
 import { listFarmOffersController } from "@/infra/http/controllers/list-farm-offers";
 import { listProductsController } from "@/infra/http/controllers/list-products";
+import { listBagsController } from "@/infra/http/controllers/list-bags";
+import { fetchBagController } from "@/infra/http/controllers/fetch-bag";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -61,6 +63,9 @@ router.patch(
   ensureFarmAdmin,
   updateOfferController
 );
+
+router.get("/bags", listBagsController);
+router.get("/bags/:bag_id", fetchBagController);
 
 router.get("/cycles", listCyclesController);
 
