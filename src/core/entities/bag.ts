@@ -25,6 +25,10 @@ export class Bag extends Entity<BagProps> {
     return this.props.status;
   }
 
+  get address() {
+    return this.props.address;
+  }
+
   static create(props: Optional<BagProps, "status">) {
     const bag = new Bag({
       ...props,

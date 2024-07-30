@@ -20,6 +20,10 @@ export class BagAggregate extends Entity<BagAggregateProps> {
     return this.props.status;
   }
 
+  get address() {
+    return this.props.address;
+  }
+
   static create(props: BagAggregateProps) {
     const bag = new BagAggregate(props);
     return bag;

@@ -19,6 +19,8 @@ import { SearchOfferingFarmsUseCase } from "@/core/use-cases/search-offering-far
 import { ListFarmOrdersUseCase } from "@/core/use-cases/list-farm-orders";
 import { ListFarmOffersUseCase } from "@/core/use-cases/list-farm-offers";
 import { ListProductsUsecase } from "@/core/use-cases/list-products";
+import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
+import { ListBagsUseCase } from "@/core/use-cases/list-bags";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -138,6 +140,14 @@ export default (container: AwilixContainer) => {
     ),
     listProductsUseCase: asFunction(
       ({ productsRepository }) => new ListProductsUsecase(productsRepository)
+    ),
+    fetchBagUseCase: asFunction(
+      ({ bagsRepository, ordersRepository }) =>
+        new FetchBagUseCase(bagsRepository, ordersRepository)
+    ),
+    listBagsUseCase: asFunction(
+      ({ cyclesRepository, bagsRepository }) =>
+        new ListBagsUseCase(cyclesRepository, bagsRepository)
     ),
   });
 };
