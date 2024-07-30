@@ -16,6 +16,14 @@ export class OrderAggregate extends Entity<OrderAggregateProps> {
     return this.props.amount;
   }
 
+  get user_id() {
+    return this.props.bag_id;
+  }
+
+  get status() {
+    return this.props.status;
+  }
+
   get offer() {
     return this.props.offer;
   }

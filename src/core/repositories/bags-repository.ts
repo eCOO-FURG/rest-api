@@ -15,6 +15,8 @@ export interface BagsRepositorySearchManyRequest {
   page: number;
   name?: string;
   cycle_id?: string;
+  status?: "PENDING" | "SEPARATED" | "DISPATCHED";
+  since?: Date;
 }
 
 export type BagsRepositoryResponse<T extends RepositoryResponse> =

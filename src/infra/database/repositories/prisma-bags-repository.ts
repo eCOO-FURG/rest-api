@@ -13,11 +13,11 @@ import {
 import { RepositoryResponse } from "@/core/types/repository-response";
 
 // Mappers
+import { PrismaBagMapper } from "@/infra/database/mappers/prisma-bag-mapper";
 import { PrismaBagAggreagateMapper } from "@/infra/database/mappers/prisma-bag-aggregate-mapper";
 
 // Libs
 import { prisma } from "@/infra/database/prisma-service";
-import { PrismaBagMapper } from "../mappers/prisma-bag-mapper";
 
 export class PrismaBagsRepository implements BagsRepository {
   async findById<T extends RepositoryResponse = "entity">(
@@ -76,30 +76,35 @@ export class PrismaBagsRepository implements BagsRepository {
   }
 
   async searchMany<T extends RepositoryResponse = "entity">(
-    { page, cycle_id, name }: BagsRepositorySearchManyRequest,
+    { page, cycle_id, name, since, status }: BagsRepositorySearchManyRequest,
     type = "entity"
   ): Promise<BagsRepositoryResponse<T>[]> {
     const skip = (page - 1) * 20;
 
+    const where = {
+      cycle_id,
+      status,
+      customer: {
+        OR: [
+          {
+            first_name: {
+              contains: name ?? "",
+            },
+          },
+          {
+            last_name: {
+              contains: name ?? "",
+            },
+          },
+        ],
+      },
+    };
+
+    if (since) Object.assign(where, { created_at: { gte: since } });
+
     if (type === "entity") {
       const found = await prisma.bag.findMany({
-        where: {
-          cycle_id,
-          customer: {
-            OR: [
-              {
-                first_name: {
-                  contains: name ?? "",
-                },
-              },
-              {
-                last_name: {
-                  contains: name ?? "",
-                },
-              },
-            ],
-          },
-        },
+        where,
         skip,
         take: 20,
       });
@@ -110,23 +115,7 @@ export class PrismaBagsRepository implements BagsRepository {
     }
 
     const found = await prisma.bag.findMany({
-      where: {
-        cycle_id,
-        customer: {
-          OR: [
-            {
-              first_name: {
-                contains: name ?? "",
-              },
-            },
-            {
-              last_name: {
-                contains: name ?? "",
-              },
-            },
-          ],
-        },
-      },
+      where,
       include: {
         customer: true,
       },

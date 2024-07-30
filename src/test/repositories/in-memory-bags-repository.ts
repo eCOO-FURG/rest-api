@@ -64,12 +64,14 @@ export class InMemoryBagsRepository implements BagsRepository {
   }
 
   async searchMany<T extends RepositoryResponse = "entity">(
-    { page, cycle_id, name }: BagsRepositorySearchManyRequest,
+    { page, cycle_id, name, status, since }: BagsRepositorySearchManyRequest,
     type = "entity"
   ): Promise<BagsRepositoryResponse<T>[]> {
     const bags = this.items.filter(
       (item) =>
         (!cycle_id || item.cycle_id.equals(cycle_id)) &&
+        (!status || item.status === status) &&
+        (!since || item.created_at >= since) &&
         (!name ||
           (() =>
             this.inMemoryUsersRepository.items.find(

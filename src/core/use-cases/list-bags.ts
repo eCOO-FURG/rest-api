@@ -4,10 +4,12 @@ import { BagsRepository } from "@/core/repositories/bags-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { mostPast } from "../utils/most-past";
 
 interface ListBagsUseCaseRequest {
   cycle_id: string;
   page: number;
+  status?: "PENDING" | "SEPARATED" | "DISPATCHED";
   name?: string;
 }
 
@@ -23,7 +25,7 @@ export class ListBagsUseCase {
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
     const bags = await this.bagsRepository.searchMany(
-      { ...props, cycle_id },
+      { ...props, cycle_id, since: mostPast(cycle.order) },
       "aggregate"
     );
 
