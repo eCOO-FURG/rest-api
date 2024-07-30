@@ -10,6 +10,7 @@ export function makeBag(props: Partial<Bag> = {}) {
     status: props.status,
     created_at: props.created_at,
     updated_at: props.updated_at,
+    address: "",
   });
 
   return bag;

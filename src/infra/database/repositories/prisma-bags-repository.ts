@@ -79,4 +79,10 @@ export class PrismaBagsRepository implements BagsRepository {
 
     await prisma.bag.create({ data });
   }
+
+  async update(bag: Bag): Promise<void> {
+    const data = PrismaBagMapper.toPrisma(bag);
+
+    await prisma.bag.update({ where: { id: bag.id.value }, data });
+  }
 }
