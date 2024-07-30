@@ -4,7 +4,7 @@ import { BagsRepository } from "@/core/repositories/bags-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { mostPast } from "../utils/most-past";
+import { mostPast } from "@/core/utils/most-past";
 
 interface ListBagsUseCaseRequest {
   cycle_id: string;

@@ -1,10 +1,10 @@
 // Entities
 import { Order } from "@/core/entities/order";
 import { OrderWithOffer } from "@/core/entities/value-objects/order-with-offer";
-import { OrderAggregate } from "../entities/value-objects/order-aggregate";
+import { OrderAggregate } from "@/core/entities/value-objects/order-aggregate";
 
 // Types
-import { RepositoryResponse } from "../types/repository-response";
+import { RepositoryResponse } from "@/core/types/repository-response";
 
 export interface OrdersRepositoryFindManyByFarmIdInCycle {
   created_at: Date;

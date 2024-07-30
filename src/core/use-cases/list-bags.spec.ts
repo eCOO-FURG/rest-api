@@ -13,7 +13,7 @@ import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-rep
 import { makeBag } from "@/test/factories/make-bag";
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeUser } from "@/test/factories/make-user";
-import { ResourceNotFoundError } from "../errors/resource-not-found";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 let usersRepository: InMemoryUsersRepository;
 

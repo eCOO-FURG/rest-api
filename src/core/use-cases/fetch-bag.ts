@@ -3,7 +3,7 @@ import { BagsRepository } from "@/core/repositories/bags-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { OrdersRepository } from "../repositories/orders-repository";
+import { OrdersRepository } from "@/core/repositories/orders-repository";
 
 interface ListUserOrdersuseCaseRequest {
   bag_id: string;

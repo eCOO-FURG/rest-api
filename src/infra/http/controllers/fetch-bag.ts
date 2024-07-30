@@ -7,8 +7,10 @@ import container from "@/infra/container";
 
 // Use-cases
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
-import { BagAggregatePresenter } from "../presenters/bag-aggregate-presenter";
-import { OrderAggregatePresenter } from "../presenters/order-aggregate-presenter";
+
+// Presenters
+import { BagAggregatePresenter } from "@/infra/http/presenters/bag-aggregate-presenter";
+import { OrderAggregatePresenter } from "@/infra/http/presenters/order-aggregate-presenter";
 
 const fetchBagSchema = {
   param: z.object({

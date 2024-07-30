@@ -5,7 +5,7 @@ import { z } from "zod";
 // Container
 import container from "@/infra/container";
 import { ListBagsUseCase } from "@/core/use-cases/list-bags";
-import { BagAggregatePresenter } from "../presenters/bag-aggregate-presenter";
+import { BagAggregatePresenter } from "@/infra/http/presenters/bag-aggregate-presenter";
 
 const listBagsSchema = {
   query: z.object({
