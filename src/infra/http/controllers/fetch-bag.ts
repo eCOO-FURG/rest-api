@@ -9,8 +9,8 @@ import container from "@/infra/container";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 
 const fetchBagSchema = {
-  query: z.object({
-    bag_id: z.string(),
+  param: z.object({
+    bag_id: z.string().uuid(),
   }),
 };
 
@@ -20,7 +20,7 @@ export async function fetchBagController(
   next: NextFunction
 ) {
   try {
-    const { bag_id } = fetchBagSchema.query.parse(request.query);
+    const { bag_id } = fetchBagSchema.param.parse(request.params);
 
     const fetchBagUseCase =
       container.resolve<FetchBagUseCase>("fetchBagUseCase");

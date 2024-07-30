@@ -65,7 +65,7 @@ router.patch(
 );
 
 router.get("/bags", listBagsController);
-router.get("/bags", fetchBagController);
+router.get("/bags/:bag_id", fetchBagController);
 
 router.get("/cycles", listCyclesController);
 
