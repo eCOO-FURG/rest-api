@@ -23,7 +23,7 @@ export class PrismaOrderWithOfferMapper {
     return OrderWithOffer.create({
       ...raw,
       id: new UUID(raw.id),
-      user_id: new UUID(raw.user_id),
+      bag_id: new UUID(raw.bag_id),
       amount: raw.amount.toNumber(),
       offer: {
         ...raw.offer,
@@ -31,7 +31,7 @@ export class PrismaOrderWithOfferMapper {
         farm_id: new UUID(raw.offer.farm_id),
         cycle_id: new UUID(raw.offer.cycle_id),
         price: raw.offer.amount.toNumber(),
-        amount: raw.offer.amount.toNumber(),
+        amount: raw.offer.price.toNumber(),
         product: PrismaProductMapper.toDomain(raw.offer.product),
       },
     });

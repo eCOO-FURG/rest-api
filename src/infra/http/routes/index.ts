@@ -68,6 +68,13 @@ router.patch(
 router.get("/bags", listBagsController);
 router.get("/bags/:bag_id", fetchBagController);
 router.patch("/bags/:bag_id", handleBagController);
+router.get("/bags", ensureAuthenticated, ensureAdmin, listBagsController);
+router.get(
+  "/bags/:bag_id",
+  ensureAuthenticated,
+  ensureAdmin,
+  fetchBagController
+);
 
 router.get("/cycles", listCyclesController);
 

@@ -15,10 +15,6 @@ interface OrderWithOfferProps
 }
 
 export class OrderWithOffer extends Entity<OrderWithOfferProps> {
-  get user_id() {
-    return this.props.user_id;
-  }
-
   get offer() {
     return this.props.offer;
   }
@@ -29,6 +25,10 @@ export class OrderWithOffer extends Entity<OrderWithOfferProps> {
 
   get status() {
     return this.props.status;
+  }
+
+  get bag_id() {
+    return this.props.bag_id;
   }
 
   static create(props: OrderWithOfferProps) {
