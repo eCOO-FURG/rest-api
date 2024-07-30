@@ -5,7 +5,7 @@ export class OrderCompletePresenter {
   static toHttp(order: OrderWithOffer) {
     return {
       id: order.id.value,
-      user_id: order.user_id.value,
+      bag_id: order.bag_id.value,
       amount: order.amount,
       status: order.status,
       created_at: order.created_at,
@@ -13,7 +13,7 @@ export class OrderCompletePresenter {
       offer: {
         id: order.offer.id.value,
         farm_id: order.offer.farm_id.value,
-        cycle_id: order.offer.cycle_id,
+        cycle_id: order.offer.cycle_id.value,
         price: order.offer.price,
         amount: order.offer.amount,
         description: order.offer.description,
