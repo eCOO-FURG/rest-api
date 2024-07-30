@@ -149,7 +149,7 @@ enum BAG_STATUS {
 
 model Bag {
   id      String     @id @default(uuid())
-  address String
+  address String?
   status  BAG_STATUS
 
   user_id  String

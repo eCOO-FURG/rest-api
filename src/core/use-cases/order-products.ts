@@ -23,7 +23,7 @@ import { mostPast } from "@/core/utils/most-past";
 interface OrderProductsUseCaseRequest {
   user_id: string;
   cycle_id: string;
-  address: string;
+  address?: string;
   request: {
     offer_id: string;
     amount: number;
@@ -100,7 +100,7 @@ export class OrderProductsUseCase {
     await this.ordersRepository.createMany(orders);
   }
 
-  private async useBag(user_id: UUID, cycle: Cycle, address: string) {
+  private async useBag(user_id: UUID, cycle: Cycle, address?: string) {
     const exists = await this.bagsRepository.search({
       user_id: user_id.value,
       cycle_id: cycle.id.value,

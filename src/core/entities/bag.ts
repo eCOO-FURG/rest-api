@@ -9,7 +9,7 @@ export interface BagProps extends EntityRequest {
   user_id: UUID;
   cycle_id: UUID;
   status: "PENDING" | "SEPARATED" | "DISPATCHED";
-  address: string;
+  address: string | null;
 }
 
 export class Bag extends Entity<BagProps> {
@@ -33,10 +33,11 @@ export class Bag extends Entity<BagProps> {
     this.props.status = value;
   }
 
-  static create(props: Optional<BagProps, "status">) {
+  static create(props: Optional<BagProps, "status" | "address">) {
     const bag = new Bag({
       ...props,
       status: props.status ?? "PENDING",
+      address: props.address ?? null,
     });
 
     return bag;

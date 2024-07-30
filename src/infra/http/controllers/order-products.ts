@@ -11,7 +11,7 @@ import container from "@/infra/container";
 const orderProductsSchema = {
   body: z.object({
     cycle_id: z.string(),
-    address: z.string(),
+    address: z.string().optional(),
     orders: z
       .array(
         z.object({
