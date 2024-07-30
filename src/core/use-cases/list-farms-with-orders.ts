@@ -28,6 +28,8 @@ export class ListFarmsWithOrdersUsecase {
       name,
     });
 
+    console.log(farms);
+
     return {
       farms,
     };
