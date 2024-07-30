@@ -4,6 +4,7 @@ import {
   BagsRepositoryResponse,
   BagsRepository,
   BagsRepositorySearchRequest,
+  BagsRepositorySearchManyRequest,
 } from "@/core/repositories/bags-repository";
 import { InMemoryUsersRepository } from "./in-memory-users-repository";
 
@@ -60,6 +61,49 @@ export class InMemoryBagsRepository implements BagsRepository {
     });
 
     return aggreagate as BagsRepositoryResponse<T>;
+  }
+
+  async searchMany<T extends RepositoryResponse = "entity">(
+    { page, cycle_id, name }: BagsRepositorySearchManyRequest,
+    type = "entity"
+  ): Promise<BagsRepositoryResponse<T>[]> {
+    const bags = this.items.filter(
+      (item) =>
+        (!cycle_id || item.cycle_id.equals(cycle_id)) &&
+        (!name ||
+          (() =>
+            this.inMemoryUsersRepository.items.find(
+              (user) =>
+                (user.first_name.includes(name) ||
+                  user.last_name.includes(name)) &&
+                user.id.equals(item.user_id)
+            ))())
+    );
+
+    if (type === "entity")
+      return bags.slice(
+        (page - 1) * 20,
+        page * 20
+      ) as BagsRepositoryResponse<T>[];
+
+    const aggregates = [];
+
+    for (const bag of bags) {
+      const user = await this.inMemoryUsersRepository.findById(
+        bag.user_id.value
+      );
+
+      if (!user) continue;
+
+      const aggreate = BagAggregate.create({ ...bag.props, user });
+
+      aggregates.push(aggreate);
+    }
+
+    return aggregates.slice(
+      (page - 1) * 20,
+      page * 20
+    ) as BagsRepositoryResponse<T>[];
   }
 
   async create(bag: Bag): Promise<void> {

@@ -16,7 +16,7 @@ export class FetchBagUseCase {
   ) {}
 
   async execute({ bag_id }: ListUserOrdersuseCaseRequest) {
-    const bag = await this.bagsRepository.findById(bag_id);
+    const bag = await this.bagsRepository.findById(bag_id, "aggregate");
 
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 
