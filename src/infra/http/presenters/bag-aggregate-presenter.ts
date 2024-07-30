@@ -7,7 +7,7 @@ import { UserPresenter } from "@/infra/http/presenters/user-presenter";
 export class BagAggregatePresenter {
   static toHttp(bag: BagAggregate) {
     return {
-      id: bag.id,
+      id: bag.id.value,
       status: bag.status,
       cycle_id: bag.cycle_id.value,
       address: bag.address,

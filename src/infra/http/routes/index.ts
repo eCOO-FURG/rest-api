@@ -64,8 +64,13 @@ router.patch(
   updateOfferController
 );
 
-router.get("/bags", listBagsController);
-router.get("/bags/:bag_id", fetchBagController);
+router.get("/bags", ensureAuthenticated, ensureAdmin, listBagsController);
+router.get(
+  "/bags/:bag_id",
+  ensureAuthenticated,
+  ensureAdmin,
+  fetchBagController
+);
 
 router.get("/cycles", listCyclesController);
 
