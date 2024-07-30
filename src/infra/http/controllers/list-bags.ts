@@ -15,7 +15,7 @@ const listBagsSchema = {
   }),
 };
 
-export async function listBags(
+export async function listBagsController(
   request: Request,
   response: Response,
   next: NextFunction
