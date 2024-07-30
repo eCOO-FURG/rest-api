@@ -10,8 +10,10 @@ import { HandleBagUseCase } from "@/core/use-cases/handle-bag";
 
 const handleBagSchema = {
   body: z.object({
-    bag_id: z.string().uuid(),
     status: z.enum(["PENDING", "SEPARATED", "DISPATCHED"]),
+  }),
+  params: z.object({
+    bag_id: z.string().uuid(),
   }),
 };
 
@@ -21,7 +23,8 @@ export async function handleBagController(
   next: NextFunction
 ) {
   try {
-    const { bag_id, status } = handleBagSchema.body.parse(request.body);
+    const { status } = handleBagSchema.body.parse(request.body);
+    const { bag_id } = handleBagSchema.params.parse(request.params);
 
     const handleBagUseCase =
       container.resolve<HandleBagUseCase>("handleBagUseCase");
