@@ -54,7 +54,7 @@ export async function ensureAuthenticated(
         return response.status(401).send({ message: "Sessão expirada." });
       }
 
-      const refresh = sign({ user_id }, "secret");
+      const refresh = sign({ user_id }, env.JWT_SECRET);
 
       response.header("set-cookie", `token=${refresh}`);
     }
