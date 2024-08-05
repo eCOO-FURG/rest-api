@@ -57,7 +57,7 @@ async function seed() {
     },
   });
 
-  if (env.ENV === "development") {
+  if (["development", "staging"].includes(env.ENV)) {
     const everyDay = [1, 2, 3, 4, 5, 6, 7];
 
     const cycleId = new UUID();
@@ -89,7 +89,7 @@ async function seed() {
               amount:
                 product.pricing === "UNIT"
                   ? Math.floor(Math.random() * 20 + 1)
-                  : Math.floor(Math.random() * 20 + 1) * 50,
+                  : Math.floor(Math.random() * 20 + 1) * 100,
               price: "10",
             })),
           },
