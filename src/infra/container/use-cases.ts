@@ -20,6 +20,9 @@ import { ListFarmOrdersUseCase } from "@/core/use-cases/list-farm-orders";
 import { ListFarmOffersUseCase } from "@/core/use-cases/list-farm-offers";
 import { ListProductsUsecase } from "@/core/use-cases/list-products";
 import { PrintDeliveriesReportUseCase } from "@/core/use-cases/print-deliveries-report/print-deliveries-report";
+import { HandleBagUseCase } from "@/core/use-cases/handle-bag";
+import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
+import { ListBagsUseCase } from "@/core/use-cases/list-bags";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -143,6 +146,17 @@ export default (container: AwilixContainer) => {
     printDeliveriesReport: asFunction(
       ({ cyclesRepository, pdfService }) =>
         new PrintDeliveriesReportUseCase(cyclesRepository, pdfService)
+    ),
+    handleBagUseCase: asFunction(
+      ({ bagsRepository }) => new HandleBagUseCase(bagsRepository)
+    ),
+    fetchBagUseCase: asFunction(
+      ({ bagsRepository, ordersRepository }) =>
+        new FetchBagUseCase(bagsRepository, ordersRepository)
+    ),
+    listBagsUseCase: asFunction(
+      ({ cyclesRepository, bagsRepository }) =>
+        new ListBagsUseCase(cyclesRepository, bagsRepository)
     ),
   });
 };

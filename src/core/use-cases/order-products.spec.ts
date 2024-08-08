@@ -26,6 +26,7 @@ import { InMemoryProductsRepository } from "@/test/repositories/in-memory-produc
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
 
+let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
@@ -49,16 +50,17 @@ describe("order product", () => {
       productsRepository,
       cyclesRepository
     );
+    usersRepository = new InMemoryUsersRepository();
 
     repositories = {
-      users: new InMemoryUsersRepository(),
+      users: usersRepository,
       products: productsRepository,
       offers: offersRepository,
       orders: new InMemoryOrdersRepository(
         offersRepository,
         productsRepository
       ),
-      bags: new InMemoryBagsRepository(),
+      bags: new InMemoryBagsRepository(usersRepository),
       cycles: cyclesRepository,
     };
 
@@ -92,6 +94,7 @@ describe("order product", () => {
     await sut.execute({
       user_id: user.id.value,
       cycle_id: cycle.id.value,
+      address: "address",
       request: [{ offer_id: offer.id.value, amount: 5 }],
     });
 
@@ -124,6 +127,7 @@ describe("order product", () => {
     await sut.execute({
       user_id: user.id.value,
       cycle_id: cycle.id.value,
+      address: "address",
       request: [{ offer_id: offer.id.value, amount: 5 }],
     });
 
@@ -140,6 +144,7 @@ describe("order product", () => {
       sut.execute({
         user_id: "1234",
         cycle_id: cycle.id.value,
+        address: "address",
         request: [
           {
             offer_id: "1234",
@@ -205,6 +210,7 @@ describe("order product", () => {
       sut.execute({
         user_id: user.id.value,
         cycle_id: cycle.id.value,
+        address: "address",
         request: [{ offer_id: offer.id.value, amount: 5 }],
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
@@ -239,6 +245,7 @@ describe("order product", () => {
       sut.execute({
         user_id: user.id.value,
         cycle_id: cycle.id.value,
+        address: "address",
         request: [
           {
             offer_id: offer.id.value,
@@ -271,6 +278,7 @@ describe("order product", () => {
       sut.execute({
         user_id: user.id.value,
         cycle_id: cycle.id.value,
+        address: "address",
         request: [{ offer_id: offer.id.value, amount: 15 }],
       })
     ).rejects.toBeInstanceOf(UnavailableAmountError);
@@ -300,6 +308,7 @@ describe("order product", () => {
       sut.execute({
         user_id: user.id.value,
         cycle_id: cycle.id.value,
+        address: "address",
         request: [{ offer_id: offer.id.value, amount: 27 }],
       })
     ).rejects.toBeInstanceOf(InvalidWeightError);

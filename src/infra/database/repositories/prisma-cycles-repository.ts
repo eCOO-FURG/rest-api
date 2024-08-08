@@ -6,6 +6,8 @@ import { CyclesRepository } from "@/core/repositories/cycles-repository";
 
 // Services
 import { prisma } from "@/infra/database/prisma-service";
+
+// Mappers
 import { PrismaCycleMapper } from "@/infra/database/mappers/prisma-cycle-mapper";
 
 export class PrismaCyclesRepository implements CyclesRepository {

@@ -9,13 +9,13 @@ import { UsersRepository } from "@/core/repositories/users-repository";
 import { OffersRepository } from "@/core/repositories/offers-repository";
 import { OrdersRepository } from "@/core/repositories/orders-repository";
 import { BagsRepository } from "@/core/repositories/bags-repository";
+import { CyclesRepository } from "@/core/repositories/cycles-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 import { ClosedActionError } from "@/core/errors/closed-action";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
-import { CyclesRepository } from "../repositories/cycles-repository";
 
 // Utils
 import { mostPast } from "@/core/utils/most-past";
@@ -23,6 +23,7 @@ import { mostPast } from "@/core/utils/most-past";
 interface OrderProductsUseCaseRequest {
   user_id: string;
   cycle_id: string;
+  address?: string;
   request: {
     offer_id: string;
     amount: number;
@@ -38,7 +39,12 @@ export class OrderProductsUseCase {
     private bagsRepository: BagsRepository
   ) {}
 
-  async execute({ user_id, cycle_id, request }: OrderProductsUseCaseRequest) {
+  async execute({
+    user_id,
+    cycle_id,
+    address,
+    request,
+  }: OrderProductsUseCaseRequest) {
     const user = await this.usersRepository.findById(user_id);
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
@@ -59,7 +65,7 @@ export class OrderProductsUseCase {
       offersIds
     );
 
-    const bag = await this.useBag(user.id, cycle);
+    const bag = await this.useBag(user.id, cycle, address);
 
     const orders: Order[] = [];
 
@@ -94,7 +100,7 @@ export class OrderProductsUseCase {
     await this.ordersRepository.createMany(orders);
   }
 
-  private async useBag(user_id: UUID, cycle: Cycle) {
+  private async useBag(user_id: UUID, cycle: Cycle, address?: string) {
     const exists = await this.bagsRepository.search({
       user_id: user_id.value,
       cycle_id: cycle.id.value,
@@ -103,7 +109,7 @@ export class OrderProductsUseCase {
 
     if (exists) return exists;
 
-    const bag = Bag.create({ user_id, cycle_id: cycle.id });
+    const bag = Bag.create({ user_id, cycle_id: cycle.id, address });
 
     await this.bagsRepository.create(bag);
 

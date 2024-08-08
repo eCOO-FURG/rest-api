@@ -34,7 +34,7 @@ export class Order extends Entity<OrderProps> {
   }
 
   static create(props: Optional<OrderProps, "status">) {
-    const order = new Order({ ...props, status: props.status ?? "RECEIVED" });
+    const order = new Order({ ...props, status: props.status ?? "PENDING" });
     return order;
   }
 }

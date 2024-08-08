@@ -1,12 +1,10 @@
-// Entities
-import { OrderWithOffer } from "@/core/entities/value-objects/order-with-offer";
+import { OrderAggregate } from "@/core/entities/value-objects/order-aggregate";
 
-export class OrderCompletePresenter {
-  static toHttp(order: OrderWithOffer) {
+export class OrderAggregatePresenter {
+  static toHttp(order: OrderAggregate) {
     return {
       id: order.id.value,
       bag_id: order.bag_id.value,
-      amount: order.amount,
       status: order.status,
       created_at: order.created_at,
       updated_at: order.updated_at,

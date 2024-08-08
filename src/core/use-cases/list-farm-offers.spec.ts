@@ -41,7 +41,10 @@ describe("list farm offers", () => {
       productsRepository,
       cyclesRepository
     );
-    ordersRepository = new InMemoryOrdersRepository(offersRepository, productsRepository);
+    ordersRepository = new InMemoryOrdersRepository(
+      offersRepository,
+      productsRepository
+    );
     usersRepository = new InMemoryUsersRepository();
 
     repositories = {
