@@ -7,7 +7,6 @@ import { Nodemailer } from "@/infra/mail/nodemailer";
 import { Jwt } from "@/infra/cryptography/jwt";
 import { BcrypterHasher } from "@/infra/cryptography/bcrypt";
 import { OtpGenerator } from "@/infra/cryptography/otp-generator";
-import { PuppeteerPDFService } from "../pdf/puppeteer";
 
 // Env
 import { env } from "@/infra/env";
@@ -47,6 +46,5 @@ export default (container: AwilixContainer) => {
 
       return new Nodemailer(transporter);
     }),
-    pdfService: asClass(PuppeteerPDFService).singleton(),
   });
 };
