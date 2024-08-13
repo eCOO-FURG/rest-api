@@ -136,4 +136,14 @@ export class InMemoryFarmsRepository implements FarmsRepository {
       .filter((farm) => farm.name === name)
       .slice((page - 1) * 20, page * 20);
   }
+
+  async searchMany(page: number, name?: string): Promise<Farm[]> {
+    if (!name) {
+      return this.items.slice((page - 1) * 20, page * 20);
+    }
+
+    const filtered = this.items.filter((farm) => farm.name.includes(name));
+
+    return filtered.slice((page - 1) * 20, page * 20);
+  }
 }

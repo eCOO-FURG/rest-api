@@ -147,4 +147,24 @@ export class PrismaFarmsRepository implements FarmsRepository {
 
     return farms.map((farm) => PrismaFarmMapper.toDomain(farm));
   }
+
+  async searchMany(page: number, name?: string): Promise<Farm[]> {
+    const skip = (page - 1) * 20;
+
+    const farms = await prisma.farm.findMany({
+      where: {
+        name: {
+          contains: name,
+          mode: "insensitive",
+        },
+      },
+      orderBy: {
+        name: "asc",
+      },
+      skip,
+      take: 20,
+    });
+
+    return farms.map((farm) => PrismaFarmMapper.toDomain(farm));
+  }
 }

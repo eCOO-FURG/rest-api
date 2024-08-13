@@ -31,4 +31,5 @@ export interface FarmsRepository {
     page,
     name,
   }: FarmsRepositorySearchManyWithOrdersRequest): Promise<Farm[]>;
+  searchMany(page: number, name?: string): Promise<Farm[]>;
 }
