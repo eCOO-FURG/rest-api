@@ -12,7 +12,7 @@ import {
 import { prisma } from "@/infra/database/prisma-service";
 import { PrismaFarmMapper } from "@/infra/database/mappers/prisma-farm-mapper";
 import { RepositoryResponse } from "@/core/types/repository-response";
-import { PrismaFarmAggregateMapper } from "../mappers/prisma-farm-aggregate-mapper";
+import { PrismaFarmAggregateMapper } from "@/infra/database/mappers/prisma-farm-aggregate-mapper";
 
 export class PrismaFarmsRepository implements FarmsRepository {
   async search<T extends RepositoryResponse>(
@@ -29,7 +29,7 @@ export class PrismaFarmsRepository implements FarmsRepository {
     if (!found) return null;
 
     if (type === "entity")
-      PrismaFarmMapper.toDomain(found) as FarmsRepositoryResponse<T>;
+      return PrismaFarmMapper.toDomain(found) as FarmsRepositoryResponse<T>;
 
     return PrismaFarmAggregateMapper.toDomain(
       found
@@ -93,7 +93,7 @@ export class PrismaFarmsRepository implements FarmsRepository {
   async update(farm: Farm): Promise<void> {
     const data = PrismaFarmMapper.toPrisma(farm);
 
-    await prisma.user.update({
+    await prisma.farm.update({
       where: {
         id: farm.id.value,
       },

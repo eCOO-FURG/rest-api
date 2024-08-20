@@ -23,6 +23,7 @@ import { HandleBagUseCase } from "@/core/use-cases/handle-bag";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 import { ListBagsUseCase } from "@/core/use-cases/list-bags";
 import { PrintDeliveriesReportUseCase } from "@/core/use-cases/print-deliveries-report";
+import { HandleFarmStatusUseCase } from "@/core/use-cases/handle-farm-status";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -164,6 +165,9 @@ export default (container: AwilixContainer) => {
     listBagsUseCase: asFunction(
       ({ cyclesRepository, bagsRepository }) =>
         new ListBagsUseCase(cyclesRepository, bagsRepository)
+    ),
+    handleFarmStatusUseCase: asFunction(
+      ({ farmsRepository }) => new HandleFarmStatusUseCase(farmsRepository)
     ),
   });
 };

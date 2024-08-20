@@ -23,6 +23,7 @@ import { printDeliveriesReportController } from "../controllers/print-deliveries
 import { listBagsController } from "@/infra/http/controllers/list-bags";
 import { fetchBagController } from "@/infra/http/controllers/fetch-bag";
 import { handleBagController } from "@/infra/http/controllers/handle-bag";
+import { handleFarmStatusController } from "@/infra/http/controllers/handle-farm-status";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -40,6 +41,12 @@ router.post("/auth", authenticateController);
 router.post("/auth/otp", requestOtpController);
 
 router.post("/farms", ensureAuthenticated, registerFarmController);
+router.patch(
+  "/farms/:farm_id",
+  ensureAuthenticated,
+  ensureAdmin,
+  handleFarmStatusController
+);
 
 router.post("/orders", ensureAuthenticated, orderProductsController);
 router.patch(
