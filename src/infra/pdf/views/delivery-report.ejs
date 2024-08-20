@@ -207,7 +207,7 @@
       }
 
       .bag-info--pedido h5 {
-        font-size: 12pt;
+        font-size: 10pt;
         font-weight: bolder;
       }
 
@@ -235,10 +235,6 @@
   </head>
   <body>
     <div class="header" style="font-family: 'Poppins'">
-      <img
-        src="data:image/svg+xml;base64,<%= props.base64Logo %>"
-        class="logo"
-      />
       <h1>Lista de Entregas</h1>
       <p>
         Página <span class="pageNumber">1</span> de
@@ -246,46 +242,40 @@
       </p>
     </div>
 
-    <% Object.entries(props.neighborhoodBags).forEach(([neighborhood, bags]) =>
-    { %>
+    <% props.bags.forEach((bag) => { %>
     <div class="section">
       <div class="bairro-title" style="page-break-inside: avoid">
-        <h2><%= neighborhood %></h2>
+        <h2>Passo d'Areia</h2>
       </div>
-      <% bags.forEach(bag => { %>
       <div class="delivery-bag" style="page-break-inside: avoid">
         <div class="bag-header">
-          <h3><%= bag.address.complete %> - <%= bag.address.neighborhood %></h3>
-          <p>CEP: <%= bag.address.cep %></p>
+          <h3><%= bag.address %></h3>
+          <p>CEP: 91350-190</p>
         </div>
         <div class="bag-content" style="page-break-inside: avoid">
           <div class="bag-info bag-info--pedido">
             <p>Pedido:</p>
-            <h5><%= bag.id %></h5>
+            <h5><%= bag.id.value %></h5>
           </div>
           <div class="bag-info bag-info--cliente">
             <p>Cliente:</p>
-            <h5><%= bag.user.id.value %></h5>
+            <h5><%= bag.user.first_name %> <%= bag.user.last_name %></h5>
           </div>
           <div class="bag-info bag-info--conteudo">
             <p>Conteúdo:</p>
-            <h5><%= bag.content.join(", ") %></h5>
+            <h5></h5>
           </div>
           <div class="bag-info bag-info--pagamento">
             <p>Pagamento:</p>
-            <h5><%= bag.payment_method %></h5>
+            <h5>Dinheiro</h5>
           </div>
           <div class="bag-info bag-info--cobrar">
             <p>Cobrar:</p>
-            <h5>
-              <%= typeof bag.price === "number" ? `R$ ${bag.price.toFixed(2)}` :
-              bag.price %>
-            </h5>
+            <h5>R$ <%= bag.price() %></h5>
           </div>
         </div>
       </div>
-      <% }) %>
     </div>
-    <% }) %>
+    <% }); %>
   </body>
 </html>

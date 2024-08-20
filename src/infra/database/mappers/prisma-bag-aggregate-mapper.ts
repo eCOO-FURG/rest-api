@@ -1,6 +1,6 @@
 // Entities
-import { BagAggregate } from "@/core/entities/value-objects/bag-aggregate";
-import { UUID } from "@/core/entities/value-objects/uuid";
+import { BagAggregate } from "@/core/entities/aggregates/bag-aggregate";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Libs
 import { Prisma } from "@prisma/client";

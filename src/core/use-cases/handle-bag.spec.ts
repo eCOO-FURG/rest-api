@@ -1,6 +1,9 @@
 // Repositories
 import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
+import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
+import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
+import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 
 // Use-cases
 import { HandleBagUseCase } from "@/core/use-cases/handle-bag";
@@ -9,7 +12,12 @@ import { HandleBagUseCase } from "@/core/use-cases/handle-bag";
 import { makeBag } from "@/test/factories/make-bag";
 
 // Errors
-import { ResourceNotFoundError } from "../errors/resource-not-found";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+
+let usersRepository: InMemoryUsersRepository;
+let productsRepository: InMemoryProductsRepository;
+let offersRepository: InMemoryOffersRepository;
+let ordersRepository: InMemoryOrdersRepository;
 
 let repositories: {
   bags: InMemoryBagsRepository;
@@ -20,8 +28,13 @@ let sut: HandleBagUseCase;
 
 describe("handle bag", () => {
   beforeEach(() => {
+    usersRepository = new InMemoryUsersRepository();
+    productsRepository = new InMemoryProductsRepository();
+    offersRepository = new InMemoryOffersRepository(productsRepository);
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
+
     repositories = {
-      bags: new InMemoryBagsRepository(new InMemoryUsersRepository()),
+      bags: new InMemoryBagsRepository(usersRepository, ordersRepository),
       users: new InMemoryUsersRepository(),
     };
 

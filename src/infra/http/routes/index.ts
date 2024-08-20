@@ -66,18 +66,24 @@ router.patch(
   updateOfferController
 );
 
-router.patch(
-  "/bags/:bag_id",
-  ensureAuthenticated,
-  ensureAdmin,
-  handleBagController
-);
 router.get("/bags", ensureAuthenticated, ensureAdmin, listBagsController);
 router.get(
   "/bags/:bag_id",
   ensureAuthenticated,
   ensureAdmin,
   fetchBagController
+);
+router.get(
+  "/bags/report/:cycle_id",
+  // ensureAuthenticated,
+  // ensureAdmin,
+  printDeliveriesReportController
+);
+router.patch(
+  "/bags/:bag_id",
+  ensureAuthenticated,
+  ensureAdmin,
+  handleBagController
 );
 
 router.get("/cycles", listCyclesController);
@@ -87,11 +93,4 @@ router.get(
   ensureAuthenticated,
   ensureFarmAdmin,
   listProductsController
-);
-
-router.get(
-  "/deliveries/report",
-  ensureAuthenticated,
-  ensureAdmin,
-  printDeliveriesReportController
 );

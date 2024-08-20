@@ -1,41 +1,41 @@
+// Entities
 import { Offer } from "@/core/entities/offer";
-import { OfferWithProductAndCycle } from "@/core/entities/value-objects/offer-with-product-and-cycle";
+
+// Types
+import { RepositoryResponse } from "@/core/types/repository-response";
+import { OfferAggregate } from "@/core/entities/aggregates/offer-aggregate";
 
 export interface OffersRepositorySearchRequest {
-  cycle_id: string;
-  product_id: string;
-  farm_id: string;
-  created_at: Date;
+  id?: string;
+  cycle_id?: string;
+  product_id?: string;
+  farm_id?: string;
+  since?: Date;
 }
 
 export interface OffersRepositorySearchManyRequest {
-  cycle_id: string;
-  farm_id: string;
-  created_at: Date;
-  product?: string;
+  ids?: string[];
+  cycle_id?: string;
+  farm_id?: string;
+  since?: Date;
+  product?: {
+    name: string;
+  };
   page?: number;
 }
 
+export type OffersRepositoryResponse<T extends RepositoryResponse> =
+  T extends "entity" ? Offer : OfferAggregate;
+
 export interface OffersRepository {
-  findById(id: string): Promise<Offer | null>;
-  findManyByIdsWithProductAndCycle(
-    ids: string[]
-  ): Promise<OfferWithProductAndCycle[]>;
-  findByIdWithProductAndCycle(
-    id: string
-  ): Promise<OfferWithProductAndCycle | null>;
-  searchMany({
-    farm_id,
-    cycle_id,
-    created_at,
-    product,
-    page,
-  }: OffersRepositorySearchManyRequest): Promise<OfferWithProductAndCycle[]>;
-  search({
-    cycle_id,
-    product_id,
-    created_at,
-  }: OffersRepositorySearchRequest): Promise<Offer | null>;
+  search<T extends RepositoryResponse>(
+    filters: OffersRepositorySearchRequest,
+    type: T
+  ): Promise<OffersRepositoryResponse<T> | null>;
+  searchMany<T extends RepositoryResponse>(
+    filters: OffersRepositorySearchManyRequest,
+    type: T
+  ): Promise<OffersRepositoryResponse<T>[]>;
   create(offer: Offer): Promise<void>;
   update(offer: Offer): Promise<void>;
   delete(offer: Offer): Promise<void>;

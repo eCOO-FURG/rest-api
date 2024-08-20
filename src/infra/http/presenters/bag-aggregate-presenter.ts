@@ -1,5 +1,5 @@
 // Entities
-import { BagAggregate } from "@/core/entities/value-objects/bag-aggregate";
+import { BagAggregate } from "@/core/entities/aggregates/bag-aggregate";
 
 // Presenters
 import { UserPresenter } from "@/infra/http/presenters/user-presenter";

@@ -43,7 +43,7 @@ export class OfferProductsUseCase {
     price,
     description,
   }: OfferProductsUseCaseRequest) {
-    const farm = await this.farmsRepository.findById(farm_id);
+    const farm = await this.farmsRepository.search({ id: farm_id }, "entity");
 
     if (!farm) throw new ResourceNotFoundError("Agronegócio", farm_id);
 
@@ -63,12 +63,15 @@ export class OfferProductsUseCase {
       throw new ClosedActionError("ofertar", cycle_id);
     }
 
-    const alreadyOffered = await this.offersRepository.search({
-      cycle_id,
-      product_id,
-      farm_id,
-      created_at: mostPast(cycle.offer),
-    });
+    const alreadyOffered = await this.offersRepository.search(
+      {
+        cycle_id,
+        product_id,
+        farm_id,
+        since: mostPast(cycle.offer),
+      },
+      "entity"
+    );
 
     if (alreadyOffered)
       throw new ResourceAlreadyExistsError("Oferta de", product_id);

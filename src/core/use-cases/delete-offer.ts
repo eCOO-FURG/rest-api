@@ -18,11 +18,14 @@ export class DeleteOfferUseCase {
   ) {}
 
   async execute({ farm_id, offer_id }: DeleteOfferUseCaseRequest) {
-    const farm = await this.farmsRepository.findById(farm_id);
+    const farm = await this.farmsRepository.search({ id: farm_id }, "entity");
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
-    const offer = await this.offersRepository.findById(offer_id);
+    const offer = await this.offersRepository.search(
+      { id: offer_id },
+      "entity"
+    );
 
     if (!offer) throw new ResourceNotFoundError("Oferta", offer_id);
 

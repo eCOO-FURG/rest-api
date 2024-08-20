@@ -1,33 +1,47 @@
-import puppeteer, { Browser } from "puppeteer";
+// Libs
+import { Browser, launch, PuppeteerLaunchOptions } from "puppeteer";
+import { renderFile } from "ejs";
 
-import { PDFService } from "@/core/pdf/pdf-service";
+// Services
+import { PDFService, PDFServiceGenerateRequest } from "@/core/pdf/pdf-service";
 
 export class PuppeteerPDFService implements PDFService {
   private browser: Browser | null = null;
 
-  async init() {
-    if (this.browser) return;
+  private config: PuppeteerLaunchOptions = {
+    headless: true,
+    executablePath: "/usr/bin/chromium",
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--no-first-run",
+      "--disable-gpu",
+    ],
+  };
 
-    this.browser = await puppeteer.launch({
-      executablePath:
-        process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium",
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
+  async init() {
+    this.browser = await launch(this.config);
   }
 
-  async generateFromHTML(html: string): Promise<Buffer> {
-    if (!this.browser) throw new Error("Couldn't find browser");
+  async generate({ type, props }: PDFServiceGenerateRequest): Promise<Buffer> {
+    this.browser = await launch(this.config);
+
+    console.log(props);
+
+    const html = await renderFile(__dirname + `/views/${type}.ejs`, { props });
 
     const page = await this.browser.newPage();
-    await page.setContent(html, { waitUntil: "networkidle0" });
-    await page.evaluateHandle("document.fonts.ready");
 
-    const pdfBuffer = await page.pdf({
+    await page.setContent(html, { waitUntil: "domcontentloaded" });
+
+    const pdf = await page.pdf({
       format: "a4",
       printBackground: true,
     });
 
-    await page.close();
-    return pdfBuffer;
+    await this.browser.close();
+
+    return pdf;
   }
 }

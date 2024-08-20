@@ -3,7 +3,7 @@ import { BagProps } from "@/core/entities/bag";
 import { Entity } from "@/core/entities/entity";
 import { User } from "@/core/entities/user";
 
-interface BagAggregateProps extends Omit<BagProps, "user_id"> {
+export interface BagAggregateProps extends Omit<BagProps, "user_id"> {
   user: User;
 }
 

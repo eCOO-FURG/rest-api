@@ -1,5 +1,5 @@
 // Entities
-import { UUID } from "@/core/entities/value-objects/uuid";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Types
 import { Optional } from "@/core/types/optional";

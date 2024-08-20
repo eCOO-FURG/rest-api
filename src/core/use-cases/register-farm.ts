@@ -28,13 +28,16 @@ export class RegisterFarmUseCase {
       throw new ResourceNotFoundError("Usuário", user_id);
     }
 
-    const farmWithSameCaf = await this.farmRepository.findByCaf(caf);
+    const farmWithSameCaf = await this.farmRepository.search({ caf }, "entity");
 
     if (farmWithSameCaf) {
       throw new ResourceAlreadyExistsError("CAF", caf);
     }
 
-    const farmWithSameAdmin = await this.farmRepository.findByAdminId(user_id);
+    const farmWithSameAdmin = await this.farmRepository.search(
+      { admin_id: user_id },
+      "entity"
+    );
 
     if (farmWithSameAdmin) {
       throw new ResourceAlreadyExistsError("Agronegócio de", user_id);

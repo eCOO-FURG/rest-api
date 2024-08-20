@@ -1,7 +1,6 @@
 // Repositories
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
-import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
@@ -19,7 +18,6 @@ import { makeUser } from "@/test/factories/make-user";
 import { Farm } from "@/core/entities/farm";
 
 let usersRepository: InMemoryUsersRepository;
-let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
 let ordersRepository: InMemoryOrdersRepository;
@@ -34,13 +32,9 @@ let sut: RegisterFarmUseCase;
 describe("create farm", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
-    cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
-    offersRepository = new InMemoryOffersRepository(
-      productsRepository,
-      cyclesRepository
-    );
-    ordersRepository = new InMemoryOrdersRepository(offersRepository, productsRepository);
+    offersRepository = new InMemoryOffersRepository(productsRepository);
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
     repositories = {
       users: usersRepository,

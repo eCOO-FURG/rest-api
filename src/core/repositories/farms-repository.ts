@@ -1,6 +1,10 @@
 // Entities
 import { Farm } from "@/core/entities/farm";
 
+// Types
+import { RepositoryResponse } from "@/core/types/repository-response";
+import { FarmAggregate } from "../entities/aggregates/farm-aggregate";
+
 export interface FarmsRepositoryFindManyWithActiveOfferRequest {
   cycle_id: string;
   created_at: Date;
@@ -14,10 +18,20 @@ export interface FarmsRepositorySearchManyWithOrdersRequest {
   name?: string;
 }
 
+export interface FarmsRepositorySearchRequest {
+  id?: string;
+  caf?: string;
+  admin_id?: string;
+}
+
+export type FarmsRepositoryResponse<T extends RepositoryResponse> =
+  T extends "entity" ? Farm : FarmAggregate;
+
 export interface FarmsRepository {
-  findById(id: string): Promise<Farm | null>;
-  findByCaf(caf: string): Promise<Farm | null>;
-  findByAdminId(admin_id: string): Promise<Farm | null>;
+  search<T extends RepositoryResponse>(
+    filters: FarmsRepositorySearchRequest,
+    type: T
+  ): Promise<FarmsRepositoryResponse<T> | null>;
   findManyWithActiveOffer({
     cycle_id,
     page,

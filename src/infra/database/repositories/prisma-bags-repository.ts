@@ -9,6 +9,9 @@ import {
   BagsRepositorySearchRequest,
 } from "@/core/repositories/bags-repository";
 
+// Services
+import { prisma } from "@/infra/database/prisma-service";
+
 // Types
 import { RepositoryResponse } from "@/core/types/repository-response";
 
@@ -17,12 +20,13 @@ import { PrismaBagMapper } from "@/infra/database/mappers/prisma-bag-mapper";
 import { PrismaBagAggreagateMapper } from "@/infra/database/mappers/prisma-bag-aggregate-mapper";
 
 // Libs
-import { prisma } from "@/infra/database/prisma-service";
+import { Prisma } from "@prisma/client";
+import { PrismaBagMergeMapper } from "../mappers/prisma-bag-merge-mapper";
 
 export class PrismaBagsRepository implements BagsRepository {
   async findById<T extends RepositoryResponse = "entity">(
     id: string,
-    type = "entity"
+    type: T
   ): Promise<BagsRepositoryResponse<T> | null> {
     if (type === "entity") {
       const found = await prisma.bag.findFirst({ where: { id } });
@@ -46,7 +50,7 @@ export class PrismaBagsRepository implements BagsRepository {
 
   async search<T extends RepositoryResponse = "entity">(
     { user_id, cycle_id, since }: BagsRepositorySearchRequest,
-    type = "entity"
+    type: T
   ): Promise<BagsRepositoryResponse<T> | null> {
     const where = {
       user_id,
@@ -63,24 +67,36 @@ export class PrismaBagsRepository implements BagsRepository {
       return PrismaBagMapper.toDomain(found) as BagsRepositoryResponse<T>;
     }
 
+    if (type === "aggregate") {
+      const found = await prisma.bag.findFirst({
+        where,
+        include: { customer: true },
+      });
+
+      if (!found) return null;
+
+      return PrismaBagAggreagateMapper.toDomain(
+        found
+      ) as BagsRepositoryResponse<T>;
+    }
+
     const found = await prisma.bag.findFirst({
       where,
-      include: { customer: true },
+      include: {
+        customer: true,
+        orders: { include: { offer: { include: { product: true } } } },
+      },
     });
 
     if (!found) return null;
 
-    return PrismaBagAggreagateMapper.toDomain(
-      found
-    ) as BagsRepositoryResponse<T>;
+    return PrismaBagMergeMapper.toDomain(found) as BagsRepositoryResponse<T>;
   }
 
   async searchMany<T extends RepositoryResponse = "entity">(
     { page, cycle_id, name, since, status }: BagsRepositorySearchManyRequest,
-    type = "entity"
+    type: T
   ): Promise<BagsRepositoryResponse<T>[]> {
-    const skip = (page - 1) * 20;
-
     const where = {
       cycle_id,
       status,
@@ -102,29 +118,42 @@ export class PrismaBagsRepository implements BagsRepository {
 
     if (since) Object.assign(where, { created_at: { gte: since } });
 
+    const query: Prisma.BagFindManyArgs = {
+      where,
+      ...(page && { skip: (page - 1) * 20, take: 20 }),
+    };
+
     if (type === "entity") {
-      const found = await prisma.bag.findMany({
-        where,
-        skip,
-        take: 20,
-      });
+      const found = await prisma.bag.findMany(query);
 
       return found.map((bag) =>
         PrismaBagMapper.toDomain(bag)
       ) as BagsRepositoryResponse<T>[];
     }
 
+    if (type === "aggregate") {
+      const found = await prisma.bag.findMany({
+        ...query,
+        include: {
+          customer: true,
+        },
+      });
+
+      return found.map((bag) =>
+        PrismaBagAggreagateMapper.toDomain(bag)
+      ) as BagsRepositoryResponse<T>[];
+    }
+
     const found = await prisma.bag.findMany({
-      where,
+      ...query,
       include: {
         customer: true,
+        orders: { include: { offer: { include: { product: true } } } },
       },
-      skip,
-      take: 20,
     });
 
     return found.map((bag) =>
-      PrismaBagAggreagateMapper.toDomain(bag)
+      PrismaBagMergeMapper.toDomain(bag)
     ) as BagsRepositoryResponse<T>[];
   }
 

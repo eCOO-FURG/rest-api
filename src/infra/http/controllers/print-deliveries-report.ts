@@ -3,13 +3,13 @@ import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
 // Use-cases
-import { PrintDeliveriesReportUseCase } from "@/core/use-cases/print-deliveries-report/print-deliveries-report";
+import { PrintDeliveriesReportUseCase } from "@/core/use-cases/print-deliveries-report";
 
 // Container
 import container from "@/infra/container";
 
 const printDeliveriesReportSchema = {
-  query: z.object({
+  params: z.object({
     cycle_id: z.string().uuid(),
   }),
 };
@@ -20,23 +20,24 @@ export async function printDeliveriesReportController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id } = printDeliveriesReportSchema.query.parse(request.query);
+    const { cycle_id } = printDeliveriesReportSchema.params.parse(
+      request.params
+    );
 
     const printDeliveriesReportUseCase =
       container.resolve<PrintDeliveriesReportUseCase>("printDeliveriesReport");
 
     await printDeliveriesReportUseCase.execute({ cycle_id });
 
-    const pdfBuffer = await printDeliveriesReportUseCase.execute({ cycle_id });
+    const { pdf } = await printDeliveriesReportUseCase.execute({ cycle_id });
 
-    response.setHeader(
-      "Content-Disposition",
-      'attachment; filename="report.pdf"'
-    );
-    response.setHeader("Content-Type", "application/pdf");
-    response.setHeader("Content-Length", pdfBuffer.length);
+    response.set({
+      "Content-Disposition": 'attachment; filename="deliveries.pdf"',
+      "Content-Type": "application/pdf",
+      "Content-Length": pdf.length,
+    });
 
-    response.send(pdfBuffer);
+    response.send(pdf);
   } catch (error) {
     next(error);
   }

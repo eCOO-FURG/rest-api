@@ -3,7 +3,7 @@ import { User as PrismaUser, Prisma } from "@prisma/client";
 
 // Entities
 import { User } from "@/core/entities/user";
-import { UUID } from "@/core/entities/value-objects/uuid";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 export class PrismaUserMapper {
   static toDomain(raw: PrismaUser) {

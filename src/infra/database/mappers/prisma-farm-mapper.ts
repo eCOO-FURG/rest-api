@@ -3,7 +3,7 @@ import { Farm as PrismaFarm, Prisma } from "@prisma/client";
 
 // Entities
 import { Farm } from "@/core/entities/farm";
-import { UUID } from "@/core/entities/value-objects/uuid";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 export class PrismaFarmMapper {
   static toDomain(raw: PrismaFarm) {

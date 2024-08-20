@@ -19,10 +19,10 @@ import { SearchOfferingFarmsUseCase } from "@/core/use-cases/search-offering-far
 import { ListFarmOrdersUseCase } from "@/core/use-cases/list-farm-orders";
 import { ListFarmOffersUseCase } from "@/core/use-cases/list-farm-offers";
 import { ListProductsUsecase } from "@/core/use-cases/list-products";
-import { PrintDeliveriesReportUseCase } from "@/core/use-cases/print-deliveries-report/print-deliveries-report";
 import { HandleBagUseCase } from "@/core/use-cases/handle-bag";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 import { ListBagsUseCase } from "@/core/use-cases/list-bags";
+import { PrintDeliveriesReportUseCase } from "@/core/use-cases/print-deliveries-report";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -81,8 +81,12 @@ export default (container: AwilixContainer) => {
         new UpdateUserUseCase(usersRepository, encrypter)
     ),
     updateOfferUseCase: asFunction(
-      ({ farmsRepository, offersRepository }) =>
-        new UpdateOfferUseCase(farmsRepository, offersRepository)
+      ({ farmsRepository, offersRepository, cyclesRepository }) =>
+        new UpdateOfferUseCase(
+          farmsRepository,
+          offersRepository,
+          cyclesRepository
+        )
     ),
     orderPoductsUseCase: asFunction(
       ({
@@ -144,15 +148,18 @@ export default (container: AwilixContainer) => {
       ({ productsRepository }) => new ListProductsUsecase(productsRepository)
     ),
     printDeliveriesReport: asFunction(
-      ({ cyclesRepository, pdfService }) =>
-        new PrintDeliveriesReportUseCase(cyclesRepository, pdfService)
+      ({ cyclesRepository, bagsRepository, pdfService }) =>
+        new PrintDeliveriesReportUseCase(
+          cyclesRepository,
+          bagsRepository,
+          pdfService
+        )
     ),
     handleBagUseCase: asFunction(
       ({ bagsRepository }) => new HandleBagUseCase(bagsRepository)
     ),
     fetchBagUseCase: asFunction(
-      ({ bagsRepository, ordersRepository }) =>
-        new FetchBagUseCase(bagsRepository, ordersRepository)
+      ({ bagsRepository }) => new FetchBagUseCase(bagsRepository)
     ),
     listBagsUseCase: asFunction(
       ({ cyclesRepository, bagsRepository }) =>

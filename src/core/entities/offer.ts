@@ -3,7 +3,7 @@ import { Entity, EntityRequest } from "@/core/entities/entity";
 
 // Types
 import { Optional } from "@/core/types/optional";
-import { UUID } from "@/core/entities/value-objects/uuid";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 export interface OfferProps extends EntityRequest {
   price: number;

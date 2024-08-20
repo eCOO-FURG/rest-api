@@ -5,46 +5,35 @@ import { Farm } from "@/core/entities/farm";
 import {
   FarmsRepository,
   FarmsRepositoryFindManyWithActiveOfferRequest,
+  FarmsRepositoryResponse,
   FarmsRepositorySearchManyWithOrdersRequest,
+  FarmsRepositorySearchRequest,
 } from "@/core/repositories/farms-repository";
 import { prisma } from "@/infra/database/prisma-service";
 import { PrismaFarmMapper } from "@/infra/database/mappers/prisma-farm-mapper";
+import { RepositoryResponse } from "@/core/types/repository-response";
+import { PrismaFarmAggregateMapper } from "../mappers/prisma-farm-aggregate-mapper";
 
 export class PrismaFarmsRepository implements FarmsRepository {
-  async findById(id: string): Promise<Farm | null> {
-    const farm = await prisma.farm.findUnique({
-      where: {
-        id,
+  async search<T extends RepositoryResponse>(
+    filters: FarmsRepositorySearchRequest,
+    type: T
+  ): Promise<FarmsRepositoryResponse<T> | null> {
+    const found = await prisma.farm.findFirst({
+      where: filters,
+      include: {
+        admin: type === "aggregate",
       },
     });
 
-    if (!farm) return null;
+    if (!found) return null;
 
-    return PrismaFarmMapper.toDomain(farm);
-  }
+    if (type === "entity")
+      PrismaFarmMapper.toDomain(found) as FarmsRepositoryResponse<T>;
 
-  async findByCaf(caf: string): Promise<Farm | null> {
-    const farm = await prisma.farm.findUnique({
-      where: {
-        caf,
-      },
-    });
-
-    if (!farm) return null;
-
-    return PrismaFarmMapper.toDomain(farm);
-  }
-
-  async findByAdminId(admin_id: string): Promise<Farm | null> {
-    const farm = await prisma.farm.findUnique({
-      where: {
-        admin_id,
-      },
-    });
-
-    if (!farm) return null;
-
-    return PrismaFarmMapper.toDomain(farm);
+    return PrismaFarmAggregateMapper.toDomain(
+      found
+    ) as FarmsRepositoryResponse<T>;
   }
 
   async findManyWithActiveOffer({

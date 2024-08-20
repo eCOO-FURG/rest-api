@@ -3,7 +3,7 @@ import { Product as PrismaProduct, Prisma } from "@prisma/client";
 
 // Entities
 import { Product } from "@/core/entities/product";
-import { UUID } from "@/core/entities/value-objects/uuid";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 export class PrismaProductMapper {
   static toDomain(raw: PrismaProduct) {

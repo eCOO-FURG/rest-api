@@ -3,7 +3,7 @@ import { Entity } from "@/core/entities/entity";
 import { OfferProps } from "@/core/entities/offer";
 import { Product } from "@/core/entities/product";
 
-interface OfferAggregateProps extends Omit<OfferProps, "product_id"> {
+export interface OfferAggregateProps extends Omit<OfferProps, "product_id"> {
   product: Product;
 }
 
@@ -30,6 +30,14 @@ export class OfferAggregate extends Entity<OfferAggregateProps> {
 
   get product() {
     return this.props.product;
+  }
+
+  set price(value: number) {
+    this.props.price = value;
+  }
+
+  set amount(value: number) {
+    this.props.amount = value;
   }
 
   static create(props: OfferAggregateProps) {
