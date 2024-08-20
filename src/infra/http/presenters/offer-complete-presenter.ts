@@ -1,4 +1,4 @@
-import { OfferWithProductAndCycle } from "@/core/entities/value-objects/offer-with-product-and-cycle";
+import { OfferWithProductAndCycle } from "@/core/entities/aggregates/offer-with-product-and-cycle";
 
 export class OfferCompletePresenter {
   static toHttp(offer: OfferWithProductAndCycle) {
@@ -19,6 +19,6 @@ export class OfferCompletePresenter {
         created_at: offer.product.created_at,
         updated_at: offer.product.updated_at,
       },
-    }
+    };
   }
 }

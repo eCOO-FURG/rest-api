@@ -1,103 +1,98 @@
 // Entities
 import { Offer } from "@/core/entities/offer";
-import { OfferWithProductAndCycle } from "@/core/entities/value-objects/offer-with-product-and-cycle";
 
 // Repositories
 import {
   OffersRepository,
+  OffersRepositoryResponse,
   OffersRepositorySearchManyRequest,
   OffersRepositorySearchRequest,
 } from "@/core/repositories/offers-repository";
 
+// Types
+import { RepositoryResponse } from "@/core/types/repository-response";
+
 // Services
 import { prisma } from "@/infra/database/prisma-service";
 import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
-import { PrismaOfferWithProductAndCycleMapper } from "@/infra/database/mappers/prisma-offer-with-product-and-cycle-mapper";
+import { PrismaOfferAggregateMapper } from "@/infra/database/mappers/prisma-offer-aggregate-mapper";
+
+// Libs
+import { Prisma } from "@prisma/client";
 
 export class PrismaOffersRepository implements OffersRepository {
-  async findById(id: string): Promise<Offer | null> {
-    const offer = await prisma.offer.findUnique({ where: { id } });
+  async search<T extends RepositoryResponse>(
+    { id, cycle_id, farm_id, product_id, since }: OffersRepositorySearchRequest,
+    type: T
+  ): Promise<OffersRepositoryResponse<T> | null> {
+    const where: Prisma.OfferWhereInput = {
+      id,
+      cycle_id,
+      farm_id,
+      product_id,
+      ...(since && { created_at: { gte: since } }),
+    };
 
-    if (!offer) return null;
+    if (type === "aggregate") {
+      const offer = await prisma.offer.findFirst({ where });
 
-    return PrismaOfferMapper.toDomain(offer);
-  }
+      if (!offer) return null;
 
-  async findByIdWithProductAndCycle(
-    id: string
-  ): Promise<OfferWithProductAndCycle | null> {
-    const offer = await prisma.offer.findUnique({
-      where: { id },
-      include: { product: true, cycle: true },
-    });
+      return PrismaOfferMapper.toDomain(offer) as OffersRepositoryResponse<T>;
+    }
 
-    if (!offer) return null;
-
-    return PrismaOfferWithProductAndCycleMapper.toDomain(offer);
-  }
-
-  async findManyByIdsWithProductAndCycle(ids: string[]): Promise<OfferWithProductAndCycle[]> {
-    const offers = await prisma.offer.findMany({
-      where: { id: {
-        in: ids
-      } },
-      include: { product: true, cycle: true },
-    })
-
-    return offers.map((offer) => PrismaOfferWithProductAndCycleMapper.toDomain(offer))
-  }
-
-  async searchMany({
-    farm_id,
-    cycle_id,
-    created_at,
-    product,
-    page,
-  }: OffersRepositorySearchManyRequest): Promise<OfferWithProductAndCycle[]> {
-    const offers = await prisma.offer.findMany({
-      where: {
-        farm_id,
-        cycle_id,
-        created_at: {
-          gte: created_at,
-        },
-        product: {
-          name: {
-            contains: product ?? "",
-          },
-        },
-      },
-      include: {
-        product: true,
-        cycle: true
-      },
-      skip: page ? (page - 1) * 20 : 0,
-      take: page && 20,
-    });
-
-    return offers.map((offer) => PrismaOfferWithProductAndCycleMapper.toDomain(offer));
-  }
-
-  async search({
-    cycle_id,
-    farm_id,
-    product_id,
-    created_at,
-  }: OffersRepositorySearchRequest): Promise<Offer | null> {
     const offer = await prisma.offer.findFirst({
-      where: {
-        farm_id,
-        product_id,
-        cycle_id,
-        created_at: {
-          gte: created_at,
-        },
-      },
+      where,
+      include: { product: true },
     });
 
     if (!offer) return null;
 
-    return PrismaOfferMapper.toDomain(offer);
+    return PrismaOfferAggregateMapper.toDomain(
+      offer
+    ) as OffersRepositoryResponse<T>;
+  }
+
+  async searchMany<T extends RepositoryResponse>(
+    {
+      ids,
+      cycle_id,
+      farm_id,
+      since,
+      product,
+      page,
+    }: OffersRepositorySearchManyRequest,
+    type: T
+  ): Promise<OffersRepositoryResponse<T>[]> {
+    const where: Prisma.OfferWhereInput = {
+      cycle_id,
+      farm_id,
+      ...(ids && { id: { in: ids } }),
+      ...(since && { created_at: { gte: since } }),
+      ...(product && { product: { name: { contains: product.name } } }),
+    };
+
+    const query: Prisma.OfferFindManyArgs = {
+      where,
+      ...(page && { skip: (page - 1) * 20, take: 20 }),
+    };
+
+    if (type === "entity") {
+      const offers = await prisma.offer.findMany(query);
+
+      return offers.map((offer) =>
+        PrismaOfferMapper.toDomain(offer)
+      ) as OffersRepositoryResponse<T>[];
+    }
+
+    const offers = await prisma.offer.findMany({
+      ...query,
+      include: { product: true },
+    });
+
+    return offers.map((offer) =>
+      PrismaOfferAggregateMapper.toDomain(offer)
+    ) as OffersRepositoryResponse<T>[];
   }
 
   async create(offer: Offer): Promise<void> {

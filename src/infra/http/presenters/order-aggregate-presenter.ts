@@ -1,4 +1,4 @@
-import { OrderAggregate } from "@/core/entities/value-objects/order-aggregate";
+import { OrderAggregate } from "@/core/entities/aggregates/order-aggregate";
 
 export class OrderAggregatePresenter {
   static toHttp(order: OrderAggregate) {

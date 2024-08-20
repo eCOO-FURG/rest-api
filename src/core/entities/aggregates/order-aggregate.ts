@@ -1,7 +1,7 @@
-//
+// Entities
 import { Entity } from "@/core/entities/entity";
 import { OrderProps } from "@/core/entities/order";
-import { OfferAggregate } from "@/core/entities/value-objects/offer-aggregate";
+import { OfferAggregate } from "@/core/entities/aggregates/offer-aggregate";
 
 interface OrderAggregateProps extends Omit<OrderProps, "offer_id"> {
   offer: OfferAggregate;

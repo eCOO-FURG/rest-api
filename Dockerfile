@@ -1,4 +1,4 @@
-FROM node:20.10.0
+FROM node:20-alpine
 
 WORKDIR /app
 
@@ -7,6 +7,8 @@ COPY package.json pnpm-lock.yaml ./
 RUN npm install -g pnpm
 
 RUN pnpm install
+
+RUN apk add chromium
 
 COPY . ./
 

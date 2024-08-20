@@ -1,5 +1,4 @@
 // Repositories
-import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
@@ -17,7 +16,6 @@ import { makeOffer } from "@/test/factories/make-offer";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { UnauthorizedError } from "@/core/errors/unauthorized";
 
-let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
 let usersRepository: InMemoryUsersRepository;
 let offersRepository: InMemoryOffersRepository;
@@ -32,15 +30,13 @@ let sut: DeleteOfferUseCase;
 
 describe("delete offer", () => {
   beforeEach(() => {
-    cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
     usersRepository = new InMemoryUsersRepository();
+    offersRepository = new InMemoryOffersRepository(productsRepository);
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
     repositories = {
-      offers: new InMemoryOffersRepository(
-        productsRepository,
-        cyclesRepository
-      ),
+      offers: new InMemoryOffersRepository(productsRepository),
       farms: new InMemoryFarmsRepository(
         usersRepository,
         offersRepository,

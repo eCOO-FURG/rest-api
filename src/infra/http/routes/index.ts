@@ -19,6 +19,7 @@ import { listFarmOrdersController } from "@/infra/http/controllers/list-farm-ord
 import { searchOfferingFarmsController } from "@/infra/http/controllers/search-offering-farms";
 import { listFarmOffersController } from "@/infra/http/controllers/list-farm-offers";
 import { listProductsController } from "@/infra/http/controllers/list-products";
+import { printDeliveriesReportController } from "../controllers/print-deliveries-report";
 import { listBagsController } from "@/infra/http/controllers/list-bags";
 import { fetchBagController } from "@/infra/http/controllers/fetch-bag";
 import { handleBagController } from "@/infra/http/controllers/handle-bag";
@@ -65,18 +66,24 @@ router.patch(
   updateOfferController
 );
 
-router.patch(
-  "/bags/:bag_id",
-  ensureAuthenticated,
-  ensureAdmin,
-  handleBagController
-);
 router.get("/bags", ensureAuthenticated, ensureAdmin, listBagsController);
 router.get(
   "/bags/:bag_id",
   ensureAuthenticated,
   ensureAdmin,
   fetchBagController
+);
+router.get(
+  "/bags/report/:cycle_id",
+  // ensureAuthenticated,
+  // ensureAdmin,
+  printDeliveriesReportController
+);
+router.patch(
+  "/bags/:bag_id",
+  ensureAuthenticated,
+  ensureAdmin,
+  handleBagController
 );
 
 router.get("/cycles", listCyclesController);

@@ -7,7 +7,6 @@ import { OrderProductsUseCase } from "@/core/use-cases/order-products";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ClosedActionError } from "@/core/errors/closed-action";
-import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
 

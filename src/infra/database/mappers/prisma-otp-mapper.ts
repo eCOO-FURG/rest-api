@@ -3,7 +3,7 @@ import { Prisma, Otp as PrismaOtp } from "@prisma/client";
 
 // Entities
 import { Otp } from "@/core/entities/otp";
-import { UUID } from "@/core/entities/value-objects/uuid";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 export class PrismaOtpMapper {
   static toDomain(raw: PrismaOtp) {

@@ -13,6 +13,7 @@ import { InMemoryProductsRepository } from "@/test/repositories/in-memory-produc
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
+import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -21,9 +22,7 @@ import { ClosedActionError } from "@/core/errors/closed-action";
 
 // Entities
 import { Week } from "@/core/entities/cycle";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
-let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
 let usersRepository: InMemoryUsersRepository;
 let offersRepository: InMemoryOffersRepository;
@@ -32,20 +31,18 @@ let ordersRepository: InMemoryOrdersRepository;
 let repositories: {
   offers: InMemoryOffersRepository;
   farms: InMemoryFarmsRepository;
+  cycles: InMemoryCyclesRepository;
 };
 
 let sut: UpdateOfferUseCase;
 
 describe("update offer", () => {
   beforeEach(() => {
-    cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
     usersRepository = new InMemoryUsersRepository();
-    offersRepository = new InMemoryOffersRepository(
-      productsRepository,
-      cyclesRepository
-    );
-    ordersRepository = new InMemoryOrdersRepository(offersRepository, productsRepository);
+    offersRepository = new InMemoryOffersRepository(productsRepository);
+
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
     repositories = {
       offers: offersRepository,
@@ -55,9 +52,14 @@ describe("update offer", () => {
         productsRepository,
         ordersRepository
       ),
+      cycles: new InMemoryCyclesRepository(),
     };
 
-    sut = new UpdateOfferUseCase(repositories.farms, repositories.offers);
+    sut = new UpdateOfferUseCase(
+      repositories.farms,
+      repositories.offers,
+      repositories.cycles
+    );
   });
 
   it("should be able to update an offer", async () => {
@@ -68,13 +70,14 @@ describe("update offer", () => {
     await productsRepository.create(product);
 
     const cycle = makeCycle();
-    cyclesRepository.items.push(cycle);
+    repositories.cycles.items.push(cycle);
 
     const offer = makeOffer({
       farm_id: farm.id,
       product_id: product.id,
       cycle_id: cycle.id,
     });
+
     await repositories.offers.create(offer);
 
     await sut.execute({
@@ -118,7 +121,7 @@ describe("update offer", () => {
     await productsRepository.create(product);
 
     const cycle = makeCycle();
-    cyclesRepository.items.push(cycle);
+    repositories.cycles.items.push(cycle);
 
     const offer = makeOffer({
       farm_id: farm2.id,
@@ -143,7 +146,7 @@ describe("update offer", () => {
     const cycle = makeCycle({
       offer: offeringDays as Week,
     });
-    cyclesRepository.items.push(cycle);
+    repositories.cycles.items.push(cycle);
 
     const farm = makeFarm();
     await repositories.farms.create(farm);

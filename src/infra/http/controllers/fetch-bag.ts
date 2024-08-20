@@ -29,11 +29,11 @@ export async function fetchBagController(
     const fetchBagUseCase =
       container.resolve<FetchBagUseCase>("fetchBagUseCase");
 
-    const { bag, orders } = await fetchBagUseCase.execute({ bag_id });
+    const { bag } = await fetchBagUseCase.execute({ bag_id });
 
     return response.status(200).send({
       ...BagAggregatePresenter.toHttp(bag),
-      orders: orders.map((order) => OrderAggregatePresenter.toHttp(order)),
+      orders: bag.orders.map((order) => OrderAggregatePresenter.toHttp(order)),
     });
   } catch (error) {
     next(error);

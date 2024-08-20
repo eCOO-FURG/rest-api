@@ -2,7 +2,7 @@
 import { Cycle, Week } from "@/core/entities/cycle";
 import { Bag } from "@/core/entities/bag";
 import { Order } from "@/core/entities/order";
-import { UUID } from "@/core/entities/value-objects/uuid";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
@@ -55,14 +55,15 @@ export class OrderProductsUseCase {
 
     const today = (new Date().getDay() + 1) as Week[0];
 
-    if (!cycle.offer.includes(today)) {
+    if (!cycle.order.includes(today)) {
       throw new ClosedActionError("comprar", cycle_id);
     }
 
     const offersIds = request.map((order) => order.offer_id);
 
-    const offers = await this.offersRepository.findManyByIdsWithProductAndCycle(
-      offersIds
+    const offers = await this.offersRepository.searchMany(
+      { ids: offersIds },
+      "aggregate"
     );
 
     const bag = await this.useBag(user.id, cycle, address);
@@ -72,11 +73,8 @@ export class OrderProductsUseCase {
     for (const item of request) {
       const offer = offers.find((offer) => offer.id.equals(item.offer_id));
 
-      if (!offer || !offer.cycle.id.equals(cycle_id))
+      if (!offer || !offer.cycle_id.equals(cycle_id))
         throw new ResourceNotFoundError("Oferta", item.offer_id);
-
-      if (!offer.cycle.order.includes(today))
-        throw new ClosedActionError("comprar", offer.cycle.alias);
 
       if (item.amount > offer.amount)
         throw new UnavailableAmountError(offer.id.value);
@@ -101,11 +99,14 @@ export class OrderProductsUseCase {
   }
 
   private async useBag(user_id: UUID, cycle: Cycle, address?: string) {
-    const exists = await this.bagsRepository.search({
-      user_id: user_id.value,
-      cycle_id: cycle.id.value,
-      since: mostPast(cycle.order),
-    });
+    const exists = await this.bagsRepository.search(
+      {
+        user_id: user_id.value,
+        cycle_id: cycle.id.value,
+        since: mostPast(cycle.order),
+      },
+      "entity"
+    );
 
     if (exists) return exists;
 

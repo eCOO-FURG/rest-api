@@ -30,14 +30,19 @@ export class HandleOrdersDeliveryUseCase {
     const cycle = await this.cyclesRepository.findById(cycle_id);
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const farm = await this.farmsRepository.findById(farm_id);
+    const farm = await this.farmsRepository.search({ id: farm_id }, "entity");
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
-    const orders = await this.ordersRepository.findManyByFarmIdInCycle({
-      farm_id,
-      cycle_id,
-      created_at: mostPast(cycle.offer),
-    });
+    const orders = await this.ordersRepository.searchMany(
+      {
+        offer: {
+          cycle_id,
+          farm_id,
+        },
+        since: mostPast(cycle.offer),
+      },
+      "entity"
+    );
 
     for (const order of orders) {
       order.status = status;

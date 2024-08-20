@@ -3,7 +3,7 @@ import { Optional } from "@/core/types/optional";
 
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
-import { UUID } from "@/core/entities/value-objects/uuid";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Events
 import { DomainEvents } from "@/core/events/domain-events";
@@ -42,7 +42,7 @@ export class Otp extends Entity<OtpProps> {
     const fresh = !props.id;
 
     if (fresh) {
-      DomainEvents.events.push({ entity: otp, name: OnOtpRequestEvent.name })
+      DomainEvents.events.push({ entity: otp, name: OnOtpRequestEvent.name });
     }
 
     return otp;

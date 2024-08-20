@@ -1,6 +1,6 @@
 // Entities
 import { Session } from "@/core/entities/session";
-import { UUID } from "@/core/entities/value-objects/uuid";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Libs
 import { Prisma, Session as PrismaSession } from "@prisma/client";

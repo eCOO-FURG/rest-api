@@ -3,7 +3,7 @@ import { Cycle as PrismaCycle, Prisma } from "@prisma/client";
 
 // Entities
 import { Cycle, Week } from "@/core/entities/cycle";
-import { UUID } from "@/core/entities/value-objects/uuid";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 export class PrismaCycleMapper {
   static toDomain(raw: PrismaCycle) {

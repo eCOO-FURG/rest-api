@@ -21,7 +21,7 @@ export class ListFarmOffersUseCase {
     private farmsRepository: FarmsRepository,
     private cyclesRepository: CyclesRepository,
     private offersRepository: OffersRepository
-  ) { }
+  ) {}
 
   async execute({
     farm_id,
@@ -29,7 +29,10 @@ export class ListFarmOffersUseCase {
     product,
     page,
   }: ListFarmsOffersUseCaseRequest) {
-    const farm = await this.farmsRepository.findById(farm_id);
+    const farm = await this.farmsRepository.search(
+      { id: farm_id },
+      "aggregate"
+    );
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
@@ -37,17 +40,20 @@ export class ListFarmOffersUseCase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const offers = await this.offersRepository.searchMany({
-      farm_id,
-      cycle_id,
-      product,
-      page,
-      created_at: mostPast(cycle.offer),
-    });
+    const offers = await this.offersRepository.searchMany(
+      {
+        farm_id,
+        cycle_id,
+        page,
+        since: mostPast(cycle.offer),
+        ...(product && { product: { name: product } }),
+      },
+      "aggregate"
+    );
 
     return {
       farm,
-      offers
+      offers,
     };
   }
 }
