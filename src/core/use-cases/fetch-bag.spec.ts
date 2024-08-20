@@ -9,7 +9,7 @@ import { makeBag } from "@/test/factories/make-bag";
 import { makeUser } from "@/test/factories/make-user";
 
 // Entities
-import { BagAggregate } from "@/core/entities/value-objects/bag-aggregate";
+import { OrderAggregate } from "@/core/entities/aggregates/order-aggregate";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -21,16 +21,15 @@ import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-r
 import { makeOrder } from "@/test/factories/make-order";
 import { makeProduct } from "@/test/factories/make-product";
 import { makeOffer } from "@/test/factories/make-offer";
-import { OrderAggregate } from "@/core/entities/value-objects/order-aggregate";
+import { BagMerge } from "../entities/merged/bag-merge";
 
 let usersRepository: InMemoryUsersRepository;
-let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
+let ordersRepository: InMemoryOrdersRepository;
 
 let repositories: {
   bags: InMemoryBagsRepository;
-  orders: InMemoryOrdersRepository;
 };
 
 let sut: FetchBagUseCase;
@@ -39,25 +38,14 @@ describe("Fetch bag", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
     productsRepository = new InMemoryProductsRepository();
-    cyclesRepository = new InMemoryCyclesRepository();
-    offersRepository = new InMemoryOffersRepository(
-      productsRepository,
-      cyclesRepository
-    );
-    offersRepository = new InMemoryOffersRepository(
-      productsRepository,
-      cyclesRepository
-    );
+    offersRepository = new InMemoryOffersRepository(productsRepository);
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
     repositories = {
-      bags: new InMemoryBagsRepository(usersRepository),
-      orders: new InMemoryOrdersRepository(
-        offersRepository,
-        productsRepository
-      ),
+      bags: new InMemoryBagsRepository(usersRepository, ordersRepository),
     };
 
-    sut = new FetchBagUseCase(repositories.bags, repositories.orders);
+    sut = new FetchBagUseCase(repositories.bags);
   });
 
   it("should be able to fetch a user bag", async () => {
@@ -74,15 +62,15 @@ describe("Fetch bag", () => {
     await offersRepository.create(offer);
 
     const order = makeOrder({ bag_id: bag.id, offer_id: offer.id });
-    await repositories.orders.createMany([order]);
+    await ordersRepository.createMany([order]);
 
     const result = await sut.execute({
       bag_id: bag.id.value,
     });
 
-    expect(result.bag).toBeInstanceOf(BagAggregate);
-    expect(result.orders).toBeInstanceOf(Array<OrderAggregate>);
-    expect(result.orders.length).toBe(1);
+    expect(result.bag).toBeInstanceOf(BagMerge);
+    expect(result.bag.orders).toBeInstanceOf(Array<OrderAggregate>);
+    expect(result.bag.orders.length).toBe(1);
   });
 
   it("should not be able to fetch a bag that does not exists", async () => {

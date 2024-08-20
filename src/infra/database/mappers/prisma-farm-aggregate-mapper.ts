@@ -1,17 +1,13 @@
-// Entities
-import { FarmAggregate } from "@/core/entities/value-objects/farm-aggregate";
-
-// Libs
+import { FarmAggregate } from "@/core/entities/aggregates/farm-aggregate";
+import { UUID } from "@/core/entities/aggregates/uuid";
 import { Prisma } from "@prisma/client";
-import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
+import { PrismaUserMapper } from "./prisma-user-mapper";
 
 export class PrismaFarmAggregateMapper {
   static toDomain(raw: Prisma.FarmGetPayload<{ include: { admin: true } }>) {
     return FarmAggregate.create({
-      name: raw.name,
-      caf: raw.caf,
-      active: raw.active,
-      tax: raw.tax,
+      ...raw,
+      id: new UUID(raw.id),
       admin: PrismaUserMapper.toDomain(raw.admin),
     });
   }

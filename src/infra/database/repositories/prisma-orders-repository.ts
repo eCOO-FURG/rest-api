@@ -1,12 +1,11 @@
 // Entities
 import { Order } from "@/core/entities/order";
-import { OrderWithOffer } from "@/core/entities/value-objects/order-with-offer";
 
 // Repositories
 import {
   OrdersRepository,
-  OrdersRepositoryFindManyByFarmIdInCycle,
-  OrdersRepositoryManyResponse,
+  OrdersRepositoryResponse,
+  OrdersRepositorySearchManyRequest,
 } from "@/core/repositories/orders-repository";
 
 // Services
@@ -14,49 +13,42 @@ import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
 import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
-import { PrismaOrderWithOfferMapper } from "@/infra/database/mappers/prisma-order-with-offer-mapper";
+import { PrismaOrderAggregateMapper } from "@/infra/database/mappers/prisma-order-aggregate-mapper";
+
+// Types
 import { RepositoryResponse } from "@/core/types/repository-response";
 
+// Libs
+import { Prisma } from "@prisma/client";
+
 export class PrismaOrdersRepository implements OrdersRepository {
-  async findManyWithOfferByOffersIds(
-    offers_ids: string[]
-  ): Promise<OrderWithOffer[]> {
+  async searchMany<T extends RepositoryResponse = "entity">(
+    { bag_id, offer, offers_ids, since }: OrdersRepositorySearchManyRequest,
+    type: T
+  ): Promise<OrdersRepositoryResponse<T>[]> {
+    const where: Prisma.OrderWhereInput = {
+      bag_id,
+      ...(since && { created_at: { gte: since } }),
+      ...(offer && { offer: { ...offer } }),
+      ...(offers_ids && { offer_id: { in: offers_ids } }),
+    };
+
+    if (type === "entity") {
+      const orders = await prisma.order.findMany({ where });
+
+      return orders.map((order) =>
+        PrismaOrderMapper.toDomain(order)
+      ) as OrdersRepositoryResponse<T>[];
+    }
+
     const orders = await prisma.order.findMany({
-      where: {
-        offer_id: {
-          in: offers_ids,
-        },
-      },
-      include: {
-        offer: {
-          include: {
-            product: true,
-          },
-        },
-      },
+      where,
+      include: { offer: { include: { product: true } } },
     });
 
-    return orders.map((order) => PrismaOrderWithOfferMapper.toDomain(order));
-  }
-
-  async findManyByFarmIdInCycle({
-    farm_id,
-    cycle_id,
-    created_at,
-  }: OrdersRepositoryFindManyByFarmIdInCycle): Promise<Order[]> {
-    const orders = await prisma.order.findMany({
-      where: {
-        offer: {
-          farm_id,
-          cycle_id,
-          created_at: {
-            gte: created_at,
-          },
-        },
-      },
-    });
-
-    return orders.map((order) => PrismaOrderMapper.toDomain(order));
+    return orders.map((order) =>
+      PrismaOrderAggregateMapper.toDomain(order)
+    ) as OrdersRepositoryResponse<T>[];
   }
 
   async createMany(orders: Order[]): Promise<void> {
@@ -96,29 +88,5 @@ export class PrismaOrdersRepository implements OrdersRepository {
     }
 
     // to-do: update many raw query
-  }
-
-  async findManyByBagId<T extends RepositoryResponse = "entity">(
-    bag_id: string,
-    type = "entity"
-  ): Promise<OrdersRepositoryManyResponse<T>> {
-    if (type === "entity") {
-      const found = await prisma.order.findMany({ where: { bag_id } });
-
-      return found.map((order) =>
-        PrismaOrderMapper.toDomain(order)
-      ) as OrdersRepositoryManyResponse<T>;
-    }
-
-    const found = await prisma.order.findMany({
-      where: { bag_id },
-      include: { offer: { include: { product: true } } },
-    });
-
-    return found.map((order) =>
-      PrismaOrderWithOfferMapper.toDomain(order)
-    ) as unknown as OrdersRepositoryManyResponse<T>;
-
-    // to-do: fix mapper type
   }
 }

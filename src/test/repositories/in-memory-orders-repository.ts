@@ -1,17 +1,14 @@
 // Entities
 import { Order } from "@/core/entities/order";
-import { OrderAggregate } from "@/core/entities/value-objects/order-aggregate";
-import { OfferAggregate } from "@/core/entities/value-objects/offer-aggregate";
-import { OrderWithOffer } from "@/core/entities/value-objects/order-with-offer";
+import { OrderAggregate } from "@/core/entities/aggregates/order-aggregate";
 
 // Repositories
 import {
   OrdersRepository,
-  OrdersRepositoryFindManyByFarmIdInCycle,
-  OrdersRepositoryManyResponse,
+  OrdersRepositoryResponse,
+  OrdersRepositorySearchManyRequest,
 } from "@/core/repositories/orders-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 
 // Types
 import { RepositoryResponse } from "@/core/types/repository-response";
@@ -19,80 +16,62 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 export class InMemoryOrdersRepository implements OrdersRepository {
   items: Order[] = [];
 
-  constructor(
-    private inMemoryOffersRepository: InMemoryOffersRepository,
-    private inMemoryProductsRepository: InMemoryProductsRepository
-  ) {}
+  constructor(private inMemoryOffersRepository: InMemoryOffersRepository) {}
 
-  async findManyWithOfferByOffersIds(
-    offers_ids: string[]
-  ): Promise<OrderWithOffer[]> {
-    const orders = this.items.filter((item) =>
-      offers_ids.includes(item.offer_id.value)
+  async searchMany<T extends RepositoryResponse = "entity">(
+    { since, offers_ids, offer, bag_id }: OrdersRepositorySearchManyRequest,
+    type: T
+  ): Promise<OrdersRepositoryResponse<T>[]> {
+    const entities = this.items.filter(
+      (item) =>
+        (!since || item.created_at >= since) &&
+        (!offers_ids || offers_ids.includes(item.offer_id.value)) &&
+        (!bag_id || item.bag_id.equals(bag_id)) &&
+        (!offer ||
+          (() =>
+            this.inMemoryOffersRepository.search(
+              { cycle_id: offer.cycle_id, farm_id: offer.farm_id },
+              "entity"
+            ))())
     );
 
-    const merged: OrderWithOffer[] = [];
+    if (type === "entity") return entities as OrdersRepositoryResponse<T>[];
 
-    for (const order of orders) {
-      const offer = this.inMemoryOffersRepository.items.find((item) =>
-        item.id.equals(order.offer_id)
+    const aggreagates: OrderAggregate[] = [];
+
+    for (const entity of entities) {
+      const offer = await this.inMemoryOffersRepository.search(
+        { id: entity.offer_id.value },
+        "aggregate"
       );
 
-      if (offer) {
-        const product = this.inMemoryProductsRepository.items.find((item) =>
-          item.id.equals(offer.product_id)
-        );
+      if (!offer) return [];
 
-        if (product) {
-          const orderWithOffer = OrderWithOffer.create({
-            ...order.props,
-            offer: {
-              ...offer.props,
-              product,
-            },
-          });
+      const aggreagate = OrderAggregate.create({
+        ...entity.props,
+        offer,
+      });
 
-          merged.push(orderWithOffer);
-        }
-      }
+      aggreagates.push(aggreagate);
     }
 
-    return merged;
-  }
-
-  async findManyByFarmIdInCycle({
-    farm_id,
-    cycle_id,
-    created_at,
-  }: OrdersRepositoryFindManyByFarmIdInCycle): Promise<Order[]> {
-    const orders = this.items.filter((order) => {
-      const offer = this.inMemoryOffersRepository.items.find((offer) =>
-        order.offer_id.equals(offer.id)
-      );
-
-      if (!offer) return false;
-
-      return (
-        offer.cycle_id.equals(cycle_id) &&
-        order.created_at >= created_at &&
-        offer.farm_id.equals(farm_id)
-      );
-    });
-
-    return orders;
+    return aggreagates as OrdersRepositoryResponse<T>[];
   }
 
   async createMany(orders: Order[]): Promise<void> {
     for (const order of orders) {
-      const offer = await this.inMemoryOffersRepository.findById(
-        order.offer_id.value
+      const offer = await this.inMemoryOffersRepository.search(
+        {
+          id: order.offer_id.value,
+        },
+        "entity"
       );
 
-      if (offer) {
-        this.items.push(order);
-        offer.amount -= order.amount;
-        await this.inMemoryOffersRepository.update(offer);
-      }
+      if (!offer) return;
+
+      this.items.push(order);
+      offer.amount -= order.amount;
+      await this.inMemoryOffersRepository.update(offer);
     }
   }
 
@@ -103,39 +82,5 @@ export class InMemoryOrdersRepository implements OrdersRepository {
       );
       this.items[itemIndex] = order;
     }
-  }
-
-  async findManyByBagId<T extends RepositoryResponse = "entity">(
-    bag_id: string,
-    type = "entity" as T
-  ): Promise<OrdersRepositoryManyResponse<T>> {
-    const orders = this.items.filter((item) => item.bag_id.equals(bag_id));
-
-    if (type === "entity") return orders as OrdersRepositoryManyResponse<T>;
-
-    const aggregates: OrderAggregate[] = [];
-
-    for (const order of orders) {
-      const offer = await this.inMemoryOffersRepository.findById(
-        order.offer_id.value
-      );
-
-      if (!offer) continue;
-
-      const product = this.inMemoryProductsRepository.items.find((item) =>
-        item.id.equals(offer.product_id)
-      );
-
-      if (!product) continue;
-
-      aggregates.push(
-        OrderAggregate.create({
-          ...order.props,
-          offer: OfferAggregate.create({ ...offer.props, product }),
-        })
-      );
-    }
-
-    return aggregates as OrdersRepositoryManyResponse<T>;
   }
 }

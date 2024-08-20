@@ -14,7 +14,7 @@ import { DomainEvents } from "@/core/events/domain-events";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Entities
-import { UUID } from "@/core/entities/value-objects/uuid";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 interface OnOtpRequestEventRequest {
   user_id: UUID;
@@ -22,18 +22,18 @@ interface OnOtpRequestEventRequest {
 }
 
 export class OnOtpRequestEvent {
-  constructor(private usersRepository: UsersRepository, private mailer: Mailer) {
+  constructor(
+    private usersRepository: UsersRepository,
+    private mailer: Mailer
+  ) {
     this.setup();
   }
 
   setup() {
-    DomainEvents.register(OnOtpRequestEvent.name, this.execute.bind(this))
+    DomainEvents.register(OnOtpRequestEvent.name, this.execute.bind(this));
   }
 
-  async execute({
-    user_id,
-    value
-  }: OnOtpRequestEventRequest) {
+  async execute({ user_id, value }: OnOtpRequestEventRequest) {
     const user = await this.usersRepository.findById(user_id.value);
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id.value);
@@ -41,15 +41,15 @@ export class OnOtpRequestEvent {
     const view = await this.mailer.load({
       view: "otp-request",
       props: {
-        otp: value
-      }
-    })
+        otp: value,
+      },
+    });
 
     const mail = Email.create({
       to: user.email,
       subject: "Senha para acesso | eCOO",
-      content: view
-    })
+      content: view,
+    });
 
     await this.mailer.send(mail);
   }

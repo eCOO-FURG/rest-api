@@ -1,6 +1,7 @@
 // Repositories
 import { OffersRepository } from "@/core/repositories/offers-repository";
 import { FarmsRepository } from "@/core/repositories/farms-repository";
+import { CyclesRepository } from "@/core/repositories/cycles-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -23,7 +24,8 @@ interface UpdateOfferUpdateUseCaseRequest {
 export class UpdateOfferUseCase {
   constructor(
     private farmsRepository: FarmsRepository,
-    private offersRepository: OffersRepository
+    private offersRepository: OffersRepository,
+    private cyclesRepository: CyclesRepository
   ) {}
 
   async execute({
@@ -32,28 +34,28 @@ export class UpdateOfferUseCase {
     amount,
     price,
   }: UpdateOfferUpdateUseCaseRequest) {
-    const farm = await this.farmsRepository.findById(farm_id);
+    const farm = await this.farmsRepository.search({ id: farm_id }, "entity");
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
-    const offerWithCycle =
-      await this.offersRepository.findByIdWithProductAndCycle(offer_id);
+    const offer = await this.offersRepository.search(
+      { id: offer_id },
+      "entity"
+    );
 
-    if (!offerWithCycle) throw new ResourceNotFoundError("Oferta", offer_id);
+    if (!offer) throw new ResourceNotFoundError("Oferta", offer_id);
 
-    if (!offerWithCycle.farm_id.equals(farm_id)) throw new UnauthorizedError();
+    if (!offer.farm_id.equals(farm_id)) throw new UnauthorizedError();
+
+    const cycle = await this.cyclesRepository.findById(offer.cycle_id.value);
+
+    if (!cycle) throw new ResourceNotFoundError("Ciclo", offer.cycle_id.value);
 
     const today = (new Date().getDay() + 1) as Week[0];
 
-    if (!offerWithCycle.cycle.offer.includes(today)) {
-      throw new ClosedActionError("ofertar", offerWithCycle.cycle.id.value);
+    if (!cycle.offer.includes(today)) {
+      throw new ClosedActionError("ofertar", cycle.id.value);
     }
-
-    const offer = Offer.create({
-      ...offerWithCycle.props,
-      product_id: offerWithCycle.product.id,
-      cycle_id: offerWithCycle.cycle.id,
-    });
 
     offer.amount = amount ?? offer.amount;
     offer.price = price ?? offer.price;

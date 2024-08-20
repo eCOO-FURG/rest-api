@@ -17,6 +17,7 @@ import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-r
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { makeUser } from "@/test/factories/make-user";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
@@ -37,14 +38,8 @@ describe("list farm offers", () => {
   beforeEach(() => {
     cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
-    offersRepository = new InMemoryOffersRepository(
-      productsRepository,
-      cyclesRepository
-    );
-    ordersRepository = new InMemoryOrdersRepository(
-      offersRepository,
-      productsRepository
-    );
+    offersRepository = new InMemoryOffersRepository(productsRepository);
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
     usersRepository = new InMemoryUsersRepository();
 
     repositories = {
@@ -67,7 +62,10 @@ describe("list farm offers", () => {
   });
 
   it("should be able to list a farm offers", async () => {
-    const farm = makeFarm();
+    const user = makeUser();
+    await usersRepository.create(user);
+
+    const farm = makeFarm({ admin_id: user.id });
     await repositories.farms.create(farm);
 
     const cycle = makeCycle();

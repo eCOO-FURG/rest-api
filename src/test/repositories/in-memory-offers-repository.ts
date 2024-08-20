@@ -1,158 +1,97 @@
 // Entities
 import { Offer } from "@/core/entities/offer";
-import { OfferWithProductAndCycle } from "@/core/entities/value-objects/offer-with-product-and-cycle";
+import { OfferAggregate } from "@/core/entities/aggregates/offer-aggregate";
 
 // Repositories
 import {
   OffersRepository,
+  OffersRepositoryResponse,
   OffersRepositorySearchManyRequest,
   OffersRepositorySearchRequest,
 } from "@/core/repositories/offers-repository";
-import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
+import { RepositoryResponse } from "@/core/types/repository-response";
 
 export class InMemoryOffersRepository implements OffersRepository {
   items: Offer[] = [];
 
-  constructor(
-    private inMemoryProductsRepository: InMemoryProductsRepository,
-    private inMemoryCyclesRepository: InMemoryCyclesRepository
-  ) { }
+  constructor(private inMemoryProductsRepository: InMemoryProductsRepository) {}
 
-  async findById(id: string): Promise<Offer | null> {
-    const item = this.items.find((item) => item.id.equals(id));
+  async search<T extends RepositoryResponse>(
+    { id, cycle_id, farm_id, product_id, since }: OffersRepositorySearchRequest,
+    type: T
+  ): Promise<OffersRepositoryResponse<T> | null> {
+    const entity = this.items.find(
+      (item) =>
+        (!id || item.id.equals(id)) &&
+        (!cycle_id || item.cycle_id.equals(cycle_id)) &&
+        (!farm_id || item.farm_id.equals(farm_id)) &&
+        (!product_id || item.product_id.equals(product_id)) &&
+        (!since || item.created_at >= since)
+    );
 
-    if (!item) {
-      return null;
-    }
+    if (!entity) return null;
 
-    return item;
-  }
-
-  async findByIdWithProductAndCycle(
-    id: string
-  ): Promise<OfferWithProductAndCycle | null> {
-    const offer = this.items.find((offer) => offer.id.equals(id));
-
-    if (!offer) return null;
+    if (type === "entity") return entity as OffersRepositoryResponse<T>;
 
     const product = await this.inMemoryProductsRepository.findById(
-      offer.product_id.value
+      entity.product_id.value
     );
 
     if (!product) return null;
-    const cycle = await this.inMemoryCyclesRepository.findById(
-      offer.cycle_id.value
-    );
 
-    if (!cycle) return null;
-
-    const offerWithProduct = OfferWithProductAndCycle.create({
-      ...offer.props,
-      cycle,
+    const aggreagate = OfferAggregate.create({
+      ...entity.props,
       product,
     });
 
-    return offerWithProduct;
+    return aggreagate as OffersRepositoryResponse<T>;
   }
 
-  async findManyByIdsWithProductAndCycle(
-    ids: string[]
-  ): Promise<OfferWithProductAndCycle[]> {
-    const offers: OfferWithProductAndCycle[] = [];
-
-    for (const id of ids) {
-      const offer = this.items.find((offer) => offer.id.equals(id));
-
-    if (!offer) continue;
-
-    const product = await this.inMemoryProductsRepository.findById(
-      offer.product_id.value
+  async searchMany<T extends RepositoryResponse>(
+    {
+      cycle_id,
+      farm_id,
+      page,
+      product_id,
+      since,
+    }: OffersRepositorySearchManyRequest,
+    type: T
+  ): Promise<OffersRepositoryResponse<T>[]> {
+    let entities = this.items.filter(
+      (item) =>
+        (!cycle_id || item.cycle_id.equals(cycle_id)) &&
+        (!farm_id || item.farm_id.equals(farm_id)) &&
+        (!product_id || item.product_id.equals(product_id)) &&
+        (!since || item.created_at >= since)
     );
 
-    if (!product) continue;
-
-    const cycle = await this.inMemoryCyclesRepository.findById(
-      offer.cycle_id.value
-    );
-
-    if (!cycle) continue;
-
-    const offerWithProduct = OfferWithProductAndCycle.create({
-      ...offer.props,
-      cycle,
-      product,
-    });
-
-      offers.push(offerWithProduct)
+    if (page) {
+      const start = (page - 1) * 20;
+      const end = start + 20;
+      entities = entities.slice(start, end);
     }
 
-    return offers;
-  }
-  
+    if (type === "entity") return entities as OffersRepositoryResponse<T>[];
 
-  async search({
-    cycle_id,
-    product_id,
-    farm_id,
-    created_at,
-  }: OffersRepositorySearchRequest): Promise<Offer | null> {
-    const offer = this.items.find(
-      (item) =>
-        item.farm_id.equals(farm_id) &&
-        item.product_id.equals(product_id) &&
-        item.cycle_id.equals(cycle_id) &&
-        item.created_at >= created_at
-    );
+    const aggregates: OfferAggregate[] = [];
 
-    if (!offer) return null;
-
-    return offer;
-  }
-
-  async searchMany({
-    farm_id,
-    cycle_id,
-    page,
-    product,
-    created_at,
-  }: OffersRepositorySearchManyRequest): Promise<OfferWithProductAndCycle[]> {
-    const products = this.inMemoryProductsRepository.items.filter((item) =>
-      item.name.includes(product ?? "")
-    );
-
-    const productsIds = products.map((product) => product.id);
-
-    const offers = this.items.filter(
-      (item) =>
-        item.farm_id.equals(farm_id) &&
-        item.cycle_id.equals(cycle_id) &&
-        item.created_at >= created_at &&
-        productsIds.some((id) => id.equals(item.product_id))
-    );
-
-    const completeOffers = offers.map((offer) => {
-      const product = this.inMemoryProductsRepository.items.findIndex(
-        (item) => item.id.equals(offer.product_id.value)
+    for (const entity of entities) {
+      const product = await this.inMemoryProductsRepository.findById(
+        entity.product_id.value
       );
 
-      const cycle = this.inMemoryCyclesRepository.items.findIndex((item) => item.id.equals(offer.cycle_id));
+      if (!product) return [];
 
-      const offerWithProduct = OfferWithProductAndCycle.create({
-        ...offer.props,
-        cycle: this.inMemoryCyclesRepository.items[cycle],
-        product: this.inMemoryProductsRepository.items[product],
+      const aggregate = OfferAggregate.create({
+        ...entity.props,
+        product,
       });
 
-      return offerWithProduct;
-    })
+      aggregates.push(aggregate);
+    }
 
-    if (!page) return completeOffers;
-
-    const start = (page - 1) * 20;
-    const end = start + 20;
-
-    return completeOffers.slice(start, end);
+    return aggregates as OffersRepositoryResponse<T>[];
   }
 
   async create(offer: Offer): Promise<void> {

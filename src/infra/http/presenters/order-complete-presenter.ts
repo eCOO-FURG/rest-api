@@ -1,5 +1,5 @@
 // Entities
-import { OrderWithOffer } from "@/core/entities/value-objects/order-with-offer";
+import { OrderWithOffer } from "@/core/entities/aggregates/order-with-offer";
 
 export class OrderCompletePresenter {
   static toHttp(order: OrderWithOffer) {

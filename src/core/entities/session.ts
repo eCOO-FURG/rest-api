@@ -1,5 +1,5 @@
 // Entities
-import { UUID } from "@/core/entities/value-objects/uuid";
+import { UUID } from "@/core/entities/aggregates/uuid";
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
 interface SessionProps extends EntityRequest {

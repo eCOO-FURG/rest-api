@@ -8,11 +8,14 @@ import {
   FarmsRepositoryFindManyWithActiveOfferRequest,
   FarmsRepositoryResponse,
   FarmsRepositorySearchManyWithOrdersRequest,
+  FarmsRepositorySearchRequest,
 } from "@/core/repositories/farms-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
+import { RepositoryResponse } from "@/core/types/repository-response";
+import { FarmAggregate } from "@/core/entities/aggregates/farm-aggregate";
 
 // Types
 import { RepositoryResponse } from "@/core/types/repository-response";
@@ -26,28 +29,34 @@ export class InMemoryFarmsRepository implements FarmsRepository {
     private inMemoryProductsRepository: InMemoryProductsRepository,
     private inMemoryOrdersRepository: InMemoryOrdersRepository
   ) {}
-  async findById(id: string): Promise<Farm | null> {
-    const farm = this.items.find((item) => item.id.equals(id));
+
+  async search<T extends RepositoryResponse>(
+    { id, admin_id, caf }: FarmsRepositorySearchRequest,
+    type: T
+  ): Promise<FarmsRepositoryResponse<T> | null> {
+    const farm = this.items.find(
+      (item) =>
+        (!id || item.id.equals(id)) &&
+        (!admin_id || item.admin_id.equals(admin_id)) &&
+        (!caf || item.caf === caf)
+    );
 
     if (!farm) return null;
 
-    return farm;
-  }
+    if (type === "entity") return farm as FarmsRepositoryResponse<T>;
 
-  async findByCaf(caf: string): Promise<Farm | null> {
-    const farm = this.items.find((item) => item.caf === caf);
+    const admin = await this.inMemoryUsersRepository.findById(
+      farm.admin_id.value
+    );
 
-    if (!farm) return null;
+    if (!admin) return null;
 
-    return farm;
-  }
+    const aggregate = FarmAggregate.create({
+      ...farm.props,
+      admin,
+    });
 
-  async findByAdminId(admin_id: string): Promise<Farm | null> {
-    const farm = this.items.find((item) => item.admin_id.equals(admin_id));
-
-    if (!farm) return null;
-
-    return farm;
+    return aggregate as FarmsRepositoryResponse<T>;
   }
 
   async findManyWithActiveOffer({

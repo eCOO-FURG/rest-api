@@ -1,6 +1,6 @@
 // Entities
 import { Offer } from "@/core/entities/offer";
-import { UUID } from "@/core/entities/value-objects/uuid";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Libs
 import { faker } from "@faker-js/faker";
@@ -13,7 +13,6 @@ export function makeOffer(props: Partial<Offer> = {}) {
     product_id: props.product_id ?? new UUID(),
     amount: props.amount ?? faker.number.int({ min: 10, max: 12 }),
     price: props.price ?? faker.number.int({ min: 5, max: 50 }),
-    status: props.status,
     description: props.description ?? null,
     created_at: props.created_at,
     updated_at: props.updated_at,

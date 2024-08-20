@@ -1,6 +1,6 @@
 // Entities
 import { Offer } from "@/core/entities/offer";
-import { UUID } from "@/core/entities/value-objects/uuid";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Libs
 import { Prisma, Offer as PrismaOffer } from "@prisma/client";
@@ -17,7 +17,7 @@ export class PrismaOfferMapper {
       price: raw.price.toNumber(),
     });
   }
-  
+
   static toPrisma(offer: Offer): Prisma.OfferUncheckedCreateInput {
     return {
       id: offer.id.value,

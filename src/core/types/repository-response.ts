@@ -1,1 +1,1 @@
-export type RepositoryResponse = "entity" | "aggregate";
+export type RepositoryResponse = "entity" | "aggregate" | "merged";

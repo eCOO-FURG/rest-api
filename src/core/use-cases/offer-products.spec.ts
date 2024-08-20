@@ -45,11 +45,8 @@ describe("offer products", () => {
     usersRepository = new InMemoryUsersRepository();
     cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
-    offersRepository = new InMemoryOffersRepository(
-      productsRepository,
-      cyclesRepository
-    );
-    ordersRepository = new InMemoryOrdersRepository(offersRepository, productsRepository);
+    offersRepository = new InMemoryOffersRepository(productsRepository);
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
     repositories = {
       farms: new InMemoryFarmsRepository(

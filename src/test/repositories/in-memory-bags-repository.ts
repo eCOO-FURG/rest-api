@@ -1,47 +1,36 @@
+// Entities
 import { Bag } from "@/core/entities/bag";
-import { BagAggregate } from "@/core/entities/value-objects/bag-aggregate";
+import { BagAggregate } from "@/core/entities/aggregates/bag-aggregate";
+import { BagMerge } from "@/core/entities/merged/bag-merge";
+
+// Types
+import { RepositoryResponse } from "@/core/types/repository-response";
+
+// Repositories
 import {
   BagsRepositoryResponse,
   BagsRepository,
   BagsRepositorySearchRequest,
   BagsRepositorySearchManyRequest,
 } from "@/core/repositories/bags-repository";
-import { InMemoryUsersRepository } from "./in-memory-users-repository";
-
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
+import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
+import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
 export class InMemoryBagsRepository implements BagsRepository {
   items: Bag[] = [];
 
-  constructor(private inMemoryUsersRepository: InMemoryUsersRepository) {}
-
-  async findById<T extends RepositoryResponse = "entity">(
-    id: string,
-    type = "entity"
-  ): Promise<BagsRepositoryResponse<T> | null> {
-    const bag = this.items.find((item) => item.id.equals(id));
-
-    if (!bag) return null;
-
-    if (type === "entity") return bag as BagsRepositoryResponse<T>;
-
-    const user = await this.inMemoryUsersRepository.findById(bag.user_id.value);
-
-    if (!user) return null;
-
-    return BagAggregate.create({
-      ...bag.props,
-      user,
-    }) as BagsRepositoryResponse<T>;
-  }
+  constructor(
+    private inMemoryUsersRepository: InMemoryUsersRepository,
+    private inMemoryOrdersRepository: InMemoryOrdersRepository
+  ) {}
 
   async search<T extends RepositoryResponse = "entity">(
-    { user_id, cycle_id, since }: BagsRepositorySearchRequest,
-    type = "entity"
+    { id, user_id, cycle_id, since }: BagsRepositorySearchRequest,
+    type: T
   ): Promise<BagsRepositoryResponse<T> | null> {
     const bag = this.items.find(
       (item) =>
+        (!id || item.id.equals(id)) &&
         (!user_id || item.user_id.equals(user_id)) &&
         (!cycle_id || item.cycle_id.equals(cycle_id)) &&
         (!since || item.created_at >= since)
@@ -60,18 +49,30 @@ export class InMemoryBagsRepository implements BagsRepository {
       user,
     });
 
-    return aggreagate as BagsRepositoryResponse<T>;
+    if (type === "aggregate") return aggreagate as BagsRepositoryResponse<T>;
+
+    const orders = await this.inMemoryOrdersRepository.searchMany(
+      { bag_id: bag.id.value },
+      "aggregate"
+    );
+
+    const merged = BagMerge.create({
+      ...aggreagate.props,
+      orders,
+    });
+
+    return merged as BagsRepositoryResponse<T>;
   }
 
   async searchMany<T extends RepositoryResponse = "entity">(
-    { page, cycle_id, name, status, since }: BagsRepositorySearchManyRequest,
-    type = "entity"
+    { cycle_id, name, page, since, status }: BagsRepositorySearchManyRequest,
+    type: T
   ): Promise<BagsRepositoryResponse<T>[]> {
-    const bags = this.items.filter(
+    let entities = this.items.filter(
       (item) =>
         (!cycle_id || item.cycle_id.equals(cycle_id)) &&
-        (!status || item.status === status) &&
         (!since || item.created_at >= since) &&
+        (!status || status === item.status) &&
         (!name ||
           (() =>
             this.inMemoryUsersRepository.items.find(
@@ -82,30 +83,48 @@ export class InMemoryBagsRepository implements BagsRepository {
             ))())
     );
 
-    if (type === "entity")
-      return bags.slice(
-        (page - 1) * 20,
-        page * 20
-      ) as BagsRepositoryResponse<T>[];
-
-    const aggregates = [];
-
-    for (const bag of bags) {
-      const user = await this.inMemoryUsersRepository.findById(
-        bag.user_id.value
-      );
-
-      if (!user) continue;
-
-      const aggreate = BagAggregate.create({ ...bag.props, user });
-
-      aggregates.push(aggreate);
+    if (page) {
+      const start = (page - 1) * 20;
+      const end = start + 20;
+      entities = entities.slice(start, end);
     }
 
-    return aggregates.slice(
-      (page - 1) * 20,
-      page * 20
-    ) as BagsRepositoryResponse<T>[];
+    if (type === "entity") return entities as BagsRepositoryResponse<T>[];
+
+    const aggregates: BagAggregate[] = [];
+
+    for (const entity of entities) {
+      const user = await this.inMemoryUsersRepository.findById(
+        entity.user_id.value
+      );
+
+      if (!user) return [];
+
+      const aggreagate = BagAggregate.create({
+        ...entity.props,
+        user,
+      });
+
+      aggregates.push(aggreagate);
+    }
+
+    const merges: BagMerge[] = [];
+
+    for (const aggregate of aggregates) {
+      const orders = await this.inMemoryOrdersRepository.searchMany(
+        { bag_id: aggregate.id.value },
+        "aggregate"
+      );
+
+      const merge = BagMerge.create({
+        ...aggregate.props,
+        orders,
+      });
+
+      merges.push(merge);
+    }
+
+    return merges as BagsRepositoryResponse<T>[];
   }
 
   async create(bag: Bag): Promise<void> {

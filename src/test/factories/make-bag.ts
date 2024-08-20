@@ -1,6 +1,6 @@
 // Entities
 import { Bag } from "@/core/entities/bag";
-import { UUID } from "@/core/entities/value-objects/uuid";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Libs
 import { faker } from "@faker-js/faker";

@@ -1,5 +1,5 @@
 import { Farm } from "@/core/entities/farm";
-import { UUID } from "@/core/entities/value-objects/uuid";
+import { UUID } from "@/core/entities/aggregates/uuid";
 import { faker } from "@faker-js/faker";
 
 export function makeFarm(props: Partial<Farm> = {}) {
