@@ -8,6 +8,9 @@ import container from "@/infra/container";
 // Use-cases
 import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
 
+// Presenters
+import { FarmAggregatePresenter } from "@/infra/http/presenters/farm-aggregate-presenter";
+
 const listFarmsSchema = {
   query: z.object({
     page: z.coerce.number(),
@@ -28,7 +31,9 @@ export async function listFarmsController(
 
     const { farms } = await listFarmsUseCase.execute({ page, name });
 
-    return response.status(200).send(farms);
+    return response
+      .status(200)
+      .send(farms.map((farm) => FarmAggregatePresenter.toHttp(farm)));
   } catch (error) {
     next(error);
   }

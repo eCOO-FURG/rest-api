@@ -1,5 +1,9 @@
 // Entities
 import { Farm } from "@/core/entities/farm";
+import { FarmAggregate } from "@/core/entities/value-objects/farm-aggregate";
+
+// Types
+import { RepositoryResponse } from "@/core/types/repository-response";
 
 export interface FarmsRepositoryFindManyWithActiveOfferRequest {
   cycle_id: string;
@@ -14,6 +18,8 @@ export interface FarmsRepositorySearchManyWithOrdersRequest {
   name?: string;
 }
 
+export type FarmsRepositoryResponse<T extends RepositoryResponse> =
+  T extends "entity" ? Farm : FarmAggregate;
 export interface FarmsRepository {
   findById(id: string): Promise<Farm | null>;
   findByCaf(caf: string): Promise<Farm | null>;
@@ -31,5 +37,8 @@ export interface FarmsRepository {
     page,
     name,
   }: FarmsRepositorySearchManyWithOrdersRequest): Promise<Farm[]>;
-  searchMany(page: number, name?: string): Promise<Farm[]>;
+  searchMany<T extends RepositoryResponse = "entity">(
+    filters: { page: number; name?: string },
+    type?: T
+  ): Promise<FarmsRepositoryResponse<T>[]>;
 }

@@ -5,10 +5,19 @@ import { Farm } from "@/core/entities/farm";
 import {
   FarmsRepository,
   FarmsRepositoryFindManyWithActiveOfferRequest,
+  FarmsRepositoryResponse,
   FarmsRepositorySearchManyWithOrdersRequest,
 } from "@/core/repositories/farms-repository";
+
+// Services
 import { prisma } from "@/infra/database/prisma-service";
+
+// Mappers
 import { PrismaFarmMapper } from "@/infra/database/mappers/prisma-farm-mapper";
+import { PrismaFarmAggregateMapper } from "@/infra/database/mappers/prisma-farm-aggregate-mapper";
+
+// Types
+import { RepositoryResponse } from "@/core/types/repository-response";
 
 export class PrismaFarmsRepository implements FarmsRepository {
   async findById(id: string): Promise<Farm | null> {
@@ -148,15 +157,37 @@ export class PrismaFarmsRepository implements FarmsRepository {
     return farms.map((farm) => PrismaFarmMapper.toDomain(farm));
   }
 
-  async searchMany(page: number, name?: string): Promise<Farm[]> {
+  async searchMany<T extends RepositoryResponse = "entity">(
+    { page, name }: { page: number; name?: string },
+    type = "entity"
+  ): Promise<FarmsRepositoryResponse<T>[]> {
     const skip = (page - 1) * 20;
 
-    const farms = await prisma.farm.findMany({
-      where: {
-        name: {
-          contains: name,
-          mode: "insensitive",
+    const where = {
+      name: {
+        contains: name,
+      },
+    };
+
+    if (type === "entity") {
+      const found = await prisma.farm.findMany({
+        where,
+        orderBy: {
+          name: "asc",
         },
+        skip,
+        take: 20,
+      });
+
+      return found.map((farm) =>
+        PrismaFarmMapper.toDomain(farm)
+      ) as FarmsRepositoryResponse<T>[];
+    }
+
+    const found = await prisma.farm.findMany({
+      where,
+      include: {
+        admin: true,
       },
       orderBy: {
         name: "asc",
@@ -165,6 +196,8 @@ export class PrismaFarmsRepository implements FarmsRepository {
       take: 20,
     });
 
-    return farms.map((farm) => PrismaFarmMapper.toDomain(farm));
+    return found.map((farm) =>
+      PrismaFarmAggregateMapper.toDomain(farm)
+    ) as FarmsRepositoryResponse<T>[];
   }
 }

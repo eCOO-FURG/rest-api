@@ -1,16 +1,21 @@
 // Entities
 import { Farm } from "@/core/entities/farm";
+import { FarmAggregate } from "@/core/entities/value-objects/farm-aggregate";
 
 // Repositories
 import {
   FarmsRepository,
   FarmsRepositoryFindManyWithActiveOfferRequest,
+  FarmsRepositoryResponse,
   FarmsRepositorySearchManyWithOrdersRequest,
 } from "@/core/repositories/farms-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
+
+// Types
+import { RepositoryResponse } from "@/core/types/repository-response";
 
 export class InMemoryFarmsRepository implements FarmsRepository {
   items: Farm[] = [];
@@ -137,13 +142,40 @@ export class InMemoryFarmsRepository implements FarmsRepository {
       .slice((page - 1) * 20, page * 20);
   }
 
-  async searchMany(page: number, name?: string): Promise<Farm[]> {
-    if (!name) {
-      return this.items.slice((page - 1) * 20, page * 20);
+  async searchMany<T extends RepositoryResponse = "entity">(
+    { page, name }: { page: number; name?: string },
+    type = "entity"
+  ): Promise<FarmsRepositoryResponse<T>[]> {
+    const farms = this.items.filter(
+      (farm) => !name || farm.name.includes(name)
+    );
+
+    if (type === "entity") {
+      return farms.slice(
+        (page - 1) * 20,
+        page * 20
+      ) as FarmsRepositoryResponse<T>[];
     }
 
-    const filtered = this.items.filter((farm) => farm.name.includes(name));
+    const aggregates = [];
 
-    return filtered.slice((page - 1) * 20, page * 20);
+    for (const farm of farms) {
+      const admin = await this.findUserById(farm.admin_id.value);
+
+      if (!admin) continue;
+
+      const aggregate = FarmAggregate.create({ ...farm.props, admin });
+
+      aggregates.push(aggregate);
+    }
+
+    return aggregates.slice(
+      (page - 1) * 20,
+      page * 20
+    ) as FarmsRepositoryResponse<T>[];
+  }
+
+  private async findUserById(id: string) {
+    return this.inMemoryUsersRepository.findById(id);
   }
 }
