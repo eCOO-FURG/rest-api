@@ -1,41 +1,56 @@
 [
   {
-    "name": "Hortaliças, legumes e verduras",
+    "name": "Hortaliças e Legumes",
     "products": [
       {
         "name": "Abóbora Cabotiá",
+        "pricing": "WEIGHT",
+        "image": "abobora_cabotia.jpg"
+      },
+      {
+        "name": "Abóbora Cabotiá (Unid.)",
         "pricing": "UNIT",
         "image": "abobora_cabotia.jpg"
       },
       {
         "name": "Abóbora Moranga",
+        "pricing": "WEIGHT",
+        "image": "abobora_moranga.jpg"
+      },
+      {
+        "name": "Abóbora Moranga (Unid.)",
         "pricing": "UNIT",
         "image": "abobora_moranga.jpg"
       },
       {
         "name": "Abóbora Paulista",
+        "pricing": "WEIGHT",
+        "image": "abobora_paulista.jpg"
+      },
+      {
+        "name": "Abóbora Paulista (Unid.)",
         "pricing": "UNIT",
         "image": "abobora_paulista.jpg"
       },
       {
         "name": "Abobrinha Brasileira",
+        "pricing": "WEIGHT",
+        "image": "abobrinha_brasileira.jpg"
+      },
+      {
+        "name": "Abobrinha Brasileira (Unid.)",
         "pricing": "UNIT",
         "image": "abobrinha_brasileira.jpg"
       },
       {
         "name": "Abobrinha Italiana",
-        "pricing": "UNIT",
+        "pricing": "WEIGHT",
         "image": "abobrinha_italiana.jpg"
       },
       {
-        "name": "Acelga",
+        "name": "Abobrinha Italiana (Unid.)",
         "pricing": "UNIT",
-        "image": "acelga.jpg"
-      },
-      {
-        "name": "Agrião",
-        "pricing": "UNIT",
-        "image": "agriao.jpg"
+        "image": "abobrinha_italiana.jpg"
       },
       {
         "name": "Aipim",
@@ -46,51 +61,6 @@
         "name": "Alcachofra",
         "pricing": "UNIT",
         "image": "alcachofra.jpg"
-      },
-      {
-        "name": "Alecrim",
-        "pricing": "UNIT",
-        "image": "alecrim.jpg"
-      },
-      {
-        "name": "Alface Americana",
-        "pricing": "UNIT",
-        "image": "alface_americana.jpg"
-      },
-      {
-        "name": "Alface Crespa",
-        "pricing": "UNIT",
-        "image": "alface_crespa.jpg"
-      },
-      {
-        "name": "Alface Lisa",
-        "pricing": "UNIT",
-        "image": "alface_lisa.jpg"
-      },
-      {
-        "name": "Alface Mimosa",
-        "pricing": "UNIT",
-        "image": "alface_mimosa.jpg"
-      },
-      {
-        "name": "Alface Quatro Estações",
-        "pricing": "UNIT",
-        "image": "alface_quatro_estacoes.jpg"
-      },
-      {
-        "name": "Alface Roxa",
-        "pricing": "UNIT",
-        "image": "alface_roxa.jpg"
-      },
-      {
-        "name": "Alho",
-        "pricing": "UNIT",
-        "image": "alho.jpg"
-      },
-      {
-        "name": "Alho Poró",
-        "pricing": "UNIT",
-        "image": "alho_poro.jpg"
       },
       {
         "name": "Batata Baroa",
@@ -129,11 +99,21 @@
       },
       {
         "name": "Berinjela Comum",
+        "pricing": "WEIGHT",
+        "image": "berinjela_comum.jpg"
+      },
+      {
+        "name": "Berinjela Comum (Unid.)",
         "pricing": "UNIT",
         "image": "berinjela_comum.jpg"
       },
       {
         "name": "Berinjela Japonesa",
+        "pricing": "WEIGHT",
+        "image": "berinjela_japonesa.jpg"
+      },
+      {
+        "name": "Berinjela Japonesa (Unid.)",
         "pricing": "UNIT",
         "image": "berinjela_japonesa.jpg"
       },
@@ -144,6 +124,11 @@
       },
       {
         "name": "Brócolis",
+        "pricing": "WEIGHT",
+        "image": "brocolis.jpg"
+      },
+      {
+        "name": "Brócolis (Unid.)",
         "pricing": "UNIT",
         "image": "brocolis.jpg"
       },
@@ -173,26 +158,6 @@
         "image": "chuchu.jpg"
       },
       {
-        "name": "Coentro",
-        "pricing": "UNIT",
-        "image": "coentro.jpg"
-      },
-      {
-        "name": "Cogumelo",
-        "pricing": "UNIT",
-        "image": "cogumelo.jpg"
-      },
-      {
-        "name": "Cogumelo Paris",
-        "pricing": "UNIT",
-        "image": "cogumelo_paris.jpg"
-      },
-      {
-        "name": "Cogumelo Portobello",
-        "pricing": "UNIT",
-        "image": "cogumelo_portobello.jpg"
-      },
-      {
         "name": "Couve",
         "pricing": "UNIT",
         "image": "couve.jpg"
@@ -208,19 +173,19 @@
         "image": "couve_flor.jpg"
       },
       {
-        "name": "Erva-Doce",
-        "pricing": "UNIT",
-        "image": "erva_doce.jpg"
+        "name": "Ervilha Comum",
+        "pricing": "WEIGHT",
+        "image": "ervilha_comum.jpg"
       },
       {
-        "name": "Espinafre",
-        "pricing": "UNIT",
-        "image": "espinafre.jpg"
+        "name": "Ervilha Torta",
+        "pricing": "WEIGHT",
+        "image": "ervilha_torta.jpg"
       },
       {
-        "name": "Gengibre",
-        "pricing": "UNIT",
-        "image": "gengibre.jpg"
+        "name": "Favas",
+        "pricing": "WEIGHT",
+        "image": "fava.jpg"
       },
       {
         "name": "Hortelã",
@@ -238,9 +203,168 @@
         "image": "louro.jpg"
       },
       {
-        "name": "Manjericão",
+        "name": "Mostarda",
         "pricing": "UNIT",
-        "image": "manjericao.jpg"
+        "image": "mostarda.jpg"
+      },
+      {
+        "name": "Nabo",
+        "pricing": "UNIT",
+        "image": "nabo.jpg"
+      },
+      {
+        "name": "Palmito",
+        "pricing": "WEIGHT",
+        "image": "palmito.jpg"
+      },
+      {
+        "name": "Pepino",
+        "pricing": "WEIGHT",
+        "image": "pepino.jpg"
+      },
+      {
+        "name": "Pepino (Unid.)",
+        "pricing": "UNIT",
+        "image": "pepino.jpg"
+      },
+      {
+        "name": "Pimentão Amarelo",
+        "pricing": "WEIGHT",
+        "image": "pimentao_amarelo.jpg"
+      },
+      {
+        "name": "Pimentão Amarelo (Unid.)",
+        "pricing": "UNIT",
+        "image": "pimentao_amarelo.jpg"
+      },
+      {
+        "name": "Pimentão Verde",
+        "pricing": "WEIGHT",
+        "image": "pimentao_verde.jpg"
+      },
+      {
+        "name": "Pimentão Verde (Unid.)",
+        "pricing": "UNIT",
+        "image": "pimentao_verde.jpg"
+      },
+      {
+        "name": "Pimentão Vermelho",
+        "pricing": "WEIGHT",
+        "image": "pimentao_vermelho.jpg"
+      },
+      {
+        "name": "Pimentão Vermelho (Unid.)",
+        "pricing": "UNIT",
+        "image": "pimentao_vermelho.jpg"
+      },
+      {
+        "name": "Quiabo",
+        "pricing": "WEIGHT",
+        "image": "quiabo.jpg"
+      },
+      {
+        "name": "Rabanete",
+        "pricing": "WEIGHT",
+        "image": "rabanete.jpg"
+      },
+      {
+        "name": "Repolho",
+        "pricing": "WEIGHT",
+        "image": "repolho.jpg"
+      },
+      {
+        "name": "Repolho (Unid.)",
+        "pricing": "UNIT",
+        "image": "repolho.jpg"
+      },
+      {
+        "name": "Rúcula",
+        "pricing": "UNIT",
+        "image": "rucula.jpg"
+      },
+      {
+        "name": "Tomate Cereja",
+        "pricing": "WEIGHT",
+        "image": "tomate_cereja.jpg"
+      },
+      {
+        "name": "Tomate Gaúcho",
+        "pricing": "WEIGHT",
+        "image": "tomate_gaucho.jpg"
+      },
+      {
+        "name": "Tomate Italiano",
+        "pricing": "WEIGHT",
+        "image": "tomate_italiano.jpg"
+      },
+      {
+        "name": "Tomate Longa Vida",
+        "pricing": "WEIGHT",
+        "image": "tomate_longa_vida.jpg"
+      },
+      {
+        "name": "Tomate Xepa",
+        "pricing": "WEIGHT",
+        "image": "tomate_xepa.jpg"
+      },
+      {
+        "name": "Vagem",
+        "pricing": "WEIGHT",
+        "image": "vagem.jpg"
+      }
+    ]
+  },
+  {
+    "name": "Hortaliças e Legumes",
+    "products": []
+  },
+  {
+    "name": "Folhas e Verduras",
+    "products": [
+      {
+        "name": "Acelga",
+        "pricing": "UNIT",
+        "image": "acelga.jpg"
+      },
+      {
+        "name": "Agrião",
+        "pricing": "UNIT",
+        "image": "agriao.jpg"
+      },
+      {
+        "name": "Alface Americana",
+        "pricing": "UNIT",
+        "image": "alface_americana.jpg"
+      },
+      {
+        "name": "Alface Crespa",
+        "pricing": "UNIT",
+        "image": "alface_crespa.jpg"
+      },
+      {
+        "name": "Alface Lisa",
+        "pricing": "UNIT",
+        "image": "alface_lisa.jpg"
+      },
+      {
+        "name": "Alface Mimosa",
+        "pricing": "UNIT",
+        "image": "alface_mimosa.jpg"
+      },
+      {
+        "name": "Alface Quatro Estações",
+        "pricing": "UNIT",
+        "image": "alface_quatro_estacoes.jpg"
+      },
+      {
+        "name": "Alface Roxa",
+        "pricing": "UNIT",
+        "image": "alface_roxa.jpg"
+      },
+      {
+        "name": "Espinafre",
+        "pricing": "UNIT",
+        "image": "espinafre.jpg"
       },
       {
         "name": "Microverdes",
@@ -276,26 +400,56 @@
         "name": "Microverdes Rúcula",
         "pricing": "UNIT",
         "image": "microverde_rucula.jpg"
-      },
+      }
+    ]
+  },
+  {
+    "name": "Temperos e Ervas",
+    "products": [
       {
-        "name": "Mostarda",
+        "name": "Alecrim",
         "pricing": "UNIT",
-        "image": "mostarda.jpg"
+        "image": "alecrim.jpg"
       },
       {
-        "name": "Nabo",
-        "pricing": "UNIT",
-        "image": "nabo.jpg"
-      },
-      {
-        "name": "Palmito",
+        "name": "Alho",
         "pricing": "WEIGHT",
-        "image": "palmito.jpg"
+        "image": "alho.jpg"
       },
       {
-        "name": "Pepino",
+        "name": "Alho (Unid.)",
         "pricing": "UNIT",
-        "image": "pepino.jpg"
+        "image": "alho.jpg"
+      },
+      {
+        "name": "Alho Poró",
+        "pricing": "UNIT",
+        "image": "alho_poro.jpg"
+      },
+      {
+        "name": "Coentro",
+        "pricing": "UNIT",
+        "image": "coentro.jpg"
+      },
+      {
+        "name": "Erva-Doce",
+        "pricing": "UNIT",
+        "image": "erva_doce.jpg"
+      },
+      {
+        "name": "Gengibre",
+        "pricing": "WEIGHT",
+        "image": "gengibre.jpg"
+      },
+      {
+        "name": "Gengibre (Unid.)",
+        "pricing": "UNIT",
+        "image": "gengibre.jpg"
+      },
+      {
+        "name": "Manjericão",
+        "pricing": "UNIT",
+        "image": "manjericao.jpg"
       },
       {
         "name": "Pimenta Cambuci",
@@ -318,42 +472,6 @@
         "image": "pimenta_vermelha.jpg"
       },
       {
-        "name": "Pimentão Amarelo",
-        "pricing": "UNIT",
-        "image": "pimentao_amarelo.jpg"
-      },
-      {
-        "name": "Pimentão Verde",
-        "pricing": "UNIT",
-        "image": "pimentao_verde.jpg"
-      },
-      {
-        "name": "Pimentão Vermelho",
-        "pricing": "UNIT",
-        "image": "pimentao_vermelho.jpg"
-      },
-
-      {
-        "name": "Quiabo",
-        "pricing": "WEIGHT",
-        "image": "quiabo.jpg"
-      },
-      {
-        "name": "Rabanete",
-        "pricing": "WEIGHT",
-        "image": "rabanete.jpg"
-      },
-      {
-        "name": "Repolho",
-        "pricing": "UNIT",
-        "image": "repolho.jpg"
-      },
-      {
-        "name": "Rúcula",
-        "pricing": "UNIT",
-        "image": "rucula.jpg"
-      },
-      {
         "name": "Salsa",
         "pricing": "UNIT",
         "image": "salsa.jpg"
@@ -364,44 +482,44 @@
         "image": "salsao.jpg"
       },
       {
+        "name": "Semente de Funcho",
+        "pricing": "WEIGHT",
+        "image": "semente_de_funcho.jpg"
+      },
+      {
+        "name": "Semente de Girassol",
+        "pricing": "WEIGHT",
+        "image": "sementes_de_girassol.jpg"
+      },
+      {
         "name": "Tempero Verde",
         "pricing": "UNIT",
         "image": "tempero_verde.jpg"
       },
       {
-        "name": "Tomate Cereja",
-        "pricing": "WEIGHT",
-        "image": "tomate_cereja.jpg"
-      },
-      {
-        "name": "Tomate Gaúcho",
-        "pricing": "WEIGHT",
-        "image": "tomate_gaucho.jpg"
-      },
-      {
-        "name": "Tomate Italiano",
-        "pricing": "WEIGHT",
-        "image": "tomate_italiano.jpg"
-      },
-      {
-        "name": "Tomate Longa Vida",
-        "pricing": "WEIGHT",
-        "image": "tomate_longa_vida.jpg"
-      },
-      {
-        "name": "Tomate Xepa",
-        "pricing": "WEIGHT",
-        "image": "tomate_xepa.jpg"
-      },
-      {
         "name": "Tomilho",
         "pricing": "UNIT",
         "image": "tomilho.jpg"
+      }
+    ]
+  },
+  {
+    "name": "Fungos",
+    "products": [
+      {
+        "name": "Cogumelo",
+        "pricing": "UNIT",
+        "image": "cogumelo.jpg"
       },
       {
-        "name": "Vagem",
-        "pricing": "WEIGHT",
-        "image": "vagem.jpg"
+        "name": "Cogumelo Paris",
+        "pricing": "UNIT",
+        "image": "cogumelo_paris.jpg"
+      },
+      {
+        "name": "Cogumelo Portobello",
+        "pricing": "UNIT",
+        "image": "cogumelo_portobello.jpg"
       }
     ]
   },
@@ -540,11 +658,21 @@
       },
       {
         "name": "Mamão Formosa",
+        "pricing": "WEIGHT",
+        "image": "mamao_formosa.jpg"
+      },
+      {
+        "name": "Mamão Formosa (Unid.)",
         "pricing": "UNIT",
         "image": "mamao_formosa.jpg"
       },
       {
         "name": "Mamão Papaya",
+        "pricing": "WEIGHT",
+        "image": "mamao_papaya.jpg"
+      },
+      {
+        "name": "Mamão Papaya (Unid.)",
         "pricing": "UNIT",
         "image": "mamao_papaya.jpg"
       },
@@ -565,16 +693,31 @@
       },
       {
         "name": "Melancia",
+        "pricing": "WEIGHT",
+        "image": "melancia.jpg"
+      },
+      {
+        "name": "Melancia (Unid.)",
         "pricing": "UNIT",
         "image": "melancia.jpg"
       },
       {
         "name": "Melão Amarelo",
+        "pricing": "WEIGHT",
+        "image": "melao_amarelo.jpg"
+      },
+      {
+        "name": "Melão Amarelo (Unid.)",
         "pricing": "UNIT",
         "image": "melao_amarelo.jpg"
       },
       {
         "name": "Melão Casca de Carvalho",
+        "pricing": "WEIGHT",
+        "image": "melao_casca_de_carvalho.jpg"
+      },
+      {
+        "name": "Melão Casca de Carvalho (Unid.)",
         "pricing": "UNIT",
         "image": "melao_casca_de_carvalho.jpg"
       },
@@ -632,41 +775,6 @@
         "name": "Chia",
         "pricing": "WEIGHT",
         "image": "chia.jpg"
-      },
-      {
-        "name": "Ervilha Comum",
-        "pricing": "WEIGHT",
-        "image": "ervilha_comum.jpg"
-      },
-      {
-        "name": "Ervilha Torta",
-        "pricing": "WEIGHT",
-        "image": "ervilha_torta.jpg"
-      },
-      {
-        "name": "Farinha de Centeio",
-        "pricing": "WEIGHT",
-        "image": "farinha_de_centeio.jpg"
-      },
-      {
-        "name": "Farinha de Milho",
-        "pricing": "WEIGHT",
-        "image": "farinha_de_milho.jpg"
-      },
-      {
-        "name": "Farinha de Trigo Branca",
-        "pricing": "WEIGHT",
-        "image": "farinha_de_trigo_branca.jpg"
-      },
-      {
-        "name": "Farinha de Trigo Integral",
-        "pricing": "WEIGHT",
-        "image": "farinha_de_trigo_integral.jpg"
-      },
-      {
-        "name": "Favas",
-        "pricing": "WEIGHT",
-        "image": "fava.jpg"
       },
       {
         "name": "Feijão Azuki",
@@ -729,16 +837,6 @@
         "image": "milho.jpg"
       },
       {
-        "name": "Semente de Funcho",
-        "pricing": "WEIGHT",
-        "image": "semente_de_funcho.jpg"
-      },
-      {
-        "name": "Semente de Girassol",
-        "pricing": "WEIGHT",
-        "image": "sementes_de_girassol.jpg"
-      },
-      {
         "name": "Soja",
         "pricing": "WEIGHT",
         "image": "soja.jpg"
@@ -754,18 +852,8 @@
         "image": "banha.jpg"
       },
       {
-        "name": "Boi",
-        "pricing": "WEIGHT",
-        "image": "boi.jpg"
-      },
-      {
-        "name": "Galinha",
-        "pricing": "WEIGHT",
-        "image": "galinha.jpg"
-      },
-      {
         "name": "Leite",
-        "pricing": "WEIGHT",
+        "pricing": "UNIT",
         "image": "leite.jpg"
       },
       {
@@ -779,22 +867,82 @@
         "image": "ovelha.jpg"
       },
       {
-        "name": "Ovo Branco",
+        "name": "Ovo Branco (6 Unid.)",
         "pricing": "UNIT",
         "image": "ovo_branco.jpg"
       },
       {
-        "name": "Ovo Colonial",
+        "name": "Ovo Branco (12 Unid.)",
+        "pricing": "UNIT",
+        "image": "ovo_branco.jpg"
+      },
+      {
+        "name": "Ovo Branco (24 Unid.)",
+        "pricing": "UNIT",
+        "image": "ovo_branco.jpg"
+      },
+      {
+        "name": "Ovo Branco (30 Unid.)",
+        "pricing": "UNIT",
+        "image": "ovo_branco.jpg"
+      },
+      {
+        "name": "Ovo Colonial (6 Unid.)",
         "pricing": "UNIT",
         "image": "ovo_colonial.jpg"
       },
       {
-        "name": "Ovo de Codorna",
+        "name": "Ovo Colonial (12 Unid.)",
+        "pricing": "UNIT",
+        "image": "ovo_colonial.jpg"
+      },
+      {
+        "name": "Ovo Colonial (24 Unid.)",
+        "pricing": "UNIT",
+        "image": "ovo_colonial.jpg"
+      },
+      {
+        "name": "Ovo Colonial (30 Unid.)",
+        "pricing": "UNIT",
+        "image": "ovo_colonial.jpg"
+      },
+      {
+        "name": "Ovo de Codorna (6 Unid.)",
         "pricing": "UNIT",
         "image": "ovo_codorna.jpg"
       },
       {
-        "name": "Ovo vermelho",
+        "name": "Ovo de Codorna (12 Unid.)",
+        "pricing": "UNIT",
+        "image": "ovo_codorna.jpg"
+      },
+      {
+        "name": "Ovo de Codorna (24 Unid.)",
+        "pricing": "UNIT",
+        "image": "ovo_codorna.jpg"
+      },
+      {
+        "name": "Ovo de Codorna (30 Unid.)",
+        "pricing": "UNIT",
+        "image": "ovo_codorna.jpg"
+      },
+      {
+        "name": "Ovo vermelho (6 Unid.)",
+        "pricing": "UNIT",
+        "image": "ovo_vermelho.jpg"
+      },
+      {
+        "name": "Ovo vermelho (12 Unid.)",
+        "pricing": "UNIT",
+        "image": "ovo_vermelho.jpg"
+      },
+      {
+        "name": "Ovo vermelho (24 Unid.)",
+        "pricing": "UNIT",
+        "image": "ovo_vermelho.jpg"
+      },
+      {
+        "name": "Ovo vermelho (30 Unid.)",
         "pricing": "UNIT",
         "image": "ovo_vermelho.jpg"
       },
@@ -805,11 +953,21 @@
       },
       {
         "name": "Queijo Colonial",
+        "pricing": "WEIGHT",
+        "image": "queijo_colonial.jpg"
+      },
+      {
+        "name": "Queijo Colonial (Unid.)",
         "pricing": "UNIT",
         "image": "queijo_colonial.jpg"
       },
       {
         "name": "Queijo Gouda",
+        "pricing": "WEIGHT",
+        "image": "queijo_gouda.jpg"
+      },
+      {
+        "name": "Queijo Gouda (Unid.)",
         "pricing": "UNIT",
         "image": "queijo_gouda.jpg"
       },
@@ -831,35 +989,55 @@
     ]
   },
   {
-    "name": "Artesanais e não perecíveis",
+    "name": "Produtos Artesanais",
     "products": [
       {
         "name": "Bala de Banana",
+        "pricing": "WEIGHT",
+        "image": "bala_de_banana.jpg"
+      },
+      {
+        "name": "Bala de Banana (Unid.)",
         "pricing": "UNIT",
         "image": "bala_de_banana.jpg"
       },
       {
         "name": "Barra de Banana",
+        "pricing": "WEIGHT",
+        "image": "barra_de_banana.jpg"
+      },
+      {
+        "name": "Barra de Banana (Unid.)",
         "pricing": "UNIT",
         "image": "barra_de_banana.jpg"
       },
       {
         "name": "Café Torrado e Moido",
+        "pricing": "WEIGHT",
+        "image": "cafe_torrado_e_moido.jpg"
+      },
+      {
+        "name": "Café Torrado e Moido (Unid.)",
         "pricing": "UNIT",
         "image": "cafe_torrado_e_moido.jpg"
       },
       {
         "name": "Cookies",
+        "pricing": "WEIGHT",
+        "image": "cookies.jpg"
+      },
+      {
+        "name": "Cookies (Unid.)",
         "pricing": "UNIT",
         "image": "cookies.jpg"
       },
       {
-        "name": "Erva-Mate",
+        "name": "Extrato de Tomate",
         "pricing": "WEIGHT",
-        "image": "erva_mate.jpg"
+        "image": "extrato_de_tomate.jpg"
       },
       {
-        "name": "Extrato de Tomate",
+        "name": "Extrato de Tomate (Unid.)",
         "pricing": "UNIT",
         "image": "extrato_de_tomate.jpg"
       },
@@ -944,16 +1122,6 @@
         "image": "humus.jpg"
       },
       {
-        "name": "Jurupiga Especial",
-        "pricing": "WEIGHT",
-        "image": "jurupiga_especial.jpg"
-      },
-      {
-        "name": "Jurupiga Tradicional",
-        "pricing": "WEIGHT",
-        "image": "jurupiga_tradicional.jpg"
-      },
-      {
         "name": "Molho de Tomate",
         "pricing": "WEIGHT",
         "image": "molho_de_tomate.jpg"
@@ -979,19 +1147,69 @@
         "image": "pate_de_brocolis.jpg"
       },
       {
-        "name": "Sal Marinho",
-        "pricing": "WEIGHT",
-        "image": "sal_marinho.jpg"
-      },
-      {
         "name": "Vinagre de Maçã",
-        "pricing": "WEIGHT",
+        "pricing": "UNIT",
         "image": "vinagre_de_maca.jpg"
       },
       {
         "name": "Vinagre de Uva",
-        "pricing": "WEIGHT",
+        "pricing": "UNIT",
         "image": "vinagre_de_uva.jpg"
+      }
+    ]
+  },
+  {
+    "name": "Não Perecíveis",
+    "products": [
+      {
+        "name": "Erva Mate",
+        "pricing": "WEIGHT",
+        "image": "erva_mate.jpg"
+      },
+      {
+        "name": "Erva Mate (Unid.)",
+        "pricing": "UNIT",
+        "image": "erva_mate.jpg"
+      },
+      {
+        "name": "Farinha de Centeio",
+        "pricing": "WEIGHT",
+        "image": "farinha_de_centeio.jpg"
+      },
+      {
+        "name": "Farinha de Milho",
+        "pricing": "WEIGHT",
+        "image": "farinha_de_milho.jpg"
+      },
+      {
+        "name": "Farinha de Trigo Branca",
+        "pricing": "WEIGHT",
+        "image": "farinha_de_trigo_branca.jpg"
+      },
+      {
+        "name": "Farinha de Trigo Integral",
+        "pricing": "WEIGHT",
+        "image": "farinha_de_trigo_integral.jpg"
+      },
+      {
+        "name": "Sal Marinho",
+        "pricing": "WEIGHT",
+        "image": "sal_marinho.jpg"
+      }
+    ]
+  },
+  {
+    "name": "Bebidas",
+    "products": [
+      {
+        "name": "Jurupiga Especial",
+        "pricing": "UNIT",
+        "image": "jurupiga_especial.jpg"
+      },
+      {
+        "name": "Jurupiga Tradicional",
+        "pricing": "UNIT",
+        "image": "jurupiga_tradicional.jpg"
       }
     ]
   },
@@ -1057,6 +1275,21 @@
         "name": "Traíra",
         "pricing": "WEIGHT",
         "image": "traira.jpg"
+      }
+    ]
+  },
+  {
+    "name": "Carnes",
+    "products": [
+      {
+        "name": "Boi",
+        "pricing": "WEIGHT",
+        "image": "boi.jpg"
+      },
+      {
+        "name": "Galinha",
+        "pricing": "WEIGHT",
+        "image": "galinha.jpg"
       }
     ]
   }
