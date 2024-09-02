@@ -14,6 +14,7 @@ import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-rep
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
+import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -22,16 +23,19 @@ import { ClosedActionError } from "@/core/errors/closed-action";
 
 // Entities
 import { Week } from "@/core/entities/cycle";
+import { makeCatalog } from "@/test/factories/make-catalog";
 
 let productsRepository: InMemoryProductsRepository;
 let usersRepository: InMemoryUsersRepository;
 let offersRepository: InMemoryOffersRepository;
 let ordersRepository: InMemoryOrdersRepository;
+let farmsRepository: InMemoryFarmsRepository;
 
 let repositories: {
   offers: InMemoryOffersRepository;
   farms: InMemoryFarmsRepository;
   cycles: InMemoryCyclesRepository;
+  catalogs: InMemoryCatalogsRepository;
 };
 
 let sut: UpdateOfferUseCase;
@@ -41,24 +45,24 @@ describe("update offer", () => {
     productsRepository = new InMemoryProductsRepository();
     usersRepository = new InMemoryUsersRepository();
     offersRepository = new InMemoryOffersRepository(productsRepository);
-
     ordersRepository = new InMemoryOrdersRepository(offersRepository);
+    farmsRepository = new InMemoryFarmsRepository(usersRepository);
 
     repositories = {
       offers: offersRepository,
-      farms: new InMemoryFarmsRepository(
-        usersRepository,
-        offersRepository,
-        productsRepository,
-        ordersRepository
-      ),
+      farms: farmsRepository,
       cycles: new InMemoryCyclesRepository(),
+      catalogs: new InMemoryCatalogsRepository(
+        farmsRepository,
+        offersRepository
+      ),
     };
 
     sut = new UpdateOfferUseCase(
       repositories.farms,
       repositories.offers,
-      repositories.cycles
+      repositories.cycles,
+      repositories.catalogs
     );
   });
 
@@ -72,12 +76,13 @@ describe("update offer", () => {
     const cycle = makeCycle();
     repositories.cycles.items.push(cycle);
 
-    const offer = makeOffer({
-      farm_id: farm.id,
-      product_id: product.id,
-      cycle_id: cycle.id,
-    });
+    const catalog = makeCatalog({ farm_id: farm.id, cycle_id: cycle.id });
+    repositories.catalogs.create(catalog);
 
+    const offer = makeOffer({
+      catalog_id: catalog.id,
+      product_id: product.id,
+    });
     await repositories.offers.create(offer);
 
     await sut.execute({
@@ -98,18 +103,6 @@ describe("update offer", () => {
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
-  it("should not be able to update an offer from a non-existing farm", async () => {
-    const offer = makeOffer();
-    await repositories.offers.create(offer);
-
-    await expect(
-      sut.execute({
-        offer_id: offer.id.value,
-        farm_id: "123",
-      })
-    ).rejects.toBeInstanceOf(ResourceNotFoundError);
-  });
-
   it("should not be able to update an offer from another farm", async () => {
     const farm = makeFarm();
     await repositories.farms.create(farm);
@@ -123,9 +116,11 @@ describe("update offer", () => {
     const cycle = makeCycle();
     repositories.cycles.items.push(cycle);
 
+    const catalog = makeCatalog({ cycle_id: cycle.id });
+    repositories.catalogs.create(catalog);
+
     const offer = makeOffer({
-      farm_id: farm2.id,
-      cycle_id: cycle.id,
+      catalog_id: catalog.id,
       product_id: product.id,
     });
     await repositories.offers.create(offer);
@@ -154,10 +149,12 @@ describe("update offer", () => {
     const product = makeProduct();
     await productsRepository.create(product);
 
+    const catalog = makeCatalog({ farm_id: farm.id, cycle_id: cycle.id });
+    repositories.catalogs.create(catalog);
+
     const offer = makeOffer({
-      farm_id: farm.id,
+      catalog_id: catalog.id,
       product_id: product.id,
-      cycle_id: cycle.id,
     });
     await repositories.offers.create(offer);
 

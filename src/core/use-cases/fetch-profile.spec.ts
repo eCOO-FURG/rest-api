@@ -2,7 +2,7 @@
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
 // Use-cases
-import { GetProfileUseCase } from "@/core/use-cases/get-profile";
+import { FetchProfileUseCase } from "@/core/use-cases/fetch-profile";
 
 // Services
 import { makeUser } from "@/test/factories/make-user";
@@ -11,13 +11,13 @@ import { makeUser } from "@/test/factories/make-user";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 let usersRepository: InMemoryUsersRepository;
-let sut: GetProfileUseCase;
+let sut: FetchProfileUseCase;
 
 describe("Get user profile", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
 
-    sut = new GetProfileUseCase(usersRepository);
+    sut = new FetchProfileUseCase(usersRepository);
   });
 
   it("should be able to get a user profile", async () => {

@@ -8,6 +8,7 @@ import { Optional } from "@/core/types/optional";
 export interface OrderProps extends EntityRequest {
   offer_id: UUID;
   bag_id: UUID;
+  box_id: UUID;
   amount: number;
   status: "PENDING" | "CANCELLED" | "RECEIVED";
 }

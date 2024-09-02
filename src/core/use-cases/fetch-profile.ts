@@ -4,14 +4,14 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
 
-interface GetProfileUseCaseRequest {
+interface FetchProfileUseCaseRequest {
   user_id: string;
 }
 
-export class GetProfileUseCase {
+export class FetchProfileUseCase {
   constructor(private usersRepository: UsersRepository) {}
 
-  async execute({ user_id }: GetProfileUseCaseRequest) {
+  async execute({ user_id }: FetchProfileUseCaseRequest) {
     const user = await this.usersRepository.findById(user_id);
 
     if (!user) {

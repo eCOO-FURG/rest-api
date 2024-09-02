@@ -1,5 +1,5 @@
 // Use-cases
-import { SearchOfferingFarmsUseCase } from "@/core/use-cases/search-offering-farms";
+import { SearchCatalogsUseCase } from "@/core/use-cases/search-catalogs";
 
 // Repositories
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
@@ -7,28 +7,30 @@ import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-rep
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 // Services
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeProduct } from "@/test/factories/make-product";
 import { makeOffer } from "@/test/factories/make-offer";
+import { makeUser } from "@/test/factories/make-user";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
+import { makeCatalog } from "@/test/factories/make-catalog";
 
-let sut: SearchOfferingFarmsUseCase;
+let sut: SearchCatalogsUseCase;
 
 let cyclesRepository: InMemoryCyclesRepository;
 let usersRepository: InMemoryUsersRepository;
 let offersRepository: InMemoryOffersRepository;
 let productsRepository: InMemoryProductsRepository;
-let ordersRepository: InMemoryOrdersRepository;
+let farmsRepository: InMemoryFarmsRepository;
 
 let repositories: {
-  farms: InMemoryFarmsRepository;
   cycles: InMemoryCyclesRepository;
+  catalogs: InMemoryCatalogsRepository;
 };
 
 describe("searh offering farms", () => {
@@ -36,29 +38,21 @@ describe("searh offering farms", () => {
     usersRepository = new InMemoryUsersRepository();
     cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
-    offersRepository = new InMemoryOffersRepository(
-      productsRepository,
-      cyclesRepository
-    );
-    ordersRepository = new InMemoryOrdersRepository(offersRepository, productsRepository);
+    offersRepository = new InMemoryOffersRepository(productsRepository);
+    farmsRepository = new InMemoryFarmsRepository(usersRepository);
 
     repositories = {
-      farms: new InMemoryFarmsRepository(
-        usersRepository,
-        offersRepository,
-        productsRepository,
-        ordersRepository
-      ),
       cycles: cyclesRepository,
+      catalogs: new InMemoryCatalogsRepository(
+        farmsRepository,
+        offersRepository
+      ),
     };
 
-    sut = new SearchOfferingFarmsUseCase(
-      repositories.cycles,
-      repositories.farms
-    );
+    sut = new SearchCatalogsUseCase(repositories.cycles, repositories.catalogs);
   });
 
-  it("should be able to list offering farms", async () => {
+  it("should be able to list catalogs", async () => {
     const cycle = makeCycle();
     repositories.cycles.items.push(cycle);
 
@@ -68,32 +62,40 @@ describe("searh offering farms", () => {
 
     await productsRepository.create(product);
 
-    for (let i = 0; i < 25; i++) {
-      const farm = makeFarm();
-      await repositories.farms.create(farm);
+    for (let i = 0; i < 5; i++) {
+      const user = makeUser();
+      await usersRepository.create(user);
+
+      const farm = makeFarm({ admin_id: user.id });
+      await farmsRepository.create(farm);
+
+      const catalog = makeCatalog({
+        farm_id: farm.id,
+        cycle_id: cycle.id,
+      });
+      await repositories.catalogs.create(catalog);
 
       const offer = makeOffer({
-        cycle_id: cycle.id,
+        catalog_id: catalog.id,
         product_id: product.id,
-        farm_id: farm.id,
       });
       await offersRepository.create(offer);
     }
 
     const result = await sut.execute({
       cycle_id: cycle.id.value,
-      page: 2,
+      page: 1,
       product: "Pota",
     });
 
-    expect(result.farms.length).toBe(5);
+    expect(result.catalogs.length).toBe(5);
   });
 
-  it("should not be able to search offers from a cycle that does not exist", async () => {
+  it("should not be able to search catelogs from a cycle that does not exist", async () => {
     await expect(() =>
       sut.execute({
         cycle_id: "123",
-        page: 2,
+        page: 1,
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });

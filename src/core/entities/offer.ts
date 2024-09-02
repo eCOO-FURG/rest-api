@@ -9,8 +9,7 @@ export interface OfferProps extends EntityRequest {
   price: number;
   amount: number;
   description: string | null;
-  farm_id: UUID;
-  cycle_id: UUID;
+  catalog_id: UUID;
   product_id: UUID;
 }
 
@@ -27,16 +26,12 @@ export class Offer extends Entity<OfferProps> {
     return this.props.description;
   }
 
-  get farm_id() {
-    return this.props.farm_id;
+  get catalog_id() {
+    return this.props.catalog_id;
   }
 
   get product_id() {
     return this.props.product_id;
-  }
-
-  get cycle_id() {
-    return this.props.cycle_id;
   }
 
   set price(price: number) {

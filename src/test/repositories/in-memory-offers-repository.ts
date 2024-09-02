@@ -18,51 +18,47 @@ export class InMemoryOffersRepository implements OffersRepository {
   constructor(private inMemoryProductsRepository: InMemoryProductsRepository) {}
 
   async search<T extends RepositoryResponse>(
-    { id, cycle_id, farm_id, product_id, since }: OffersRepositorySearchRequest,
+    { id, catalog_id, product, since }: OffersRepositorySearchRequest,
     type: T
   ): Promise<OffersRepositoryResponse<T> | null> {
     const entity = this.items.find(
       (item) =>
         (!id || item.id.equals(id)) &&
-        (!cycle_id || item.cycle_id.equals(cycle_id)) &&
-        (!farm_id || item.farm_id.equals(farm_id)) &&
-        (!product_id || item.product_id.equals(product_id)) &&
-        (!since || item.created_at >= since)
+        (!catalog_id || item.catalog_id.equals(catalog_id)) &&
+        (!since || item.created_at >= since) &&
+        (!product ||
+          !product.name ||
+          (() =>
+            this.inMemoryProductsRepository.items.find((element) =>
+              element.name.includes(product.name!)
+            ))())
     );
 
     if (!entity) return null;
 
     if (type === "entity") return entity as OffersRepositoryResponse<T>;
 
-    const product = await this.inMemoryProductsRepository.findById(
+    const _product = await this.inMemoryProductsRepository.findById(
       entity.product_id.value
     );
 
-    if (!product) return null;
+    if (!_product) return null;
 
     const aggreagate = OfferAggregate.create({
       ...entity.props,
-      product,
+      product: _product,
     });
 
     return aggreagate as OffersRepositoryResponse<T>;
   }
 
   async searchMany<T extends RepositoryResponse>(
-    {
-      cycle_id,
-      farm_id,
-      page,
-      product_id,
-      since,
-    }: OffersRepositorySearchManyRequest,
+    { page, catalog_id, since }: OffersRepositorySearchManyRequest,
     type: T
   ): Promise<OffersRepositoryResponse<T>[]> {
     let entities = this.items.filter(
       (item) =>
-        (!cycle_id || item.cycle_id.equals(cycle_id)) &&
-        (!farm_id || item.farm_id.equals(farm_id)) &&
-        (!product_id || item.product_id.equals(product_id)) &&
+        (!catalog_id || item.catalog_id.equals(catalog_id)) &&
         (!since || item.created_at >= since)
     );
 

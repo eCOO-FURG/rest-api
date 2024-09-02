@@ -1,5 +1,5 @@
 // Use-cases
-import { ListFarmOffersUseCase } from "@/core/use-cases/list-farm-offers";
+import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
 
 // Services
 import { makeCycle } from "@/test/factories/make-cycle";
@@ -18,102 +18,76 @@ import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-r
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { makeUser } from "@/test/factories/make-user";
+import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
+import { makeCatalog } from "@/test/factories/make-catalog";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
 let ordersRepository: InMemoryOrdersRepository;
+let farmsRepository: InMemoryFarmsRepository;
 
 let repositories: {
-  farms: InMemoryFarmsRepository;
-  cycles: InMemoryCyclesRepository;
-  offers: InMemoryOffersRepository;
-  orders: InMemoryOrdersRepository;
+  catalogs: InMemoryCatalogsRepository;
 };
 
-let sut: ListFarmOffersUseCase;
+let sut: FetchCatalogUseCase;
 
 describe("list farm offers", () => {
   beforeEach(() => {
-    cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
     offersRepository = new InMemoryOffersRepository(productsRepository);
-    ordersRepository = new InMemoryOrdersRepository(offersRepository);
     usersRepository = new InMemoryUsersRepository();
+    farmsRepository = new InMemoryFarmsRepository(usersRepository);
+    cyclesRepository = new InMemoryCyclesRepository();
 
     repositories = {
-      farms: new InMemoryFarmsRepository(
-        usersRepository,
-        offersRepository,
-        productsRepository,
-        ordersRepository
+      catalogs: new InMemoryCatalogsRepository(
+        farmsRepository,
+        offersRepository
       ),
-      cycles: cyclesRepository,
-      offers: offersRepository,
-      orders: ordersRepository,
     };
 
-    sut = new ListFarmOffersUseCase(
-      repositories.farms,
-      repositories.cycles,
-      repositories.offers
-    );
+    sut = new FetchCatalogUseCase(repositories.catalogs);
   });
 
-  it("should be able to list a farm offers", async () => {
+  it("should be able to fetch a farm catalog", async () => {
     const user = makeUser();
     await usersRepository.create(user);
 
     const farm = makeFarm({ admin_id: user.id });
-    await repositories.farms.create(farm);
+    await farmsRepository.create(farm);
 
     const cycle = makeCycle();
-    repositories.cycles.items.push(cycle);
+    cyclesRepository.items.push(cycle);
 
     const product = makeProduct({ name: "Apple" });
     await productsRepository.create(product);
 
+    const catalog = makeCatalog({ farm_id: farm.id, cycle_id: cycle.id });
+    await repositories.catalogs.create(catalog);
+
     const offer = makeOffer({
-      farm_id: farm.id,
+      catalog_id: catalog.id,
       product_id: product.id,
-      cycle_id: cycle.id,
     });
-    await repositories.offers.create(offer);
+    await offersRepository.create(offer);
 
     const result = await sut.execute({
-      farm_id: farm.id.value,
-      cycle_id: cycle.id.value,
-      product: "App",
+      catalog_id: catalog.id.value,
+      product: "Apple",
       page: 1,
     });
     ordersRepository;
 
-    expect(result.offers).toHaveLength(1);
+    expect(result.catalog.offers).toHaveLength(1);
   });
 
-  it("should not be able to list offers from a farm that does not exists", async () => {
-    const farm = makeFarm();
-    await repositories.farms.create(farm);
-
+  it("should not be able to fetch a catalog that does not exist", async () => {
     await expect(() =>
       sut.execute({
-        farm_id: farm.id.value,
-        cycle_id: "123",
-        product: "App",
-        page: 1,
-      })
-    ).rejects.toBeInstanceOf(ResourceNotFoundError);
-  });
-
-  it("should not be able to list offers from a cycle that does not exists", async () => {
-    const cycle = makeCycle();
-    repositories.cycles.items.push(cycle);
-
-    await expect(() =>
-      sut.execute({
-        farm_id: "123",
-        cycle_id: cycle.id.value,
+        catalog_id: "1",
         product: "App",
         page: 1,
       })

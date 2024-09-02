@@ -1,6 +1,6 @@
 // Repositories
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
-import { FarmsRepository } from "@/core/repositories/farms-repository";
+import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -14,10 +14,10 @@ interface SearchOfferingFarmsUseCaseRequest {
   product?: string;
 }
 
-export class SearchOfferingFarmsUseCase {
+export class SearchCatalogsUseCase {
   constructor(
     private cyclesRepository: CyclesRepository,
-    private farmsRepository: FarmsRepository
+    private catalogsRepository: CatalogsRepository
   ) {}
 
   async execute({
@@ -29,15 +29,18 @@ export class SearchOfferingFarmsUseCase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const farms = await this.farmsRepository.findManyWithActiveOffer({
-      cycle_id: cycle.id.value,
-      page,
-      product,
-      created_at: mostPast(cycle.offer),
-    });
+    const catalogs = await this.catalogsRepository.searchMany(
+      {
+        cycle_id,
+        since: mostPast(cycle.offer),
+        page,
+        offer: { product: { name: product } },
+      },
+      "aggregate"
+    );
 
     return {
-      farms,
+      catalogs,
     };
   }
 }

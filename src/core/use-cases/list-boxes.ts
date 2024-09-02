@@ -1,6 +1,6 @@
 // Repositories
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
-import { FarmsRepository } from "@/core/repositories/farms-repository";
+import { BoxesRepository } from "@/core/repositories/boxes-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -11,10 +11,10 @@ interface ListFarmsWithOrdersProps {
   name?: string;
 }
 
-export class ListFarmsWithOrdersUsecase {
+export class ListBoxesUseCase {
   constructor(
     private cyclesRepository: CyclesRepository,
-    private farmsRepository: FarmsRepository
+    private boxesRepository: BoxesRepository
   ) {}
 
   async execute({ cycle_id, page, name }: ListFarmsWithOrdersProps) {
@@ -22,14 +22,17 @@ export class ListFarmsWithOrdersUsecase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const farms = await this.farmsRepository.searchManyWithOrders({
-      cycle_id,
-      page,
-      name,
-    });
+    const boxes = await this.boxesRepository.searchMany(
+      {
+        catalog: {
+          cycle: { id: cycle_id },
+          farm: { name },
+        },
+        page,
+      },
+      "aggregate"
+    );
 
-    return {
-      farms,
-    };
+    return { boxes };
   }
 }
