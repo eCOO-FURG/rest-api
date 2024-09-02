@@ -8,7 +8,7 @@
         "image": "abobora_cabotia.jpg"
       },
       {
-        "name": "Abóbora Cabotiá (Unid.)",
+        "name": "Abóbora Cabotiá",
         "pricing": "UNIT",
         "image": "abobora_cabotia.jpg"
       },
@@ -18,7 +18,7 @@
         "image": "abobora_moranga.jpg"
       },
       {
-        "name": "Abóbora Moranga (Unid.)",
+        "name": "Abóbora Moranga",
         "pricing": "UNIT",
         "image": "abobora_moranga.jpg"
       },
@@ -28,7 +28,7 @@
         "image": "abobora_paulista.jpg"
       },
       {
-        "name": "Abóbora Paulista (Unid.)",
+        "name": "Abóbora Paulista",
         "pricing": "UNIT",
         "image": "abobora_paulista.jpg"
       },
@@ -38,7 +38,7 @@
         "image": "abobrinha_brasileira.jpg"
       },
       {
-        "name": "Abobrinha Brasileira (Unid.)",
+        "name": "Abobrinha Brasileira",
         "pricing": "UNIT",
         "image": "abobrinha_brasileira.jpg"
       },
@@ -48,7 +48,7 @@
         "image": "abobrinha_italiana.jpg"
       },
       {
-        "name": "Abobrinha Italiana (Unid.)",
+        "name": "Abobrinha Italiana",
         "pricing": "UNIT",
         "image": "abobrinha_italiana.jpg"
       },
@@ -103,7 +103,7 @@
         "image": "berinjela_comum.jpg"
       },
       {
-        "name": "Berinjela Comum (Unid.)",
+        "name": "Berinjela Comum",
         "pricing": "UNIT",
         "image": "berinjela_comum.jpg"
       },
@@ -113,7 +113,7 @@
         "image": "berinjela_japonesa.jpg"
       },
       {
-        "name": "Berinjela Japonesa (Unid.)",
+        "name": "Berinjela Japonesa",
         "pricing": "UNIT",
         "image": "berinjela_japonesa.jpg"
       },
@@ -128,7 +128,7 @@
         "image": "brocolis.jpg"
       },
       {
-        "name": "Brócolis (Unid.)",
+        "name": "Brócolis",
         "pricing": "UNIT",
         "image": "brocolis.jpg"
       },
@@ -223,7 +223,7 @@
         "image": "pepino.jpg"
       },
       {
-        "name": "Pepino (Unid.)",
+        "name": "Pepino",
         "pricing": "UNIT",
         "image": "pepino.jpg"
       },
@@ -233,7 +233,7 @@
         "image": "pimentao_amarelo.jpg"
       },
       {
-        "name": "Pimentão Amarelo (Unid.)",
+        "name": "Pimentão Amarelo",
         "pricing": "UNIT",
         "image": "pimentao_amarelo.jpg"
       },
@@ -243,7 +243,7 @@
         "image": "pimentao_verde.jpg"
       },
       {
-        "name": "Pimentão Verde (Unid.)",
+        "name": "Pimentão Verde",
         "pricing": "UNIT",
         "image": "pimentao_verde.jpg"
       },
@@ -253,7 +253,7 @@
         "image": "pimentao_vermelho.jpg"
       },
       {
-        "name": "Pimentão Vermelho (Unid.)",
+        "name": "Pimentão Vermelho",
         "pricing": "UNIT",
         "image": "pimentao_vermelho.jpg"
       },
@@ -273,7 +273,7 @@
         "image": "repolho.jpg"
       },
       {
-        "name": "Repolho (Unid.)",
+        "name": "Repolho",
         "pricing": "UNIT",
         "image": "repolho.jpg"
       },
@@ -417,7 +417,7 @@
         "image": "alho.jpg"
       },
       {
-        "name": "Alho (Unid.)",
+        "name": "Alho",
         "pricing": "UNIT",
         "image": "alho.jpg"
       },
@@ -442,7 +442,7 @@
         "image": "gengibre.jpg"
       },
       {
-        "name": "Gengibre (Unid.)",
+        "name": "Gengibre",
         "pricing": "UNIT",
         "image": "gengibre.jpg"
       },
@@ -662,7 +662,7 @@
         "image": "mamao_formosa.jpg"
       },
       {
-        "name": "Mamão Formosa (Unid.)",
+        "name": "Mamão Formosa",
         "pricing": "UNIT",
         "image": "mamao_formosa.jpg"
       },
@@ -672,7 +672,7 @@
         "image": "mamao_papaya.jpg"
       },
       {
-        "name": "Mamão Papaya (Unid.)",
+        "name": "Mamão Papaya",
         "pricing": "UNIT",
         "image": "mamao_papaya.jpg"
       },
@@ -697,7 +697,7 @@
         "image": "melancia.jpg"
       },
       {
-        "name": "Melancia (Unid.)",
+        "name": "Melancia",
         "pricing": "UNIT",
         "image": "melancia.jpg"
       },
@@ -707,7 +707,7 @@
         "image": "melao_amarelo.jpg"
       },
       {
-        "name": "Melão Amarelo (Unid.)",
+        "name": "Melão Amarelo",
         "pricing": "UNIT",
         "image": "melao_amarelo.jpg"
       },
@@ -717,7 +717,7 @@
         "image": "melao_casca_de_carvalho.jpg"
       },
       {
-        "name": "Melão Casca de Carvalho (Unid.)",
+        "name": "Melão Casca de Carvalho",
         "pricing": "UNIT",
         "image": "melao_casca_de_carvalho.jpg"
       },
@@ -957,7 +957,7 @@
         "image": "queijo_colonial.jpg"
       },
       {
-        "name": "Queijo Colonial (Unid.)",
+        "name": "Queijo Colonial",
         "pricing": "UNIT",
         "image": "queijo_colonial.jpg"
       },
@@ -967,7 +967,7 @@
         "image": "queijo_gouda.jpg"
       },
       {
-        "name": "Queijo Gouda (Unid.)",
+        "name": "Queijo Gouda",
         "pricing": "UNIT",
         "image": "queijo_gouda.jpg"
       },
@@ -997,7 +997,7 @@
         "image": "bala_de_banana.jpg"
       },
       {
-        "name": "Bala de Banana (Unid.)",
+        "name": "Bala de Banana",
         "pricing": "UNIT",
         "image": "bala_de_banana.jpg"
       },
@@ -1007,7 +1007,7 @@
         "image": "barra_de_banana.jpg"
       },
       {
-        "name": "Barra de Banana (Unid.)",
+        "name": "Barra de Banana",
         "pricing": "UNIT",
         "image": "barra_de_banana.jpg"
       },
@@ -1017,7 +1017,7 @@
         "image": "cafe_torrado_e_moido.jpg"
       },
       {
-        "name": "Café Torrado e Moido (Unid.)",
+        "name": "Café Torrado e Moido",
         "pricing": "UNIT",
         "image": "cafe_torrado_e_moido.jpg"
       },
@@ -1027,7 +1027,7 @@
         "image": "cookies.jpg"
       },
       {
-        "name": "Cookies (Unid.)",
+        "name": "Cookies",
         "pricing": "UNIT",
         "image": "cookies.jpg"
       },
@@ -1037,7 +1037,7 @@
         "image": "extrato_de_tomate.jpg"
       },
       {
-        "name": "Extrato de Tomate (Unid.)",
+        "name": "Extrato de Tomate",
         "pricing": "UNIT",
         "image": "extrato_de_tomate.jpg"
       },
@@ -1167,7 +1167,7 @@
         "image": "erva_mate.jpg"
       },
       {
-        "name": "Erva Mate (Unid.)",
+        "name": "Erva Mate",
         "pricing": "UNIT",
         "image": "erva_mate.jpg"
       },
