@@ -4,7 +4,9 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Libs
 import { Prisma } from "@prisma/client";
-import { PrismaUserMapper } from "./prisma-user-mapper";
+
+// Mappers
+import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
 
 export class PrismaBagAggreagateMapper {
   static toDomain(raw: Prisma.BagGetPayload<{ include: { customer: true } }>) {

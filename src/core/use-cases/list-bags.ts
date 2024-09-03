@@ -25,7 +25,13 @@ export class ListBagsUseCase {
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
     const bags = await this.bagsRepository.searchMany(
-      { ...props, cycle_id, since: mostPast(cycle.order) },
+      {
+        ...props,
+        cycle: {
+          id: cycle_id,
+        },
+        since: mostPast(cycle.order),
+      },
       "aggregate"
     );
 

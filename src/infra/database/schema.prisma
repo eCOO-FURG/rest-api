@@ -78,7 +78,7 @@ model Farm {
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  offers Offer[]
+  catalogs Catalog[]
 
   @@map("farms")
 }
@@ -109,13 +109,31 @@ model Cycle {
   order   Int[]
   deliver Int[]
 
-  offers Offer[]
-  bags   Bag[]
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  bags     Bag[]
+  catalogs Catalog[]
+
+  @@map("cycles")
+}
+
+model Catalog {
+  id String @id @default(uuid())
+
+  farm_id String
+  farm    Farm   @relation(fields: [farm_id], references: [id])
+
+  cycle_id String
+  cycle    Cycle  @relation(fields: [cycle_id], references: [id])
 
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  @@map("cycles")
+  offers Offer[]
+  box    Box?
+
+  @@map("catalogs")
 }
 
 model Offer {
@@ -124,11 +142,8 @@ model Offer {
   amount      Decimal @db.Decimal(10, 2)
   description String? @db.VarChar(240)
 
-  farm_id String
-  farm    Farm   @relation(fields: [farm_id], references: [id], onDelete: Cascade)
-
-  cycle_id String
-  cycle    Cycle  @relation(fields: [cycle_id], references: [id], onDelete: Cascade)
+  catalog_id String
+  catalog    Catalog @relation(fields: [catalog_id], references: [id])
 
   product_id String
   product    Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
@@ -166,6 +181,26 @@ model Bag {
   @@map("bags")
 }
 
+enum BOX_STATUS {
+  PENDING
+  VERIFIED
+}
+
+model Box {
+  id     String     @id @default(uuid())
+  status BOX_STATUS
+
+  catalog_id String  @unique
+  catalog    Catalog @relation(fields: [catalog_id], references: [id])
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  orders Order[]
+
+  @@map("boxes")
+}
+
 enum ORDER_STATUS {
   PENDING
   CANCELLED
@@ -182,6 +217,9 @@ model Order {
 
   bag_id String
   bag    Bag    @relation(fields: [bag_id], references: [id], onDelete: Cascade)
+
+  box_id String
+  box    Box    @relation(fields: [box_id], references: [id], onDelete: Cascade)
 
   created_at DateTime  @default(now())
   updated_at DateTime?

@@ -33,7 +33,7 @@ export class InMemoryOrdersRepository implements OrdersRepository {
         (!bag_id || item.bag_id.equals(bag_id)) &&
         (!offer ||
           !!(await this.inMemoryOffersRepository.search(
-            { catalog_id: offer.catalog_id },
+            { catalog: { id: offer.catalog_id } },
             "entity"
           )))
     );

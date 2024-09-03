@@ -118,8 +118,12 @@ export class OrderProductsUseCase {
   private async useBag(user_id: UUID, cycle: Cycle, address?: string) {
     const found = await this.bagsRepository.search(
       {
-        user_id: user_id.value,
-        cycle_id: cycle.id.value,
+        user: {
+          id: user_id.value,
+        },
+        cycle: {
+          id: cycle.id.value,
+        },
         since: mostPast(cycle.order),
       },
       "entity"

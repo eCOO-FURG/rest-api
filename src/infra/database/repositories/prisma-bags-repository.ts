@@ -18,43 +18,19 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 // Mappers
 import { PrismaBagMapper } from "@/infra/database/mappers/prisma-bag-mapper";
 import { PrismaBagAggreagateMapper } from "@/infra/database/mappers/prisma-bag-aggregate-mapper";
+import { PrismaBagMergeMapper } from "@/infra/database/mappers/prisma-bag-merge-mapper";
 
 // Libs
 import { Prisma } from "@prisma/client";
-import { PrismaBagMergeMapper } from "../mappers/prisma-bag-merge-mapper";
 
 export class PrismaBagsRepository implements BagsRepository {
-  async findById<T extends RepositoryResponse = "entity">(
-    id: string,
-    type: T
-  ): Promise<BagsRepositoryResponse<T> | null> {
-    if (type === "entity") {
-      const found = await prisma.bag.findFirst({ where: { id } });
-
-      if (!found) return null;
-
-      return PrismaBagMapper.toDomain(found) as BagsRepositoryResponse<T>;
-    }
-
-    const found = await prisma.bag.findFirst({
-      where: { id },
-      include: { customer: true },
-    });
-
-    if (!found) return null;
-
-    return PrismaBagAggreagateMapper.toDomain(
-      found
-    ) as BagsRepositoryResponse<T>;
-  }
-
   async search<T extends RepositoryResponse = "entity">(
-    { user_id, cycle_id, since }: BagsRepositorySearchRequest,
+    { cycle, since, id }: BagsRepositorySearchRequest,
     type: T
   ): Promise<BagsRepositoryResponse<T> | null> {
-    const where = {
-      user_id,
-      cycle_id,
+    const where: Prisma.BagWhereInput = {
+      id,
+      cycle,
     };
 
     if (since) Object.assign(where, { created_at: { gte: since } });
@@ -94,11 +70,11 @@ export class PrismaBagsRepository implements BagsRepository {
   }
 
   async searchMany<T extends RepositoryResponse = "entity">(
-    { page, cycle_id, name, since, status }: BagsRepositorySearchManyRequest,
+    { page, cycle, name, since, status }: BagsRepositorySearchManyRequest,
     type: T
   ): Promise<BagsRepositoryResponse<T>[]> {
     const where = {
-      cycle_id,
+      cycle,
       status,
       customer: {
         OR: [
@@ -164,7 +140,6 @@ export class PrismaBagsRepository implements BagsRepository {
 
   async update(bag: Bag): Promise<void> {
     const data = PrismaBagMapper.toPrisma(bag);
-
     await prisma.bag.update({ where: { id: bag.id.value }, data });
   }
 }

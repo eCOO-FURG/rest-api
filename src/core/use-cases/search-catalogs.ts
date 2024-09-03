@@ -31,7 +31,9 @@ export class SearchCatalogsUseCase {
 
     const catalogs = await this.catalogsRepository.searchMany(
       {
-        cycle_id,
+        cycle: {
+          id: cycle_id,
+        },
         since: mostPast(cycle.offer),
         page,
         offer: { product: { name: product } },

@@ -25,14 +25,14 @@ export class InMemoryBagsRepository implements BagsRepository {
   ) {}
 
   async search<T extends RepositoryResponse = "entity">(
-    { id, user_id, cycle_id, since }: BagsRepositorySearchRequest,
+    { id, user, cycle, since }: BagsRepositorySearchRequest,
     type: T
   ): Promise<BagsRepositoryResponse<T> | null> {
     const bag = this.items.find(
       (item) =>
         (!id || item.id.equals(id)) &&
-        (!user_id || item.user_id.equals(user_id)) &&
-        (!cycle_id || item.cycle_id.equals(cycle_id)) &&
+        (!user?.id || item.user_id.equals(user.id)) &&
+        (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
         (!since || item.created_at >= since)
     );
 
@@ -40,13 +40,15 @@ export class InMemoryBagsRepository implements BagsRepository {
 
     if (type === "entity") return bag as BagsRepositoryResponse<T>;
 
-    const user = await this.inMemoryUsersRepository.findById(bag.user_id.value);
+    const _user = await this.inMemoryUsersRepository.findById(
+      bag.user_id.value
+    );
 
-    if (!user) return null;
+    if (!_user) return null;
 
     const aggreagate = BagAggregate.create({
       ...bag.props,
-      user,
+      user: _user,
     });
 
     if (type === "aggregate") return aggreagate as BagsRepositoryResponse<T>;
@@ -65,12 +67,12 @@ export class InMemoryBagsRepository implements BagsRepository {
   }
 
   async searchMany<T extends RepositoryResponse = "entity">(
-    { cycle_id, name, page, since, status }: BagsRepositorySearchManyRequest,
+    { cycle, name, page, since, status }: BagsRepositorySearchManyRequest,
     type: T
   ): Promise<BagsRepositoryResponse<T>[]> {
     let entities = this.items.filter(
       (item) =>
-        (!cycle_id || item.cycle_id.equals(cycle_id)) &&
+        (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
         (!since || item.created_at >= since) &&
         (!status || status === item.status) &&
         (!name ||

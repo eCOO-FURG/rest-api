@@ -9,7 +9,7 @@ export interface OrdersRepositorySearchManyRequest {
   offers_ids?: string[];
   bag_id?: string;
   since?: Date;
-  box: {
+  box?: {
     id?: string;
   };
   offer?: {

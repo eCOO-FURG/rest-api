@@ -5,24 +5,19 @@ import { asFunction, AwilixContainer } from "awilix";
 import { RegisterUseCase } from "@/core/use-cases/register";
 import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
 import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
-import { HandleOrdersDeliveryUseCase } from "@/core/use-cases/handle-orders-delivery";
 import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
 import { OfferProductsUseCase } from "@/core/use-cases/offer-products";
 import { UpdateUserUseCase } from "@/core/use-cases/update-user";
 import { UpdateOfferUseCase } from "@/core/use-cases/update-offer";
 import { OrderProductsUseCase } from "@/core/use-cases/order-products";
 import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
-import { GetProfileUseCase } from "@/core/use-cases/get-profile";
-import { ListFarmsWithOrdersUsecase } from "@/core/use-cases/list-farms-with-orders";
 import { ListCyclesUseCase } from "@/core/use-cases/list-cycles";
-import { SearchOfferingFarmsUseCase } from "@/core/use-cases/search-offering-farms";
-import { ListFarmOrdersUseCase } from "@/core/use-cases/list-farm-orders";
-import { ListFarmOffersUseCase } from "@/core/use-cases/list-farm-offers";
 import { ListProductsUsecase } from "@/core/use-cases/list-products";
 import { HandleBagUseCase } from "@/core/use-cases/handle-bag";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 import { ListBagsUseCase } from "@/core/use-cases/list-bags";
 import { PrintDeliveriesReportUseCase } from "@/core/use-cases/print-deliveries-report";
+import { HandleBoxStatusUseCase } from "@/core/use-cases/handle-box-status";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -50,9 +45,9 @@ export default (container: AwilixContainer) => {
       ({ usersRepository, hasher }) =>
         new VerifyUserUsecase(usersRepository, hasher)
     ),
-    handleOrdersDeliveryUseCase: asFunction(
+    handleBoxStatusUseCase: asFunction(
       ({ cyclesRepository, farmsRepository, ordersRepository }) =>
-        new HandleOrdersDeliveryUseCase(
+        new HandleBoxStatusUseCase(
           cyclesRepository,
           farmsRepository,
           ordersRepository

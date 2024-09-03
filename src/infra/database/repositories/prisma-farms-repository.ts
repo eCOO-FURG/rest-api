@@ -5,7 +5,6 @@ import { Farm } from "@/core/entities/farm";
 import {
   FarmsRepository,
   FarmsRepositoryResponse,
-  FarmsRepositorySearchManyWithOrdersRequest,
   FarmsRepositorySearchRequest,
 } from "@/core/repositories/farms-repository";
 import { prisma } from "@/infra/database/prisma-service";
@@ -63,41 +62,5 @@ export class PrismaFarmsRepository implements FarmsRepository {
       },
       data,
     });
-  }
-
-  async searchManyWithOrders({
-    cycle_id,
-    page,
-    name,
-  }: FarmsRepositorySearchManyWithOrdersRequest): Promise<Farm[]> {
-    const skip = (page - 1) * 20;
-
-    const farms = await prisma.farm.findMany({
-      where: {
-        name: {
-          contains: name,
-          mode: "insensitive",
-        },
-        offers: {
-          some: {
-            cycle_id,
-            orders: {
-              some: {
-                amount: {
-                  gte: 1,
-                },
-              },
-            },
-          },
-        },
-      },
-      orderBy: {
-        name: "asc",
-      },
-      skip,
-      take: 20,
-    });
-
-    return farms.map((farm) => PrismaFarmMapper.toDomain(farm));
   }
 }

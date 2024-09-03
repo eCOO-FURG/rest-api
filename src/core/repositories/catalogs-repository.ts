@@ -25,7 +25,9 @@ export interface CatalogsRepositorySearchRequest {
 }
 
 export interface CatalogsRepositorySearchManyRequest {
-  cycle_id?: string;
+  cycle?: {
+    id: string;
+  };
   offer?: {
     product?: {
       name?: string;

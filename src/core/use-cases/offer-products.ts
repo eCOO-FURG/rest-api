@@ -71,7 +71,7 @@ export class OfferProductsUseCase {
     if (!created) {
       const alreadyOffered = await this.offersRepository.search(
         {
-          catalog_id: catalog.id.value,
+          catalog: { id: catalog.id.value },
           product: { id: product_id },
           since: mostPast(cycle.offer),
         },

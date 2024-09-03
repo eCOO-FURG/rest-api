@@ -45,7 +45,7 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
         (!offer?.product?.name ||
           !!(await this.inMemoryOffersRepository.search(
             {
-              catalog_id: item.id.value,
+              catalog: { id: item.id.value },
               product: { name: offer.product.name },
             },
             "entity"
@@ -74,7 +74,7 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
 
     const offers = await this.inMemoryOffersRepository.searchMany(
       {
-        catalog_id: catalog.id.value,
+        catalog: { id: catalog.id.value },
         product: { name: offer?.product?.name },
         page: offer?.page,
       },
@@ -87,18 +87,18 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
   }
 
   async searchMany<T extends RepositoryResponse>(
-    { cycle_id, offer, page, since }: CatalogsRepositorySearchManyRequest,
+    { cycle, offer, page, since }: CatalogsRepositorySearchManyRequest,
     type: T
   ): Promise<CatalogsRepositoryResponse<T>[]> {
     let catalogs = await filter<Catalog>(
       this.items,
       async (item) =>
-        (!cycle_id || item.cycle_id.equals(cycle_id)) &&
+        (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
         (!since || item.created_at >= since) &&
         (!offer?.product?.name ||
           !!(await this.inMemoryOffersRepository.search(
             {
-              catalog_id: item.id.value,
+              catalog: { id: item.id.value },
               product: { name: offer.product.name },
             },
             "entity"

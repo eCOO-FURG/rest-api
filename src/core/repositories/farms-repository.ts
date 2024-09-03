@@ -5,12 +5,6 @@ import { Farm } from "@/core/entities/farm";
 import { RepositoryResponse } from "@/core/types/repository-response";
 import { FarmAggregate } from "../entities/aggregates/farm-aggregate";
 
-export interface FarmsRepositorySearchManyWithOrdersRequest {
-  cycle_id: string;
-  page: number;
-  name?: string;
-}
-
 export interface FarmsRepositorySearchRequest {
   id?: string;
   caf?: string;

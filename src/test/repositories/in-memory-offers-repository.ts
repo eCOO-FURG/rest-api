@@ -18,13 +18,13 @@ export class InMemoryOffersRepository implements OffersRepository {
   constructor(private inMemoryProductsRepository: InMemoryProductsRepository) {}
 
   async search<T extends RepositoryResponse>(
-    { id, catalog_id, product, since }: OffersRepositorySearchRequest,
+    { id, catalog, product, since }: OffersRepositorySearchRequest,
     type: T
   ): Promise<OffersRepositoryResponse<T> | null> {
     const entity = this.items.find(
       (item) =>
         (!id || item.id.equals(id)) &&
-        (!catalog_id || item.catalog_id.equals(catalog_id)) &&
+        (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
         (!since || item.created_at >= since) &&
         (!product ||
           !product.name ||
@@ -53,12 +53,12 @@ export class InMemoryOffersRepository implements OffersRepository {
   }
 
   async searchMany<T extends RepositoryResponse>(
-    { page, catalog_id, since }: OffersRepositorySearchManyRequest,
+    { page, catalog, ids, product, since }: OffersRepositorySearchManyRequest,
     type: T
   ): Promise<OffersRepositoryResponse<T>[]> {
     let entities = this.items.filter(
       (item) =>
-        (!catalog_id || item.catalog_id.equals(catalog_id)) &&
+        (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
         (!since || item.created_at >= since)
     );
 
