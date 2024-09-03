@@ -32,7 +32,7 @@ export class PrismaOffersRepository implements OffersRepository {
       ...(since && { created_at: { gte: since } }),
     };
 
-    if (type === "aggregate") {
+    if (type === "entity") {
       const offer = await prisma.offer.findFirst({ where });
 
       if (!offer) return null;

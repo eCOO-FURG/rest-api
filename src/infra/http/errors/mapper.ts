@@ -9,6 +9,7 @@ import { UserAlreadyVerified } from "@/core/errors/user-already-verified";
 import { WrongCredentialsError } from "@/core/errors/wrong-credentials";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
+import { UnauthorizedError } from "@/core/errors/unauthorized";
 
 type Constructor<T> = new (...args: any[]) => T;
 
@@ -29,6 +30,7 @@ const mappedDomainErrors: {
       FarmNotActiveError,
       UserNotVerifiedError,
       UserAlreadyVerified,
+      UnauthorizedError,
     ],
   },
   {

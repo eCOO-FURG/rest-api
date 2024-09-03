@@ -35,7 +35,7 @@ export class RegisterFarmUseCase {
     }
 
     const farmWithSameAdmin = await this.farmRepository.search(
-      { admin_id: user_id },
+      { admin: { id: user_id } },
       "entity"
     );
 
