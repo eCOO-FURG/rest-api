@@ -4,7 +4,7 @@ import { BagAggregate } from "@/core/entities/aggregates/bag-aggregate";
 // Presenters
 import { UserPresenter } from "@/infra/http/presenters/user-presenter";
 
-export class BagAggregatePresenter {
+export class BagPresenter {
   static toHttp(bag: BagAggregate) {
     return {
       id: bag.id.value,

@@ -76,6 +76,7 @@ export class PrismaBoxesRepository implements BoxesRepository {
           farm: {
             name: {
               contains: catalog?.farm?.name,
+              mode: "insensitive",
             },
           },
           cycle: {

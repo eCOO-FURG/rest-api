@@ -35,13 +35,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
         ...farm,
         name: {
           contains: farm?.name,
-        },
-      },
-      offers: {
-        some: {
-          product: {
-            name: offer?.product?.name,
-          },
+          mode: "insensitive",
         },
       },
       ...(since && { created_at: { gte: since } }),
@@ -88,6 +82,14 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
           include: {
             product: true,
           },
+          where: {
+            product: {
+              name: {
+                contains: offer?.product?.name,
+                mode: "insensitive",
+              },
+            },
+          },
           skip: ((offer?.page ?? 1) - 1) * 20,
           take: 20,
         },
@@ -113,6 +115,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
             product: {
               name: {
                 contains: offer?.product?.name,
+                mode: "insensitive",
               },
             },
           },

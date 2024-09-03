@@ -9,14 +9,14 @@ import { registerFarmController } from "@/infra/http/controllers/register-farm";
 import { orderProductsController } from "@/infra/http/controllers/order-products";
 import { updateUserController } from "@/infra/http/controllers/update-user";
 import { offerProductsController } from "@/infra/http/controllers/offer-products";
-import { listFarmsWithOrdersController } from "@/infra/http/controllers/list-farms-with-orders";
+import { listBoxesController } from "@/infra/http/controllers/list-boxes";
 import { updateOfferController } from "@/infra/http/controllers/update-offer";
 import { fetchProfileController } from "@/infra/http/controllers/fetch-profile";
 import { requestOtpController } from "@/infra/http/controllers/request-otp";
 import { listCyclesController } from "@/infra/http/controllers/list-cycles";
-import { listFarmOrdersController } from "@/infra/http/controllers/list-farm-orders";
-import { searchOfferingFarmsController } from "@/infra/http/controllers/search-offering-farms";
-import { listFarmOffersController } from "@/infra/http/controllers/list-farm-offers";
+import { fetchBoxController } from "@/infra/http/controllers/fetch-box";
+import { searchCatalogsController } from "@/infra/http/controllers/search-catalogs";
+import { fetchCatalogController } from "@/infra/http/controllers/fetch-catalog";
 import { listProductsController } from "@/infra/http/controllers/list-products";
 import { printDeliveriesReportController } from "../controllers/print-deliveries-report";
 import { listBagsController } from "@/infra/http/controllers/list-bags";
@@ -42,14 +42,15 @@ router.post("/auth/otp", requestOtpController);
 router.post("/farms", ensureAuthenticated, registerFarmController);
 
 router.post("/orders", ensureAuthenticated, orderProductsController);
+
 router.patch(
-  "/orders",
+  "/boxes/:box_id",
   ensureAuthenticated,
   ensureAdmin,
   handleBoxStatusController
 );
-router.get("/orders", ensureAuthenticated, listFarmsWithOrdersController);
-router.get("/orders/:farm_id", ensureAuthenticated, listFarmOrdersController);
+router.get("/boxes", ensureAuthenticated, ensureAdmin, listBoxesController);
+router.get("/boxes/:box_id", ensureAuthenticated, fetchBoxController);
 
 router.post(
   "/offers",
@@ -57,14 +58,15 @@ router.post(
   ensureFarmAdmin,
   offerProductsController
 );
-router.get("/offers", searchOfferingFarmsController);
-router.get("/offers/:farm_id", listFarmOffersController);
 router.patch(
   "/offers/:offer_id",
   ensureAuthenticated,
   ensureFarmAdmin,
   updateOfferController
 );
+
+router.get("/catalogs", searchCatalogsController);
+router.get("/catalogs/:catalog_id", fetchCatalogController);
 
 router.get("/bags", ensureAuthenticated, ensureAdmin, listBagsController);
 router.get(

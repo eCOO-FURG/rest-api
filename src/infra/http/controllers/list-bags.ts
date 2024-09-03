@@ -5,7 +5,7 @@ import { z } from "zod";
 // Container
 import container from "@/infra/container";
 import { ListBagsUseCase } from "@/core/use-cases/list-bags";
-import { BagAggregatePresenter } from "@/infra/http/presenters/bag-aggregate-presenter";
+import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 
 const listBagsSchema = {
   query: z.object({
@@ -38,7 +38,7 @@ export async function listBagsController(
 
     return response
       .status(200)
-      .send(bags.map((bag) => BagAggregatePresenter.toHttp(bag)));
+      .send(bags.map((bag) => BagPresenter.toHttp(bag)));
   } catch (error) {
     next(error);
   }

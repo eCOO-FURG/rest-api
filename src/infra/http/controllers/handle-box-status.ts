@@ -9,8 +9,10 @@ import container from "@/infra/container";
 import { HandleBoxStatusUseCase } from "@/core/use-cases/handle-box-status";
 
 const handleBoxStatusSchema = {
-  body: z.object({
+  param: z.object({
     box_id: z.string().uuid(),
+  }),
+  body: z.object({
     status: z.enum(["RECEIVED", "CANCELLED"]),
   }),
 };
@@ -21,7 +23,9 @@ export async function handleBoxStatusController(
   next: NextFunction
 ) {
   try {
-    const { box_id, status } = handleBoxStatusSchema.body.parse(request.body);
+    const { box_id } = handleBoxStatusSchema.param.parse(request.params);
+
+    const { status } = handleBoxStatusSchema.body.parse(request.body);
 
     const handleBoxStatusUseCase = container.resolve<HandleBoxStatusUseCase>(
       "handleBoxStatusUseCase"

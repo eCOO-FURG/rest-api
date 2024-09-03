@@ -73,7 +73,7 @@ export class PrismaBagsRepository implements BagsRepository {
     { page, cycle, name, since, status }: BagsRepositorySearchManyRequest,
     type: T
   ): Promise<BagsRepositoryResponse<T>[]> {
-    const where = {
+    const where: Prisma.BagWhereInput = {
       cycle,
       status,
       customer: {
@@ -81,11 +81,13 @@ export class PrismaBagsRepository implements BagsRepository {
           {
             first_name: {
               contains: name ?? "",
+              mode: "insensitive",
             },
           },
           {
             last_name: {
               contains: name ?? "",
+              mode: "insensitive",
             },
           },
         ],

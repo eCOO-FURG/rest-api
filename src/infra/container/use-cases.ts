@@ -133,7 +133,7 @@ export default (container: AwilixContainer) => {
     fetchBoxUseCase: asFunction(
       ({ boxesRepository }) => new FetchBoxUseCase(boxesRepository)
     ),
-    fetchCatalogUsecase: asFunction(
+    fetchCatalogUseCase: asFunction(
       ({ catalogsRepository }) => new FetchCatalogUseCase(catalogsRepository)
     ),
     listProductsUseCase: asFunction(

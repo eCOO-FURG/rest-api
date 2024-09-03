@@ -60,7 +60,9 @@ export class PrismaOffersRepository implements OffersRepository {
       catalog,
       ...(ids && { id: { in: ids } }),
       ...(since && { created_at: { gte: since } }),
-      ...(product && { product: { name: { contains: product.name } } }),
+      ...(product && {
+        product: { name: { contains: product.name, mode: "insensitive" } },
+      }),
     };
 
     const query: Prisma.OfferFindManyArgs = {

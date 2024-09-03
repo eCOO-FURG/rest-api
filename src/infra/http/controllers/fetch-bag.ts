@@ -9,8 +9,8 @@ import container from "@/infra/container";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 
 // Presenters
-import { BagAggregatePresenter } from "@/infra/http/presenters/bag-aggregate-presenter";
-import { OrderAggregatePresenter } from "@/infra/http/presenters/order-aggregate-presenter";
+import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
+import { OrderPresenter } from "@/infra/http/presenters/order-presenter";
 
 const fetchBagSchema = {
   param: z.object({
@@ -32,8 +32,8 @@ export async function fetchBagController(
     const { bag } = await fetchBagUseCase.execute({ bag_id });
 
     return response.status(200).send({
-      ...BagAggregatePresenter.toHttp(bag),
-      orders: bag.orders.map((order) => OrderAggregatePresenter.toHttp(order)),
+      ...BagPresenter.toHttp(bag),
+      orders: bag.orders.map((order) => OrderPresenter.toHttp(order)),
     });
   } catch (error) {
     next(error);
