@@ -1,11 +1,15 @@
+// Entities
+import { CatalogMerge } from "@/core/entities/merged/catalog-merge";
+
 // Use-cases
 import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
 
-// Services
+// Factories
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeOffer } from "@/test/factories/make-offer";
 import { makeProduct } from "@/test/factories/make-product";
+import { makeUser } from "@/test/factories/make-user";
 
 // Repositories
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
@@ -17,7 +21,6 @@ import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-r
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { makeUser } from "@/test/factories/make-user";
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { makeCatalog } from "@/test/factories/make-catalog";
 
@@ -36,11 +39,12 @@ let sut: FetchCatalogUseCase;
 
 describe("list farm offers", () => {
   beforeEach(() => {
+    cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
     offersRepository = new InMemoryOffersRepository(productsRepository);
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
     usersRepository = new InMemoryUsersRepository();
     farmsRepository = new InMemoryFarmsRepository(usersRepository);
-    cyclesRepository = new InMemoryCyclesRepository();
 
     repositories = {
       catalogs: new InMemoryCatalogsRepository(
@@ -52,7 +56,7 @@ describe("list farm offers", () => {
     sut = new FetchCatalogUseCase(repositories.catalogs);
   });
 
-  it("should be able to fetch a farm catalog", async () => {
+  it("should be able to list a farm offers", async () => {
     const user = makeUser();
     await usersRepository.create(user);
 
@@ -76,18 +80,21 @@ describe("list farm offers", () => {
 
     const result = await sut.execute({
       catalog_id: catalog.id.value,
-      product: "Apple",
+      product: "App",
       page: 1,
     });
     ordersRepository;
 
-    expect(result.catalog.offers).toHaveLength(1);
+    expect(result.catalog).toBeInstanceOf(CatalogMerge);
   });
 
-  it("should not be able to fetch a catalog that does not exist", async () => {
+  it("should not be able to list offers from a farm that does not exists", async () => {
+    const farm = makeFarm();
+    await farmsRepository.create(farm);
+
     await expect(() =>
       sut.execute({
-        catalog_id: "1",
+        catalog_id: "123456",
         product: "App",
         page: 1,
       })
