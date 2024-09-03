@@ -18,6 +18,11 @@ import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 import { ListBagsUseCase } from "@/core/use-cases/list-bags";
 import { PrintDeliveriesReportUseCase } from "@/core/use-cases/print-deliveries-report";
 import { HandleBoxStatusUseCase } from "@/core/use-cases/handle-box-status";
+import { FetchProfileUseCase } from "@/core/use-cases/fetch-profile";
+import { ListBoxesUseCase } from "@/core/use-cases/list-boxes";
+import { SearchCatalogsUseCase } from "@/core/use-cases/search-catalogs";
+import { FetchBoxUseCase } from "@/core/use-cases/fetch-box";
+import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -46,12 +51,8 @@ export default (container: AwilixContainer) => {
         new VerifyUserUsecase(usersRepository, hasher)
     ),
     handleBoxStatusUseCase: asFunction(
-      ({ cyclesRepository, farmsRepository, ordersRepository }) =>
-        new HandleBoxStatusUseCase(
-          cyclesRepository,
-          farmsRepository,
-          ordersRepository
-        )
+      ({ boxesRepository, ordersRepository }) =>
+        new HandleBoxStatusUseCase(boxesRepository, ordersRepository)
     ),
     registerFarmUseCase: asFunction(
       ({ usersRepository, farmsRepository }) =>
@@ -61,12 +62,14 @@ export default (container: AwilixContainer) => {
       ({
         farmsRepository,
         productsRepository,
+        catalogsRepository,
         offersRepository,
         cyclesRepository,
       }) =>
         new OfferProductsUseCase(
           farmsRepository,
           productsRepository,
+          catalogsRepository,
           offersRepository,
           cyclesRepository
         )
@@ -76,11 +79,17 @@ export default (container: AwilixContainer) => {
         new UpdateUserUseCase(usersRepository, encrypter)
     ),
     updateOfferUseCase: asFunction(
-      ({ farmsRepository, offersRepository, cyclesRepository }) =>
+      ({
+        farmsRepository,
+        offersRepository,
+        cyclesRepository,
+        catalogsRepository,
+      }) =>
         new UpdateOfferUseCase(
           farmsRepository,
           offersRepository,
-          cyclesRepository
+          cyclesRepository,
+          catalogsRepository
         )
     ),
     orderPoductsUseCase: asFunction(
@@ -89,55 +98,43 @@ export default (container: AwilixContainer) => {
         cyclesRepository,
         offersRepository,
         ordersRepository,
+        catalogsRepository,
         bagsRepository,
+        boxesRepository,
       }) =>
         new OrderProductsUseCase(
           usersRepository,
           cyclesRepository,
           offersRepository,
           ordersRepository,
-          bagsRepository
+          catalogsRepository,
+          bagsRepository,
+          boxesRepository
         )
     ),
-    getProfileUseCase: asFunction(
-      ({ usersRepository }) => new GetProfileUseCase(usersRepository)
+    fetchProfileUseCase: asFunction(
+      ({ usersRepository }) => new FetchProfileUseCase(usersRepository)
     ),
     requestOtpUseCase: asFunction(
       ({ usersRepository, otpProvider, otpsRepository }) =>
         new RequestOtpUseCase(usersRepository, otpProvider, otpsRepository)
     ),
-    listFarmsWithOrdersUseCase: asFunction(
-      ({ cyclesRepository, farmsRepository }) =>
-        new ListFarmsWithOrdersUsecase(cyclesRepository, farmsRepository)
+    listBoxesUseCase: asFunction(
+      ({ cyclesRepository, boxesRepository }) =>
+        new ListBoxesUseCase(cyclesRepository, boxesRepository)
     ),
     listCyclesUseCase: asFunction(
       ({ cyclesRepository }) => new ListCyclesUseCase(cyclesRepository)
     ),
-    searchOfferingFarmsUseCase: asFunction(
-      ({ cyclesRepository, farmsRepository }) =>
-        new SearchOfferingFarmsUseCase(cyclesRepository, farmsRepository)
+    searchCatalogsUseCase: asFunction(
+      ({ cyclesRepository, catalogsRepository }) =>
+        new SearchCatalogsUseCase(cyclesRepository, catalogsRepository)
     ),
-    listFarmOrdersUseCase: asFunction(
-      ({
-        farmsRepository,
-        cyclesRepository,
-        offersRepository,
-        ordersRepository,
-      }) =>
-        new ListFarmOrdersUseCase(
-          farmsRepository,
-          cyclesRepository,
-          offersRepository,
-          ordersRepository
-        )
+    fetchBoxUseCase: asFunction(
+      ({ boxesRepository }) => new FetchBoxUseCase(boxesRepository)
     ),
-    listFarmOffersUseCase: asFunction(
-      ({ farmsRepository, cyclesRepository, offersRepository }) =>
-        new ListFarmOffersUseCase(
-          farmsRepository,
-          cyclesRepository,
-          offersRepository
-        )
+    fetchCatalogUsecase: asFunction(
+      ({ catalogsRepository }) => new FetchCatalogUseCase(catalogsRepository)
     ),
     listProductsUseCase: asFunction(
       ({ productsRepository }) => new ListProductsUsecase(productsRepository)
