@@ -9,7 +9,6 @@ import { registerFarmController } from "@/infra/http/controllers/register-farm";
 import { orderProductsController } from "@/infra/http/controllers/order-products";
 import { updateUserController } from "@/infra/http/controllers/update-user";
 import { offerProductsController } from "@/infra/http/controllers/offer-products";
-import { handleOrdersDeliveryController } from "@/infra/http/controllers/handle-orders-delivery";
 import { listFarmsWithOrdersController } from "@/infra/http/controllers/list-farms-with-orders";
 import { updateOfferController } from "@/infra/http/controllers/update-offer";
 import { fetchProfileController } from "@/infra/http/controllers/fetch-profile";
@@ -23,6 +22,7 @@ import { printDeliveriesReportController } from "../controllers/print-deliveries
 import { listBagsController } from "@/infra/http/controllers/list-bags";
 import { fetchBagController } from "@/infra/http/controllers/fetch-bag";
 import { handleBagController } from "@/infra/http/controllers/handle-bag";
+import { handleBoxStatusController } from "@/infra/http/controllers/handle-box-status";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -46,7 +46,7 @@ router.patch(
   "/orders",
   ensureAuthenticated,
   ensureAdmin,
-  handleOrdersDeliveryController
+  handleBoxStatusController
 );
 router.get("/orders", ensureAuthenticated, listFarmsWithOrdersController);
 router.get("/orders/:farm_id", ensureAuthenticated, listFarmOrdersController);
@@ -75,8 +75,8 @@ router.get(
 );
 router.get(
   "/bags/report/:cycle_id",
-  // ensureAuthenticated,
-  // ensureAdmin,
+  ensureAuthenticated,
+  ensureAdmin,
   printDeliveriesReportController
 );
 router.patch(
