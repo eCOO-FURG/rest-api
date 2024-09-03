@@ -1,3 +1,4 @@
+// Entities
 import { User } from "@/core/entities/user";
 
 export class UserPresenter {

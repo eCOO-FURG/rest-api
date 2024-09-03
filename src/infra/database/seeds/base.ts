@@ -81,17 +81,21 @@ async function seed() {
         tax: 20,
         active: true,
         admin_id: cddId.value,
-        offers: {
-          createMany: {
-            data: products.map((product) => ({
-              cycle_id: cycleId.value,
-              product_id: product.id,
-              amount:
-                product.pricing === "UNIT"
-                  ? Math.floor(Math.random() * 20 + 1)
-                  : Math.floor(Math.random() * 20 + 1) * 100,
-              price: "10",
-            })),
+        catalogs: {
+          create: {
+            cycle_id: cycleId.value,
+            offers: {
+              createMany: {
+                data: products.map((product) => ({
+                  product_id: product.id,
+                  amount:
+                    product.pricing === "UNIT"
+                      ? Math.floor(Math.random() * 20 + 1)
+                      : Math.floor(Math.random() * 20 + 1) * 100,
+                  price: "10",
+                })),
+              },
+            },
           },
         },
       },

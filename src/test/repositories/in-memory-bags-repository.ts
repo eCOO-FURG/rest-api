@@ -54,7 +54,7 @@ export class InMemoryBagsRepository implements BagsRepository {
     if (type === "aggregate") return aggreagate as BagsRepositoryResponse<T>;
 
     const orders = await this.inMemoryOrdersRepository.searchMany(
-      { bag_id: bag.id.value },
+      { bag: { id: bag.id.value } },
       "aggregate"
     );
 
@@ -114,7 +114,7 @@ export class InMemoryBagsRepository implements BagsRepository {
 
     for (const aggregate of aggregates) {
       const orders = await this.inMemoryOrdersRepository.searchMany(
-        { bag_id: aggregate.id.value },
+        { bag: { id: aggregate.id.value } },
         "aggregate"
       );
 

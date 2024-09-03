@@ -12,6 +12,7 @@ export class PrismaOrderMapper {
       id: new UUID(raw.id),
       offer_id: new UUID(raw.offer_id),
       bag_id: new UUID(raw.bag_id),
+      box_id: new UUID(raw.box_id),
       amount: raw.amount.toNumber(),
     });
   }
@@ -22,6 +23,7 @@ export class PrismaOrderMapper {
       id: order.id.value,
       bag_id: order.bag_id.value,
       offer_id: order.offer_id.value,
+      box_id: order.box_id.value,
     };
   }
 }

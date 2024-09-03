@@ -22,7 +22,7 @@ export class InMemoryOrdersRepository implements OrdersRepository {
   constructor(private inMemoryOffersRepository: InMemoryOffersRepository) {}
 
   async searchMany<T extends RepositoryResponse = "entity">(
-    { since, offers_ids, offer, bag_id }: OrdersRepositorySearchManyRequest,
+    { since, offers_ids, offer, bag }: OrdersRepositorySearchManyRequest,
     type: T
   ): Promise<OrdersRepositoryResponse<T>[]> {
     const orders = await filter<Order>(
@@ -30,7 +30,7 @@ export class InMemoryOrdersRepository implements OrdersRepository {
       async (item) =>
         (!since || item.created_at >= since) &&
         (!offers_ids || offers_ids.includes(item.offer_id.value)) &&
-        (!bag_id || item.bag_id.equals(bag_id)) &&
+        (!bag?.id || item.bag_id.equals(bag.id)) &&
         (!offer ||
           !!(await this.inMemoryOffersRepository.search(
             { catalog: { id: offer.catalog_id } },

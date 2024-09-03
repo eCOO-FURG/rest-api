@@ -22,6 +22,10 @@ export class Order extends Entity<OrderProps> {
     return this.props.bag_id;
   }
 
+  get box_id() {
+    return this.props.box_id;
+  }
+
   get amount() {
     return this.props.amount;
   }

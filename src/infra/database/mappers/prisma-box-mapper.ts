@@ -18,7 +18,7 @@ export class PrismaBoxMapper {
     return {
       ...box.props,
       id: box.id.value,
-      catalog_id: box.id.value,
+      catalog_id: box.catalog_id.value,
     };
   }
 }

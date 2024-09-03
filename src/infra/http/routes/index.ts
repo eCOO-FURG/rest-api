@@ -12,7 +12,7 @@ import { offerProductsController } from "@/infra/http/controllers/offer-products
 import { handleOrdersDeliveryController } from "@/infra/http/controllers/handle-orders-delivery";
 import { listFarmsWithOrdersController } from "@/infra/http/controllers/list-farms-with-orders";
 import { updateOfferController } from "@/infra/http/controllers/update-offer";
-import { getUserController } from "@/infra/http/controllers/get-profile";
+import { fetchProfileController } from "@/infra/http/controllers/fetch-profile";
 import { requestOtpController } from "@/infra/http/controllers/request-otp";
 import { listCyclesController } from "@/infra/http/controllers/list-cycles";
 import { listFarmOrdersController } from "@/infra/http/controllers/list-farm-orders";
@@ -34,7 +34,7 @@ export const router = Router();
 router.post("/users", registerController);
 router.patch("/users", ensureAuthenticated, updateUserController);
 router.get("/users/verify", verifyUserController);
-router.get("/me", ensureAuthenticated, getUserController);
+router.get("/me", ensureAuthenticated, fetchProfileController);
 
 router.post("/auth", authenticateController);
 router.post("/auth/otp", requestOtpController);
