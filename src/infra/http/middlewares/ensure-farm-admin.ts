@@ -17,7 +17,10 @@ export async function ensureFarmAdmin(
   const farmsRepository =
     container.resolve<PrismaFarmsRepository>("farmsRepository");
 
-  const farm = await farmsRepository.findByAdminId(user_id);
+  const farm = await farmsRepository.search(
+    { admin: { id: user_id } },
+    "entity"
+  );
 
   if (!farm) {
     return response

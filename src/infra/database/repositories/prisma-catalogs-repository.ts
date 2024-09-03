@@ -25,24 +25,26 @@ import { PrismaCatalogMergeMapper } from "@/infra/database/mappers/prisma-catalo
 
 export class PrismaCatalogsRepository implements CatalogsRepository {
   async search<T extends RepositoryResponse>(
-    filters: CatalogsRepositorySearchRequest,
+    { cycle, farm, id, offer, since }: CatalogsRepositorySearchRequest,
     type: T
   ): Promise<CatalogsRepositoryResponse<T> | null> {
     const where: Prisma.CatalogWhereInput = {
-      ...filters,
+      id,
+      cycle,
       farm: {
-        ...filters.farm,
+        ...farm,
         name: {
-          contains: filters.farm?.name,
+          contains: farm?.name,
         },
       },
       offers: {
         some: {
           product: {
-            name: filters.offer?.product?.name,
+            name: offer?.product?.name,
           },
         },
       },
+      ...(since && { created_at: { gte: since } }),
     };
 
     if (type === "entity") {
@@ -86,7 +88,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
           include: {
             product: true,
           },
-          skip: ((filters.offer?.page ?? 1) - 1) * 20,
+          skip: ((offer?.page ?? 1) - 1) * 20,
           take: 20,
         },
       },

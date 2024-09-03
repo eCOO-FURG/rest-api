@@ -27,7 +27,7 @@ export class PrismaFarmsRepository implements FarmsRepository {
     if (!found) return null;
 
     if (type === "entity")
-      PrismaFarmMapper.toDomain(found) as FarmsRepositoryResponse<T>;
+      return PrismaFarmMapper.toDomain(found) as FarmsRepositoryResponse<T>;
 
     return PrismaFarmAggregateMapper.toDomain(
       found
