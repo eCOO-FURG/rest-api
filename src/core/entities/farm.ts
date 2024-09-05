@@ -46,7 +46,7 @@ export class Farm extends Entity<FarmProps> {
     return this.props.tax;
   }
 
-  static create(props: Optional<FarmProps, "active" | "tax"> & EntityRequest) {
+  static create(props: Optional<FarmProps, "active" | "tax">) {
     const farm = new Farm({
       ...props,
       active: props.active ?? true,

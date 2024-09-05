@@ -20,12 +20,8 @@ export class OfferAggregate extends Entity<OfferAggregateProps> {
     return this.props.description;
   }
 
-  get farm_id() {
-    return this.props.farm_id;
-  }
-
-  get cycle_id() {
-    return this.props.cycle_id;
+  get catalog_id() {
+    return this.props.catalog_id;
   }
 
   get product() {

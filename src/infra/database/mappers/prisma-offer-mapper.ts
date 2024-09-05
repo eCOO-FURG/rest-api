@@ -10,8 +10,7 @@ export class PrismaOfferMapper {
     return Offer.create({
       ...raw,
       id: new UUID(raw.id),
-      cycle_id: new UUID(raw.cycle_id),
-      farm_id: new UUID(raw.farm_id),
+      catalog_id: new UUID(raw.catalog_id),
       product_id: new UUID(raw.product_id),
       amount: raw.amount.toNumber(),
       price: raw.price.toNumber(),
@@ -21,8 +20,7 @@ export class PrismaOfferMapper {
   static toPrisma(offer: Offer): Prisma.OfferUncheckedCreateInput {
     return {
       id: offer.id.value,
-      cycle_id: offer.cycle_id.value,
-      farm_id: offer.farm_id.value,
+      catalog_id: offer.catalog_id.value,
       product_id: offer.product_id.value,
       description: offer.description,
       amount: offer.amount,

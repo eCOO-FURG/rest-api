@@ -1,16 +1,16 @@
 // Libs
 import { Farm as PrismaFarm, Prisma } from "@prisma/client";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Entities
 import { Farm } from "@/core/entities/farm";
-import { UUID } from "@/core/entities/aggregates/uuid";
 
 export class PrismaFarmMapper {
   static toDomain(raw: PrismaFarm) {
     return Farm.create({
       ...raw,
-      admin_id: new UUID(raw.admin_id),
       id: new UUID(raw.id),
+      admin_id: new UUID(raw.admin_id),
     });
   }
 

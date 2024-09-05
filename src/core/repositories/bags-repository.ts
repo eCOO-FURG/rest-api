@@ -8,15 +8,21 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 
 export interface BagsRepositorySearchRequest {
   id?: string;
-  user_id?: string;
-  cycle_id?: string;
+  user?: {
+    id?: string;
+  };
+  cycle?: {
+    id?: string;
+  };
   since?: Date;
 }
 
 export interface BagsRepositorySearchManyRequest {
   page?: number;
   name?: string;
-  cycle_id?: string;
+  cycle?: {
+    id?: string;
+  };
   status?: "PENDING" | "SEPARATED" | "DISPATCHED";
   since?: Date;
 }

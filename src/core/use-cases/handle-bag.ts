@@ -14,6 +14,7 @@ export class HandleBagUseCase {
 
   async execute({ bag_id, status }: HandleBagUseCaseRequest) {
     const bag = await this.bagsRepository.search({ id: bag_id }, "entity");
+
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 
     bag.status = status;

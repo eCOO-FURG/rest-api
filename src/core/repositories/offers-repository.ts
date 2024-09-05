@@ -7,21 +7,21 @@ import { OfferAggregate } from "@/core/entities/aggregates/offer-aggregate";
 
 export interface OffersRepositorySearchRequest {
   id?: string;
-  cycle_id?: string;
-  product_id?: string;
-  farm_id?: string;
+  catalog?: {
+    id?: string;
+  };
+  product?: { id?: string; name?: string };
   since?: Date;
 }
 
 export interface OffersRepositorySearchManyRequest {
   ids?: string[];
-  cycle_id?: string;
-  farm_id?: string;
-  since?: Date;
-  product?: {
-    name: string;
+  catalog?: {
+    id?: string;
   };
+  product?: { name?: string };
   page?: number;
+  since?: Date;
 }
 
 export type OffersRepositoryResponse<T extends RepositoryResponse> =

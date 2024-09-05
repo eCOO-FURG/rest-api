@@ -7,11 +7,15 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 
 export interface OrdersRepositorySearchManyRequest {
   offers_ids?: string[];
-  bag_id?: string;
+  bag?: {
+    id?: string;
+  };
   since?: Date;
+  box?: {
+    id?: string;
+  };
   offer?: {
-    cycle_id: string;
-    farm_id: string;
+    catalog_id: string;
   };
 }
 

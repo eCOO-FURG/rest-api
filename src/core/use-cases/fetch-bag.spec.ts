@@ -7,9 +7,13 @@ import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 // Factories
 import { makeBag } from "@/test/factories/make-bag";
 import { makeUser } from "@/test/factories/make-user";
+import { makeOrder } from "@/test/factories/make-order";
+import { makeProduct } from "@/test/factories/make-product";
+import { makeOffer } from "@/test/factories/make-offer";
 
 // Entities
 import { OrderAggregate } from "@/core/entities/aggregates/order-aggregate";
+import { BagMerge } from "@/core/entities/merged/bag-merge";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -17,11 +21,6 @@ import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-rep
 import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
-import { makeOrder } from "@/test/factories/make-order";
-import { makeProduct } from "@/test/factories/make-product";
-import { makeOffer } from "@/test/factories/make-offer";
-import { BagMerge } from "../entities/merged/bag-merge";
 
 let usersRepository: InMemoryUsersRepository;
 let productsRepository: InMemoryProductsRepository;

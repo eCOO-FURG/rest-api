@@ -9,7 +9,7 @@ import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-r
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 
 // Entities
-import { BagMerge } from "@/core//entities/merged/bag-merge";
+import { BagMerge } from "@/core/entities/merged/bag-merge";
 
 // Factories
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";

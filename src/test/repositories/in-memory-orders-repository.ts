@@ -13,46 +13,49 @@ import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-r
 // Types
 import { RepositoryResponse } from "@/core/types/repository-response";
 
+// Utils
+import { filter } from "@/core/utils/filter";
+
 export class InMemoryOrdersRepository implements OrdersRepository {
   items: Order[] = [];
 
   constructor(private inMemoryOffersRepository: InMemoryOffersRepository) {}
 
   async searchMany<T extends RepositoryResponse = "entity">(
-    { since, offers_ids, offer, bag_id }: OrdersRepositorySearchManyRequest,
+    { since, offers_ids, offer, bag }: OrdersRepositorySearchManyRequest,
     type: T
   ): Promise<OrdersRepositoryResponse<T>[]> {
-    const entities = this.items.filter(
-      (item) =>
+    const orders = await filter<Order>(
+      this.items,
+      async (item) =>
         (!since || item.created_at >= since) &&
         (!offers_ids || offers_ids.includes(item.offer_id.value)) &&
-        (!bag_id || item.bag_id.equals(bag_id)) &&
+        (!bag?.id || item.bag_id.equals(bag.id)) &&
         (!offer ||
-          (() =>
-            this.inMemoryOffersRepository.search(
-              { cycle_id: offer.cycle_id, farm_id: offer.farm_id },
-              "entity"
-            ))())
+          !!(await this.inMemoryOffersRepository.search(
+            { catalog: { id: offer.catalog_id } },
+            "entity"
+          )))
     );
 
-    if (type === "entity") return entities as OrdersRepositoryResponse<T>[];
+    if (type === "entity") return orders as OrdersRepositoryResponse<T>[];
 
     const aggreagates: OrderAggregate[] = [];
 
-    for (const entity of entities) {
+    for (const order of orders) {
       const offer = await this.inMemoryOffersRepository.search(
-        { id: entity.offer_id.value },
+        { id: order.offer_id.value },
         "aggregate"
       );
 
       if (!offer) return [];
 
-      const aggreagate = OrderAggregate.create({
-        ...entity.props,
-        offer,
-      });
-
-      aggreagates.push(aggreagate);
+      aggreagates.push(
+        OrderAggregate.create({
+          ...order.props,
+          offer,
+        })
+      );
     }
 
     return aggreagates as OrdersRepositoryResponse<T>[];

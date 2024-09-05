@@ -24,11 +24,18 @@ import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-r
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
+import { InMemoryBoxesRepository } from "@/test/repositories/in-memory-boxes-repository";
+import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
+import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
+import { makeCatalog } from "@/test/factories/make-catalog";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
+let farmsRepository: InMemoryFarmsRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
+let ordersRepository: InMemoryOrdersRepository;
+let catalogsRepository: InMemoryCatalogsRepository;
 
 let repositories: {
   users: InMemoryUsersRepository;
@@ -37,6 +44,8 @@ let repositories: {
   products: InMemoryProductsRepository;
   bags: InMemoryBagsRepository;
   cycles: InMemoryCyclesRepository;
+  catalogs: InMemoryCatalogsRepository;
+  boxes: InMemoryBoxesRepository;
 };
 
 let sut: OrderProductsUseCase;
@@ -45,22 +54,25 @@ describe("order product", () => {
   beforeEach(() => {
     cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
-    offersRepository = new InMemoryOffersRepository(
-      productsRepository,
-      cyclesRepository
-    );
+    offersRepository = new InMemoryOffersRepository(productsRepository);
     usersRepository = new InMemoryUsersRepository();
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
+    farmsRepository = new InMemoryFarmsRepository(usersRepository);
+
+    catalogsRepository = new InMemoryCatalogsRepository(
+      farmsRepository,
+      offersRepository
+    );
 
     repositories = {
       users: usersRepository,
       products: productsRepository,
       offers: offersRepository,
-      orders: new InMemoryOrdersRepository(
-        offersRepository,
-        productsRepository
-      ),
-      bags: new InMemoryBagsRepository(usersRepository),
+      orders: ordersRepository,
+      bags: new InMemoryBagsRepository(usersRepository, ordersRepository),
       cycles: cyclesRepository,
+      catalogs: catalogsRepository,
+      boxes: new InMemoryBoxesRepository(catalogsRepository, ordersRepository),
     };
 
     sut = new OrderProductsUseCase(
@@ -68,7 +80,9 @@ describe("order product", () => {
       repositories.cycles,
       repositories.offers,
       repositories.orders,
-      repositories.bags
+      repositories.catalogs,
+      repositories.bags,
+      repositories.boxes
     );
   });
 
@@ -82,9 +96,12 @@ describe("order product", () => {
     const product = makeProduct();
     await repositories.products.create(product);
 
+    const catalog = makeCatalog({ cycle_id: cycle.id });
+    await repositories.catalogs.create(catalog);
+
     const offer = makeOffer({
       product_id: product.id,
-      cycle_id: cycle.id,
+      catalog_id: catalog.id,
       amount: 10,
     });
 
@@ -115,9 +132,12 @@ describe("order product", () => {
     const bag = makeBag({ user_id: user.id, cycle_id: cycle.id });
     await repositories.bags.create(bag);
 
+    const catalog = makeCatalog({ cycle_id: cycle.id });
+    await repositories.catalogs.create(catalog);
+
     const offer = makeOffer({
       product_id: product.id,
-      cycle_id: cycle.id,
+      catalog_id: catalog.id,
       amount: 10,
     });
 
@@ -232,9 +252,12 @@ describe("order product", () => {
     const product = makeProduct();
     await repositories.products.create(product);
 
+    const catalog = makeCatalog({ cycle_id: cycle.id });
+    await repositories.catalogs.create(catalog);
+
     const offer = makeOffer({
       product_id: product.id,
-      cycle_id: cycle.id,
+      catalog_id: catalog.id,
       amount: 10,
     });
 
@@ -265,9 +288,12 @@ describe("order product", () => {
     const product = makeProduct();
     await repositories.products.create(product);
 
+    const catalog = makeCatalog({ cycle_id: cycle.id });
+    await repositories.catalogs.create(catalog);
+
     const offer = makeOffer({
       product_id: product.id,
-      cycle_id: cycle.id,
+      catalog_id: catalog.id,
       amount: 5,
     });
 
@@ -295,9 +321,12 @@ describe("order product", () => {
     });
     await repositories.products.create(product);
 
+    const catalog = makeCatalog({ cycle_id: cycle.id });
+    await repositories.catalogs.create(catalog);
+
     const offer = makeOffer({
       product_id: product.id,
-      cycle_id: cycle.id,
+      catalog_id: catalog.id,
       amount: 500,
     });
 

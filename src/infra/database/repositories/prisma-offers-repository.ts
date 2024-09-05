@@ -22,18 +22,17 @@ import { Prisma } from "@prisma/client";
 
 export class PrismaOffersRepository implements OffersRepository {
   async search<T extends RepositoryResponse>(
-    { id, cycle_id, farm_id, product_id, since }: OffersRepositorySearchRequest,
+    { id, product, catalog, since }: OffersRepositorySearchRequest,
     type: T
   ): Promise<OffersRepositoryResponse<T> | null> {
     const where: Prisma.OfferWhereInput = {
       id,
-      cycle_id,
-      farm_id,
-      product_id,
+      catalog,
+      product,
       ...(since && { created_at: { gte: since } }),
     };
 
-    if (type === "aggregate") {
+    if (type === "entity") {
       const offer = await prisma.offer.findFirst({ where });
 
       if (!offer) return null;
@@ -54,22 +53,16 @@ export class PrismaOffersRepository implements OffersRepository {
   }
 
   async searchMany<T extends RepositoryResponse>(
-    {
-      ids,
-      cycle_id,
-      farm_id,
-      since,
-      product,
-      page,
-    }: OffersRepositorySearchManyRequest,
+    { ids, catalog, since, product, page }: OffersRepositorySearchManyRequest,
     type: T
   ): Promise<OffersRepositoryResponse<T>[]> {
     const where: Prisma.OfferWhereInput = {
-      cycle_id,
-      farm_id,
+      catalog,
       ...(ids && { id: { in: ids } }),
       ...(since && { created_at: { gte: since } }),
-      ...(product && { product: { name: { contains: product.name } } }),
+      ...(product && {
+        product: { name: { contains: product.name, mode: "insensitive" } },
+      }),
     };
 
     const query: Prisma.OfferFindManyArgs = {

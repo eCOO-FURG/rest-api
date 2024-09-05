@@ -3,7 +3,7 @@ import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-rep
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
+import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 
 // Use-cases
 import { DeleteOfferUseCase } from "@/core/use-cases/delete-offer";
@@ -11,6 +11,7 @@ import { DeleteOfferUseCase } from "@/core/use-cases/delete-offer";
 // Services
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeOffer } from "@/test/factories/make-offer";
+import { makeCatalog } from "@/test/factories/make-catalog";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -19,11 +20,12 @@ import { UnauthorizedError } from "@/core/errors/unauthorized";
 let productsRepository: InMemoryProductsRepository;
 let usersRepository: InMemoryUsersRepository;
 let offersRepository: InMemoryOffersRepository;
-let ordersRepository: InMemoryOrdersRepository;
+let farmsRepository: InMemoryFarmsRepository;
 
 let repositories: {
   offers: InMemoryOffersRepository;
   farms: InMemoryFarmsRepository;
+  catalogs: InMemoryCatalogsRepository;
 };
 
 let sut: DeleteOfferUseCase;
@@ -33,25 +35,31 @@ describe("delete offer", () => {
     productsRepository = new InMemoryProductsRepository();
     usersRepository = new InMemoryUsersRepository();
     offersRepository = new InMemoryOffersRepository(productsRepository);
-    ordersRepository = new InMemoryOrdersRepository(offersRepository);
+    farmsRepository = new InMemoryFarmsRepository(usersRepository);
 
     repositories = {
       offers: new InMemoryOffersRepository(productsRepository),
-      farms: new InMemoryFarmsRepository(
-        usersRepository,
-        offersRepository,
-        productsRepository,
-        ordersRepository
+      farms: farmsRepository,
+      catalogs: new InMemoryCatalogsRepository(
+        farmsRepository,
+        offersRepository
       ),
     };
-    sut = new DeleteOfferUseCase(repositories.farms, repositories.offers);
+    sut = new DeleteOfferUseCase(
+      repositories.farms,
+      repositories.offers,
+      repositories.catalogs
+    );
   });
 
   it("should be able to delete an offer", async () => {
     const farm = makeFarm();
     await repositories.farms.create(farm);
 
-    const offer = makeOffer({ farm_id: farm.id });
+    const catalog = makeCatalog({ farm_id: farm.id });
+    await repositories.catalogs.create(catalog);
+
+    const offer = makeOffer({ catalog_id: catalog.id });
     await repositories.offers.create(offer);
 
     await sut.execute({
@@ -90,7 +98,10 @@ describe("delete offer", () => {
     const farm2 = makeFarm();
     await repositories.farms.create(farm2);
 
-    const offer = makeOffer({ farm_id: farm2.id });
+    const catalog = makeCatalog({ farm_id: farm2.id });
+    await repositories.catalogs.create(catalog);
+
+    const offer = makeOffer({ catalog_id: catalog.id });
     await repositories.offers.create(offer);
 
     await expect(

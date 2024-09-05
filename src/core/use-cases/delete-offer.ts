@@ -5,6 +5,7 @@ import { UnauthorizedError } from "@/core/errors/unauthorized";
 // Repositories
 import { FarmsRepository } from "@/core/repositories/farms-repository";
 import { OffersRepository } from "@/core/repositories/offers-repository";
+import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
 
 interface DeleteOfferUseCaseRequest {
   farm_id: string;
@@ -14,7 +15,8 @@ interface DeleteOfferUseCaseRequest {
 export class DeleteOfferUseCase {
   constructor(
     private farmsRepository: FarmsRepository,
-    private offersRepository: OffersRepository
+    private offersRepository: OffersRepository,
+    private catalogsRepository: CatalogsRepository
   ) {}
 
   async execute({ farm_id, offer_id }: DeleteOfferUseCaseRequest) {
@@ -29,8 +31,16 @@ export class DeleteOfferUseCase {
 
     if (!offer) throw new ResourceNotFoundError("Oferta", offer_id);
 
-    if (!offer.farm_id.equals(farm_id)) throw new UnauthorizedError();
+    const catalog = await this.catalogsRepository.search(
+      { id: offer.catalog_id.value },
+      "entity"
+    );
 
-    this.offersRepository.delete(offer);
+    if (!catalog)
+      throw new ResourceNotFoundError("Catálogo", offer.catalog_id.value);
+
+    if (!catalog.farm_id.equals(farm_id)) throw new UnauthorizedError();
+
+    await this.offersRepository.delete(offer);
   }
 }

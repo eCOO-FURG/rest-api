@@ -4,9 +4,7 @@ import { Farm } from "@/core/entities/farm";
 // Repositories
 import {
   FarmsRepository,
-  FarmsRepositoryFindManyWithActiveOfferRequest,
   FarmsRepositoryResponse,
-  FarmsRepositorySearchManyWithOrdersRequest,
   FarmsRepositorySearchRequest,
 } from "@/core/repositories/farms-repository";
 import { prisma } from "@/infra/database/prisma-service";
@@ -34,41 +32,6 @@ export class PrismaFarmsRepository implements FarmsRepository {
     return PrismaFarmAggregateMapper.toDomain(
       found
     ) as FarmsRepositoryResponse<T>;
-  }
-
-  async findManyWithActiveOffer({
-    cycle_id,
-    page,
-    product,
-    created_at,
-  }: FarmsRepositoryFindManyWithActiveOfferRequest): Promise<Farm[]> {
-    const skip = (page - 1) * 20;
-
-    const farms = await prisma.farm.findMany({
-      where: {
-        offers: {
-          some: {
-            cycle_id,
-            product: {
-              name: {
-                contains: product,
-                mode: "insensitive",
-              },
-            },
-            created_at: {
-              gte: created_at,
-            },
-          },
-        },
-      },
-      orderBy: {
-        name: "asc",
-      },
-      skip,
-      take: 20,
-    });
-
-    return farms.map((farm) => PrismaFarmMapper.toDomain(farm));
   }
 
   async create(farm: Farm): Promise<void> {
@@ -99,41 +62,5 @@ export class PrismaFarmsRepository implements FarmsRepository {
       },
       data,
     });
-  }
-
-  async searchManyWithOrders({
-    cycle_id,
-    page,
-    name,
-  }: FarmsRepositorySearchManyWithOrdersRequest): Promise<Farm[]> {
-    const skip = (page - 1) * 20;
-
-    const farms = await prisma.farm.findMany({
-      where: {
-        name: {
-          contains: name,
-          mode: "insensitive",
-        },
-        offers: {
-          some: {
-            cycle_id,
-            orders: {
-              some: {
-                amount: {
-                  gte: 1,
-                },
-              },
-            },
-          },
-        },
-      },
-      orderBy: {
-        name: "asc",
-      },
-      skip,
-      take: 20,
-    });
-
-    return farms.map((farm) => PrismaFarmMapper.toDomain(farm));
   }
 }

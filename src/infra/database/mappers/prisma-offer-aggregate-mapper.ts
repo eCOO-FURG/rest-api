@@ -15,8 +15,7 @@ export class PrismaOfferAggregateMapper {
       id: new UUID(raw.id),
       price: raw.price.toNumber(),
       amount: raw.amount.toNumber(),
-      farm_id: new UUID(raw.farm_id),
-      cycle_id: new UUID(raw.cycle_id),
+      catalog_id: new UUID(raw.catalog_id),
       product: PrismaProductMapper.toDomain(raw.product),
     });
   }

@@ -23,11 +23,12 @@ import { Prisma } from "@prisma/client";
 
 export class PrismaOrdersRepository implements OrdersRepository {
   async searchMany<T extends RepositoryResponse = "entity">(
-    { bag_id, offer, offers_ids, since }: OrdersRepositorySearchManyRequest,
+    { bag, offer, offers_ids, since, box }: OrdersRepositorySearchManyRequest,
     type: T
   ): Promise<OrdersRepositoryResponse<T>[]> {
     const where: Prisma.OrderWhereInput = {
-      bag_id,
+      bag,
+      box,
       ...(since && { created_at: { gte: since } }),
       ...(offer && { offer: { ...offer } }),
       ...(offers_ids && { offer_id: { in: offers_ids } }),

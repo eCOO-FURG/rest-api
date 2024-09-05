@@ -18,10 +18,13 @@ export default (container: AwilixContainer) => {
     hasher: asClass(Jwt).singleton(),
     otpProvider: asClass(OtpGenerator),
     mailer: asFunction(() => {
+      const transporter = createTransport({
+        host: env.SMTP_HOST,
+        port: env.SMTP_PORT,
+      });
+
       if (["production", "staging"].includes(env.ENV)) {
-        const transporter = createTransport({
-          host: env.SMTP_HOST,
-          port: env.SMTP_PORT,
+        Object.assign(transporter, {
           auth: {
             user: env.ECOO_EMAIL,
             pass: env.ECOO_EMAIL_PASSWORD,
@@ -39,11 +42,6 @@ export default (container: AwilixContainer) => {
 
         return new Nodemailer(transporter, fallback);
       }
-
-      const transporter = createTransport({
-        host: env.SMTP_HOST,
-        port: env.SMTP_PORT,
-      });
 
       return new Nodemailer(transporter);
     }),

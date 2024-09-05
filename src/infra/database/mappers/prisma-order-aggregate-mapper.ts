@@ -6,7 +6,7 @@ import { OrderAggregate } from "@/core/entities/aggregates/order-aggregate";
 import { Prisma } from "@prisma/client";
 
 // Mappers
-import { PrismaOfferAggregateMapper } from "./prisma-offer-aggregate-mapper";
+import { PrismaOfferAggregateMapper } from "@/infra/database/mappers/prisma-offer-aggregate-mapper";
 
 export class PrismaOrderAggregateMapper {
   static toDomain(
@@ -26,6 +26,7 @@ export class PrismaOrderAggregateMapper {
       bag_id: new UUID(raw.bag_id),
       amount: raw.amount.toNumber(),
       offer: PrismaOfferAggregateMapper.toDomain(raw.offer),
+      box_id: new UUID(raw.box_id),
     });
   }
 }

@@ -2,6 +2,7 @@
 import { Cycle, Week } from "@/core/entities/cycle";
 import { Bag } from "@/core/entities/bag";
 import { Order } from "@/core/entities/order";
+import { Box } from "@/core/entities/box";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Repositories
@@ -10,6 +11,8 @@ import { OffersRepository } from "@/core/repositories/offers-repository";
 import { OrdersRepository } from "@/core/repositories/orders-repository";
 import { BagsRepository } from "@/core/repositories/bags-repository";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
+import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
+import { BoxesRepository } from "@/core/repositories/boxes-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -36,7 +39,9 @@ export class OrderProductsUseCase {
     private cyclesRepository: CyclesRepository,
     private offersRepository: OffersRepository,
     private ordersRepository: OrdersRepository,
-    private bagsRepository: BagsRepository
+    private catalogsRepository: CatalogsRepository,
+    private bagsRepository: BagsRepository,
+    private boxesRepository: BoxesRepository
   ) {}
 
   async execute({
@@ -73,8 +78,17 @@ export class OrderProductsUseCase {
     for (const item of request) {
       const offer = offers.find((offer) => offer.id.equals(item.offer_id));
 
-      if (!offer || !offer.cycle_id.equals(cycle_id))
-        throw new ResourceNotFoundError("Oferta", item.offer_id);
+      if (!offer) throw new ResourceNotFoundError("Oferta", item.offer_id);
+
+      const catalog = await this.catalogsRepository.search(
+        { id: offer.catalog_id.value },
+        "entity"
+      );
+
+      if (!catalog) throw new ResourceNotFoundError("Catálogo", item.offer_id);
+
+      if (!catalog.cycle_id.equals(cycle_id))
+        throw new ResourceNotFoundError("Catálogo", catalog.id.value);
 
       if (item.amount > offer.amount)
         throw new UnavailableAmountError(offer.id.value);
@@ -86,10 +100,13 @@ export class OrderProductsUseCase {
         throw new InvalidWeightError("solicitado", offer.product.id.value);
       }
 
+      const box = await this.useBox(catalog.id);
+
       const order = Order.create({
         amount: item.amount,
         offer_id: offer.id,
         bag_id: bag.id,
+        box_id: box.id,
       });
 
       orders.push(order);
@@ -99,22 +116,41 @@ export class OrderProductsUseCase {
   }
 
   private async useBag(user_id: UUID, cycle: Cycle, address?: string) {
-    const exists = await this.bagsRepository.search(
+    const found = await this.bagsRepository.search(
       {
-        user_id: user_id.value,
-        cycle_id: cycle.id.value,
+        user: {
+          id: user_id.value,
+        },
+        cycle: {
+          id: cycle.id.value,
+        },
         since: mostPast(cycle.order),
       },
       "entity"
     );
 
-    if (exists) return exists;
+    if (found) return found;
 
     const bag = Bag.create({ user_id, cycle_id: cycle.id, address });
 
     await this.bagsRepository.create(bag);
 
     return bag;
+  }
+
+  private async useBox(catalog_id: UUID) {
+    const found = await this.boxesRepository.search(
+      { catalog: { id: catalog_id.value } },
+      "entity"
+    );
+
+    if (found) return found;
+
+    const box = Box.create({ catalog_id });
+
+    await this.boxesRepository.create(box);
+
+    return box;
   }
 
   private orderedAmountIsLegal(amount: number) {

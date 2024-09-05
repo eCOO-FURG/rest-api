@@ -18,9 +18,6 @@ import { makeUser } from "@/test/factories/make-user";
 import { Farm } from "@/core/entities/farm";
 
 let usersRepository: InMemoryUsersRepository;
-let productsRepository: InMemoryProductsRepository;
-let offersRepository: InMemoryOffersRepository;
-let ordersRepository: InMemoryOrdersRepository;
 
 let repositories: {
   users: InMemoryUsersRepository;
@@ -32,18 +29,10 @@ let sut: RegisterFarmUseCase;
 describe("create farm", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
-    productsRepository = new InMemoryProductsRepository();
-    offersRepository = new InMemoryOffersRepository(productsRepository);
-    ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
     repositories = {
       users: usersRepository,
-      farm: new InMemoryFarmsRepository(
-        usersRepository,
-        offersRepository,
-        productsRepository,
-        ordersRepository
-      ),
+      farm: new InMemoryFarmsRepository(usersRepository),
     };
 
     sut = new RegisterFarmUseCase(repositories.users, repositories.farm);

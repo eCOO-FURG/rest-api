@@ -28,7 +28,12 @@ export class PrintDeliveriesReportUseCase {
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
     const bags = await this.bagsRepository.searchMany(
-      { cycle_id, since: mostPast(cycle.order) },
+      {
+        cycle: {
+          id: cycle_id,
+        },
+        since: mostPast(cycle.order),
+      },
       "merged"
     );
 

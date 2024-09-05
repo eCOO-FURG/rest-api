@@ -1,6 +1,6 @@
 // Entities
 import { Entity } from "@/core/entities/entity";
-import { OrderProps } from "@/core/entities/order";
+import { Order, OrderProps } from "@/core/entities/order";
 import { OfferAggregate } from "@/core/entities/aggregates/offer-aggregate";
 
 interface OrderAggregateProps extends Omit<OrderProps, "offer_id"> {
@@ -18,6 +18,10 @@ export class OrderAggregate extends Entity<OrderAggregateProps> {
 
   get status() {
     return this.props.status;
+  }
+
+  set status(value: Order["status"]) {
+    this.status = value;
   }
 
   get offer() {
