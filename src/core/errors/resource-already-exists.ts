@@ -1,5 +1,5 @@
 export class ResourceAlreadyExistsError extends Error {
-  constructor(resource: string, identifier: string) {
-    super(`${resource} ${identifier} já existe.`);
+  constructor() {
+    super(`Oferta do produto já existe para esse ciclo.`);
   }
 }
