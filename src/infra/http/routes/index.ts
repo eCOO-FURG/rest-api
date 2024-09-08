@@ -23,6 +23,7 @@ import { listBagsController } from "@/infra/http/controllers/list-bags";
 import { fetchBagController } from "@/infra/http/controllers/fetch-bag";
 import { handleBagController } from "@/infra/http/controllers/handle-bag";
 import { handleBoxStatusController } from "@/infra/http/controllers/handle-box-status";
+import { listOffersController } from "@/infra/http/controllers/list-offers";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -52,6 +53,12 @@ router.patch(
 router.get("/boxes", ensureAuthenticated, ensureAdmin, listBoxesController);
 router.get("/boxes/:box_id", ensureAuthenticated, fetchBoxController);
 
+router.get(
+  "/offers/:cycle_id",
+  ensureAuthenticated,
+  ensureFarmAdmin,
+  listOffersController
+);
 router.post(
   "/offers",
   ensureAuthenticated,
