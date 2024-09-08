@@ -49,6 +49,41 @@ export class InMemoryFarmsRepository implements FarmsRepository {
     return aggregate as FarmsRepositoryResponse<T>;
   }
 
+  async searchMany<T extends RepositoryResponse = "entity">(
+    { page, name }: { page: number; name?: string },
+    type = "entity"
+  ): Promise<FarmsRepositoryResponse<T>[]> {
+    const farms = this.items.filter(
+      (farm) => !name || farm.name.includes(name)
+    );
+
+    if (type === "entity") {
+      return farms.slice(
+        (page - 1) * 20,
+        page * 20
+      ) as FarmsRepositoryResponse<T>[];
+    }
+
+    const aggregates = [];
+
+    for (const farm of farms) {
+      const _admin = await this.inMemoryUsersRepository.findById(
+        farm.admin_id.value
+      );
+
+      if (!_admin) continue;
+
+      const aggregate = FarmAggregate.create({ ...farm.props, admin: _admin });
+
+      aggregates.push(aggregate);
+    }
+
+    return aggregates.slice(
+      (page - 1) * 20,
+      page * 20
+    ) as FarmsRepositoryResponse<T>[];
+  }
+
   async create(farm: Farm): Promise<void> {
     this.items.push(farm);
 

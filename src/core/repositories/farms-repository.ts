@@ -3,7 +3,7 @@ import { Farm } from "@/core/entities/farm";
 
 // Types
 import { RepositoryResponse } from "@/core/types/repository-response";
-import { FarmAggregate } from "../entities/aggregates/farm-aggregate";
+import { FarmAggregate } from "@/core/entities/aggregates/farm-aggregate";
 
 export interface FarmsRepositorySearchRequest {
   id?: string;
@@ -22,6 +22,10 @@ export interface FarmsRepository {
     filters: FarmsRepositorySearchRequest,
     type: T
   ): Promise<FarmsRepositoryResponse<T> | null>;
+  searchMany<T extends RepositoryResponse = "entity">(
+    filters: { page: number; farm?: string },
+    type?: T
+  ): Promise<FarmsRepositoryResponse<T>[]>;
   create(farm: Farm): Promise<void>;
   update(farm: Farm): Promise<void>;
 }
