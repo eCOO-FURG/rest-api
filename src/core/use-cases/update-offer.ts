@@ -65,7 +65,9 @@ export class UpdateOfferUseCase {
       throw new ClosedActionError("ofertar", cycle.id.value);
 
     offer.amount = amount ?? offer.amount;
-    offer.price = price ?? offer.price;
+    
+    const newPrice = price ? (price + (price * farm.tax) / 100) : offer.price;
+    offer.price = newPrice;
 
     await this.offersRepository.update(offer);
   }
