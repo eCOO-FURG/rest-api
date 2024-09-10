@@ -23,7 +23,7 @@ import { ListBoxesUseCase } from "@/core/use-cases/list-boxes";
 import { SearchCatalogsUseCase } from "@/core/use-cases/search-catalogs";
 import { FetchBoxUseCase } from "@/core/use-cases/fetch-box";
 import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
-import { ListOffersUseCase } from "@/core/use-cases/list-offers";
+import { FetchLastCatalogUseCase } from "@/core/use-cases/fetch-last-catalog";
 
 
 export default (container: AwilixContainer) => {
@@ -159,16 +159,14 @@ export default (container: AwilixContainer) => {
       ({ cyclesRepository, bagsRepository }) =>
         new ListBagsUseCase(cyclesRepository, bagsRepository)
     ),
-    listOffersUseCase: asFunction(
+    fetchLastCatalogUseCase: asFunction(
       ({
         cyclesRepository,
         catalogsRepository,
-        offersRepository,
       }) =>
-        new ListOffersUseCase(
+        new FetchLastCatalogUseCase(
           cyclesRepository,
           catalogsRepository,
-          offersRepository
         )
     ),
   });
