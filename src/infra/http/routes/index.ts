@@ -18,12 +18,13 @@ import { fetchBoxController } from "@/infra/http/controllers/fetch-box";
 import { searchCatalogsController } from "@/infra/http/controllers/search-catalogs";
 import { fetchCatalogController } from "@/infra/http/controllers/fetch-catalog";
 import { listProductsController } from "@/infra/http/controllers/list-products";
-import { printDeliveriesReportController } from "../controllers/print-deliveries-report";
+import { printDeliveriesReportController } from "@/infra/http/controllers/print-deliveries-report";
 import { listBagsController } from "@/infra/http/controllers/list-bags";
 import { fetchBagController } from "@/infra/http/controllers/fetch-bag";
 import { handleBagController } from "@/infra/http/controllers/handle-bag";
 import { handleBoxStatusController } from "@/infra/http/controllers/handle-box-status";
 import { deleteOfferController } from "@/infra/http/controllers/delete-offer";
+import { listFarmsController } from "@/infra/http/controllers/list-farms";
 import { handleFarmStatusController } from "@/infra/http/controllers/handle-farm-status";
 
 // Middlewares
@@ -42,6 +43,7 @@ router.post("/auth", authenticateController);
 router.post("/auth/otp", requestOtpController);
 
 router.post("/farms", ensureAuthenticated, registerFarmController);
+router.get("/farms", ensureAuthenticated, ensureAdmin, listFarmsController);
 router.patch(
   "/farms/:farm_id",
   ensureAuthenticated,
