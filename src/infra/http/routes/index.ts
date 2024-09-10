@@ -23,6 +23,7 @@ import { listBagsController } from "@/infra/http/controllers/list-bags";
 import { fetchBagController } from "@/infra/http/controllers/fetch-bag";
 import { handleBagController } from "@/infra/http/controllers/handle-bag";
 import { handleBoxStatusController } from "@/infra/http/controllers/handle-box-status";
+import { deleteOfferController } from "@/infra/http/controllers/delete-offer";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -63,6 +64,12 @@ router.patch(
   ensureAuthenticated,
   ensureFarmAdmin,
   updateOfferController
+);
+router.delete(
+  "/offers/:offer_id",
+  ensureAuthenticated,
+  ensureFarmAdmin,
+  deleteOfferController
 );
 
 router.get("/catalogs", searchCatalogsController);
