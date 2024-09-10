@@ -25,6 +25,7 @@ import { FetchBoxUseCase } from "@/core/use-cases/fetch-box";
 import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
 import { DeleteOfferUseCase } from "@/core/use-cases/delete-offer";
 import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
+import { HandleFarmStatusUseCase } from "@/core/use-cases/handle-farm-status";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -160,11 +161,7 @@ export default (container: AwilixContainer) => {
         new ListBagsUseCase(cyclesRepository, bagsRepository)
     ),
     deleteOfferUseCase: asFunction(
-      ({
-        farmsRepository,
-        offersRepository,
-        catalogsRepository,
-      }) =>
+      ({ farmsRepository, offersRepository, catalogsRepository }) =>
         new DeleteOfferUseCase(
           farmsRepository,
           offersRepository,
@@ -173,6 +170,9 @@ export default (container: AwilixContainer) => {
     ),
     listFarmsUseCase: asFunction(
       ({ farmsRepository }) => new ListFarmsUseCase(farmsRepository)
+    ),
+    handleFarmStatusUseCase: asFunction(
+      ({ farmsRepository }) => new HandleFarmStatusUseCase(farmsRepository)
     ),
   });
 };

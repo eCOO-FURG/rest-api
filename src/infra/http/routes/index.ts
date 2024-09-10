@@ -25,6 +25,7 @@ import { handleBagController } from "@/infra/http/controllers/handle-bag";
 import { handleBoxStatusController } from "@/infra/http/controllers/handle-box-status";
 import { deleteOfferController } from "@/infra/http/controllers/delete-offer";
 import { listFarmsController } from "@/infra/http/controllers/list-farms";
+import { handleFarmStatusController } from "@/infra/http/controllers/handle-farm-status";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -43,6 +44,12 @@ router.post("/auth/otp", requestOtpController);
 
 router.post("/farms", ensureAuthenticated, registerFarmController);
 router.get("/farms", ensureAuthenticated, ensureAdmin, listFarmsController);
+router.patch(
+  "/farms/:farm_id",
+  ensureAuthenticated,
+  ensureAdmin,
+  handleFarmStatusController
+);
 
 router.post("/orders", ensureAuthenticated, orderProductsController);
 
