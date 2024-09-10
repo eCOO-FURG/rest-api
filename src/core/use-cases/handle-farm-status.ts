@@ -13,7 +13,10 @@ export class HandleFarmStatusUseCase {
 
   async execute({ farm_id }: HandleFarmStatusUseCaseRequest) {
     const farm = await this.farmsRepository.search({ id: farm_id }, "entity");
-    if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
+
+    if (!farm) {
+      throw new ResourceNotFoundError("Fazenda", farm_id);
+    }
 
     farm.active = !farm.active;
 
