@@ -63,20 +63,16 @@ export class PrismaFarmsRepository implements FarmsRepository {
       ) as FarmsRepositoryResponse<T>[];
     }
 
-    if (type === "aggregate") {
-      const farms = await prisma.farm.findMany({
-        ...query,
-        include: {
-          admin: true,
-        },
-      });
+    const farms = await prisma.farm.findMany({
+      ...query,
+      include: {
+        admin: true,
+      },
+    });
 
-      return farms.map((farm) =>
-        PrismaFarmAggregateMapper.toDomain(farm)
-      ) as FarmsRepositoryResponse<T>[];
-    }
-
-    return [];
+    return farms.map((farm) =>
+      PrismaFarmAggregateMapper.toDomain(farm)
+    ) as FarmsRepositoryResponse<T>[];
   }
 
   async create(farm: Farm): Promise<void> {
