@@ -41,7 +41,7 @@ router.post("/auth", authenticateController);
 router.post("/auth/otp", requestOtpController);
 
 router.post("/farms", ensureAuthenticated, registerFarmController);
-router.get("/farms", ensureAuthenticated, ensureFarmAdmin, listFarmsController);
+router.get("/farms", ensureAuthenticated, ensureAdmin, listFarmsController);
 
 router.post("/orders", ensureAuthenticated, orderProductsController);
 

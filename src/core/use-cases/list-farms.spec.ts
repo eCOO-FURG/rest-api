@@ -34,4 +34,23 @@ describe("list farms", () => {
 
     expect(response.farms).toHaveLength(1);
   });
+
+  it("should be able to list farms by name", async () => {
+    const user = makeUser();
+    await usersRepository.create(user);
+
+    const farm1 = makeFarm({ admin_id: user.id, name: "Farm 1" });
+    await farmsRepository.create(farm1);
+
+    const farm2 = makeFarm({ admin_id: user.id, name: "Farm 2" });
+    await farmsRepository.create(farm2);
+
+    const response = await sut.execute({
+      page: 1,
+      name: "Farm 1",
+    });
+
+    expect(response.farms).toHaveLength(1);
+    expect(response.farms[0].name).toBe("Farm 1");
+  });
 });

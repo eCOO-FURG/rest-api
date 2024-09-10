@@ -13,6 +13,10 @@ export interface FarmsRepositorySearchRequest {
     id?: string;
   };
 }
+export interface FarmsRepositorySearchManyRequest {
+  page: number;
+  name?: string;
+}
 
 export type FarmsRepositoryResponse<T extends RepositoryResponse> =
   T extends "entity" ? Farm : FarmAggregate;
@@ -22,9 +26,9 @@ export interface FarmsRepository {
     filters: FarmsRepositorySearchRequest,
     type: T
   ): Promise<FarmsRepositoryResponse<T> | null>;
-  searchMany<T extends RepositoryResponse = "entity">(
-    filters: { page: number; farm?: string },
-    type?: T
+  searchMany<T extends RepositoryResponse>(
+    filters: FarmsRepositorySearchManyRequest,
+    type: T
   ): Promise<FarmsRepositoryResponse<T>[]>;
   create(farm: Farm): Promise<void>;
   update(farm: Farm): Promise<void>;

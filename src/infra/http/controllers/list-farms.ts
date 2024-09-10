@@ -9,7 +9,7 @@ import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
 import container from "@/infra/container";
 
 // Presenters
-import { FarmPresenter } from "../presenters/farm-presenter";
+import { FarmPresenter } from "@/infra/http/presenters/farm-presenter";
 
 const listFarmsSchema = {
   query: z.object({
@@ -29,7 +29,7 @@ export async function listFarmsController(
     const listFarmsUseCase =
       container.resolve<ListFarmsUseCase>("listFarmsUseCase");
 
-    const { farms } = await listFarmsUseCase.execute({ page, farm });
+    const { farms } = await listFarmsUseCase.execute({ page, name: farm });
 
     return response
       .status(200)

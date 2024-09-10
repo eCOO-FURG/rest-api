@@ -57,16 +57,15 @@ export class InMemoryFarmsRepository implements FarmsRepository {
       (farm) => !name || farm.name.includes(name)
     );
 
+    const slicedFarms = farms.slice((page - 1) * 20, page * 20);
+
     if (type === "entity") {
-      return farms.slice(
-        (page - 1) * 20,
-        page * 20
-      ) as FarmsRepositoryResponse<T>[];
+      return slicedFarms as FarmsRepositoryResponse<T>[];
     }
 
     const aggregates = [];
 
-    for (const farm of farms) {
+    for (const farm of slicedFarms) {
       const _admin = await this.inMemoryUsersRepository.findById(
         farm.admin_id.value
       );
@@ -78,10 +77,7 @@ export class InMemoryFarmsRepository implements FarmsRepository {
       aggregates.push(aggregate);
     }
 
-    return aggregates.slice(
-      (page - 1) * 20,
-      page * 20
-    ) as FarmsRepositoryResponse<T>[];
+    return aggregates as FarmsRepositoryResponse<T>[];
   }
 
   async create(farm: Farm): Promise<void> {
