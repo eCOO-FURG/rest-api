@@ -66,8 +66,7 @@ export class UpdateOfferUseCase {
 
     offer.amount = amount ?? offer.amount;
     
-    const newPrice = price ? (price + (price * farm.tax) / 100) : offer.price;
-    offer.price = newPrice;
+    offer.price = price ? (price + (price * farm.tax) / 100) : offer.price;
 
     await this.offersRepository.update(offer);
   }
