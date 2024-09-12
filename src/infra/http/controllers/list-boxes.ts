@@ -1,7 +1,7 @@
 // Use-cases
+import { ListBoxesUseCase } from "@/core/use-cases/list-boxes";
 
 // Container
-import { ListBoxesUseCase } from "@/core/use-cases/list-boxes";
 import container from "@/infra/container";
 
 // Libs
