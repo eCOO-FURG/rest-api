@@ -38,7 +38,7 @@ describe("Fetch last catalog", () => {
     sut = new FetchLastCatalogUseCase(cyclesRepository, catalogsRepository);
   });
 
-  it("should be able to fetch the last catalog for a valid cycle and farm", async () => {
+  it("should be able to fetch the last catalog from a farm in a cycle", async () => {
     const user = makeUser();
     await usersRepository.create(user);
 
@@ -47,6 +47,12 @@ describe("Fetch last catalog", () => {
 
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
+
+    const lastCatalog = makeCatalog({
+      cycle_id: cycle.id,
+      farm_id: farm.id,
+    });
+    await catalogsRepository.create(lastCatalog);
 
     const catalog = makeCatalog({
       cycle_id: cycle.id,
@@ -59,32 +65,59 @@ describe("Fetch last catalog", () => {
       farm_id: farm.id.value,
     });
 
-    expect(result.catalog.id.value).toBe(catalog.id.value);
+    expect(result.catalog.id.value).toBe(lastCatalog.id.value);
   });
 
-  it("should throw an error if the cycle does not exist", async () => {
-    await expect(() =>
-      sut.execute({
-        cycle_id: "non-existent-cycle",
-        farm_id: "any-farm-id",
-      })
-    ).rejects.toBeInstanceOf(ResourceNotFoundError);
-  });
-
-  it("should throw an error if the catalog does not exist for the cycle and farm", async () => {
+  it("should not be able to fetch a catalog that does not exist", async () => {
     const user = makeUser();
     await usersRepository.create(user);
-
+  
     const farm = makeFarm({ admin_id: user.id });
     await farmsRepository.create(farm);
-
+  
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
-
+  
     await expect(() =>
       sut.execute({
         cycle_id: cycle.id.value,
         farm_id: farm.id.value,
+      })
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it("should not be able to fetch a catalog in a non existent cycle", async () => {
+    const user = makeUser();
+    await usersRepository.create(user);
+  
+    const farm = makeFarm({ admin_id: user.id });
+    await farmsRepository.create(farm);
+  
+    await expect(() =>
+      sut.execute({
+        cycle_id: "non-existent-cycle",
+        farm_id: farm.id.value,
+      })
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it("should not be able to fetch a catalog from a non existent farm", async () => {
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+  
+    await expect(() =>
+      sut.execute({
+        cycle_id: cycle.id.value,
+        farm_id: "non-existent-farm",
+      })
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+  
+  it("should throw an error if the cycle and farm do not exist", async () => {
+    await expect(() =>
+      sut.execute({
+        cycle_id: "non-existent-cycle",
+        farm_id: "non-existent-farm",
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
