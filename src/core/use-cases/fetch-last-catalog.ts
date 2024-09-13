@@ -5,7 +5,7 @@ import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
-interface FetchLastCatalogProps {
+interface FetchLastCatalogUseCaseRequest {
     cycle_id: string;
     farm_id: string;
 }
@@ -16,7 +16,7 @@ export class FetchLastCatalogUseCase {
         private catalogsRepository: CatalogsRepository,
     ) { }
 
-    async execute({ cycle_id, farm_id }: FetchLastCatalogProps) {
+    async execute({ cycle_id, farm_id }: FetchLastCatalogUseCaseRequest) {
 
         const cycle = await this.cyclesRepository.findById(cycle_id);
 
