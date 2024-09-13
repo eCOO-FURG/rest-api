@@ -31,7 +31,7 @@ export class PrismaBagsRepository implements BagsRepository {
     const where: Prisma.BagWhereInput = {
       id,
       cycle,
-      user_id: user?.id,
+      customer: user,
     };
 
     if (since) Object.assign(where, { created_at: { gte: since } });
