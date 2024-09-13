@@ -25,12 +25,13 @@ import { Prisma } from "@prisma/client";
 
 export class PrismaBagsRepository implements BagsRepository {
   async search<T extends RepositoryResponse = "entity">(
-    { cycle, since, id }: BagsRepositorySearchRequest,
+    { cycle, since, id, user }: BagsRepositorySearchRequest,
     type: T
   ): Promise<BagsRepositoryResponse<T> | null> {
     const where: Prisma.BagWhereInput = {
       id,
       cycle,
+      user_id: user?.id,
     };
 
     if (since) Object.assign(where, { created_at: { gte: since } });
