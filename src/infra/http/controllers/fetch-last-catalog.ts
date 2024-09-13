@@ -9,7 +9,7 @@ import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
 
 // Presenters
-import { OfferPresenter } from "@/infra/http/presenters/offer-presenter";
+import { CatalogPresenter } from "@/infra/http/presenters/catalog-presenter";
 
 const fetchLastCatalogSchema = {
   params: z.object({
@@ -27,20 +27,17 @@ export async function fetchLastCatalogController(
 
     const farm_id = request.farm_id;
 
-
     const fetchLastCatalogUseCase =
       container.resolve<FetchLastCatalogUseCase>("fetchLastCatalogUseCase");
-
 
     const { catalog } = await fetchLastCatalogUseCase.execute({
       cycle_id,
       farm_id,
     });
     
-
     return response
       .status(200)
-      .send(catalog.offers.map((offer) => OfferPresenter.toHttp(offer)));
+      .send(CatalogPresenter.toHttp(catalog));
 
   } catch (error) {
     next(error);
