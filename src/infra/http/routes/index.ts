@@ -70,7 +70,7 @@ router.patch(
 router.get("/catalogs", searchCatalogsController);
 router.get("/catalogs/:catalog_id", fetchCatalogController);
 router.get(
-  "/catalogs/current/:cycle_id",
+  "/catalogs/last/:cycle_id",
   ensureAuthenticated,
   ensureFarmAdmin,
   fetchLastCatalogController
