@@ -32,7 +32,10 @@ describe("Fetch last catalog", () => {
     farmsRepository = new InMemoryFarmsRepository(usersRepository);
     productsRepository = new InMemoryProductsRepository();
     offersRepository = new InMemoryOffersRepository(productsRepository);
-    catalogsRepository = new InMemoryCatalogsRepository(farmsRepository, offersRepository);
+    catalogsRepository = new InMemoryCatalogsRepository(
+      farmsRepository,
+      offersRepository
+    );
     cyclesRepository = new InMemoryCyclesRepository();
 
     sut = new FetchLastCatalogUseCase(cyclesRepository, catalogsRepository);
@@ -71,13 +74,13 @@ describe("Fetch last catalog", () => {
   it("should not be able to fetch a catalog that does not exist", async () => {
     const user = makeUser();
     await usersRepository.create(user);
-  
+
     const farm = makeFarm({ admin_id: user.id });
     await farmsRepository.create(farm);
-  
+
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
-  
+
     await expect(() =>
       sut.execute({
         cycle_id: cycle.id.value,
@@ -89,10 +92,10 @@ describe("Fetch last catalog", () => {
   it("should not be able to fetch a catalog in a non existent cycle", async () => {
     const user = makeUser();
     await usersRepository.create(user);
-  
+
     const farm = makeFarm({ admin_id: user.id });
     await farmsRepository.create(farm);
-  
+
     await expect(() =>
       sut.execute({
         cycle_id: "non-existent-cycle",
@@ -104,7 +107,7 @@ describe("Fetch last catalog", () => {
   it("should not be able to fetch a catalog from a non existent farm", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
-  
+
     await expect(() =>
       sut.execute({
         cycle_id: cycle.id.value,
@@ -112,7 +115,7 @@ describe("Fetch last catalog", () => {
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
-  
+
   it("should throw an error if the cycle and farm do not exist", async () => {
     await expect(() =>
       sut.execute({
@@ -122,5 +125,3 @@ describe("Fetch last catalog", () => {
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });
-
-
