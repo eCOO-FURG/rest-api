@@ -23,6 +23,7 @@ import { listBagsController } from "@/infra/http/controllers/list-bags";
 import { fetchBagController } from "@/infra/http/controllers/fetch-bag";
 import { handleBagController } from "@/infra/http/controllers/handle-bag";
 import { handleBoxStatusController } from "@/infra/http/controllers/handle-box-status";
+import { fetchLastCatalogController } from "@/infra/http/controllers/fetch-last-catalog";
 import { deleteOfferController } from "@/infra/http/controllers/delete-offer";
 import { listFarmsController } from "@/infra/http/controllers/list-farms";
 import { handleFarmStatusController } from "@/infra/http/controllers/handle-farm-status";
@@ -83,6 +84,12 @@ router.delete(
 
 router.get("/catalogs", searchCatalogsController);
 router.get("/catalogs/:catalog_id", fetchCatalogController);
+router.get(
+  "/catalogs/last/:cycle_id",
+  ensureAuthenticated,
+  ensureFarmAdmin,
+  fetchLastCatalogController
+);
 
 router.get("/bags", ensureAuthenticated, ensureAdmin, listBagsController);
 router.get(

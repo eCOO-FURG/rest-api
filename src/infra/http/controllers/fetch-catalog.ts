@@ -7,10 +7,10 @@ import container from "@/infra/container";
 
 // Use-cases
 import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
-import { CatalogPresenter } from "@/infra/http/presenters/catalog-presenter";
-import { OfferPresenter } from "@/infra/http/presenters/offer-presenter";
 
 // Presenters
+import { CatalogPresenter } from "@/infra/http/presenters/catalog-presenter";
+import { OfferPresenter } from "@/infra/http/presenters/offer-presenter";
 
 const fetchCatalogsSchema = {
   query: z.object({
