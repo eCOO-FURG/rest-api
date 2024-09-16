@@ -113,7 +113,7 @@ model Cycle {
   updated_at DateTime?
 
   bags     Bag[]
-  catalogs Catalog[]
+  catalogs Catalog[] 
 
   @@map("cycles")
 }
@@ -125,7 +125,7 @@ model Catalog {
   farm    Farm   @relation(fields: [farm_id], references: [id])
 
   cycle_id String
-  cycle    Cycle  @relation(fields: [cycle_id], references: [id])
+  cycle    Cycle  @relation(fields: [cycle_id], references: [id], onDelete: Cascade)
 
   created_at DateTime  @default(now())
   updated_at DateTime?

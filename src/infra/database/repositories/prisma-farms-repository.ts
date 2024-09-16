@@ -5,12 +5,16 @@ import { Farm } from "@/core/entities/farm";
 import {
   FarmsRepository,
   FarmsRepositoryResponse,
+  FarmsRepositorySearchManyRequest,
   FarmsRepositorySearchRequest,
 } from "@/core/repositories/farms-repository";
 import { prisma } from "@/infra/database/prisma-service";
 import { PrismaFarmMapper } from "@/infra/database/mappers/prisma-farm-mapper";
 import { RepositoryResponse } from "@/core/types/repository-response";
-import { PrismaFarmAggregateMapper } from "../mappers/prisma-farm-aggregate-mapper";
+import { PrismaFarmAggregateMapper } from "@/infra/database/mappers/prisma-farm-aggregate-mapper";
+
+// Libs
+import { Prisma } from "@prisma/client";
 
 export class PrismaFarmsRepository implements FarmsRepository {
   async search<T extends RepositoryResponse>(
@@ -32,6 +36,43 @@ export class PrismaFarmsRepository implements FarmsRepository {
     return PrismaFarmAggregateMapper.toDomain(
       found
     ) as FarmsRepositoryResponse<T>;
+  }
+
+  async searchMany<T extends RepositoryResponse>(
+    { page, name }: FarmsRepositorySearchManyRequest,
+    type: T
+  ): Promise<FarmsRepositoryResponse<T>[]> {
+    const query: Prisma.FarmFindManyArgs = {
+      where: {
+        name: {
+          contains: name,
+          mode: "insensitive",
+        },
+      },
+      skip: (page - 1) * 20,
+      take: 20,
+      orderBy: {
+        name: "asc",
+      },
+    };
+
+    if (type === "entity") {
+      const farms = await prisma.farm.findMany(query);
+      return farms.map((farm) =>
+        PrismaFarmMapper.toDomain(farm)
+      ) as FarmsRepositoryResponse<T>[];
+    }
+
+    const farms = await prisma.farm.findMany({
+      ...query,
+      include: {
+        admin: true,
+      },
+    });
+
+    return farms.map((farm) =>
+      PrismaFarmAggregateMapper.toDomain(farm)
+    ) as FarmsRepositoryResponse<T>[];
   }
 
   async create(farm: Farm): Promise<void> {
@@ -56,7 +97,7 @@ export class PrismaFarmsRepository implements FarmsRepository {
   async update(farm: Farm): Promise<void> {
     const data = PrismaFarmMapper.toPrisma(farm);
 
-    await prisma.user.update({
+    await prisma.farm.update({
       where: {
         id: farm.id.value,
       },
