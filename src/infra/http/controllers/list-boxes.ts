@@ -11,11 +11,19 @@ import { z } from "zod";
 // Presenters
 import { BoxPresenter } from "@/infra/http/presenters/box-presenter";
 
-const listBoxesSchema = {
+export const listBoxesSchema = {
   query: z.object({
-    cycle_id: z.string().uuid(),
-    page: z.coerce.number(),
-    name: z.string().optional(),
+    cycle_id: z
+      .string()
+      .uuid()
+      .openapi({ description: "O ciclo de busca das caixas." }),
+    page: z.coerce.number().openapi({ description: "A página de busca." }),
+    name: z
+      .string()
+      .optional()
+      .openapi({
+        description: "O filtro por nome de fazenda responsável pela caixa.",
+      }),
   }),
 };
 

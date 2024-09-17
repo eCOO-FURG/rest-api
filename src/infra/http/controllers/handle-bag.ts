@@ -8,12 +8,14 @@ import container from "@/infra/container";
 // Use-cases
 import { HandleBagUseCase } from "@/core/use-cases/handle-bag";
 
-const handleBagSchema = {
-  body: z.object({
-    status: z.enum(["PENDING", "SEPARATED", "DISPATCHED"]),
-  }),
-  params: z.object({
+export const handleBagSchema = {
+  route: z.object({
     bag_id: z.string().uuid(),
+  }),
+  body: z.object({
+    status: z
+      .enum(["PENDING", "SEPARATED", "DISPATCHED"])
+      .openapi({ type: "string" }),
   }),
 };
 
@@ -23,8 +25,8 @@ export async function handleBagController(
   next: NextFunction
 ) {
   try {
+    const { bag_id } = handleBagSchema.route.parse(request.params);
     const { status } = handleBagSchema.body.parse(request.body);
-    const { bag_id } = handleBagSchema.params.parse(request.params);
 
     const handleBagUseCase =
       container.resolve<HandleBagUseCase>("handleBagUseCase");

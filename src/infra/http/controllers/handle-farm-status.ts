@@ -8,8 +8,8 @@ import container from "@/infra/container";
 // Use-cases
 import { HandleFarmStatusUseCase } from "@/core/use-cases/handle-farm-status";
 
-const handleFarmStatusSchema = {
-  params: z.object({
+export const handleFarmStatusSchema = {
+  route: z.object({
     farm_id: z.string().uuid(),
   }),
 };
@@ -20,7 +20,7 @@ export async function handleFarmStatusController(
   next: NextFunction
 ) {
   try {
-    const { farm_id } = handleFarmStatusSchema.params.parse(request.params);
+    const { farm_id } = handleFarmStatusSchema.route.parse(request.params);
 
     const handleFarmStatusUseCase = container.resolve<HandleFarmStatusUseCase>(
       "handleFarmStatusUseCase"

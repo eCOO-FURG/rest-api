@@ -11,11 +11,14 @@ import container from "@/infra/container";
 // Presenters
 import { CatalogPresenter } from "@/infra/http/presenters/catalog-presenter";
 
-const searchCatalogsSchema = {
+export const searchCatalogsSchema = {
   query: z.object({
-    cycle_id: z.string(),
-    page: z.coerce.number(),
-    product: z.string().optional(),
+    cycle_id: z.string().openapi({ description: "O ciclo da busca." }),
+    page: z.coerce.number().openapi({ description: "A página da listagem." }),
+    product: z
+      .string()
+      .optional()
+      .openapi({ description: "Filtro por nome de produto." }),
   }),
 };
 

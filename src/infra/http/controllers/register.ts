@@ -8,7 +8,7 @@ import { RegisterUseCase } from "@/core/use-cases/register";
 // Container
 import container from "@/infra/container";
 
-const registerSchema = {
+export const registerSchema = {
   body: z.object({
     first_name: z.string(),
     last_name: z.string(),

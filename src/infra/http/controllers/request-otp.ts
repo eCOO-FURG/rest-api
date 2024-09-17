@@ -8,28 +8,29 @@ import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
 // Container
 import container from "@/infra/container";
 
-const requestOtpSchema = {
-  body: z.object({
-    email: z.string()
-  })
-}
+export const requestOtpSchema = {
+  body: z.object({ email: z.string() }),
+};
 
-export async function requestOtpController(request: Request, response: Response, next: NextFunction) {
+export async function requestOtpController(
+  request: Request,
+  response: Response,
+  next: NextFunction
+) {
   try {
-    const { email } = requestOtpSchema.body.parse(request.body)
+    const { email } = requestOtpSchema.body.parse(request.body);
 
-    container.resolve("onOtpRequestEvent")
+    container.resolve("onOtpRequestEvent");
 
-    const requestOtpUseCase = container.resolve<RequestOtpUseCase>(
-      'requestOtpUseCase'
-    )
+    const requestOtpUseCase =
+      container.resolve<RequestOtpUseCase>("requestOtpUseCase");
 
     await requestOtpUseCase.execute({
-      email
-    })
+      email,
+    });
 
-    return response.sendStatus(201)
+    return response.sendStatus(201);
   } catch (error) {
-    next(error)
+    next(error);
   }
 }

@@ -11,11 +11,11 @@ import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
 // Presenters
 import { UserPresenter } from "@/infra/http/presenters/user-presenter";
 
-const authenticateSchema = {
+export const authenticateSchema = {
   body: z.object({
     email: z.string().email(),
     password: z.string().min(6),
-    type: z.enum(["OTP", "BASIC"]),
+    type: z.enum(["BASIC", "OTP"]).openapi({ type: "string" }),
   }),
 };
 

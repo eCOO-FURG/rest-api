@@ -8,8 +8,8 @@ import { PrintDeliveriesReportUseCase } from "@/core/use-cases/print-deliveries-
 // Container
 import container from "@/infra/container";
 
-const printDeliveriesReportSchema = {
-  params: z.object({
+export const printDeliveriesReportSchema = {
+  route: z.object({
     cycle_id: z.string().uuid(),
   }),
 };
@@ -20,7 +20,7 @@ export async function printDeliveriesReportController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id } = printDeliveriesReportSchema.params.parse(
+    const { cycle_id } = printDeliveriesReportSchema.route.parse(
       request.params
     );
 
@@ -32,8 +32,8 @@ export async function printDeliveriesReportController(
     const { pdf } = await printDeliveriesReportUseCase.execute({ cycle_id });
 
     response.set({
-      "Content-Disposition": 'attachment; filename="deliveries.pdf"',
       "Content-Type": "application/pdf",
+      "Content-Disposition": 'attachment; filename="entregas.pdf"',
       "Content-Length": pdf.length,
     });
 

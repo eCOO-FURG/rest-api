@@ -11,7 +11,7 @@ import container from "@/infra/container";
 // Env
 import { env } from "@/infra/env";
 
-const verifyUserSchema = {
+export const verifyUserSchema = {
   query: z.object({
     token: z.string(),
   }),

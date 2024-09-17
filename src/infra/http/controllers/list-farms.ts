@@ -11,10 +11,13 @@ import container from "@/infra/container";
 // Presenters
 import { FarmPresenter } from "@/infra/http/presenters/farm-presenter";
 
-const listFarmsSchema = {
+export const listFarmsSchema = {
   query: z.object({
-    page: z.coerce.number(),
-    farm: z.string().optional(),
+    page: z.coerce.number().openapi({ description: "Página da listagem." }),
+    farm: z
+      .string()
+      .optional()
+      .openapi({ description: "Filtro de nome para a busca." }),
   }),
 };
 

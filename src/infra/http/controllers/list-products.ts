@@ -11,10 +11,13 @@ import { ListProductsUsecase } from "@/core/use-cases/list-products";
 // Presenters
 import { ProductPresenter } from "@/infra/http/presenters/product-presenter";
 
-const listProductSchema = {
+export const listProductSchema = {
   query: z.object({
-    page: z.coerce.number(),
-    product: z.string().optional(),
+    page: z.coerce.number().openapi({ description: "Página da listagem." }),
+    product: z
+      .string()
+      .optional()
+      .openapi({ description: "Filtro do nome do produto." }),
   }),
 };
 

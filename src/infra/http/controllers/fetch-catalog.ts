@@ -12,10 +12,15 @@ import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
 import { CatalogPresenter } from "@/infra/http/presenters/catalog-presenter";
 import { OfferPresenter } from "@/infra/http/presenters/offer-presenter";
 
-const fetchCatalogsSchema = {
+export const fetchCatalogsSchema = {
   query: z.object({
-    page: z.coerce.number(),
-    product: z.string().optional(),
+    page: z.coerce
+      .number()
+      .openapi({ description: "Página das ofertas do catálogo." }),
+    product: z
+      .string()
+      .optional()
+      .openapi({ description: "Filtro por nome de produto." }),
   }),
   params: z.object({
     catalog_id: z.string().uuid(),

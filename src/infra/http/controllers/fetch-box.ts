@@ -12,8 +12,8 @@ import { FetchBoxUseCase } from "@/core/use-cases/fetch-box";
 import { BoxPresenter } from "@/infra/http/presenters/box-presenter";
 import { OrderPresenter } from "@/infra/http/presenters/order-presenter";
 
-const listFarmOrdersSchema = {
-  params: z.object({
+export const fetchBoxSchema = {
+  route: z.object({
     box_id: z.string().uuid(),
   }),
 };
@@ -24,7 +24,7 @@ export async function fetchBoxController(
   next: NextFunction
 ) {
   try {
-    const { box_id } = listFarmOrdersSchema.params.parse(request.params);
+    const { box_id } = fetchBoxSchema.route.parse(request.params);
 
     const fetchBoxUseCase =
       container.resolve<FetchBoxUseCase>("fetchBoxUseCase");

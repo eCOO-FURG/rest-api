@@ -8,7 +8,7 @@ import { OrderProductsUseCase } from "@/core/use-cases/order-products";
 // Container
 import container from "@/infra/container";
 
-const orderProductsSchema = {
+export const orderProductsSchema = {
   body: z.object({
     cycle_id: z.string(),
     address: z.string().optional(),

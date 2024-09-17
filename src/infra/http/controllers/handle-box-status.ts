@@ -8,8 +8,8 @@ import container from "@/infra/container";
 // Use-cases
 import { HandleBoxStatusUseCase } from "@/core/use-cases/handle-box-status";
 
-const handleBoxStatusSchema = {
-  param: z.object({
+export const handleBoxStatusSchema = {
+  route: z.object({
     box_id: z.string().uuid(),
   }),
   body: z.object({
@@ -23,7 +23,7 @@ export async function handleBoxStatusController(
   next: NextFunction
 ) {
   try {
-    const { box_id } = handleBoxStatusSchema.param.parse(request.params);
+    const { box_id } = handleBoxStatusSchema.route.parse(request.params);
 
     const { status } = handleBoxStatusSchema.body.parse(request.body);
 

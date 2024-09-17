@@ -12,8 +12,8 @@ import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 import { OrderPresenter } from "@/infra/http/presenters/order-presenter";
 
-const fetchBagSchema = {
-  param: z.object({
+export const fetchBagSchema = {
+  route: z.object({
     bag_id: z.string().uuid(),
   }),
 };
@@ -24,7 +24,7 @@ export async function fetchBagController(
   next: NextFunction
 ) {
   try {
-    const { bag_id } = fetchBagSchema.param.parse(request.params);
+    const { bag_id } = fetchBagSchema.route.parse(request.params);
 
     const fetchBagUseCase =
       container.resolve<FetchBagUseCase>("fetchBagUseCase");

@@ -8,7 +8,7 @@ import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
 // Container
 import container from "@/infra/container";
 
-const registerFarmSchema = {
+export const registerFarmSchema = {
   body: z.object({
     name: z.string(),
     caf: z.string(),

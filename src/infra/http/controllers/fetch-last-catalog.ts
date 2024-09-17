@@ -12,10 +12,8 @@ import { z } from "zod";
 import { CatalogPresenter } from "@/infra/http/presenters/catalog-presenter";
 import { OfferPresenter } from "@/infra/http/presenters/offer-presenter";
 
-const fetchLastCatalogSchema = {
-  params: z.object({
-    cycle_id: z.string().uuid(),
-  }),
+export const fetchLastCatalogSchema = {
+  route: z.object({ cycle_id: z.string().uuid() }),
 };
 
 export async function fetchLastCatalogController(
@@ -24,7 +22,7 @@ export async function fetchLastCatalogController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id } = fetchLastCatalogSchema.params.parse(request.params);
+    const { cycle_id } = fetchLastCatalogSchema.route.parse(request.params);
 
     const farm_id = request.farm_id;
 

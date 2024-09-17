@@ -8,7 +8,7 @@ import container from "@/infra/container";
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
 
-const updateOfferSchema = {
+export const updateOfferSchema = {
   body: z.object({
     amount: z.number(),
     price: z.number(),

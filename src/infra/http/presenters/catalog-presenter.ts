@@ -1,11 +1,11 @@
 // Entities
-import { CatalogMerge } from "@/core/entities/merged/catalog-merge";
+import { CatalogAggregate } from "@/core/entities/aggregates/catalog-aggregate";
 
 // Presenters
 import { FarmPresenter } from "@/infra/http/presenters/farm-presenter";
 
 export class CatalogPresenter {
-  static toHttp(catalog: CatalogMerge) {
+  static toHttp(catalog: CatalogAggregate) {
     return {
       id: catalog.id.value,
       cycle_id: catalog.cycle_id.value,

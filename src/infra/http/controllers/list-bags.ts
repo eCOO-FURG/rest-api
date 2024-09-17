@@ -7,12 +7,18 @@ import container from "@/infra/container";
 import { ListBagsUseCase } from "@/core/use-cases/list-bags";
 import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 
-const listBagsSchema = {
+export const listBagsSchema = {
   query: z.object({
-    page: z.coerce.number(),
-    cycle_id: z.string().uuid(),
-    status: z.enum(["PENDING", "SEPARATED", "DISPATCHED"]).optional(),
-    name: z.string().optional(),
+    page: z.coerce.number().openapi({ description: "Página da listagem." }),
+    cycle_id: z.string().uuid().openapi({ description: "Ciclo da busca." }),
+    status: z
+      .enum(["PENDING", "SEPARATED", "DISPATCHED"])
+      .optional()
+      .openapi({ type: "string", description: "Filto de status." }),
+    name: z
+      .string()
+      .optional()
+      .openapi({ description: "Filtro de nome do dono da sacola." }),
   }),
 };
 
