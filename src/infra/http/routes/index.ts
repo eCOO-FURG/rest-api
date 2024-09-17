@@ -35,14 +35,17 @@ import { ensureAdmin } from "@/infra/http/middlewares/ensure-admin";
 
 export const router = Router();
 
+// Usuários
 router.post("/users", registerController);
 router.patch("/users", ensureAuthenticated, updateUserController);
 router.get("/users/verify", verifyUserController);
 router.get("/me", ensureAuthenticated, fetchProfileController);
 
+// Autenticação
 router.post("/auth", authenticateController);
 router.post("/auth/otp", requestOtpController);
 
+// Fazendas
 router.post("/farms", ensureAuthenticated, registerFarmController);
 router.get("/farms", ensureAuthenticated, ensureAdmin, listFarmsController);
 router.patch(
@@ -52,17 +55,20 @@ router.patch(
   handleFarmStatusController
 );
 
+// Pedidos
 router.post("/orders", ensureAuthenticated, orderProductsController);
 
+// Caixas
+router.get("/boxes", ensureAuthenticated, ensureAdmin, listBoxesController);
+router.get("/boxes/:box_id", ensureAuthenticated, fetchBoxController);
 router.patch(
   "/boxes/:box_id",
   ensureAuthenticated,
   ensureAdmin,
   handleBoxStatusController
 );
-router.get("/boxes", ensureAuthenticated, ensureAdmin, listBoxesController);
-router.get("/boxes/:box_id", ensureAuthenticated, fetchBoxController);
 
+// Ofertas
 router.post(
   "/offers",
   ensureAuthenticated,
@@ -82,6 +88,7 @@ router.delete(
   deleteOfferController
 );
 
+// Catalogos
 router.get("/catalogs", searchCatalogsController);
 router.get("/catalogs/:catalog_id", fetchCatalogController);
 router.get(
@@ -91,6 +98,7 @@ router.get(
   fetchLastCatalogController
 );
 
+// Sacolas
 router.get("/bags", ensureAuthenticated, ensureAdmin, listBagsController);
 router.get(
   "/bags/:bag_id",
@@ -111,8 +119,10 @@ router.patch(
   handleBagController
 );
 
+// Ciclos
 router.get("/cycles", listCyclesController);
 
+// Produtos
 router.get(
   "/products",
   ensureAuthenticated,
