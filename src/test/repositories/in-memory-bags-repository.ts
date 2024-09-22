@@ -55,7 +55,7 @@ export class InMemoryBagsRepository implements BagsRepository {
 
     const orders = await this.inMemoryOrdersRepository.searchMany(
       { bag: { id: bag.id.value } },
-      "aggregate"
+      "merged"
     );
 
     const merged = BagMerge.create({
@@ -115,7 +115,7 @@ export class InMemoryBagsRepository implements BagsRepository {
     for (const aggregate of aggregates) {
       const orders = await this.inMemoryOrdersRepository.searchMany(
         { bag: { id: aggregate.id.value } },
-        "aggregate"
+        "merged"
       );
 
       const merge = BagMerge.create({

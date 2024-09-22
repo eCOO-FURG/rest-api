@@ -61,7 +61,16 @@ export class PrismaBagsRepository implements BagsRepository {
       where,
       include: {
         customer: true,
-        orders: { include: { offer: { include: { product: true } } } },
+        orders: {
+          include: {
+            offer: {
+              include: {
+                product: true,
+                catalog: { include: { farm: { include: { admin: true } } } },
+              },
+            },
+          },
+        },
       },
     });
 
@@ -127,7 +136,16 @@ export class PrismaBagsRepository implements BagsRepository {
       ...query,
       include: {
         customer: true,
-        orders: { include: { offer: { include: { product: true } } } },
+        orders: {
+          include: {
+            offer: {
+              include: {
+                product: true,
+                catalog: { include: { farm: { include: { admin: true } } } },
+              },
+            },
+          },
+        },
       },
     });
 

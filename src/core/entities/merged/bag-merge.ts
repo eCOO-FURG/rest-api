@@ -1,10 +1,10 @@
 // Entities
 import { Entity } from "@/core/entities/entity";
 import { BagAggregateProps } from "@/core/entities/aggregates/bag-aggregate";
-import { OrderAggregate } from "@/core/entities/aggregates/order-aggregate";
+import { OrderMerge } from "@/core/entities/merged/order-merge";
 
 interface BagMergeProps extends BagAggregateProps {
-  orders: OrderAggregate[];
+  orders: OrderMerge[];
 }
 
 export class BagMerge extends Entity<BagMergeProps> {

@@ -14,6 +14,7 @@ import { prisma } from "@/infra/database/prisma-service";
 // Mappers
 import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
 import { PrismaOrderAggregateMapper } from "@/infra/database/mappers/prisma-order-aggregate-mapper";
+import { PrismaOrderMergeMapper } from "@/infra/database/mappers/prisma-order-merge-mapper";
 
 // Types
 import { RepositoryResponse } from "@/core/types/repository-response";
@@ -23,16 +24,10 @@ import { Prisma } from "@prisma/client";
 
 export class PrismaOrdersRepository implements OrdersRepository {
   async searchMany<T extends RepositoryResponse = "entity">(
-    { bag, offer, offers_ids, since, box }: OrdersRepositorySearchManyRequest,
+    { bag, box }: OrdersRepositorySearchManyRequest,
     type: T
   ): Promise<OrdersRepositoryResponse<T>[]> {
-    const where: Prisma.OrderWhereInput = {
-      bag,
-      box,
-      ...(since && { created_at: { gte: since } }),
-      ...(offer && { offer: { ...offer } }),
-      ...(offers_ids && { offer_id: { in: offers_ids } }),
-    };
+    const where: Prisma.OrderWhereInput = { bag, box };
 
     if (type === "entity") {
       const orders = await prisma.order.findMany({ where });
@@ -42,13 +37,31 @@ export class PrismaOrdersRepository implements OrdersRepository {
       ) as OrdersRepositoryResponse<T>[];
     }
 
+    if (type === "aggregate") {
+      const orders = await prisma.order.findMany({
+        where,
+        include: { offer: { include: { product: true } } },
+      });
+
+      return orders.map((order) =>
+        PrismaOrderAggregateMapper.toDomain(order)
+      ) as OrdersRepositoryResponse<T>[];
+    }
+
     const orders = await prisma.order.findMany({
       where,
-      include: { offer: { include: { product: true } } },
+      include: {
+        offer: {
+          include: {
+            product: true,
+            catalog: { include: { farm: { include: { admin: true } } } },
+          },
+        },
+      },
     });
 
     return orders.map((order) =>
-      PrismaOrderAggregateMapper.toDomain(order)
+      PrismaOrderMergeMapper.toDomain(order)
     ) as OrdersRepositoryResponse<T>[];
   }
 

@@ -4,6 +4,7 @@ import { Offer } from "@/core/entities/offer";
 // Types
 import { RepositoryResponse } from "@/core/types/repository-response";
 import { OfferAggregate } from "@/core/entities/aggregates/offer-aggregate";
+import { OfferMerge } from "@/core/entities/merged/offer-merge";
 
 export interface OffersRepositorySearchRequest {
   id?: string;
@@ -25,7 +26,11 @@ export interface OffersRepositorySearchManyRequest {
 }
 
 export type OffersRepositoryResponse<T extends RepositoryResponse> =
-  T extends "entity" ? Offer : OfferAggregate;
+  T extends "entity"
+    ? Offer
+    : T extends "aggregate"
+    ? OfferAggregate
+    : OfferMerge;
 
 export interface OffersRepository {
   search<T extends RepositoryResponse>(

@@ -14,6 +14,9 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 
 // Services
 import { prisma } from "@/infra/database/prisma-service";
+
+// Mappers
+import { PrismaOfferMergeMapper } from "@/infra/database/mappers/prisma-offer-merge-mapper";
 import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
 import { PrismaOfferAggregateMapper } from "@/infra/database/mappers/prisma-offer-aggregate-mapper";
 
@@ -40,14 +43,30 @@ export class PrismaOffersRepository implements OffersRepository {
       return PrismaOfferMapper.toDomain(offer) as OffersRepositoryResponse<T>;
     }
 
+    if (type === "aggregate") {
+      const offer = await prisma.offer.findFirst({
+        where,
+        include: { product: true },
+      });
+
+      if (!offer) return null;
+
+      return PrismaOfferAggregateMapper.toDomain(
+        offer
+      ) as OffersRepositoryResponse<T>;
+    }
+
     const offer = await prisma.offer.findFirst({
       where,
-      include: { product: true },
+      include: {
+        product: true,
+        catalog: { include: { farm: { include: { admin: true } } } },
+      },
     });
 
     if (!offer) return null;
 
-    return PrismaOfferAggregateMapper.toDomain(
+    return PrismaOfferMergeMapper.toDomain(
       offer
     ) as OffersRepositoryResponse<T>;
   }
@@ -78,13 +97,27 @@ export class PrismaOffersRepository implements OffersRepository {
       ) as OffersRepositoryResponse<T>[];
     }
 
+    if (type === "aggregate") {
+      const offers = await prisma.offer.findMany({
+        ...query,
+        include: { product: true },
+      });
+
+      return offers.map((offer) =>
+        PrismaOfferAggregateMapper.toDomain(offer)
+      ) as OffersRepositoryResponse<T>[];
+    }
+
     const offers = await prisma.offer.findMany({
       ...query,
-      include: { product: true },
+      include: {
+        product: true,
+        catalog: { include: { farm: { include: { admin: true } } } },
+      },
     });
 
     return offers.map((offer) =>
-      PrismaOfferAggregateMapper.toDomain(offer)
+      PrismaOfferMergeMapper.toDomain(offer)
     ) as OffersRepositoryResponse<T>[];
   }
 

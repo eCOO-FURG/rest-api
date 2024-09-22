@@ -3,7 +3,7 @@ import { Entity } from "@/core/entities/entity";
 import { Order, OrderProps } from "@/core/entities/order";
 import { OfferAggregate } from "@/core/entities/aggregates/offer-aggregate";
 
-interface OrderAggregateProps extends Omit<OrderProps, "offer_id"> {
+export interface OrderAggregateProps extends Omit<OrderProps, "offer_id"> {
   offer: OfferAggregate;
 }
 

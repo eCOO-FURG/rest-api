@@ -1,26 +1,27 @@
 // Entities
 import { Order } from "@/core/entities/order";
 import { OrderAggregate } from "@/core/entities/aggregates/order-aggregate";
+import { OrderMerge } from "@/core/entities/merged/order-merge";
 
 // Types
 import { RepositoryResponse } from "@/core/types/repository-response";
 
 export interface OrdersRepositorySearchManyRequest {
-  offers_ids?: string[];
   bag?: {
     id?: string;
   };
-  since?: Date;
   box?: {
     id?: string;
   };
-  offer?: {
-    catalog_id: string;
-  };
+  page?: number;
 }
 
 export type OrdersRepositoryResponse<T extends RepositoryResponse> =
-  T extends "entity" ? Order : OrderAggregate;
+  T extends "entity"
+    ? Order
+    : T extends "aggregate"
+    ? OrderAggregate
+    : OrderMerge;
 
 export interface OrdersRepository {
   searchMany<T extends RepositoryResponse = "entity">(

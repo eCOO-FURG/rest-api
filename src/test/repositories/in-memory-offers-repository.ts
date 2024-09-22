@@ -11,27 +11,36 @@ import {
 } from "@/core/repositories/offers-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { RepositoryResponse } from "@/core/types/repository-response";
+import { OfferMerge } from "@/core/entities/merged/offer-merge";
+import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
+
+// Utils
+import { find } from "@/core/utils/find";
+import { filter } from "@/core/utils/filter";
 
 export class InMemoryOffersRepository implements OffersRepository {
   items: Offer[] = [];
 
-  constructor(private inMemoryProductsRepository: InMemoryProductsRepository) {}
+  constructor(
+    private inMemoryProductsRepository: InMemoryProductsRepository,
+    private inMemoryCatalogsRepository: InMemoryCatalogsRepository
+  ) {}
 
   async search<T extends RepositoryResponse>(
     { id, catalog, product, since }: OffersRepositorySearchRequest,
     type: T
   ): Promise<OffersRepositoryResponse<T> | null> {
-    const entity = this.items.find(
-      (item) =>
+    const entity = await find<Offer>(
+      this.items,
+      async (item) =>
         (!id || item.id.equals(id)) &&
         (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
         (!since || item.created_at >= since) &&
-        (!product ||
-          !product.name ||
-          (() =>
-            this.inMemoryProductsRepository.items.find((element) =>
-              element.name.includes(product.name!)
-            ))())
+        (!product?.name ||
+          this.inMemoryProductsRepository.items.some(
+            (p) =>
+              p.id.equals(item.product_id) && p.name.includes(product.name!)
+          ))
     );
 
     if (!entity) return null;
@@ -44,22 +53,42 @@ export class InMemoryOffersRepository implements OffersRepository {
 
     if (!_product) return null;
 
-    const aggreagate = OfferAggregate.create({
+    if (type === "aggregate") {
+      return OfferAggregate.create({
+        ...entity.props,
+        product: _product,
+      }) as OffersRepositoryResponse<T>;
+    }
+
+    const _catalog = await this.inMemoryCatalogsRepository.search(
+      { id: entity.catalog_id.value },
+      "aggregate"
+    );
+
+    if (!_catalog) return null;
+
+    return OfferMerge.create({
       ...entity.props,
       product: _product,
-    });
-
-    return aggreagate as OffersRepositoryResponse<T>;
+      catalog: _catalog,
+    }) as OffersRepositoryResponse<T>;
   }
 
   async searchMany<T extends RepositoryResponse>(
     { page, catalog, ids, product, since }: OffersRepositorySearchManyRequest,
     type: T
   ): Promise<OffersRepositoryResponse<T>[]> {
-    let entities = this.items.filter(
-      (item) =>
+    let entities = await filter<Offer>(
+      this.items,
+      async (item) =>
         (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
-        (!since || item.created_at >= since)
+        (!since || item.created_at >= since) &&
+        (!ids || ids.includes(item.id.value)) &&
+        (!product?.name ||
+          this.inMemoryProductsRepository.items.some(
+            (p) =>
+              p.id.equals(item.product_id) && p.name.includes(product.name!)
+          ))
     );
 
     if (page) {
@@ -70,24 +99,43 @@ export class InMemoryOffersRepository implements OffersRepository {
 
     if (type === "entity") return entities as OffersRepositoryResponse<T>[];
 
-    const aggregates: OfferAggregate[] = [];
+    const results: OffersRepositoryResponse<T>[] = [];
 
     for (const entity of entities) {
-      const product = await this.inMemoryProductsRepository.findById(
+      const _product = await this.inMemoryProductsRepository.findById(
         entity.product_id.value
       );
 
-      if (!product) return [];
+      if (!_product) continue;
 
-      const aggregate = OfferAggregate.create({
+      if (type === "aggregate") {
+        const offer = OfferAggregate.create({
+          ...entity.props,
+          product: _product,
+        }) as OffersRepositoryResponse<T>;
+
+        results.push(offer);
+
+        continue;
+      }
+
+      const _catalog = await this.inMemoryCatalogsRepository.search(
+        { id: entity.catalog_id.value },
+        "aggregate"
+      );
+
+      if (!_catalog) continue;
+
+      const offer = OfferMerge.create({
         ...entity.props,
-        product,
-      });
+        product: _product,
+        catalog: _catalog,
+      }) as OffersRepositoryResponse<T>;
 
-      aggregates.push(aggregate);
+      results.push(offer);
     }
 
-    return aggregates as OffersRepositoryResponse<T>[];
+    return results;
   }
 
   async create(offer: Offer): Promise<void> {

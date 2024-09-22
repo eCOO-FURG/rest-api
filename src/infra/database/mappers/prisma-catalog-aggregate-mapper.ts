@@ -13,6 +13,7 @@ export class PrismaCatalogAggregateMapper {
     }>
   ) {
     return CatalogAggregate.create({
+      ...raw,
       id: new UUID(raw.id),
       farm: PrismaFarmAggregateMapper.toDomain(raw.farm),
       cycle_id: new UUID(raw.cycle_id),
