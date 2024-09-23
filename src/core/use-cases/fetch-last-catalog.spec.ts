@@ -31,11 +31,17 @@ describe("Fetch last catalog", () => {
     usersRepository = new InMemoryUsersRepository();
     farmsRepository = new InMemoryFarmsRepository(usersRepository);
     productsRepository = new InMemoryProductsRepository();
-    offersRepository = new InMemoryOffersRepository(productsRepository);
+    offersRepository = new InMemoryOffersRepository(
+      productsRepository,
+      catalogsRepository
+    );
+
     catalogsRepository = new InMemoryCatalogsRepository(
       farmsRepository,
       offersRepository
     );
+
+    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
     cyclesRepository = new InMemoryCyclesRepository();
 
     sut = new FetchLastCatalogUseCase(cyclesRepository, catalogsRepository);

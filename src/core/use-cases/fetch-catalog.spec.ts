@@ -30,6 +30,7 @@ let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
 let ordersRepository: InMemoryOrdersRepository;
 let farmsRepository: InMemoryFarmsRepository;
+let catalogsRepository: InMemoryCatalogsRepository;
 
 let repositories: {
   catalogs: InMemoryCatalogsRepository;
@@ -41,17 +42,24 @@ describe("list farm offers", () => {
   beforeEach(() => {
     cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
-    offersRepository = new InMemoryOffersRepository(productsRepository);
-    ordersRepository = new InMemoryOrdersRepository(offersRepository);
     usersRepository = new InMemoryUsersRepository();
+
+    offersRepository = new InMemoryOffersRepository(
+      productsRepository,
+      catalogsRepository
+    );
+
     farmsRepository = new InMemoryFarmsRepository(usersRepository);
 
-    repositories = {
-      catalogs: new InMemoryCatalogsRepository(
-        farmsRepository,
-        offersRepository
-      ),
-    };
+    catalogsRepository = new InMemoryCatalogsRepository(
+      farmsRepository,
+      offersRepository
+    );
+
+    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
+
+    repositories = { catalogs: catalogsRepository };
 
     sut = new FetchCatalogUseCase(repositories.catalogs);
   });

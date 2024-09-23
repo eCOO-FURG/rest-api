@@ -10,6 +10,8 @@ import { makeUser } from "@/test/factories/make-user";
 import { makeOrder } from "@/test/factories/make-order";
 import { makeProduct } from "@/test/factories/make-product";
 import { makeOffer } from "@/test/factories/make-offer";
+import { makeFarm } from "@/test/factories/make-farm";
+import { makeCatalog } from "@/test/factories/make-catalog";
 
 // Entities
 import { OrderAggregate } from "@/core/entities/aggregates/order-aggregate";
@@ -21,11 +23,15 @@ import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-rep
 import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
+import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
+import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 
 let usersRepository: InMemoryUsersRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
 let ordersRepository: InMemoryOrdersRepository;
+let farmsRepository: InMemoryFarmsRepository;
+let catalogsRepository: InMemoryCatalogsRepository;
 
 let repositories: {
   bags: InMemoryBagsRepository;
@@ -35,9 +41,21 @@ let sut: FetchBagUseCase;
 
 describe("Fetch bag", () => {
   beforeEach(() => {
-    usersRepository = new InMemoryUsersRepository();
     productsRepository = new InMemoryProductsRepository();
-    offersRepository = new InMemoryOffersRepository(productsRepository);
+
+    usersRepository = new InMemoryUsersRepository();
+    farmsRepository = new InMemoryFarmsRepository(usersRepository);
+    offersRepository = new InMemoryOffersRepository(
+      productsRepository,
+      catalogsRepository
+    );
+
+    catalogsRepository = new InMemoryCatalogsRepository(
+      farmsRepository,
+      offersRepository
+    );
+
+    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
     ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
     repositories = {
@@ -57,7 +75,13 @@ describe("Fetch bag", () => {
     const product = makeProduct();
     await productsRepository.create(product);
 
-    const offer = makeOffer({ product_id: product.id });
+    const farm = makeFarm({ admin_id: user.id });
+    await farmsRepository.create(farm);
+
+    const catalog = makeCatalog({ farm_id: farm.id });
+    await catalogsRepository.create(catalog);
+
+    const offer = makeOffer({ product_id: product.id, catalog_id: catalog.id });
     await offersRepository.create(offer);
 
     const order = makeOrder({ bag_id: bag.id, offer_id: offer.id });

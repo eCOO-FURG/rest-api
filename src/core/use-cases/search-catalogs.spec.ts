@@ -27,6 +27,7 @@ let usersRepository: InMemoryUsersRepository;
 let offersRepository: InMemoryOffersRepository;
 let productsRepository: InMemoryProductsRepository;
 let farmsRepository: InMemoryFarmsRepository;
+let catalogsRepository: InMemoryCatalogsRepository;
 
 let repositories: {
   cycles: InMemoryCyclesRepository;
@@ -38,15 +39,23 @@ describe("searh offering farms", () => {
     usersRepository = new InMemoryUsersRepository();
     cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
-    offersRepository = new InMemoryOffersRepository(productsRepository);
     farmsRepository = new InMemoryFarmsRepository(usersRepository);
+
+    offersRepository = new InMemoryOffersRepository(
+      productsRepository,
+      catalogsRepository
+    );
+
+    catalogsRepository = new InMemoryCatalogsRepository(
+      farmsRepository,
+      offersRepository
+    );
+
+    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
 
     repositories = {
       cycles: cyclesRepository,
-      catalogs: new InMemoryCatalogsRepository(
-        farmsRepository,
-        offersRepository
-      ),
+      catalogs: catalogsRepository,
     };
 
     sut = new SearchCatalogsUseCase(repositories.cycles, repositories.catalogs);

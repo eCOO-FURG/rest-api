@@ -21,10 +21,14 @@ import { filter } from "@/core/utils/filter";
 export class InMemoryOffersRepository implements OffersRepository {
   items: Offer[] = [];
 
+  public inMemoryCatalogsRepository: InMemoryCatalogsRepository;
+
   constructor(
     private inMemoryProductsRepository: InMemoryProductsRepository,
-    private inMemoryCatalogsRepository: InMemoryCatalogsRepository
-  ) {}
+    inMemoryCatalogsRepository: InMemoryCatalogsRepository
+  ) {
+    this.inMemoryCatalogsRepository = inMemoryCatalogsRepository;
+  }
 
   async search<T extends RepositoryResponse>(
     { id, catalog, product, since }: OffersRepositorySearchRequest,

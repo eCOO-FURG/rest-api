@@ -21,6 +21,7 @@ let productsRepository: InMemoryProductsRepository;
 let usersRepository: InMemoryUsersRepository;
 let offersRepository: InMemoryOffersRepository;
 let farmsRepository: InMemoryFarmsRepository;
+let catalogsRepository: InMemoryCatalogsRepository;
 
 let repositories: {
   offers: InMemoryOffersRepository;
@@ -34,17 +35,25 @@ describe("delete offer", () => {
   beforeEach(() => {
     productsRepository = new InMemoryProductsRepository();
     usersRepository = new InMemoryUsersRepository();
-    offersRepository = new InMemoryOffersRepository(productsRepository);
     farmsRepository = new InMemoryFarmsRepository(usersRepository);
+    offersRepository = new InMemoryOffersRepository(
+      productsRepository,
+      catalogsRepository
+    );
+
+    catalogsRepository = new InMemoryCatalogsRepository(
+      farmsRepository,
+      offersRepository
+    );
+
+    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
 
     repositories = {
-      offers: new InMemoryOffersRepository(productsRepository),
+      offers: offersRepository,
       farms: farmsRepository,
-      catalogs: new InMemoryCatalogsRepository(
-        farmsRepository,
-        offersRepository
-      ),
+      catalogs: catalogsRepository,
     };
+
     sut = new DeleteOfferUseCase(
       repositories.farms,
       repositories.offers,

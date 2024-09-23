@@ -37,15 +37,22 @@ let sut: FetchBoxUseCase;
 
 describe("list farm sales", () => {
   beforeEach(() => {
-    usersRepository = new InMemoryUsersRepository();
     productsRepository = new InMemoryProductsRepository();
-    offersRepository = new InMemoryOffersRepository(productsRepository);
+
+    usersRepository = new InMemoryUsersRepository();
     farmsRepository = new InMemoryFarmsRepository(usersRepository);
-    ordersRepository = new InMemoryOrdersRepository(offersRepository);
+    offersRepository = new InMemoryOffersRepository(
+      productsRepository,
+      catalogsRepository
+    );
+
     catalogsRepository = new InMemoryCatalogsRepository(
       farmsRepository,
       offersRepository
     );
+
+    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
     repositories = {
       boxes: new InMemoryBoxesRepository(catalogsRepository, ordersRepository),
@@ -80,6 +87,7 @@ describe("list farm sales", () => {
     const order = makeOrder({
       offer_id: offer.id,
       amount: offer.amount,
+      box_id: box.id,
     });
 
     await ordersRepository.createMany([order]);

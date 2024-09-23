@@ -12,7 +12,7 @@ import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-rep
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
+import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -24,7 +24,6 @@ import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { Offer } from "@/core/entities/offer";
 import { Week } from "@/core/entities/cycle";
 import { ClosedActionError } from "@/core/errors/closed-action";
-import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { makeCatalog } from "@/test/factories/make-catalog";
 
 let usersRepository: InMemoryUsersRepository;
@@ -32,6 +31,7 @@ let cyclesRepository: InMemoryCyclesRepository;
 let farmsRepository: InMemoryFarmsRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
+let catalogsRepository: InMemoryCatalogsRepository;
 
 let repositories: {
   farms: InMemoryFarmsRepository;
@@ -48,7 +48,17 @@ describe("offer products", () => {
     usersRepository = new InMemoryUsersRepository();
     cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
-    offersRepository = new InMemoryOffersRepository(productsRepository);
+    offersRepository = new InMemoryOffersRepository(
+      productsRepository,
+      catalogsRepository
+    );
+
+    catalogsRepository = new InMemoryCatalogsRepository(
+      farmsRepository,
+      offersRepository
+    );
+
+    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
     farmsRepository = new InMemoryFarmsRepository(usersRepository);
 
     repositories = {

@@ -15,11 +15,15 @@ import { PrintDeliveriesReportUseCase } from "@/core/use-cases/print-deliveries-
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
+import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 
 let productsRepository: InMemoryProductsRepository;
 let usersRepository: InMemoryUsersRepository;
 let offersRepository: InMemoryOffersRepository;
 let ordersRepository: InMemoryOrdersRepository;
+let catalogsRepository: InMemoryCatalogsRepository;
+let farmsRepository: InMemoryFarmsRepository;
 
 let repositories: {
   bags: InMemoryBagsRepository;
@@ -36,7 +40,18 @@ describe("print deliveries report", () => {
   beforeEach(() => {
     productsRepository = new InMemoryProductsRepository();
     usersRepository = new InMemoryUsersRepository();
-    offersRepository = new InMemoryOffersRepository(productsRepository);
+    farmsRepository = new InMemoryFarmsRepository(usersRepository);
+    offersRepository = new InMemoryOffersRepository(
+      productsRepository,
+      catalogsRepository
+    );
+
+    catalogsRepository = new InMemoryCatalogsRepository(
+      farmsRepository,
+      offersRepository
+    );
+
+    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
     ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
     repositories = {

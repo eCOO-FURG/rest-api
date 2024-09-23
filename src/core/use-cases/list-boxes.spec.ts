@@ -44,13 +44,22 @@ describe("list farms with orders", () => {
     usersRepository = new InMemoryUsersRepository();
     productsRepository = new InMemoryProductsRepository();
     cyclesRepository = new InMemoryCyclesRepository();
-    offersRepository = new InMemoryOffersRepository(productsRepository);
-    ordersRepository = new InMemoryOrdersRepository(offersRepository);
+
     farmsRepository = new InMemoryFarmsRepository(usersRepository);
+
+    offersRepository = new InMemoryOffersRepository(
+      productsRepository,
+      catalogsRepository
+    );
+
     catalogsRepository = new InMemoryCatalogsRepository(
       farmsRepository,
       offersRepository
     );
+
+    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
+
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
     repositories = {
       cycles: cyclesRepository,

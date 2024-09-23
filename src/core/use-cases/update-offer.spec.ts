@@ -28,8 +28,8 @@ import { makeCatalog } from "@/test/factories/make-catalog";
 let productsRepository: InMemoryProductsRepository;
 let usersRepository: InMemoryUsersRepository;
 let offersRepository: InMemoryOffersRepository;
-let ordersRepository: InMemoryOrdersRepository;
 let farmsRepository: InMemoryFarmsRepository;
+let catalogsRepository: InMemoryCatalogsRepository;
 
 let repositories: {
   offers: InMemoryOffersRepository;
@@ -44,9 +44,18 @@ describe("update offer", () => {
   beforeEach(() => {
     productsRepository = new InMemoryProductsRepository();
     usersRepository = new InMemoryUsersRepository();
-    offersRepository = new InMemoryOffersRepository(productsRepository);
-    ordersRepository = new InMemoryOrdersRepository(offersRepository);
     farmsRepository = new InMemoryFarmsRepository(usersRepository);
+    offersRepository = new InMemoryOffersRepository(
+      productsRepository,
+      catalogsRepository
+    );
+
+    catalogsRepository = new InMemoryCatalogsRepository(
+      farmsRepository,
+      offersRepository
+    );
+
+    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
 
     repositories = {
       offers: offersRepository,

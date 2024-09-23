@@ -54,15 +54,20 @@ describe("order product", () => {
   beforeEach(() => {
     cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
-    offersRepository = new InMemoryOffersRepository(productsRepository);
-    usersRepository = new InMemoryUsersRepository();
-    ordersRepository = new InMemoryOrdersRepository(offersRepository);
-    farmsRepository = new InMemoryFarmsRepository(usersRepository);
+    offersRepository = new InMemoryOffersRepository(
+      productsRepository,
+      catalogsRepository
+    );
 
     catalogsRepository = new InMemoryCatalogsRepository(
       farmsRepository,
       offersRepository
     );
+
+    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
+    usersRepository = new InMemoryUsersRepository();
+    ordersRepository = new InMemoryOrdersRepository(offersRepository);
+    farmsRepository = new InMemoryFarmsRepository(usersRepository);
 
     repositories = {
       users: usersRepository,

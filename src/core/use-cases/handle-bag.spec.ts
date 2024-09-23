@@ -4,6 +4,8 @@ import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-rep
 import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
+import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
+import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 
 // Use-cases
 import { HandleBagUseCase } from "@/core/use-cases/handle-bag";
@@ -18,6 +20,8 @@ let usersRepository: InMemoryUsersRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
 let ordersRepository: InMemoryOrdersRepository;
+let catalogsRepository: InMemoryCatalogsRepository;
+let farmsRepository: InMemoryFarmsRepository;
 
 let repositories: {
   bags: InMemoryBagsRepository;
@@ -30,7 +34,20 @@ describe("handle bag", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
     productsRepository = new InMemoryProductsRepository();
-    offersRepository = new InMemoryOffersRepository(productsRepository);
+    farmsRepository = new InMemoryFarmsRepository(usersRepository);
+
+    offersRepository = new InMemoryOffersRepository(
+      productsRepository,
+      catalogsRepository
+    );
+
+    catalogsRepository = new InMemoryCatalogsRepository(
+      farmsRepository,
+      offersRepository
+    );
+
+    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
+
     ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
     repositories = {

@@ -1,9 +1,6 @@
 // Repositories
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
-import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 // Use-cases
 import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";

@@ -26,7 +26,7 @@ export class InMemoryOrdersRepository implements OrdersRepository {
     { bag, box, page }: OrdersRepositorySearchManyRequest,
     type: T
   ): Promise<OrdersRepositoryResponse<T>[]> {
-    let entities = await filter(
+    let entities = await filter<Order>(
       this.items,
       async (item) =>
         (!bag?.id || item.bag_id.equals(bag.id)) &&

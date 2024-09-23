@@ -17,21 +17,13 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 let usersRepository: InMemoryUsersRepository;
 let farmsRepository: InMemoryFarmsRepository;
-let productsRepository: InMemoryProductsRepository;
-let offersRepository: InMemoryOffersRepository;
-let ordersRepository: InMemoryOrdersRepository;
 
 let sut: HandleFarmStatusUseCase;
 
 describe("handle farm status", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
-    farmsRepository = new InMemoryFarmsRepository(
-      usersRepository,
-      offersRepository,
-      productsRepository,
-      ordersRepository
-    );
+    farmsRepository = new InMemoryFarmsRepository(usersRepository);
 
     sut = new HandleFarmStatusUseCase(farmsRepository);
   });
