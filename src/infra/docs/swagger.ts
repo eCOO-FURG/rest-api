@@ -28,6 +28,7 @@ import { fetchBagSchema } from "@/infra/http/controllers/fetch-bag";
 import { handleBagSchema } from "@/infra/http/controllers/handle-bag";
 import { printDeliveriesReportSchema } from "@/infra/http/controllers/print-deliveries-report";
 import { listProductSchema } from "@/infra/http/controllers/list-products";
+import { fetchCurrentBoxSchema } from "@/infra/http/controllers/fetch-current-box";
 
 const tags = {
   users: "Usuários",
@@ -157,6 +158,14 @@ const docs = createDocument({
         responses: { "200": { description: "200 OK" } },
         description: "Atualiza o status de uma caixa.",
         ...SwaggerMapper.toDocs(handleBoxStatusSchema),
+      },
+    },
+    "/boxes/current": {
+      get: {
+        tags: [tags.boxes],
+        responses: { "200": { description: "200 OK" } },
+        description: "Busca pela caixa atual da fazenda em um ciclo.",
+        ...SwaggerMapper.toDocs(fetchCurrentBoxSchema),
       },
     },
 

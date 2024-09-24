@@ -35,8 +35,13 @@ export class InMemoryBoxesRepository implements BoxesRepository {
     const box = await find<Box>(
       this.items,
       async (item) =>
-        !catalog?.id ||
-        (item.catalog_id.equals(catalog.id) && (!id || item.id.equals(id)))
+        (!id || item.id.equals(id)) &&
+        (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
+        (!catalog?.farm_id ||
+          !!(await this.inMemoryCatalogsRepository.search(
+            { id: item.catalog_id.value, farm: { id: catalog.farm_id } },
+            "entity"
+          )))
     );
 
     if (!box) return null;

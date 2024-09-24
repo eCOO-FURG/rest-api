@@ -24,7 +24,7 @@ import { SearchCatalogsUseCase } from "@/core/use-cases/search-catalogs";
 import { FetchBoxUseCase } from "@/core/use-cases/fetch-box";
 import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
 import { FetchLastCatalogUseCase } from "@/core/use-cases/fetch-last-catalog";
-
+import { FetchCurrentBoxUseCase } from "@/core/use-cases/fetch-current-box";
 import { DeleteOfferUseCase } from "@/core/use-cases/delete-offer";
 import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
 import { HandleFarmStatusUseCase } from "@/core/use-cases/handle-farm-status";
@@ -179,6 +179,10 @@ export default (container: AwilixContainer) => {
     ),
     handleFarmStatusUseCase: asFunction(
       ({ farmsRepository }) => new HandleFarmStatusUseCase(farmsRepository)
+    ),
+    fetchCurrentBoxUseCase: asFunction(
+      ({ boxesRepository, cyclesRepository }) =>
+        new FetchCurrentBoxUseCase(boxesRepository, cyclesRepository)
     ),
   });
 };

@@ -28,10 +28,14 @@ export class PrismaBoxesRepository implements BoxesRepository {
     filters: BoxesRepositorySearchRequest,
     type: T
   ): Promise<BoxesRepositoryResponse<T> | null> {
+    const { since, ...data } = filters;
+
+    const where: Prisma.BoxWhereInput = data;
+
+    if (since) Object.assign(where, { created_at: { gte: since } });
+
     if (type === "entity") {
-      const box = await prisma.box.findFirst({
-        where: filters,
-      });
+      const box = await prisma.box.findFirst({ where });
 
       if (!box) return null;
 
@@ -40,7 +44,7 @@ export class PrismaBoxesRepository implements BoxesRepository {
 
     if (type === "aggregate") {
       const box = await prisma.box.findFirst({
-        where: filters,
+        where,
         include: {
           catalog: { include: { farm: { include: { admin: true } } } },
         },
@@ -54,7 +58,7 @@ export class PrismaBoxesRepository implements BoxesRepository {
     }
 
     const box = await prisma.box.findFirst({
-      where: filters,
+      where,
       include: {
         catalog: { include: { farm: { include: { admin: true } } } },
         orders: { include: { offer: { include: { product: true } } } },

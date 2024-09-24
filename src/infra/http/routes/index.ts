@@ -27,6 +27,7 @@ import { fetchLastCatalogController } from "@/infra/http/controllers/fetch-last-
 import { deleteOfferController } from "@/infra/http/controllers/delete-offer";
 import { listFarmsController } from "@/infra/http/controllers/list-farms";
 import { handleFarmStatusController } from "@/infra/http/controllers/handle-farm-status";
+import { fetchCurrentBoxController } from "@/infra/http/controllers/fetch-current-box";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -60,7 +61,20 @@ router.post("/orders", ensureAuthenticated, orderProductsController);
 
 // Caixas
 router.get("/boxes", ensureAuthenticated, ensureAdmin, listBoxesController);
-router.get("/boxes/:box_id", ensureAuthenticated, fetchBoxController);
+
+router.get(
+  "/boxes/current",
+  ensureAuthenticated,
+  ensureFarmAdmin,
+  fetchCurrentBoxController
+);
+router.get(
+  "/boxes/:box_id",
+  ensureAuthenticated,
+  ensureAdmin,
+  fetchBoxController
+);
+
 router.patch(
   "/boxes/:box_id",
   ensureAuthenticated,

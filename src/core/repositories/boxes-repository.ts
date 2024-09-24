@@ -10,7 +10,9 @@ export interface BoxesRepositorySearchRequest {
   id?: string;
   catalog?: {
     id?: string;
+    farm_id?: string;
   };
+  since?: Date;
 }
 
 export interface BoxesRepositorySearchManyRequest {

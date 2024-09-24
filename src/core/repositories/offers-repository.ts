@@ -23,6 +23,7 @@ export interface OffersRepositorySearchManyRequest {
   product?: { name?: string };
   page?: number;
   since?: Date;
+  before?: Date;
 }
 
 export type OffersRepositoryResponse<T extends RepositoryResponse> =
