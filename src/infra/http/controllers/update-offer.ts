@@ -12,6 +12,7 @@ export const updateOfferSchema = {
   body: z.object({
     amount: z.number(),
     price: z.number(),
+    description: z.string().optional(),
   }),
   params: z.object({
     offer_id: z.string(),
@@ -24,7 +25,7 @@ export async function updateOfferController(
   next: NextFunction
 ) {
   try {
-    const { amount, price } = updateOfferSchema.body.parse(request.body);
+    const { amount, price, description } = updateOfferSchema.body.parse(request.body);
     const { offer_id } = updateOfferSchema.params.parse(request.params);
 
     const updateOfferUsecase =
@@ -35,6 +36,7 @@ export async function updateOfferController(
       offer_id,
       amount,
       price,
+      description,
     });
 
     return response.sendStatus(204);
