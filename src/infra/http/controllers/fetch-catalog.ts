@@ -21,11 +21,16 @@ export const fetchCatalogsSchema = {
       .string()
       .optional()
       .openapi({ description: "Filtro por nome de produto." }),
+    sort: z
+      .enum(["asc", "desc"])
+      .default("asc")
+      .openapi({ description: "Ordem alfabética para o nome do produto." }),
   }),
   params: z.object({
     catalog_id: z.string().uuid(),
   }),
 };
+
 
 export async function fetchCatalogController(
   request: Request,
