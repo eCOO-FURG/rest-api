@@ -5,6 +5,9 @@ import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
+// Utils
+import { mostPast } from "@/core/utils/most-past";
+
 interface FetchLastCatalogUseCaseRequest {
   cycle_id: string;
   farm_id: string;
@@ -25,11 +28,12 @@ export class FetchLastCatalogUseCase {
       {
         cycle: { id: cycle_id },
         farm: { id: farm_id },
+        before: mostPast(cycle.offer),
       },
       "merged"
     );
 
-    if (!catalog) throw new ResourceNotFoundError("Catálogo", cycle_id);
+    if (!catalog) throw new ResourceNotFoundError("Catálogo no", cycle_id);
 
     return { catalog };
   }

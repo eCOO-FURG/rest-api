@@ -25,7 +25,7 @@ import { PrismaCatalogMergeMapper } from "@/infra/database/mappers/prisma-catalo
 
 export class PrismaCatalogsRepository implements CatalogsRepository {
   async search<T extends RepositoryResponse>(
-    { cycle, farm, id, offer, since }: CatalogsRepositorySearchRequest,
+    { cycle, farm, id, offer, since, before }: CatalogsRepositorySearchRequest,
     type: T
   ): Promise<CatalogsRepositoryResponse<T> | null> {
     const where: Prisma.CatalogWhereInput = {
@@ -39,6 +39,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
         },
       },
       ...(since && { created_at: { gte: since } }),
+      ...(before && { created_at: { lt: before } }),
     };
 
     if (type === "entity") {
@@ -61,6 +62,9 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
             },
           },
         },
+        orderBy: {
+          created_at: "desc",
+        }
       });
 
       if (!catalog) return null;
@@ -92,6 +96,9 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
           },
           skip: ((offer?.page ?? 1) - 1) * 20,
           take: 20,
+          orderBy: {
+            created_at: "desc",
+          },
         },
       },
     });
@@ -104,7 +111,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
   }
 
   async searchMany<T extends RepositoryResponse>(
-    { cycle, offer, page, since }: CatalogsRepositorySearchManyRequest,
+    { cycle, offer, page, since, before }: CatalogsRepositorySearchManyRequest,
     type: T
   ): Promise<CatalogsRepositoryResponse<T>[]> {
     const query: Prisma.CatalogFindManyArgs = {
@@ -121,6 +128,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
           },
         },
         ...(since && { created_at: { gte: since } }),
+        ...(before && { created_at: { lt: before } }),
       },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     };
