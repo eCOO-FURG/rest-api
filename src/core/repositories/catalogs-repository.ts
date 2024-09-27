@@ -28,7 +28,6 @@ export interface CatalogsRepositorySearchRequest {
   };
 }
 
-
 export interface CatalogsRepositorySearchManyRequest {
   cycle?: {
     id: string;
@@ -45,7 +44,6 @@ export interface CatalogsRepositorySearchManyRequest {
     order: "asc" | "desc";
   };
 }
-
 
 export type CatalogsRepositoryResponse<T extends RepositoryResponse> =
   T extends "entity"
