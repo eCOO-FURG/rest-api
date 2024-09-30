@@ -25,7 +25,7 @@ export class InMemoryBagsRepository implements BagsRepository {
   ) {}
 
   async search<T extends RepositoryResponse = "entity">(
-    { id, user, cycle, since }: BagsRepositorySearchRequest,
+    { id, user, cycle, address, since }: BagsRepositorySearchRequest,
     type: T
   ): Promise<BagsRepositoryResponse<T> | null> {
     const bag = this.items.find(
@@ -33,6 +33,11 @@ export class InMemoryBagsRepository implements BagsRepository {
         (!id || item.id.equals(id)) &&
         (!user?.id || item.user_id.equals(user.id)) &&
         (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
+        (address === undefined ||
+          (address === null && item.address_id === null) ||
+          (address?.id &&
+            item.address_id &&
+            item.address_id.equals(address.id))) &&
         (!since || item.created_at >= since)
     );
 

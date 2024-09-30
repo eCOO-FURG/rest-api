@@ -3,5 +3,5 @@ export async function find<T>(
   callback: (item: T) => Promise<boolean>
 ) {
   const results = await Promise.all(array.map(callback));
-  return array.filter((_, index) => results[index])[0];
+  return array.filter((_, index) => results[index])[0] ?? null;
 }
