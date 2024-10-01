@@ -21,10 +21,6 @@ export const fetchCatalogsSchema = {
       .string()
       .optional()
       .openapi({ description: "Filtro por nome de produto." }),
-    sort: z
-      .enum(["asc", "desc"])
-      .default("asc")
-      .openapi({ description: "Ordem alfabética para o nome do produto." }),
   }),
   params: z.object({
     catalog_id: z.string().uuid(),
@@ -38,7 +34,7 @@ export async function fetchCatalogController(
 ) {
   try {
     const { catalog_id } = fetchCatalogsSchema.params.parse(request.params);
-    const { page, product, sort } = fetchCatalogsSchema.query.parse(request.query);
+    const { page, product } = fetchCatalogsSchema.query.parse(request.query);
 
     const fetchCatalogUsecase = container.resolve<FetchCatalogUseCase>(
       "fetchCatalogUseCase"
@@ -48,7 +44,6 @@ export async function fetchCatalogController(
       catalog_id,
       page,
       product,
-      sort,
     });
 
     return response.status(200).send({
@@ -59,4 +54,3 @@ export async function fetchCatalogController(
     next(error);
   }
 }
-

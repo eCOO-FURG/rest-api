@@ -25,7 +25,7 @@ import { PrismaCatalogMergeMapper } from "@/infra/database/mappers/prisma-catalo
 
 export class PrismaCatalogsRepository implements CatalogsRepository {
   async search<T extends RepositoryResponse>(
-    { cycle, farm, id, offer, since, sort }: CatalogsRepositorySearchRequest,
+    { cycle, farm, id, offer, since }: CatalogsRepositorySearchRequest,
     type: T
   ): Promise<CatalogsRepositoryResponse<T> | null> {
     const where: Prisma.CatalogWhereInput = {
@@ -41,10 +41,8 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
       ...(since && { created_at: { gte: since } }),
     };
 
-    const orderBy = sort ? { [sort.field]: sort.order } : undefined;
-
     if (type === "entity") {
-      const catalog = await prisma.catalog.findFirst({ where, orderBy });
+      const catalog = await prisma.catalog.findFirst({ where });
 
       if (!catalog) return null;
 
@@ -63,7 +61,6 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
             },
           },
         },
-        orderBy,
       });
 
       if (!catalog) return null;
@@ -97,7 +94,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
           take: 20,
           orderBy: {
             product: {
-              name: sort?.order || "asc",
+              name: 'asc',
             },
           },
         },
@@ -112,30 +109,25 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
   }
 
   async searchMany<T extends RepositoryResponse>(
-    { cycle, offer, page, since, sort }: CatalogsRepositorySearchManyRequest,
+    { cycle, offer, page, since }: CatalogsRepositorySearchManyRequest,
     type: T
   ): Promise<CatalogsRepositoryResponse<T>[]> {
-    const where: Prisma.CatalogWhereInput = {
-      cycle,
-      offers: {
-        some: {
-          product: {
-            name: {
-              contains: offer?.product?.name,
-              mode: "insensitive",
+    const query: Prisma.CatalogFindManyArgs = {
+      where: {
+        cycle,
+        offers: {
+          some: {
+            product: {
+              name: {
+                contains: offer?.product?.name,
+                mode: "insensitive",
+              },
             },
           },
         },
+        ...(since && { created_at: { gte: since } }),
       },
-      ...(since && { created_at: { gte: since } }),
-    };
-
-    const orderBy = sort ? { [sort.field]: sort.order } : undefined;
-
-    const query: Prisma.CatalogFindManyArgs = {
-      where,
       ...(page && { skip: (page - 1) * 20, take: 20 }),
-      orderBy,
     };
 
     if (type === "entity") {
@@ -166,11 +158,6 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
         offers: {
           include: {
             product: true,
-          },
-          orderBy: {
-            product: {
-              name: sort?.order || "asc",
-            },
           },
         },
       },

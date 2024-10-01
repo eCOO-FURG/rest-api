@@ -8,20 +8,19 @@ interface FetchCatalogUseCaseRequest {
   catalog_id: string;
   page: number;
   product?: string;
-  sort?: "asc" | "desc";
 }
 
 export class FetchCatalogUseCase {
   constructor(private catalogsRepository: CatalogsRepository) {}
 
-  async execute({ catalog_id, product, page, sort, }: FetchCatalogUseCaseRequest) {
+  async execute({ catalog_id, product, page }: FetchCatalogUseCaseRequest) {
     const catalog = await this.catalogsRepository.search(
       {
         id: catalog_id,
         offer: { product: { name: product }, page },
         sort: {
           field: "offers.product.name",
-          order: sort ?? "asc",
+          order: "asc",
         },
       },
       "merged"

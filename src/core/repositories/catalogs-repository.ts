@@ -22,10 +22,6 @@ export interface CatalogsRepositorySearchRequest {
     page: number;
   };
   since?: Date;
-  sort?: {
-    field: string;
-    order: "asc" | "desc";
-  };
 }
 
 export interface CatalogsRepositorySearchManyRequest {
@@ -39,10 +35,6 @@ export interface CatalogsRepositorySearchManyRequest {
   };
   page?: number;
   since?: Date;
-  sort?: {
-    field: string;
-    order: "asc" | "desc";
-  };
 }
 
 export type CatalogsRepositoryResponse<T extends RepositoryResponse> =
