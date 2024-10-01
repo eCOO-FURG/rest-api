@@ -10,12 +10,12 @@ import { z } from "zod";
 
 export const updateUserSchema = {
   body: z.object({
-    first_name: z.string(),
-    last_name: z.string(),
-    email: z.string().email(),
-    cpf: z.string().min(11).max(14),
-    phone: z.string(),
-    password: z.string().min(8),
+    first_name: z.string().optional(),
+    last_name: z.string().optional(),
+    email: z.string().email().optional(),
+    cpf: z.string().min(11).max(14).optional(),
+    phone: z.string().optional(),
+    password: z.string().min(8).optional(),
   }),
 };
 

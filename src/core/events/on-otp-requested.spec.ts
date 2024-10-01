@@ -15,7 +15,7 @@ import { InMemoryOtpsRepository } from "@/test/repositories/in-memory-otps-repos
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
 // Events
-import { OnOtpRequestEvent } from "@/core/events/on-otp-request";
+import { OnOtpRequestEvent } from "@/core/events/on-otp-requested";
 import { DomainEvents } from "@/core/events/domain-events";
 import { waitFor } from "@/test/utils/wait-for";
 

@@ -7,7 +7,7 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Events
 import { DomainEvents } from "@/core/events/domain-events";
-import { OnOtpRequestEvent } from "@/core/events/on-otp-request";
+import { OnOtpRequestEvent } from "@/core/events/on-otp-requested";
 
 export interface OtpProps extends EntityRequest {
   user_id: UUID;
