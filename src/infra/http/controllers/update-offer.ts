@@ -10,8 +10,8 @@ import { z } from "zod";
 
 export const updateOfferSchema = {
   body: z.object({
-    amount: z.number(),
-    price: z.number(),
+    amount: z.number().optional(),
+    price: z.number().optional(),
     description: z.string().optional(),
   }),
   params: z.object({
