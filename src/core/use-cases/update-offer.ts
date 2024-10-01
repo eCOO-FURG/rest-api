@@ -17,6 +17,7 @@ interface UpdateOfferUpdateUseCaseRequest {
   offer_id: string;
   amount?: number;
   price?: number;
+  description?: string;
 }
 
 export class UpdateOfferUseCase {
@@ -32,6 +33,7 @@ export class UpdateOfferUseCase {
     offer_id,
     amount,
     price,
+    description,
   }: UpdateOfferUpdateUseCaseRequest) {
     const farm = await this.farmsRepository.search({ id: farm_id }, "entity");
 
@@ -67,6 +69,8 @@ export class UpdateOfferUseCase {
     offer.amount = amount ?? offer.amount;
     
     offer.price = price ? (price + (price * farm.tax) / 100) : offer.price;
+
+    offer.description = description ?? offer.description;
 
     await this.offersRepository.update(offer);
   }

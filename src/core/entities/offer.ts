@@ -42,6 +42,10 @@ export class Offer extends Entity<OfferProps> {
     this.props.amount = amount;
   }
 
+  set description(description: string | null) {
+    this.props.description = description;
+  }
+
   static create(props: Optional<OfferProps, "description">) {
     const offer = new Offer({
       ...props,
