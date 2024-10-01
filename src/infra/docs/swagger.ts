@@ -29,6 +29,7 @@ import { handleBagSchema } from "@/infra/http/controllers/handle-bag";
 import { printDeliveriesReportSchema } from "@/infra/http/controllers/print-deliveries-report";
 import { listProductSchema } from "@/infra/http/controllers/list-products";
 import { fetchCurrentBoxSchema } from "@/infra/http/controllers/fetch-current-box";
+import { requestPasswordUpdateSchema } from "@/infra/http/controllers/request-password-update";
 
 const tags = {
   users: "Usuários",
@@ -74,6 +75,14 @@ const docs = createDocument({
         description: "Verifica um usuário.",
         ...SwaggerMapper.toDocs(verifyUserSchema),
       },
+    },
+    "/users/password": {
+      post: {
+        tags: [tags.users],
+        responses: { "201": { description: "201 Created" } },
+        description: "Solicita a recuperação de senha. Se o usuário existir, ele recebe um email com um link para essa atualização.",
+        ...SwaggerMapper.toDocs(requestPasswordUpdateSchema),
+      }
     },
     "/me": {
       get: {
