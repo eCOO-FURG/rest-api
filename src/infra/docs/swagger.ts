@@ -132,7 +132,7 @@ const docs = createDocument({
         tags: [tags.orders],
         responses: { "200": { description: "200 OK" } },
         description:
-          "Cria um ou mais pedidos. Se for o primeiro pedido para o produtor no ciclo, cria uma nova caixa. Se for o primeiro pedido do usuário no ciclo, cria uma nova sacola.",
+          "Cria um ou mais pedidos. Se for o primeiro pedido para o produtor no ciclo, cria uma nova caixa. Se for o primeiro pedido do usuário no ciclo, cria uma nova sacola. Pode ser passado o bag_id para adicionar os pedidos a uma sacola já existente. Sempre é buscado uma por uma sacola já existente para as configurações de entrega. Caso encontrado os pedidos são adicionados a essa sacola.",
         ...SwaggerMapper.toDocs(orderProductsSchema),
       },
     },
