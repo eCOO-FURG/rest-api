@@ -79,7 +79,7 @@ const docs = createDocument({
     "/users/password": {
       post: {
         tags: [tags.users],
-        responses: { "201": { description: "201 Created" } },
+        responses: { "200": { description: "200 OK" } },
         description: "Solicita a recuperação de senha. Se o usuário existir, ele recebe um email com um link para essa atualização.",
         ...SwaggerMapper.toDocs(requestPasswordUpdateSchema),
       }

@@ -31,7 +31,7 @@ export async function requestPasswordUpdateController(
       email,
     });
 
-    return response.sendStatus(201);
+    return response.sendStatus(200);
   } catch (error) {
     next(error);
   }
