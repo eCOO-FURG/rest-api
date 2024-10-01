@@ -17,7 +17,7 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 
 // Mappers
 import { PrismaBagMapper } from "@/infra/database/mappers/prisma-bag-mapper";
-import { PrismaBagAggreagateMapper } from "@/infra/database/mappers/prisma-bag-aggregate-mapper";
+import { PrismaBagAggregateMapper } from "@/infra/database/mappers/prisma-bag-aggregate-mapper";
 import { PrismaBagMergeMapper } from "@/infra/database/mappers/prisma-bag-merge-mapper";
 
 // Libs
@@ -47,12 +47,12 @@ export class PrismaBagsRepository implements BagsRepository {
     if (type === "aggregate") {
       const found = await prisma.bag.findFirst({
         where,
-        include: { customer: true },
+        include: { customer: true, address: true },
       });
 
       if (!found) return null;
 
-      return PrismaBagAggreagateMapper.toDomain(
+      return PrismaBagAggregateMapper.toDomain(
         found
       ) as BagsRepositoryResponse<T>;
     }
@@ -61,6 +61,7 @@ export class PrismaBagsRepository implements BagsRepository {
       where,
       include: {
         customer: true,
+        address: true,
         orders: {
           include: {
             offer: {
@@ -124,11 +125,12 @@ export class PrismaBagsRepository implements BagsRepository {
         ...query,
         include: {
           customer: true,
+          address: true,
         },
       });
 
       return found.map((bag) =>
-        PrismaBagAggreagateMapper.toDomain(bag)
+        PrismaBagAggregateMapper.toDomain(bag)
       ) as BagsRepositoryResponse<T>[];
     }
 
@@ -136,6 +138,7 @@ export class PrismaBagsRepository implements BagsRepository {
       ...query,
       include: {
         customer: true,
+        address: true,
         orders: {
           include: {
             offer: {

@@ -161,7 +161,7 @@ model Address {
 
   street       String
   number       String
-  complement   String
+  complement   String?
   neighborhood String
   postal_code  String
 

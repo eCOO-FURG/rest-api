@@ -12,6 +12,7 @@ export class PrismaBagMapper {
       id: new UUID(raw.id),
       user_id: new UUID(raw.user_id),
       cycle_id: new UUID(raw.cycle_id),
+      address_id: raw.address_id ? new UUID(raw.address_id) : null,
     });
   }
 
@@ -21,6 +22,7 @@ export class PrismaBagMapper {
       id: bag.id.value,
       user_id: bag.user_id.value,
       cycle_id: bag.cycle_id.value,
+      address_id: bag.address_id ? bag.address_id.value : null,
     };
   }
 }

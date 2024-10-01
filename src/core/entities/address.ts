@@ -1,11 +1,14 @@
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
+// Types
+import { Optional } from "@/core/types/optional";
+
 export interface AddressProps extends EntityRequest {
   street: string;
   number: string;
   neighborhood: string;
-  complement: string;
+  complement: string | null;
   postal_code: string;
 }
 
@@ -30,8 +33,11 @@ export class Address extends Entity<AddressProps> {
     return this.props.complement;
   }
 
-  static create(props: AddressProps) {
-    const address = new Address(props);
+  static create(props: Optional<AddressProps, "complement">) {
+    const address = new Address({
+      ...props,
+      complement: props.complement ?? null,
+    });
 
     return address;
   }

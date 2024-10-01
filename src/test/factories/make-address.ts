@@ -13,6 +13,7 @@ export function makeAddress(props: Partial<Address> = {}) {
     number: props.number ?? faker.location.buildingNumber(),
     complement: props.complement ?? faker.location.secondaryAddress(),
     neighborhood: props.neighborhood ?? faker.location.streetAddress(),
+    postal_code: props.postal_code ?? faker.location.zipCode(),
   });
 
   return address;

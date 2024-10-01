@@ -36,7 +36,7 @@ interface OrderProductsUseCaseRequest {
   address?: {
     street: string;
     number: string;
-    complement: string;
+    complement?: string;
     neighborhood: string;
     postal_code: string;
   };
