@@ -113,7 +113,7 @@ model Cycle {
   updated_at DateTime?
 
   bags     Bag[]
-  catalogs Catalog[] 
+  catalogs Catalog[]
 
   @@map("cycles")
 }
@@ -156,6 +156,23 @@ model Offer {
   @@map("offers")
 }
 
+model Address {
+  id String @id @default(uuid())
+
+  street       String
+  number       String
+  complement   String
+  neighborhood String
+  postal_code  String
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  bags Bag[]
+
+  @@map("addresses")
+}
+
 enum BAG_STATUS {
   PENDING
   SEPARATED
@@ -163,15 +180,17 @@ enum BAG_STATUS {
 }
 
 model Bag {
-  id      String     @id @default(uuid())
-  address String?
-  status  BAG_STATUS
+  id     String     @id @default(uuid())
+  status BAG_STATUS
 
   user_id  String
   customer User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   cycle_id String
   cycle    Cycle  @relation(fields: [cycle_id], references: [id], onDelete: Cascade)
+
+  address_id String?
+  address    Address? @relation(fields: [address_id], references: [id])
 
   created_at DateTime  @default(now())
   updated_at DateTime?

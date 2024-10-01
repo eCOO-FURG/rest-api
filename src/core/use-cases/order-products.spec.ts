@@ -38,6 +38,7 @@ let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
 let ordersRepository: InMemoryOrdersRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
+let addressesRepository: InMemoryAddressesRepository;
 
 let repositories: {
   users: InMemoryUsersRepository;
@@ -71,17 +72,22 @@ describe("order product", () => {
     usersRepository = new InMemoryUsersRepository();
     ordersRepository = new InMemoryOrdersRepository(offersRepository);
     farmsRepository = new InMemoryFarmsRepository(usersRepository);
+    addressesRepository = new InMemoryAddressesRepository();
 
     repositories = {
       users: usersRepository,
       products: productsRepository,
       offers: offersRepository,
       orders: ordersRepository,
-      bags: new InMemoryBagsRepository(usersRepository, ordersRepository),
+      bags: new InMemoryBagsRepository(
+        usersRepository,
+        ordersRepository,
+        addressesRepository
+      ),
       cycles: cyclesRepository,
       catalogs: catalogsRepository,
       boxes: new InMemoryBoxesRepository(catalogsRepository, ordersRepository),
-      addresses: new InMemoryAddressesRepository(),
+      addresses: addressesRepository,
     };
 
     sut = new OrderProductsUseCase(
