@@ -3,7 +3,8 @@ import { asFunction, AwilixContainer } from "awilix";
 
 // Events
 import { OnRegisteredEvent } from "@/core/events/on-registered";
-import { OnOtpRequestEvent } from "@/core/events/on-otp-request";
+import { OnOtpRequestEvent } from "@/core/events/on-otp-requested";
+import { OnUpdatePasswordRequestEvent } from "@/core/events/on-password-update-requested";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -13,6 +14,10 @@ export default (container: AwilixContainer) => {
     onOtpRequestEvent: asFunction(
       ({ usersRepository, mailer }) =>
         new OnOtpRequestEvent(usersRepository, mailer)
+    ),
+    onUpdatePasswordRequestEvent: asFunction(
+      ({ usersRepository, mailer }) =>
+        new OnUpdatePasswordRequestEvent(usersRepository, mailer)
     ),
   });
 };

@@ -10,6 +10,7 @@ import { Email } from "@/core/entities/email";
 // Services
 import { Hasher } from "@/core/cryptography/hasher";
 import { Mailer } from "@/core/mail/mailer";
+import { DomainEvents } from "@/core/events/domain-events";
 
 interface RequestPasswordUpdateUseCaseRequest {
   email: string;
@@ -29,10 +30,12 @@ export class RequestPasswordUpdateUseCase {
       throw new ResourceNotFoundError("Usuário", email);
     }
 
+    user.reset();
+
     const token = await this.hasher.hash({ user_id: user.id.value });
 
     const view = await this.mailer.load({
-      view: "password-update",
+      view: "request-password-update",
       props: {
         token,
       },
@@ -45,5 +48,7 @@ export class RequestPasswordUpdateUseCase {
     });
 
     await this.mailer.send(mail);
+    
+    DomainEvents.dispatch(user);
   }
 }

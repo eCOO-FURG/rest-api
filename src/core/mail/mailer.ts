@@ -10,7 +10,7 @@ export type MailerLoadRequest =
       };
     }
   | {
-      view: "password-update";
+      view: "request-password-update";
       props: {
         token: string;
       };
