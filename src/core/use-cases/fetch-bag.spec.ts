@@ -25,6 +25,7 @@ import { InMemoryProductsRepository } from "@/test/repositories/in-memory-produc
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
+import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
 
 let usersRepository: InMemoryUsersRepository;
 let productsRepository: InMemoryProductsRepository;
@@ -32,6 +33,7 @@ let offersRepository: InMemoryOffersRepository;
 let ordersRepository: InMemoryOrdersRepository;
 let farmsRepository: InMemoryFarmsRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
+let addressesRepository: InMemoryAddressesRepository;
 
 let repositories: {
   bags: InMemoryBagsRepository;
@@ -57,9 +59,14 @@ describe("Fetch bag", () => {
 
     offersRepository.inMemoryCatalogsRepository = catalogsRepository;
     ordersRepository = new InMemoryOrdersRepository(offersRepository);
+    addressesRepository = new InMemoryAddressesRepository();
 
     repositories = {
-      bags: new InMemoryBagsRepository(usersRepository, ordersRepository),
+      bags: new InMemoryBagsRepository(
+        usersRepository,
+        ordersRepository,
+        addressesRepository
+      ),
     };
 
     sut = new FetchBagUseCase(repositories.bags);

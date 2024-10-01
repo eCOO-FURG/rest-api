@@ -3,6 +3,7 @@ import { Cycle, Week } from "@/core/entities/cycle";
 import { Bag } from "@/core/entities/bag";
 import { Order } from "@/core/entities/order";
 import { Box } from "@/core/entities/box";
+import { Address } from "@/core/entities/address";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Repositories
@@ -13,6 +14,7 @@ import { BagsRepository } from "@/core/repositories/bags-repository";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
 import { BoxesRepository } from "@/core/repositories/boxes-repository";
+import { AddressesRepository } from "@/core/repositories/addresses-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -26,11 +28,25 @@ import { mostPast } from "@/core/utils/most-past";
 interface OrderProductsUseCaseRequest {
   user_id: string;
   cycle_id: string;
-  address?: string;
   request: {
     offer_id: string;
     amount: number;
   }[];
+  bag_id?: string;
+  address?: {
+    street: string;
+    number: string;
+    complement?: string;
+    neighborhood: string;
+    postal_code: string;
+  };
+}
+
+interface UseBagRequest {
+  bag_id?: string;
+  address_id: UUID | null;
+  user_id: UUID;
+  cycle: Cycle;
 }
 
 export class OrderProductsUseCase {
@@ -41,12 +57,14 @@ export class OrderProductsUseCase {
     private ordersRepository: OrdersRepository,
     private catalogsRepository: CatalogsRepository,
     private bagsRepository: BagsRepository,
-    private boxesRepository: BoxesRepository
+    private boxesRepository: BoxesRepository,
+    private addressesRepository: AddressesRepository
   ) {}
 
   async execute({
     user_id,
     cycle_id,
+    bag_id,
     address,
     request,
   }: OrderProductsUseCaseRequest) {
@@ -71,7 +89,14 @@ export class OrderProductsUseCase {
       "aggregate"
     );
 
-    const bag = await this.useBag(user.id, cycle, address);
+    const destination = await this.useAddress(address);
+
+    const bag = await this.useBag({
+      bag_id,
+      cycle,
+      user_id: user.id,
+      address_id: destination ? destination.id : null,
+    });
 
     const orders: Order[] = [];
 
@@ -115,15 +140,40 @@ export class OrderProductsUseCase {
     await this.ordersRepository.createMany(orders);
   }
 
-  private async useBag(user_id: UUID, cycle: Cycle, address?: string) {
+  private async useAddress(address: OrderProductsUseCaseRequest["address"]) {
+    if (!address) return null;
+
+    const found = await this.addressesRepository.search({
+      street: address.street,
+      number: address.number,
+      complement: address.complement,
+      neighborhood: address.neighborhood,
+      postal_code: address.postal_code,
+    });
+
+    if (found) return found;
+
+    const destination = Address.create(address);
+
+    await this.addressesRepository.create(destination);
+
+    return destination;
+  }
+
+  private async useBag({ bag_id, user_id, address_id, cycle }: UseBagRequest) {
+    if (bag_id) {
+      const bag = await this.bagsRepository.search({ id: bag_id }, "entity");
+
+      if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
+
+      return bag;
+    }
+
     const found = await this.bagsRepository.search(
       {
-        user: {
-          id: user_id.value,
-        },
-        cycle: {
-          id: cycle.id.value,
-        },
+        user: { id: user_id.value },
+        cycle: { id: cycle.id.value },
+        address: address_id ? { id: address_id.value } : null,
         since: mostPast(cycle.order),
       },
       "entity"
@@ -131,7 +181,7 @@ export class OrderProductsUseCase {
 
     if (found) return found;
 
-    const bag = Bag.create({ user_id, cycle_id: cycle.id, address });
+    const bag = Bag.create({ user_id, cycle_id: cycle.id, address_id });
 
     await this.bagsRepository.create(bag);
 

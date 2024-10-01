@@ -10,12 +10,14 @@ import { ClosedActionError } from "@/core/errors/closed-action";
 import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
 
-// Services
+// Factories
 import { makeOffer } from "@/test/factories/make-offer";
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeUser } from "@/test/factories/make-user";
 import { makeProduct } from "@/test/factories/make-product";
 import { makeBag } from "@/test/factories/make-bag";
+import { makeCatalog } from "@/test/factories/make-catalog";
+import { makeAddress } from "@/test/factories/make-address";
 
 // Repositories
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
@@ -27,7 +29,7 @@ import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repos
 import { InMemoryBoxesRepository } from "@/test/repositories/in-memory-boxes-repository";
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
-import { makeCatalog } from "@/test/factories/make-catalog";
+import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
@@ -36,6 +38,7 @@ let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
 let ordersRepository: InMemoryOrdersRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
+let addressesRepository: InMemoryAddressesRepository;
 
 let repositories: {
   users: InMemoryUsersRepository;
@@ -46,6 +49,7 @@ let repositories: {
   cycles: InMemoryCyclesRepository;
   catalogs: InMemoryCatalogsRepository;
   boxes: InMemoryBoxesRepository;
+  addresses: InMemoryAddressesRepository;
 };
 
 let sut: OrderProductsUseCase;
@@ -68,16 +72,22 @@ describe("order product", () => {
     usersRepository = new InMemoryUsersRepository();
     ordersRepository = new InMemoryOrdersRepository(offersRepository);
     farmsRepository = new InMemoryFarmsRepository(usersRepository);
+    addressesRepository = new InMemoryAddressesRepository();
 
     repositories = {
       users: usersRepository,
       products: productsRepository,
       offers: offersRepository,
       orders: ordersRepository,
-      bags: new InMemoryBagsRepository(usersRepository, ordersRepository),
+      bags: new InMemoryBagsRepository(
+        usersRepository,
+        ordersRepository,
+        addressesRepository
+      ),
       cycles: cyclesRepository,
       catalogs: catalogsRepository,
       boxes: new InMemoryBoxesRepository(catalogsRepository, ordersRepository),
+      addresses: addressesRepository,
     };
 
     sut = new OrderProductsUseCase(
@@ -87,7 +97,8 @@ describe("order product", () => {
       repositories.orders,
       repositories.catalogs,
       repositories.bags,
-      repositories.boxes
+      repositories.boxes,
+      repositories.addresses
     );
   });
 
@@ -115,7 +126,13 @@ describe("order product", () => {
     await sut.execute({
       user_id: user.id.value,
       cycle_id: cycle.id.value,
-      address: "address",
+      address: {
+        street: "street",
+        number: "number",
+        complement: "complement",
+        neighborhood: "neighborhood",
+        postal_code: "12345-678",
+      },
       request: [{ offer_id: offer.id.value, amount: 5 }],
     });
 
@@ -134,7 +151,14 @@ describe("order product", () => {
     const product = makeProduct();
     await repositories.products.create(product);
 
-    const bag = makeBag({ user_id: user.id, cycle_id: cycle.id });
+    const address = makeAddress({});
+    await repositories.addresses.create(address);
+
+    const bag = makeBag({
+      user_id: user.id,
+      cycle_id: cycle.id,
+      address_id: address.id,
+    });
     await repositories.bags.create(bag);
 
     const catalog = makeCatalog({ cycle_id: cycle.id });
@@ -151,7 +175,7 @@ describe("order product", () => {
     await sut.execute({
       user_id: user.id.value,
       cycle_id: cycle.id.value,
-      address: "address",
+      address: { ...address.props },
       request: [{ offer_id: offer.id.value, amount: 5 }],
     });
 
@@ -168,7 +192,13 @@ describe("order product", () => {
       sut.execute({
         user_id: "1234",
         cycle_id: cycle.id.value,
-        address: "address",
+        address: {
+          street: "street",
+          number: "number",
+          complement: "complement",
+          neighborhood: "neighborhood",
+          postal_code: "12345-678",
+        },
         request: [
           {
             offer_id: "1234",
@@ -234,7 +264,6 @@ describe("order product", () => {
       sut.execute({
         user_id: user.id.value,
         cycle_id: cycle.id.value,
-        address: "address",
         request: [{ offer_id: offer.id.value, amount: 5 }],
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
@@ -272,7 +301,6 @@ describe("order product", () => {
       sut.execute({
         user_id: user.id.value,
         cycle_id: cycle.id.value,
-        address: "address",
         request: [
           {
             offer_id: offer.id.value,
@@ -308,7 +336,6 @@ describe("order product", () => {
       sut.execute({
         user_id: user.id.value,
         cycle_id: cycle.id.value,
-        address: "address",
         request: [{ offer_id: offer.id.value, amount: 15 }],
       })
     ).rejects.toBeInstanceOf(UnavailableAmountError);
@@ -341,7 +368,6 @@ describe("order product", () => {
       sut.execute({
         user_id: user.id.value,
         cycle_id: cycle.id.value,
-        address: "address",
         request: [{ offer_id: offer.id.value, amount: 27 }],
       })
     ).rejects.toBeInstanceOf(InvalidWeightError);

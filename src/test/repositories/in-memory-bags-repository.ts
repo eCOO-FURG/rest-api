@@ -15,17 +15,19 @@ import {
 } from "@/core/repositories/bags-repository";
 import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
+import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
 
 export class InMemoryBagsRepository implements BagsRepository {
   items: Bag[] = [];
 
   constructor(
     private inMemoryUsersRepository: InMemoryUsersRepository,
-    private inMemoryOrdersRepository: InMemoryOrdersRepository
+    private inMemoryOrdersRepository: InMemoryOrdersRepository,
+    private inMemoryAddressesRepository: InMemoryAddressesRepository
   ) {}
 
   async search<T extends RepositoryResponse = "entity">(
-    { id, user, cycle, since }: BagsRepositorySearchRequest,
+    { id, user, cycle, address, since }: BagsRepositorySearchRequest,
     type: T
   ): Promise<BagsRepositoryResponse<T> | null> {
     const bag = this.items.find(
@@ -33,6 +35,11 @@ export class InMemoryBagsRepository implements BagsRepository {
         (!id || item.id.equals(id)) &&
         (!user?.id || item.user_id.equals(user.id)) &&
         (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
+        (address === undefined ||
+          (address === null && item.address_id === null) ||
+          (address?.id &&
+            item.address_id &&
+            item.address_id.equals(address.id))) &&
         (!since || item.created_at >= since)
     );
 
@@ -46,9 +53,14 @@ export class InMemoryBagsRepository implements BagsRepository {
 
     if (!_user) return null;
 
+    const _address = await this.inMemoryAddressesRepository.search({
+      id: bag.address_id?.value,
+    });
+
     const aggreagate = BagAggregate.create({
       ...bag.props,
       user: _user,
+      address: _address,
     });
 
     if (type === "aggregate") return aggreagate as BagsRepositoryResponse<T>;
@@ -102,9 +114,14 @@ export class InMemoryBagsRepository implements BagsRepository {
 
       if (!user) return [];
 
+      const address = await this.inMemoryAddressesRepository.search({
+        id: entity.address_id?.value,
+      });
+
       const aggreagate = BagAggregate.create({
         ...entity.props,
         user,
+        address,
       });
 
       aggregates.push(aggreagate);

@@ -2,7 +2,7 @@
 import { BagMerge } from "@/core/entities/merged/bag-merge";
 
 // Mappers
-import { PrismaBagAggreagateMapper } from "@/infra/database/mappers/prisma-bag-aggregate-mapper";
+import { PrismaBagAggregateMapper } from "@/infra/database/mappers/prisma-bag-aggregate-mapper";
 import { PrismaOrderMergeMapper } from "@/infra/database/mappers/prisma-order-merge-mapper";
 
 // Libraries
@@ -13,6 +13,7 @@ export class PrismaBagMergeMapper {
     raw: Prisma.BagGetPayload<{
       include: {
         customer: true;
+        address: true;
         orders: {
           include: {
             offer: {
@@ -27,7 +28,7 @@ export class PrismaBagMergeMapper {
     }>
   ) {
     return BagMerge.create({
-      ...PrismaBagAggreagateMapper.toDomain(raw).props,
+      ...PrismaBagAggregateMapper.toDomain(raw).props,
       orders: raw.orders.map((order) => PrismaOrderMergeMapper.toDomain(order)),
     });
   }
