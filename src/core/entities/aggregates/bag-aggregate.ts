@@ -2,14 +2,21 @@
 import { BagProps } from "@/core/entities/bag";
 import { Entity } from "@/core/entities/entity";
 import { User } from "@/core/entities/user";
+import { Address } from "@/core/entities/address";
 
-export interface BagAggregateProps extends Omit<BagProps, "user_id"> {
+export interface BagAggregateProps
+  extends Omit<BagProps, "user_id" | "address_id"> {
   user: User;
+  address: Address | null;
 }
 
 export class BagAggregate extends Entity<BagAggregateProps> {
   get user() {
     return this.props.user;
+  }
+
+  get address() {
+    return this.props.address;
   }
 
   get cycle_id() {
@@ -18,10 +25,6 @@ export class BagAggregate extends Entity<BagAggregateProps> {
 
   get status() {
     return this.props.status;
-  }
-
-  get address() {
-    return this.props.address;
   }
 
   static create(props: BagAggregateProps) {

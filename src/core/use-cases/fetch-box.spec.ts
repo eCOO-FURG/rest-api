@@ -1,7 +1,6 @@
 // Use-cases
 import { FetchBoxUseCase } from "@/core/use-cases/fetch-box";
 
-import { makeCycle } from "@/test/factories/make-cycle";
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeOffer } from "@/test/factories/make-offer";
 import { makeOrder } from "@/test/factories/make-order";

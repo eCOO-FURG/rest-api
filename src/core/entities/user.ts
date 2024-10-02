@@ -7,6 +7,7 @@ import { OnRegisteredEvent } from "@/core/events/on-registered";
 
 // Events
 import { DomainEvents } from "@/core/events/domain-events";
+import { OnUpdatePasswordRequestEvent } from "@/core/events/on-password-update-requested";
 
 type Role = "USER" | "PRODUCER" | "ADMIN";
 
@@ -82,6 +83,10 @@ export class User extends Entity<UserProps> {
   verify() {
     this.props.verified_at = new Date();
     this.touch();
+  }
+
+  reset() {
+    DomainEvents.events.push({ entity: this, name: OnUpdatePasswordRequestEvent.name });
   }
 
   static create(props: Optional<UserProps, "password" | "verified_at">) {

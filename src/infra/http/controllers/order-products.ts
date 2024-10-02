@@ -10,8 +10,17 @@ import container from "@/infra/container";
 
 export const orderProductsSchema = {
   body: z.object({
+    bag_id: z.string().optional(),
     cycle_id: z.string(),
-    address: z.string().optional(),
+    address: z
+      .object({
+        street: z.string(),
+        number: z.string(),
+        neighborhood: z.string(),
+        complement: z.string().optional(),
+        postal_code: z.string(),
+      })
+      .optional(),
     orders: z
       .array(
         z.object({
@@ -31,15 +40,15 @@ export async function orderProductsController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id, address, orders } = orderProductsSchema.body.parse(
-      request.body
-    );
+    const { cycle_id, address, orders, bag_id } =
+      orderProductsSchema.body.parse(request.body);
 
     const orderProductsUseCase = container.resolve<OrderProductsUseCase>(
       "orderPoductsUseCase"
     );
 
     await orderProductsUseCase.execute({
+      bag_id,
       user_id: request.user_id,
       cycle_id,
       address,

@@ -29,6 +29,7 @@ import { listFarmsController } from "@/infra/http/controllers/list-farms";
 import { handleFarmStatusController } from "@/infra/http/controllers/handle-farm-status";
 import { fetchCurrentBoxController } from "@/infra/http/controllers/fetch-current-box";
 import { fetchCurrentCatalogController } from "@/infra/http/controllers/fetch-current-catalog";
+import { requestPasswordUpdateController } from "@/infra/http/controllers/request-password-update";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -42,6 +43,7 @@ router.post("/users", registerController);
 router.patch("/users", ensureAuthenticated, updateUserController);
 router.get("/users/verify", verifyUserController);
 router.get("/me", ensureAuthenticated, fetchProfileController);
+router.post("/users/password", requestPasswordUpdateController);
 
 // Autenticação
 router.post("/auth", authenticateController);

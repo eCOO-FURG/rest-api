@@ -8,12 +8,9 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 
 export interface BagsRepositorySearchRequest {
   id?: string;
-  user?: {
-    id?: string;
-  };
-  cycle?: {
-    id?: string;
-  };
+  user?: { id?: string };
+  cycle?: { id?: string };
+  address?: { id?: string } | null;
   since?: Date;
 }
 

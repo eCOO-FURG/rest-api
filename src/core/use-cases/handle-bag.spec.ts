@@ -6,6 +6,7 @@ import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-r
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
+import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
 
 // Use-cases
 import { HandleBagUseCase } from "@/core/use-cases/handle-bag";
@@ -22,6 +23,7 @@ let offersRepository: InMemoryOffersRepository;
 let ordersRepository: InMemoryOrdersRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
 let farmsRepository: InMemoryFarmsRepository;
+let addressesRepository: InMemoryAddressesRepository;
 
 let repositories: {
   bags: InMemoryBagsRepository;
@@ -49,9 +51,14 @@ describe("handle bag", () => {
     offersRepository.inMemoryCatalogsRepository = catalogsRepository;
 
     ordersRepository = new InMemoryOrdersRepository(offersRepository);
+    addressesRepository = new InMemoryAddressesRepository();
 
     repositories = {
-      bags: new InMemoryBagsRepository(usersRepository, ordersRepository),
+      bags: new InMemoryBagsRepository(
+        usersRepository,
+        ordersRepository,
+        addressesRepository
+      ),
       users: new InMemoryUsersRepository(),
     };
 
