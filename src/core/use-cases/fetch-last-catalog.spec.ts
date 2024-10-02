@@ -44,7 +44,11 @@ describe("Fetch last catalog", () => {
     offersRepository.inMemoryCatalogsRepository = catalogsRepository;
     cyclesRepository = new InMemoryCyclesRepository();
 
-    sut = new FetchLastCatalogUseCase(cyclesRepository, catalogsRepository);
+    sut = new FetchLastCatalogUseCase(
+      cyclesRepository,
+      catalogsRepository,
+      farmsRepository
+    );
   });
 
   it("should be able to fetch the last catalog from a farm in a cycle", async () => {

@@ -1,6 +1,7 @@
 // Repositories
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
+import { FarmsRepository } from "@/core/repositories/farms-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -16,13 +17,16 @@ interface FetchCurrentCatalogUseCaseRequest {
 export class FetchCurrentCatalogUseCase {
   constructor(
     private cyclesRepository: CyclesRepository,
-    private catalogsRepository: CatalogsRepository
+    private catalogsRepository: CatalogsRepository,
+    private farmsRepository: FarmsRepository
   ) {}
 
   async execute({ cycle_id, farm_id }: FetchCurrentCatalogUseCaseRequest) {
     const cycle = await this.cyclesRepository.findById(cycle_id);
-
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+
+    const farm = await this.farmsRepository.search({ id: farm_id }, "entity");
+    if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
     const catalog = await this.catalogsRepository.search(
       {

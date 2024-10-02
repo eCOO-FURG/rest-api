@@ -45,7 +45,11 @@ describe("Fetch current catalog", () => {
     offersRepository.inMemoryCatalogsRepository = catalogsRepository;
     cyclesRepository = new InMemoryCyclesRepository();
 
-    sut = new FetchCurrentCatalogUseCase(cyclesRepository, catalogsRepository);
+    sut = new FetchCurrentCatalogUseCase(
+      cyclesRepository,
+      catalogsRepository,
+      farmsRepository
+    );
   });
 
   it("should be able to fetch the current catalog from a farm in a cycle", async () => {
