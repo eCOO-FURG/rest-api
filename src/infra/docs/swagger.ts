@@ -30,6 +30,7 @@ import { printDeliveriesReportSchema } from "@/infra/http/controllers/print-deli
 import { listProductSchema } from "@/infra/http/controllers/list-products";
 import { fetchCurrentBoxSchema } from "@/infra/http/controllers/fetch-current-box";
 import { requestPasswordUpdateSchema } from "@/infra/http/controllers/request-password-update";
+import { fetchCurrentCatalogSchema } from "@/infra/http/controllers/fetch-current-catalog";
 
 const tags = {
   users: "Usuários",
@@ -80,9 +81,10 @@ const docs = createDocument({
       post: {
         tags: [tags.users],
         responses: { "200": { description: "200 OK" } },
-        description: "Solicita a recuperação de senha. Se o usuário existir, ele recebe um email com um link para essa atualização.",
+        description:
+          "Solicita a recuperação de senha. Se o usuário existir, ele recebe um email com um link para essa atualização.",
         ...SwaggerMapper.toDocs(requestPasswordUpdateSchema),
-      }
+      },
     },
     "/me": {
       get: {
@@ -225,6 +227,14 @@ const docs = createDocument({
         responses: { "200": { description: "200 OK" } },
         description: "Busca o ultimo catálogo do produtor em um ciclo.",
         ...SwaggerMapper.toDocs(fetchLastCatalogSchema),
+      },
+    },
+    "/catalogs/current/{cycle_id}": {
+      get: {
+        tags: [tags.catalogs],
+        responses: { "200": { description: "200 OK" } },
+        description: "Busca o catálogo atual do produtor em um ciclo.",
+        ...SwaggerMapper.toDocs(fetchCurrentCatalogSchema),
       },
     },
 
