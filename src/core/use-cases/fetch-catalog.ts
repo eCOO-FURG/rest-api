@@ -15,14 +15,7 @@ export class FetchCatalogUseCase {
 
   async execute({ catalog_id, product, page }: FetchCatalogUseCaseRequest) {
     const catalog = await this.catalogsRepository.search(
-      {
-        id: catalog_id,
-        offer: { product: { name: product }, page },
-        sort: {
-          field: "offers.product.name",
-          order: "asc",
-        },
-      },
+      { id: catalog_id, offer: { product: { name: product }, page } },
       "merged"
     );
 
