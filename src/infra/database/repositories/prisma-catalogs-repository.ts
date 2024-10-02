@@ -43,7 +43,12 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
     };
 
     if (type === "entity") {
-      const catalog = await prisma.catalog.findFirst({ where });
+      const catalog = await prisma.catalog.findFirst({
+        where,
+        orderBy: {
+          created_at: "desc",
+        },
+      });
 
       if (!catalog) return null;
 
@@ -64,7 +69,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
         },
         orderBy: {
           created_at: "desc",
-        }
+        },
       });
 
       if (!catalog) return null;
