@@ -29,7 +29,7 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
   ) {}
 
   async search<T extends RepositoryResponse>(
-    { id, cycle, farm, offer, since }: CatalogsRepositorySearchRequest,
+    { id, cycle, farm, offer, since, before }: CatalogsRepositorySearchRequest,
     type: T
   ): Promise<CatalogsRepositoryResponse<T> | null> {
     const catalog = await find<Catalog>(
@@ -51,7 +51,8 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
             "entity"
           ))) &&
         (!farm?.id || item.farm_id.equals(farm.id)) &&
-        (!since || item.created_at >= since)
+        (!since || item.created_at >= since) &&
+        (!before || item.created_at < before)
     );
 
     if (!catalog) return null;
