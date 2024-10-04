@@ -22,6 +22,7 @@ export interface CatalogsRepositorySearchRequest {
     page: number;
   };
   since?: Date;
+  before?: Date;
 }
 
 export interface CatalogsRepositorySearchManyRequest {
@@ -35,6 +36,7 @@ export interface CatalogsRepositorySearchManyRequest {
   };
   page?: number;
   since?: Date;
+  before?: Date;
 }
 
 export type CatalogsRepositoryResponse<T extends RepositoryResponse> =

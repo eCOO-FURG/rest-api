@@ -1,6 +1,7 @@
 // Use-cases
-import { FetchLastCatalogUseCase } from "@/core/use-cases/fetch-last-catalog";
+import { FetchCurrentCatalogUseCase } from "@/core/use-cases/fetch-current-catalog";
 
+// Test
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeCatalog } from "@/test/factories/make-catalog";
@@ -17,9 +18,6 @@ import { InMemoryProductsRepository } from "@/test/repositories/in-memory-produc
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
-// Utils
-import { mostPast } from "@/core/utils/most-past";
-
 let cyclesRepository: InMemoryCyclesRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
 let usersRepository: InMemoryUsersRepository;
@@ -27,9 +25,9 @@ let farmsRepository: InMemoryFarmsRepository;
 let offersRepository: InMemoryOffersRepository;
 let productsRepository: InMemoryProductsRepository;
 
-let sut: FetchLastCatalogUseCase;
+let sut: FetchCurrentCatalogUseCase;
 
-describe("Fetch last catalog", () => {
+describe("Fetch current catalog", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
     farmsRepository = new InMemoryFarmsRepository(usersRepository);
@@ -47,14 +45,14 @@ describe("Fetch last catalog", () => {
     offersRepository.inMemoryCatalogsRepository = catalogsRepository;
     cyclesRepository = new InMemoryCyclesRepository();
 
-    sut = new FetchLastCatalogUseCase(
+    sut = new FetchCurrentCatalogUseCase(
       cyclesRepository,
       catalogsRepository,
       farmsRepository
     );
   });
 
-  it("should be able to fetch the last catalog from a farm in a cycle", async () => {
+  it("should be able to fetch the current catalog from a farm in a cycle", async () => {
     const user = makeUser();
     await usersRepository.create(user);
 
@@ -64,28 +62,18 @@ describe("Fetch last catalog", () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
-    const lastCycle = new Date(mostPast(cycle.offer).getTime() - 1 * 60 * 1000);
-
     const catalog = makeCatalog({
       cycle_id: cycle.id,
       farm_id: farm.id,
-      created_at: mostPast(cycle.offer),
     });
     await catalogsRepository.create(catalog);
-
-    const lastCatalog = makeCatalog({
-      cycle_id: cycle.id,
-      farm_id: farm.id,
-      created_at: lastCycle,
-    });
-    await catalogsRepository.create(lastCatalog);
 
     const result = await sut.execute({
       cycle_id: cycle.id.value,
       farm_id: farm.id.value,
     });
 
-    expect(result.catalog.id.value).toBe(lastCatalog.id.value);
+    expect(result.catalog.id.value).toBe(catalog.id.value);
   });
 
   it("should not be able to fetch a catalog that does not exist", async () => {

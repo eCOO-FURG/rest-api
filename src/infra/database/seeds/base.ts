@@ -18,9 +18,17 @@ import { env } from "@/infra/env";
 
 async function seed() {
   await Promise.all([
-    prisma.product.deleteMany(),
+    prisma.order.deleteMany(),
+    prisma.box.deleteMany(),
+    prisma.bag.deleteMany(),
+    prisma.offer.deleteMany(),
+    prisma.catalog.deleteMany(),
     prisma.cycle.deleteMany(),
-    prisma.user.deleteMany(),
+    prisma.product.deleteMany(),
+    prisma.farm.deleteMany(),
+    prisma.otp.deleteMany(),
+    prisma.session.deleteMany(),
+    prisma.user.deleteMany(), 
   ]);
 
   const cddId = new UUID();

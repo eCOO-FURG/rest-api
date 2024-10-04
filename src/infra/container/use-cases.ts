@@ -28,6 +28,7 @@ import { FetchCurrentBoxUseCase } from "@/core/use-cases/fetch-current-box";
 import { DeleteOfferUseCase } from "@/core/use-cases/delete-offer";
 import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
 import { HandleFarmStatusUseCase } from "@/core/use-cases/handle-farm-status";
+import { FetchCurrentCatalogUseCase } from "@/core/use-cases/fetch-current-catalog";
 import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
 
 export default (container: AwilixContainer) => {
@@ -185,12 +186,13 @@ export default (container: AwilixContainer) => {
       ({ boxesRepository, cyclesRepository }) =>
         new FetchCurrentBoxUseCase(boxesRepository, cyclesRepository)
     ),
+    fetchCurrentCatalogUseCase: asFunction(
+      ({ cyclesRepository, catalogsRepository }) =>
+        new FetchCurrentCatalogUseCase(cyclesRepository, catalogsRepository)
+    ),
     requestPasswordUpdateUseCase: asFunction(
-      ({ usersRepository, mailer, hasher}) => new RequestPasswordUpdateUseCase(
-        usersRepository,
-        mailer,
-        hasher
-      )
-    )
+      ({ usersRepository, mailer, hasher }) =>
+        new RequestPasswordUpdateUseCase(usersRepository, mailer, hasher)
+    ),
   });
 };

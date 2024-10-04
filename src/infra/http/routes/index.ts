@@ -28,6 +28,7 @@ import { deleteOfferController } from "@/infra/http/controllers/delete-offer";
 import { listFarmsController } from "@/infra/http/controllers/list-farms";
 import { handleFarmStatusController } from "@/infra/http/controllers/handle-farm-status";
 import { fetchCurrentBoxController } from "@/infra/http/controllers/fetch-current-box";
+import { fetchCurrentCatalogController } from "@/infra/http/controllers/fetch-current-catalog";
 import { requestPasswordUpdateController } from "@/infra/http/controllers/request-password-update";
 
 // Middlewares
@@ -107,6 +108,12 @@ router.delete(
 // Catalogos
 router.get("/catalogs", searchCatalogsController);
 router.get("/catalogs/:catalog_id", fetchCatalogController);
+router.get(
+  "/catalogs/current/:cycle_id",
+  ensureAuthenticated,
+  ensureFarmAdmin,
+  fetchCurrentCatalogController
+);
 router.get(
   "/catalogs/last/:cycle_id",
   ensureAuthenticated,
