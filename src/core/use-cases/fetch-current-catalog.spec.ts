@@ -47,8 +47,8 @@ describe("Fetch current catalog", () => {
 
     sut = new FetchCurrentCatalogUseCase(
       cyclesRepository,
-      catalogsRepository,
-      farmsRepository
+      farmsRepository,
+      catalogsRepository
     );
   });
 

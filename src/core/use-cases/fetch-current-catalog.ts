@@ -17,8 +17,8 @@ interface FetchCurrentCatalogUseCaseRequest {
 export class FetchCurrentCatalogUseCase {
   constructor(
     private cyclesRepository: CyclesRepository,
-    private catalogsRepository: CatalogsRepository,
-    private farmsRepository: FarmsRepository
+    private farmsRepository: FarmsRepository,
+    private catalogsRepository: CatalogsRepository
   ) {}
 
   async execute({ cycle_id, farm_id }: FetchCurrentCatalogUseCaseRequest) {

@@ -49,8 +49,8 @@ describe("Fetch last catalog", () => {
 
     sut = new FetchLastCatalogUseCase(
       cyclesRepository,
-      catalogsRepository,
-      farmsRepository
+      farmsRepository,
+      catalogsRepository
     );
   });
 

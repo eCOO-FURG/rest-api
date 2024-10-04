@@ -108,6 +108,7 @@ export default (container: AwilixContainer) => {
         catalogsRepository,
         bagsRepository,
         boxesRepository,
+        addressesRepository,
       }) =>
         new OrderProductsUseCase(
           usersRepository,
@@ -116,7 +117,8 @@ export default (container: AwilixContainer) => {
           ordersRepository,
           catalogsRepository,
           bagsRepository,
-          boxesRepository
+          boxesRepository,
+          addressesRepository
         )
     ),
     fetchProfileUseCase: asFunction(
@@ -165,8 +167,12 @@ export default (container: AwilixContainer) => {
         new ListBagsUseCase(cyclesRepository, bagsRepository)
     ),
     fetchLastCatalogUseCase: asFunction(
-      ({ cyclesRepository, catalogsRepository }) =>
-        new FetchLastCatalogUseCase(cyclesRepository, catalogsRepository)
+      ({ cyclesRepository, farmsRepository, catalogsRepository }) =>
+        new FetchLastCatalogUseCase(
+          cyclesRepository,
+          farmsRepository,
+          catalogsRepository
+        )
     ),
     deleteOfferUseCase: asFunction(
       ({ farmsRepository, offersRepository, catalogsRepository }) =>
@@ -187,8 +193,12 @@ export default (container: AwilixContainer) => {
         new FetchCurrentBoxUseCase(boxesRepository, cyclesRepository)
     ),
     fetchCurrentCatalogUseCase: asFunction(
-      ({ cyclesRepository, catalogsRepository }) =>
-        new FetchCurrentCatalogUseCase(cyclesRepository, catalogsRepository)
+      ({ cyclesRepository, farmsRepository, catalogsRepository }) =>
+        new FetchCurrentCatalogUseCase(
+          cyclesRepository,
+          farmsRepository,
+          catalogsRepository
+        )
     ),
     requestPasswordUpdateUseCase: asFunction(
       ({ usersRepository, mailer, hasher }) =>
