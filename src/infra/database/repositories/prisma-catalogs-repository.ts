@@ -102,9 +102,14 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
           skip: ((offer?.page ?? 1) - 1) * 20,
           take: 20,
           orderBy: {
-            created_at: "desc",
+            product: {
+              name: "asc",
+            },
           },
         },
+      },
+      orderBy: {
+        created_at: "desc",
       },
     });
 
