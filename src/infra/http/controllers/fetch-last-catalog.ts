@@ -14,6 +14,11 @@ import { OfferPresenter } from "@/infra/http/presenters/offer-presenter";
 
 export const fetchLastCatalogSchema = {
   route: z.object({ cycle_id: z.string().uuid() }),
+  query: z.object({
+    page: z.coerce
+      .number()
+      .openapi({ description: "Página das ofertas do catálogo." }),
+  }),
 };
 
 export async function fetchLastCatalogController(
@@ -26,6 +31,8 @@ export async function fetchLastCatalogController(
 
     const farm_id = request.farm_id;
 
+    const { page } = fetchLastCatalogSchema.query.parse(request.query);
+
     const fetchLastCatalogUseCase = container.resolve<FetchLastCatalogUseCase>(
       "fetchLastCatalogUseCase"
     );
@@ -33,6 +40,7 @@ export async function fetchLastCatalogController(
     const { catalog } = await fetchLastCatalogUseCase.execute({
       cycle_id,
       farm_id,
+      page,
     });
 
     return response.status(200).send({

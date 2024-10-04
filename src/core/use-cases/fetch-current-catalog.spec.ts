@@ -71,6 +71,7 @@ describe("Fetch current catalog", () => {
     const result = await sut.execute({
       cycle_id: cycle.id.value,
       farm_id: farm.id.value,
+      page: 1,
     });
 
     expect(result.catalog.id.value).toBe(catalog.id.value);
@@ -90,6 +91,7 @@ describe("Fetch current catalog", () => {
       sut.execute({
         cycle_id: cycle.id.value,
         farm_id: farm.id.value,
+        page: 1,
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
@@ -105,6 +107,7 @@ describe("Fetch current catalog", () => {
       sut.execute({
         cycle_id: "non-existent-cycle",
         farm_id: farm.id.value,
+        page: 1,
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
@@ -117,6 +120,7 @@ describe("Fetch current catalog", () => {
       sut.execute({
         cycle_id: cycle.id.value,
         farm_id: "non-existent-farm",
+        page: 1,
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
@@ -126,6 +130,7 @@ describe("Fetch current catalog", () => {
       sut.execute({
         cycle_id: "non-existent-cycle",
         farm_id: "non-existent-farm",
+        page: 1,
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });

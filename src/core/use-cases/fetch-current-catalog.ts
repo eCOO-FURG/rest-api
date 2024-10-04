@@ -12,6 +12,7 @@ import { mostPast } from "@/core/utils/most-past";
 interface FetchCurrentCatalogUseCaseRequest {
   cycle_id: string;
   farm_id: string;
+  page: number;
 }
 
 export class FetchCurrentCatalogUseCase {
@@ -21,7 +22,11 @@ export class FetchCurrentCatalogUseCase {
     private catalogsRepository: CatalogsRepository
   ) {}
 
-  async execute({ cycle_id, farm_id }: FetchCurrentCatalogUseCaseRequest) {
+  async execute({
+    cycle_id,
+    farm_id,
+    page,
+  }: FetchCurrentCatalogUseCaseRequest) {
     const cycle = await this.cyclesRepository.findById(cycle_id);
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
@@ -33,11 +38,15 @@ export class FetchCurrentCatalogUseCase {
         cycle: { id: cycle_id },
         farm: { id: farm_id },
         since: mostPast(cycle.offer),
+        offer: {
+          page,
+        },
       },
       "merged"
     );
 
-    if (!catalog) throw new ResourceNotFoundError("Catálogo no", cycle_id);
+    if (!catalog)
+      throw new ResourceNotFoundError("Catálogo no ciclo", cycle_id);
 
     return { catalog };
   }
