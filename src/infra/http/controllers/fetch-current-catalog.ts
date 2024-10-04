@@ -14,6 +14,11 @@ import { OfferPresenter } from "@/infra/http/presenters/offer-presenter";
 
 export const fetchCurrentCatalogSchema = {
   route: z.object({ cycle_id: z.string().uuid() }),
+  query: z.object({
+    page: z.coerce
+      .number()
+      .openapi({ description: "Página das ofertas do catálogo." }),
+  }),
 };
 
 export async function fetchCurrentCatalogController(
@@ -26,6 +31,8 @@ export async function fetchCurrentCatalogController(
 
     const farm_id = request.farm_id;
 
+    const { page } = fetchCurrentCatalogSchema.query.parse(request.query);
+
     const fetchCurrentCatalogUseCase =
       container.resolve<FetchCurrentCatalogUseCase>(
         "fetchCurrentCatalogUseCase"
@@ -34,6 +41,7 @@ export async function fetchCurrentCatalogController(
     const { catalog } = await fetchCurrentCatalogUseCase.execute({
       cycle_id,
       farm_id,
+      page,
     });
 
     return response.status(200).send({
