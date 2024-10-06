@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
 
 // Errors
+import { DomainError } from "@/core/errors/domain-error";
 import { HttpErrorMapper } from "@/infra/http/errors/mapper";
 
 // Logs
@@ -27,10 +28,14 @@ export const handler = (
     return response.status(400).send({ message: "Sintaxe incorreta." });
   }
 
-  const found = HttpErrorMapper.find(error);
+  if (error instanceof DomainError) {
+    const found = HttpErrorMapper.find(error);
 
-  if (found)
-    return response.status(found.code).send({ message: found.message });
+    if (found)
+      return response
+        .status(found.status)
+        .send({ message: found.message, code: found.code });
+  }
 
   Logger.log(error);
 

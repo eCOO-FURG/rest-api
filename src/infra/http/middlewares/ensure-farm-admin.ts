@@ -25,7 +25,10 @@ export async function ensureFarmAdmin(
   if (!farm) {
     return response
       .status(403)
-      .send({ message: "Não é um administrador de agronegócio." });
+      .send({
+        message: "Não é um administrador de agronegócio.",
+        code: "not-farm-admin",
+      });
   }
 
   request.farm_id = farm.id.value;

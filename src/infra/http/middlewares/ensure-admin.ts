@@ -20,11 +20,15 @@ export async function ensureAdmin(
   const user = await usersRepository.findById(user_id);
 
   if (!user) {
-    return response.status(401).send({ message: "Sessão expirada." });
+    return response
+      .status(401)
+      .send({ message: "Sessão expirada.", code: "session-expired" });
   }
 
   if (!user.roles.includes("ADMIN")) {
-    return response.status(401).send({ message: "Não autorizado." });
+    return response
+      .status(401)
+      .send({ message: "Não autorizado.", code: "not-admin" });
   }
 
   next();
