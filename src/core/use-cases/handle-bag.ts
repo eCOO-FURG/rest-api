@@ -4,9 +4,12 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 // Repositories
 import { BagsRepository } from "@/core/repositories/bags-repository";
 
+// Types
+import { BagStatus } from "@/core/types/bag-status";
+
 interface HandleBagUseCaseRequest {
   bag_id: string;
-  status: "PENDING" | "SEPARATED" | "DISPATCHED";
+  status: BagStatus
 }
 
 export class HandleBagUseCase {

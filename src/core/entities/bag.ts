@@ -4,11 +4,12 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Types
 import { Optional } from "@/core/types/optional";
+import { BagStatus } from "@/core/types/bag-status";
 
 export interface BagProps extends EntityRequest {
   user_id: UUID;
   cycle_id: UUID;
-  status: "PENDING" | "SEPARATED" | "DISPATCHED";
+  status: BagStatus;
   address_id: UUID | null;
 }
 

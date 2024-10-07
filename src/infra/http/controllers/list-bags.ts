@@ -4,7 +4,11 @@ import { z } from "zod";
 
 // Container
 import container from "@/infra/container";
+
+// Use-cases
 import { ListBagsUseCase } from "@/core/use-cases/list-bags";
+
+// Presenters
 import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 
 export const listBagsSchema = {
@@ -12,7 +16,7 @@ export const listBagsSchema = {
     page: z.coerce.number().openapi({ description: "Página da listagem." }),
     cycle_id: z.string().uuid().openapi({ description: "Ciclo da busca." }),
     status: z
-      .enum(["PENDING", "SEPARATED", "DISPATCHED"])
+      .enum(["PENDING", "SEPARATED", "DISPATCHED", "RECEIVED", "CANCELLED", "DEFERRED"])
       .optional()
       .openapi({ type: "string", description: "Filto de status." }),
     name: z

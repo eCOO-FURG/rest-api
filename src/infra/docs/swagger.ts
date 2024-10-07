@@ -257,7 +257,7 @@ const docs = createDocument({
       patch: {
         tags: [tags.bags],
         responses: { "200": { description: "200 OK" } },
-        description: "Atualiza o status de uma sacola.",
+        description: "Atualiza o status de uma sacola. O status de uma sacola pode ser: SEPARATED, DISPATCHED, RECEIVED, CANCELLED, ou DEFERRED.",
         ...SwaggerMapper.toDocs(handleBagSchema),
       },
     },

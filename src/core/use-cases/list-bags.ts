@@ -4,12 +4,17 @@ import { BagsRepository } from "@/core/repositories/bags-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+
+// Utils
 import { mostPast } from "@/core/utils/most-past";
+
+// Types
+import { BagStatus } from "@/core/types/bag-status";
 
 interface ListBagsUseCaseRequest {
   cycle_id: string;
   page: number;
-  status?: "PENDING" | "SEPARATED" | "DISPATCHED";
+  status?: BagStatus
   name?: string;
 }
 

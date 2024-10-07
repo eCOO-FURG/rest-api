@@ -1,0 +1,1 @@
+export type BagStatus = "PENDING" | "SEPARATED" | "DISPATCHED" | "RECEIVED" | "CANCELLED" | "DEFERRED";

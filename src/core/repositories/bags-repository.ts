@@ -5,6 +5,7 @@ import { BagMerge } from "@/core/entities/merged/bag-merge";
 
 // Types
 import { RepositoryResponse } from "@/core/types/repository-response";
+import { BagStatus } from "@/core/types/bag-status";
 
 export interface BagsRepositorySearchRequest {
   id?: string;
@@ -20,7 +21,7 @@ export interface BagsRepositorySearchManyRequest {
   cycle?: {
     id?: string;
   };
-  status?: "PENDING" | "SEPARATED" | "DISPATCHED";
+  status?: BagStatus
   since?: Date;
 }
 

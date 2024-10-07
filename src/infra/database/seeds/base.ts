@@ -22,14 +22,15 @@ async function seed() {
     prisma.box.deleteMany(),
     prisma.bag.deleteMany(),
     prisma.offer.deleteMany(),
-    prisma.catalog.deleteMany(),
+    prisma.catalog.deleteMany(), 
     prisma.cycle.deleteMany(),
     prisma.product.deleteMany(),
-    prisma.farm.deleteMany(),
+    prisma.farm.deleteMany(),     
     prisma.otp.deleteMany(),
     prisma.session.deleteMany(),
-    prisma.user.deleteMany(), 
   ]);
+
+  await prisma.user.deleteMany();
 
   const cddId = new UUID();
 
@@ -67,7 +68,6 @@ async function seed() {
 
   if (["development", "staging"].includes(env.ENV)) {
     const everyDay = [1, 2, 3, 4, 5, 6, 7];
-
     const cycleId = new UUID();
 
     await prisma.cycle.create({
@@ -126,9 +126,9 @@ seed()
   .then(async () => {
     await prisma.$disconnect();
   })
-
   .catch(async (error) => {
     console.error(error);
     await prisma.$disconnect();
     process.exit(1);
   });
+
