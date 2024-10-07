@@ -33,15 +33,13 @@ export async function authenticateController(
       "authenticateUseCase"
     );
 
-    if (!request.ip) {
-      return response.status(400).send({ message: "Cliente descontado" });
-    }
+    const ip = request.ip || request.socket.remoteAddress || "unknown";
 
     const { token, user } = await authenticateUseCase.execute({
       email,
       password,
       type,
-      ip: request.ip,
+      ip,
       agent: request.headers["user-agent"] ?? "not-identified",
     });
 
