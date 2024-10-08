@@ -22,10 +22,10 @@ async function seed() {
     prisma.box.deleteMany(),
     prisma.bag.deleteMany(),
     prisma.offer.deleteMany(),
-    prisma.catalog.deleteMany(), 
+    prisma.catalog.deleteMany(),
     prisma.cycle.deleteMany(),
     prisma.product.deleteMany(),
-    prisma.farm.deleteMany(),     
+    prisma.farm.deleteMany(),
     prisma.otp.deleteMany(),
     prisma.session.deleteMany(),
   ]);
@@ -131,4 +131,3 @@ seed()
     await prisma.$disconnect();
     process.exit(1);
   });
-

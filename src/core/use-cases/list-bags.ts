@@ -8,13 +8,13 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 // Utils
 import { mostPast } from "@/core/utils/most-past";
 
-// Types
-import { BagStatus } from "@/core/types/bag-status";
+// Entities
+import { Bag } from "@/core/entities/bag";
 
 interface ListBagsUseCaseRequest {
   cycle_id: string;
   page: number;
-  status?: BagStatus
+  status?: Bag["status"];
   name?: string;
 }
 
