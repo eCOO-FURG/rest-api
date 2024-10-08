@@ -1,5 +1,8 @@
-export class UserAlreadyVerified extends Error {
+// Errors
+import { DomainError } from "@/core/errors/domain-error";
+
+export class UserAlreadyVerified extends DomainError {
   constructor(identifier: string) {
-    super(`Usuário ${identifier} já está verificado.`);
+    super(`Usuário ${identifier} já está verificado.`, "user-already-verified");
   }
 }

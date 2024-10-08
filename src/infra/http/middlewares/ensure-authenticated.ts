@@ -24,7 +24,9 @@ export async function ensureAuthenticated(
     const authHeader = request.headers.authorization;
 
     if (!authHeader) {
-      return response.status(401).send({ message: "Sessão expirada." });
+      return response
+        .status(401)
+        .send({ message: "Sessão expirada.", code: "sesion-expired" });
     }
 
     const [, token] = authHeader.split(" ");
@@ -51,7 +53,9 @@ export async function ensureAuthenticated(
       });
 
       if (!session) {
-        return response.status(401).send({ message: "Sessão expirada." });
+        return response
+          .status(401)
+          .send({ message: "Sessão expirada.", code: "session-expired" });
       }
 
       const refresh = sign({ user_id }, env.JWT_SECRET);
@@ -62,6 +66,8 @@ export async function ensureAuthenticated(
     request.user_id = user_id;
     next();
   } catch (error) {
-    return response.status(401).send({ message: "Sessão expirada." });
+    return response
+      .status(401)
+      .send({ message: "Sessão expirada.", code: "session-expired" });
   }
 }

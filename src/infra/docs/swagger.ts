@@ -98,7 +98,14 @@ const docs = createDocument({
     "/auth": {
       post: {
         tags: [tags.auth],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "201": { description: "Sessião criada com sucesso" },
+          "400": { description: "Credenciais incorretas: wrong-credentials" },
+          "403": {
+            description:
+              "O usuário não tem uma senha definida: empty-password OU o usuário não está verificado: user-not-verified",
+          },
+        },
         description: "Se autentica na plataforma.",
         ...SwaggerMapper.toDocs(authenticateSchema),
       },

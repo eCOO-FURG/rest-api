@@ -1,4 +1,5 @@
 // Errors
+import { DomainError } from "@/core/errors/domain-error";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 import { ClosedActionError } from "@/core/errors/closed-action";
@@ -11,18 +12,16 @@ import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 import { UnauthorizedError } from "@/core/errors/unauthorized";
 
-type Constructor<T> = new (...args: any[]) => T;
-
 const mappedDomainErrors: {
-  code: number;
-  errors: Constructor<Error>[];
+  status: number;
+  errors: (typeof DomainError)[];
 }[] = [
   {
-    code: 400,
+    status: 400,
     errors: [WrongCredentialsError, WrongCredentialsError, InvalidWeightError],
   },
   {
-    code: 403,
+    status: 403,
     errors: [
       ResourceAlreadyExistsError,
       ClosedActionError,
@@ -34,17 +33,17 @@ const mappedDomainErrors: {
     ],
   },
   {
-    code: 404,
+    status: 404,
     errors: [ResourceNotFoundError],
   },
   {
-    code: 409,
+    status: 409,
     errors: [UnavailableAmountError],
   },
 ];
 
 export class HttpErrorMapper {
-  static find(error: Error) {
+  static find(error: DomainError) {
     const found = mappedDomainErrors.find((item) =>
       item.errors.find((constructor) => error instanceof constructor)
     );
@@ -52,8 +51,10 @@ export class HttpErrorMapper {
     if (!found) return null;
 
     return {
-      code: found.code,
+      name: error.name,
+      status: found.status,
       message: error.message,
+      code: error.code,
     };
   }
 }
