@@ -1,3 +1,6 @@
+// Entities
+import { UUID } from "@/core/entities/aggregates/uuid";
+
 // Services
 import { makeUser } from "@/test/factories/make-user";
 import { MockedMailer } from "@/test/mail/mocked-mailer";
@@ -5,6 +8,9 @@ import { MockedHasher } from "@/test/cryptography/mocked-hasher";
 
 // Use-cases
 import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
+
+// Events
+import { OnUpdatePasswordRequestEvent } from "@/core/events/on-password-update-requested";
 
 // Repositories
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
@@ -26,6 +32,7 @@ let mocks: {
 };
 
 let sut: RequestPasswordUpdateUseCase;
+let _event: OnUpdatePasswordRequestEvent;
 
 let spy: MockInstance;
 
@@ -40,17 +47,19 @@ describe("request password update", () => {
       hasher: new MockedHasher(),
     };
 
-    sut = new RequestPasswordUpdateUseCase(
+    sut = new RequestPasswordUpdateUseCase(repositories.users);
+
+    _event = new OnUpdatePasswordRequestEvent(
       repositories.users,
-      mocks.mailer,
-      mocks.hasher
+      mocks.hasher,
+      mocks.mailer
     );
 
     spy = vi.spyOn(mocks.mailer, "send");
   });
 
   it("should be able to request a password update", async () => {
-    const user = makeUser();
+    const user = makeUser({ id: new UUID() });
     await repositories.users.create(user);
 
     await sut.execute({
