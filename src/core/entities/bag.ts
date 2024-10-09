@@ -8,7 +8,7 @@ import { Optional } from "@/core/types/optional";
 export interface BagProps extends EntityRequest {
   user_id: UUID;
   cycle_id: UUID;
-  status: "PENDING" | "SEPARATED" | "DISPATCHED";
+  status: "PENDING" | "SEPARATED" | "DISPATCHED" | "RECEIVED" | "CANCELLED" | "DEFERRED";
   address_id: UUID | null;
 }
 

@@ -14,7 +14,7 @@ export const handleBagSchema = {
   }),
   body: z.object({
     status: z
-      .enum(["PENDING", "SEPARATED", "DISPATCHED"])
+      .enum(["PENDING", "SEPARATED", "DISPATCHED", "RECEIVED", "CANCELLED", "DEFERRED"])
       .openapi({ type: "string" }),
   }),
 };
