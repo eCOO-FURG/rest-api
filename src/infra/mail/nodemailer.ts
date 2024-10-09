@@ -52,7 +52,7 @@ export class Nodemailer implements Mailer {
 
     if (view == "request-password-update") {
       Object.assign(props, {
-        url: `${env.FRONT_URL}/recuperar-senha?token=${props.token}`,
+        url: `${env.FRONT_URL}/alterar-cadastro?token=${props.token}`,
       });
     }
 
