@@ -49,6 +49,7 @@ export class Nodemailer implements Mailer {
         url: `${env.SERVER_URL}/users/verify?token=${props.token}`,
       });
     }
+
     if (view == "request-password-update") {
       Object.assign(props, {
         url: `${env.FRONT_URL}/recuperar-senha?token=${props.token}`,
@@ -56,6 +57,7 @@ export class Nodemailer implements Mailer {
     }
 
     const html = renderFile(__dirname + `/views/${view}.ejs`, { props });
+
     return html;
   }
 }

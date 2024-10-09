@@ -16,8 +16,8 @@ export default (container: AwilixContainer) => {
         new OnOtpRequestEvent(usersRepository, mailer)
     ),
     onUpdatePasswordRequestEvent: asFunction(
-      ({ usersRepository, mailer }) =>
-        new OnUpdatePasswordRequestEvent(usersRepository, mailer)
+      ({ usersRepository, hasher, mailer }) =>
+        new OnUpdatePasswordRequestEvent(usersRepository, hasher, mailer)
     ),
   });
 };

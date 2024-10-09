@@ -86,7 +86,10 @@ export class User extends Entity<UserProps> {
   }
 
   reset() {
-    DomainEvents.events.push({ entity: this, name: OnUpdatePasswordRequestEvent.name });
+    DomainEvents.events.push({
+      entity: this,
+      name: OnUpdatePasswordRequestEvent.name,
+    });
   }
 
   static create(props: Optional<UserProps, "password" | "verified_at">) {

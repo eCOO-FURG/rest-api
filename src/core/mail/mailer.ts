@@ -12,6 +12,7 @@ export type MailerLoadRequest =
   | {
       view: "request-password-update";
       props: {
+        first_name: string;
         token: string;
       };
     }

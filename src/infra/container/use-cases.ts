@@ -201,8 +201,7 @@ export default (container: AwilixContainer) => {
         )
     ),
     requestPasswordUpdateUseCase: asFunction(
-      ({ usersRepository, mailer, hasher }) =>
-        new RequestPasswordUpdateUseCase(usersRepository, mailer, hasher)
+      ({ usersRepository }) => new RequestPasswordUpdateUseCase(usersRepository)
     ),
   });
 };

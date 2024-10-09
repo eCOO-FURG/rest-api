@@ -19,41 +19,44 @@ import { DomainEvents } from "@/core/events/domain-events";
 
 let sut: RequestPasswordUpdateUseCase;
 
-let spy: MockInstance
+let spy: MockInstance;
 
 let usersRepository: InMemoryUsersRepository;
 
 let mocks: {
-  mailer: MockedMailer,
-  hasher: MockedHasher
-}
-
+  mailer: MockedMailer;
+  hasher: MockedHasher;
+};
 
 describe("on update password request", () => {
-  beforeEach(()=> {
+  beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
 
     mocks = {
       mailer: new MockedMailer(),
-      hasher: new MockedHasher()
-    }
-    
-    sut = new RequestPasswordUpdateUseCase(usersRepository, mocks.mailer, mocks.hasher);
-    new OnUpdatePasswordRequestEvent(usersRepository, mocks.mailer);
+      hasher: new MockedHasher(),
+    };
 
-    spy = vi.spyOn(DomainEvents, "dispatch")
-  })
+    sut = new RequestPasswordUpdateUseCase(usersRepository);
+    new OnUpdatePasswordRequestEvent(
+      usersRepository,
+      mocks.hasher,
+      mocks.mailer
+    );
+
+    spy = vi.spyOn(DomainEvents, "dispatch");
+  });
 
   it("should be called when a password update is requested", async () => {
     const user = makeUser();
     await usersRepository.create(user);
 
     await sut.execute({
-      email: user.email
-    })
- 
+      email: user.email,
+    });
+
     await waitFor(() => {
       expect(spy).toHaveBeenCalled();
-    })
-  })
-})
+    });
+  });
+});
