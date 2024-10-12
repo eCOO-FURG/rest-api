@@ -52,8 +52,8 @@ export default (container: AwilixContainer) => {
         )
     ),
     verifyUserUseCase: asFunction(
-      ({ usersRepository, hasher }) =>
-        new VerifyUserUsecase(usersRepository, hasher)
+      ({ usersRepository, sessionsRepository, hasher }) =>
+        new VerifyUserUsecase(usersRepository, sessionsRepository, hasher)
     ),
     handleBoxStatusUseCase: asFunction(
       ({ boxesRepository, ordersRepository }) =>

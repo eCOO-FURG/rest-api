@@ -16,6 +16,7 @@ export const registerSchema = {
     email: z.string().email(),
     phone: z.string(),
     password: z.string().min(8).optional(),
+    role: z.enum(['USER', 'PRODUCER']).openapi({ type: "string" }),
   }),
 };
 
@@ -25,7 +26,7 @@ export async function registerController(
   next: NextFunction
 ) {
   try {
-    const { first_name, last_name, cpf, email, phone, password } =
+    const { first_name, last_name, cpf, email, phone, password, role } =
       registerSchema.body.parse(request.body);
 
     container.resolve("onRegisteredEvent");
@@ -40,6 +41,7 @@ export async function registerController(
       email,
       phone,
       password,
+      role
     });
 
     return response.sendStatus(201);
