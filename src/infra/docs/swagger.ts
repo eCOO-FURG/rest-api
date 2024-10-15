@@ -140,7 +140,7 @@ const docs = createDocument({
       patch: {
         tags: [tags.farms],
         responses: { "200": { description: "200 OK" } },
-        description: "Atualiza as informações de uma fazenda.",
+        description: "Atualiza o status de uma fazenda.",
         ...SwaggerMapper.toDocs(handleFarmStatusSchema),
       },
     },
@@ -259,7 +259,8 @@ const docs = createDocument({
       get: {
         tags: [tags.bags],
         responses: { "200": { description: "200 OK" } },
-        description: "Busca as informações de uma sacola. Se o usuário não for admin, só pode buscar suas próprias sacolas.",
+        description:
+          "Busca as informações de uma sacola. Se o usuário não for admin, só pode buscar suas próprias sacolas.",
         ...SwaggerMapper.toDocs(fetchBagSchema),
       },
       patch: {
