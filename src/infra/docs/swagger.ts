@@ -31,6 +31,7 @@ import { listProductSchema } from "@/infra/http/controllers/list-products";
 import { fetchCurrentBoxSchema } from "@/infra/http/controllers/fetch-current-box";
 import { requestPasswordUpdateSchema } from "@/infra/http/controllers/request-password-update";
 import { fetchCurrentCatalogSchema } from "@/infra/http/controllers/fetch-current-catalog";
+import { listUserBagsSchema } from "@/infra/http/controllers/list-user-bags";
 
 const tags = {
   users: "Usuários",
@@ -258,7 +259,7 @@ const docs = createDocument({
       get: {
         tags: [tags.bags],
         responses: { "200": { description: "200 OK" } },
-        description: "Busca as informações de uma sacola.",
+        description: "Busca as informações de uma sacola. Se o usuário não for admin, só pode buscar suas próprias sacolas.",
         ...SwaggerMapper.toDocs(fetchBagSchema),
       },
       patch: {
@@ -274,6 +275,14 @@ const docs = createDocument({
         responses: { "200": { description: "200 OK" } },
         description: "Gera o relatório de entrega de sacolas.",
         ...SwaggerMapper.toDocs(printDeliveriesReportSchema),
+      },
+    },
+    "/me/bags": {
+      get: {
+        tags: [tags.bags],
+        responses: { "200": { description: "200 OK" } },
+        description: "Lista as sacolas do usuário a partir da data fornecida.",
+        ...SwaggerMapper.toDocs(listUserBagsSchema),
       },
     },
 

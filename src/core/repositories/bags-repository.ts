@@ -22,6 +22,7 @@ export interface BagsRepositorySearchManyRequest {
   };
   status?: Bag["status"];
   since?: Date;
+  user?: { id?: string };
 }
 
 export type BagsRepositoryResponse<T extends RepositoryResponse> =

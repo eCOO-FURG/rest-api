@@ -30,6 +30,7 @@ import { handleFarmStatusController } from "@/infra/http/controllers/handle-farm
 import { fetchCurrentBoxController } from "@/infra/http/controllers/fetch-current-box";
 import { fetchCurrentCatalogController } from "@/infra/http/controllers/fetch-current-catalog";
 import { requestPasswordUpdateController } from "@/infra/http/controllers/request-password-update";
+import { listUserBagsController } from "@/infra/http/controllers/list-user-bags";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -123,12 +124,7 @@ router.get(
 
 // Sacolas
 router.get("/bags", ensureAuthenticated, ensureAdmin, listBagsController);
-router.get(
-  "/bags/:bag_id",
-  ensureAuthenticated,
-  ensureAdmin,
-  fetchBagController
-);
+router.get("/bags/:bag_id", ensureAuthenticated, fetchBagController);
 router.get(
   "/bags/report/:cycle_id",
   ensureAuthenticated,
@@ -141,6 +137,7 @@ router.patch(
   ensureAdmin,
   handleBagController
 );
+router.get("/me/bags", ensureAuthenticated, listUserBagsController);
 
 // Ciclos
 router.get("/cycles", listCyclesController);

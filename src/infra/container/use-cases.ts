@@ -30,6 +30,7 @@ import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
 import { HandleFarmStatusUseCase } from "@/core/use-cases/handle-farm-status";
 import { FetchCurrentCatalogUseCase } from "@/core/use-cases/fetch-current-catalog";
 import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
+import { ListUserBagsUseCase } from "@/core/use-cases/list-user-bags";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -160,7 +161,8 @@ export default (container: AwilixContainer) => {
       ({ bagsRepository }) => new HandleBagUseCase(bagsRepository)
     ),
     fetchBagUseCase: asFunction(
-      ({ bagsRepository }) => new FetchBagUseCase(bagsRepository)
+      ({ bagsRepository, usersRepository }) =>
+        new FetchBagUseCase(bagsRepository, usersRepository)
     ),
     listBagsUseCase: asFunction(
       ({ cyclesRepository, bagsRepository }) =>
@@ -202,6 +204,10 @@ export default (container: AwilixContainer) => {
     ),
     requestPasswordUpdateUseCase: asFunction(
       ({ usersRepository }) => new RequestPasswordUpdateUseCase(usersRepository)
+    ),
+    listUserBagsUseCase: asFunction(
+      ({ bagsRepository, usersRepository }) =>
+        new ListUserBagsUseCase(bagsRepository, usersRepository)
     ),
   });
 };

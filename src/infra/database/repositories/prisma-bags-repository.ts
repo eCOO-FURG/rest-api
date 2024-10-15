@@ -81,7 +81,7 @@ export class PrismaBagsRepository implements BagsRepository {
   }
 
   async searchMany<T extends RepositoryResponse = "entity">(
-    { page, cycle, name, since, status }: BagsRepositorySearchManyRequest,
+    { page, cycle, name, since, status, user }: BagsRepositorySearchManyRequest,
     type: T
   ): Promise<BagsRepositoryResponse<T>[]> {
     const where: Prisma.BagWhereInput = {
@@ -100,6 +100,9 @@ export class PrismaBagsRepository implements BagsRepository {
               contains: name ?? "",
               mode: "insensitive",
             },
+          },
+          {
+            id: user?.id,
           },
         ],
       },
