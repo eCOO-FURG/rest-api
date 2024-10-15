@@ -28,9 +28,23 @@ export async function verifyUserController(
     const verifyUserUseCase =
       container.resolve<VerifyUserUsecase>("verifyUserUseCase");
 
-    await verifyUserUseCase.execute({ token });
+    const ip = request.ip || request.socket.remoteAddress || "unknown";
 
-    return response.redirect(301, `${env.FRONT_URL}/login`);
+    if (!ip) {
+      return response.status(400).send({ message: "Cliente descontado" });
+    }
+
+    const { roles, refresh } = await verifyUserUseCase.execute({
+      token,
+      ip,
+      agent: request.headers["user-agent"] ?? "not-identified",
+    });
+
+    const isProducer = roles.includes("PRODUCER");
+
+    const path = isProducer ? 'login' : 'telegram';
+
+    return response.redirect(301, `${env.FRONT_URL}/${path}?token=${refresh}`);
   } catch (error) {
     next(error);
   }
