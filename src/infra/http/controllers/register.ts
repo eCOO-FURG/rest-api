@@ -16,7 +16,10 @@ export const registerSchema = {
     email: z.string().email(),
     phone: z.string(),
     password: z.string().min(8).optional(),
-    role: z.enum(['USER', 'PRODUCER']).openapi({ type: "string" }),
+    role: z.enum(['USER', 'PRODUCER']).openapi({ 
+      type: "string",
+      enum: ['USER', 'PRODUCER'],
+    }),
   }),
 };
 

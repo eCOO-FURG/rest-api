@@ -59,7 +59,7 @@ export class VerifyUserUsecase {
 
     return {
       roles: user.roles,
-      newToken: token
+      refresh: token
     }
   }
 }
