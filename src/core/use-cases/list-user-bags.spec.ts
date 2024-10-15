@@ -2,7 +2,6 @@
 import { ListUserBagsUseCase } from "@/core/use-cases/list-user-bags";
 
 // Repositories
-import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
 import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
@@ -29,7 +28,6 @@ let farmsRepository: InMemoryFarmsRepository;
 let addressesRepository: InMemoryAddressesRepository;
 
 let repositories: {
-  // cycles: InMemoryCyclesRepository;
   bags: InMemoryBagsRepository;
 };
 
@@ -54,7 +52,6 @@ describe("list user bags", () => {
     addressesRepository = new InMemoryAddressesRepository();
 
     repositories = {
-      // cycles: new InMemoryCyclesRepository(),
       bags: new InMemoryBagsRepository(
         usersRepository,
         ordersRepository,
