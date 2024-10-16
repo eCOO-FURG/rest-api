@@ -139,7 +139,8 @@ const docs = createDocument({
       patch: {
         tags: [tags.farms],
         responses: { "200": { description: "200 OK" } },
-        description: "Atualiza as informações de uma fazenda.",
+        description:
+          "Atualiza o status de uma fazenda. Por padrão, toda fazenda é criada com o status PENDING. Podendo ser alterado para ACTIVE ou INACTIVE.",
         ...SwaggerMapper.toDocs(handleFarmStatusSchema),
       },
     },

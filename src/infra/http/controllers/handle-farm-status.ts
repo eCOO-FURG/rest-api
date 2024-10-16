@@ -12,6 +12,13 @@ export const handleFarmStatusSchema = {
   route: z.object({
     farm_id: z.string().uuid(),
   }),
+  body: z.object({
+    status: z
+      .enum(["ACTIVE", "INACTIVE", "PENDING"])
+      .openapi({
+        description: "Status de uma fazenda. ACTIVE, INACTIVE ou PENDING.",
+      }),
+  }),
 };
 
 export async function handleFarmStatusController(
@@ -28,6 +35,7 @@ export async function handleFarmStatusController(
 
     await handleFarmStatusUseCase.execute({
       farm_id,
+      status: request.body.status,
     });
 
     return response.sendStatus(204);
