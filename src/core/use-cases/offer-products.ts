@@ -49,7 +49,7 @@ export class OfferProductsUseCase {
   }: OfferProductsUseCaseRequest) {
     const farm = await this.farmsRepository.search({ id: farm_id }, "entity");
 
-    if (!farm) throw new ResourceNotFoundError("Agronegócio", farm_id);
+    if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
     if (!farm.active) throw new FarmNotActiveError();
 
