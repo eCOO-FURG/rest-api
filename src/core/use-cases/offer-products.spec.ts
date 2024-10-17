@@ -134,7 +134,7 @@ describe("offer products", () => {
     const product = makeProduct();
     await repositories.products.create(product);
 
-    const farm = makeFarm({ active: false });
+    const farm = makeFarm({ status: "INACTIVE" });
     await repositories.farms.create(farm);
 
     await expect(() =>

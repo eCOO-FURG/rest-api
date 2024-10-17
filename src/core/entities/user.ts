@@ -9,7 +9,7 @@ import { OnRegisteredEvent } from "@/core/events/on-registered";
 import { DomainEvents } from "@/core/events/domain-events";
 import { OnUpdatePasswordRequestEvent } from "@/core/events/on-password-update-requested";
 
-type Role = "USER" | "PRODUCER" | "ADMIN";
+export type Role = "USER" | "PRODUCER" | "ADMIN";
 
 export interface UserProps extends EntityRequest {
   first_name: string;

@@ -59,13 +59,22 @@ const docs = createDocument({
     "/users": {
       post: {
         tags: [tags.users],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Usuário criado com sucesso" },
+          "403": {
+            description:
+              "Já existe um usuário com o email informado: email-already-exists OU já exite um usuário com o telefone informado: phone-already-exists OU já existe um usuário com o cpf informado: cpf-already-exists",
+          },
+        },
         description: "Cria um usuário.",
         ...SwaggerMapper.toDocs(registerSchema),
       },
       patch: {
         tags: [tags.users],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Usuário atualizado com sucesso" },
+          "404": { description: "Usuário não encontrado: user-not-found" },
+        },
         description: "Atualiza o usuário.",
         ...SwaggerMapper.toDocs(updateUserSchema),
       },
@@ -73,7 +82,13 @@ const docs = createDocument({
     "/users/verify": {
       get: {
         tags: [tags.users],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Usuário foi verificado com sucesso" },
+          "403": {
+            description: "Usuário já está verificado: user-already-verified",
+          },
+          "404": { description: "Usuário não encontrado: user-not-found" },
+        },
         description: "Verifica um usuário.",
         ...SwaggerMapper.toDocs(verifyUserSchema),
       },
@@ -81,7 +96,13 @@ const docs = createDocument({
     "/users/password": {
       post: {
         tags: [tags.users],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": {
+            description:
+              "Solicitação de recuperação de senha enviada com sucesso",
+          },
+          "404": { description: "Usuário não encontrado: user-not-found" },
+        },
         description:
           "Solicita a recuperação de senha. Se o usuário existir, ele recebe um email com um link para essa atualização.",
         ...SwaggerMapper.toDocs(requestPasswordUpdateSchema),
@@ -90,7 +111,10 @@ const docs = createDocument({
     "/me": {
       get: {
         tags: [tags.users],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Informações encontradas com sucesso" },
+          "404": { description: "Usuário não encontrado: user-not-found" },
+        },
         description: "Busca as informações do próprio perfil.",
       },
     },
@@ -114,7 +138,10 @@ const docs = createDocument({
     "/auth/otp": {
       post: {
         tags: [tags.auth],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Soliciatação de OTP enviada com sucesso" },
+          "404": { description: "Usuário não encontrado: user-not-found" },
+        },
         description:
           "Solicita uma senha aleatória de uso único que é enviada para o email do usuário.",
         ...SwaggerMapper.toDocs(requestOtpSchema),
@@ -125,7 +152,14 @@ const docs = createDocument({
     "/farms": {
       post: {
         tags: [tags.farms],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Fazenda criada com sucesso" },
+          "403": {
+            description:
+              "Já existe uma fazenda com o CAF informado: caf-already-exists OU já existe uma fazenda para o usuário informado: farm-already-exists",
+          },
+          "404": { description: "Usuário não encontrado: user-not-found" },
+        },
         description: "Cria uma fazenda.",
         ...SwaggerMapper.toDocs(registerFarmSchema),
       },
@@ -139,8 +173,12 @@ const docs = createDocument({
     "/farms/{farm_id}": {
       patch: {
         tags: [tags.farms],
-        responses: { "200": { description: "200 OK" } },
-        description: "Atualiza o status de uma fazenda.",
+        responses: {
+          "204": { description: "Status da fazenda atualizado com sucesso" },
+          "404": { description: "Fazenda não encontrada: farm-not-found" },
+        },
+        description:
+          "Atualiza o status de uma fazenda. Por padrão, toda fazenda é criada com o status PENDING. Podendo ser alterado para ACTIVE ou INACTIVE.",
         ...SwaggerMapper.toDocs(handleFarmStatusSchema),
       },
     },
@@ -149,7 +187,21 @@ const docs = createDocument({
     "/orders": {
       post: {
         tags: [tags.orders],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Pedido criado com sucesso" },
+          "400": {
+            description:
+              "Peso informado de um produto é inválido: invalid-weight",
+          },
+          "404": {
+            description:
+              "Usuário não encontrado: user-not-found OU Ciclo não encontrado: cycle-not-found OU Oferta não encontrada: offer-not-found OU Catálogo não encontrado: catalog-not-found",
+          },
+          "409": {
+            description:
+              "Quantidade indisponível de uma oferta: unavailable-amount",
+          },
+        },
         description:
           "Cria um ou mais pedidos. Se for o primeiro pedido para o produtor no ciclo, cria uma nova caixa. Se for o primeiro pedido do usuário no ciclo, cria uma nova sacola. Pode ser passado o bag_id para adicionar os pedidos a uma sacola já existente. Sempre é buscado uma por uma sacola já existente para as configurações de entrega. Caso encontrado os pedidos são adicionados a essa sacola.",
         ...SwaggerMapper.toDocs(orderProductsSchema),
@@ -160,7 +212,10 @@ const docs = createDocument({
     "/boxes": {
       get: {
         tags: [tags.boxes],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Caixas encontradas com sucesso" },
+          "404": { description: "Ciclo não encontrado: cycle-not-found" },
+        },
         description: "Lista caixas.",
         ...SwaggerMapper.toDocs(listBoxesSchema),
       },
@@ -168,13 +223,19 @@ const docs = createDocument({
     "/boxes/{box_id}": {
       get: {
         tags: [tags.boxes],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Caixa encontrada com sucesso" },
+          "404": { description: "Caixa não encontrada: box-not-found" },
+        },
         description: "Busca as informações de uma caixa.",
         ...SwaggerMapper.toDocs(fetchBoxSchema),
       },
       patch: {
         tags: [tags.boxes],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Caixa atualizada com sucesso" },
+          "404": { description: "Caixa não encontrada: box-not-found" },
+        },
         description: "Atualiza o status de uma caixa.",
         ...SwaggerMapper.toDocs(handleBoxStatusSchema),
       },
@@ -182,7 +243,13 @@ const docs = createDocument({
     "/boxes/current": {
       get: {
         tags: [tags.boxes],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Caixa atual encontrada com sucesso" },
+          "404": {
+            description:
+              "Ciclo não encontrado: cycle-not-found OU Caixa da Fazenda não encontrada: box-not-found",
+          },
+        },
         description: "Busca pela caixa atual da fazenda em um ciclo.",
         ...SwaggerMapper.toDocs(fetchCurrentBoxSchema),
       },
@@ -192,7 +259,21 @@ const docs = createDocument({
     "/offers": {
       post: {
         tags: [tags.offers],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Oferta criada com sucesso" },
+          "400": {
+            description:
+              "Peso informado de um produto é inválido: invalid-weight",
+          },
+          "403": {
+            description:
+              "Fazenda não está ativo: farm-not-active OU não é possivel ofertar produtos hoje: closed-action",
+          },
+          "404": {
+            description:
+              "Fazenda não encontrado: farm-not-found OU Produto não encontrado: product-not-found OU Ciclo não encontrado: cycle-not-found",
+          },
+        },
         description: "Cria uma oferta.",
         ...SwaggerMapper.toDocs(offerProductsSchema),
       },
@@ -200,13 +281,29 @@ const docs = createDocument({
     "/offers/{offer_id}": {
       patch: {
         tags: [tags.offers],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Oferta atualizada com sucesso" },
+          "403": {
+            description: "Não é possivel ofertar produtos hoje: closed-action",
+          },
+          "404": {
+            description:
+              "Fazenda não encontrado: farm-not-found OU Oferta não encontrada: offer-not-found OU Catálogo não encontrado: catalog-not-found OU Ciclo não encontrado: cycle-not-found",
+          },
+        },
         description: "Atualiza uma oferta.",
         ...SwaggerMapper.toDocs(updateOfferSchema),
       },
       delete: {
         tags: [tags.offers],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Oferta deletada com sucesso" },
+          "403": { description: "Não autorizado: unauthorized" },
+          "404": {
+            description:
+              "Fazenda não encontrado: farm-not-found OU Oferta não encontrada: offer-not-found OU Catálogo não encontrado: catalog-not-found",
+          },
+        },
         description: "Deleta uma oferta.",
         ...SwaggerMapper.toDocs(deleteOfferSchema),
       },
@@ -216,7 +313,10 @@ const docs = createDocument({
     "/catalogs": {
       get: {
         tags: [tags.catalogs],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Catatálogos encontrados com sucesso" },
+          "404": { description: "Ciclo não encontrado: cycle-not-found" },
+        },
         description: "Lista catálogos.",
         ...SwaggerMapper.toDocs(searchCatalogsSchema),
       },
@@ -224,7 +324,10 @@ const docs = createDocument({
     "/catalogs/{catalog_id}": {
       get: {
         tags: [tags.catalogs],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Catálogo encontrado com sucesso" },
+          "404": { description: "Catálogo não encontrado: catalog-not-found" },
+        },
         description: "Busca as informações de um catálogo.",
         ...SwaggerMapper.toDocs(fetchCatalogsSchema),
       },
@@ -232,7 +335,13 @@ const docs = createDocument({
     "/catalogs/last/{cycle_id}": {
       get: {
         tags: [tags.catalogs],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Ultimo catálogo encontrado com sucesso" },
+          "404": {
+            description:
+              "Ciclo não encontrado: cycle-not-found OU Fazenda não encontrada: farm-not-found OU Catálogo não encontrado: catalog-not-found",
+          },
+        },
         description: "Busca o ultimo catálogo do produtor em um ciclo.",
         ...SwaggerMapper.toDocs(fetchLastCatalogSchema),
       },
@@ -240,7 +349,13 @@ const docs = createDocument({
     "/catalogs/current/{cycle_id}": {
       get: {
         tags: [tags.catalogs],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Catálogo atual encontrado com sucesso" },
+          "404": {
+            description:
+              "Ciclo não encontrado: cycle-not-found OU Fazenda não encontrada: farm-not-found OU Catálogo não encontrado: catalog-not-found",
+          },
+        },
         description: "Busca o catálogo atual do produtor em um ciclo.",
         ...SwaggerMapper.toDocs(fetchCurrentCatalogSchema),
       },
@@ -250,7 +365,10 @@ const docs = createDocument({
     "/bags": {
       get: {
         tags: [tags.bags],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Sacolas encontradas com sucesso" },
+          "404": { description: "Ciclo não encontrado: cycle-not-found" },
+        },
         description: "Lista sacolas.",
         ...SwaggerMapper.toDocs(listBagsSchema),
       },
@@ -258,14 +376,19 @@ const docs = createDocument({
     "/bags/{bag_id}": {
       get: {
         tags: [tags.bags],
-        responses: { "200": { description: "200 OK" } },
-        description:
-          "Busca as informações de uma sacola. Se o usuário não for admin, só pode buscar suas próprias sacolas.",
+        responses: {
+          "200": { description: "Sacola encontrada com sucesso" },
+          "404": { description: "Sacola não encontrada: bag-not-found" },
+        },
+        description: "Busca as informações de uma sacola.",
         ...SwaggerMapper.toDocs(fetchBagSchema),
       },
       patch: {
         tags: [tags.bags],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Sacola atualizada com sucesso" },
+          "404": { description: "Sacola não encontrada: bag-not-found" },
+        },
         description: "Atualiza o status de uma sacola.",
         ...SwaggerMapper.toDocs(handleBagSchema),
       },
@@ -273,7 +396,12 @@ const docs = createDocument({
     "/bags/report/{cycle_id}": {
       get: {
         tags: [tags.bags],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": {
+            description: "Relatório de entrega de sacolas gerado com sucesso",
+          },
+          "404": { description: "Ciclo não encontrado: cycle-not-found" },
+        },
         description: "Gera o relatório de entrega de sacolas.",
         ...SwaggerMapper.toDocs(printDeliveriesReportSchema),
       },
@@ -291,7 +419,9 @@ const docs = createDocument({
     "/cycles": {
       get: {
         tags: [tags.cycles],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Ciclos encontrados com sucesso" },
+        },
         description: "Lista ciclos.",
       },
     },
@@ -300,7 +430,9 @@ const docs = createDocument({
     "/products": {
       get: {
         tags: [tags.products],
-        responses: { "200": { description: "200 OK" } },
+        responses: {
+          "200": { description: "Produtos encontrados com sucesso" },
+        },
         description: "Lista produtos.",
         ...SwaggerMapper.toDocs(listProductSchema),
       },
