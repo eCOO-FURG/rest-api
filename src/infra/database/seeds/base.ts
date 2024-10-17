@@ -25,12 +25,11 @@ async function seed() {
     prisma.catalog.deleteMany(),
     prisma.cycle.deleteMany(),
     prisma.product.deleteMany(),
-    prisma.farm.deleteMany(),
+
     prisma.otp.deleteMany(),
     prisma.session.deleteMany(),
   ]);
-
-  await prisma.user.deleteMany();
+  await prisma.farm.deleteMany(), await prisma.user.deleteMany();
 
   const cddId = new UUID();
 
@@ -87,7 +86,7 @@ async function seed() {
         name: "Farm do CDD",
         caf: "12345678",
         tax: 20,
-        active: true,
+        status: "ACTIVE",
         admin_id: cddId.value,
         catalogs: {
           create: {

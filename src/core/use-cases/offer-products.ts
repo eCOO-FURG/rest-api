@@ -51,7 +51,7 @@ export class OfferProductsUseCase {
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
-    if (!farm.active) throw new FarmNotActiveError();
+    if (farm.status !== "ACTIVE") throw new FarmNotActiveError();
 
     const product = await this.productsRepository.findById(product_id);
 
