@@ -17,6 +17,8 @@ import { PrintDeliveriesReportUseCase } from "@/core/use-cases/print-deliveries-
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
+import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
+import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
 
 let productsRepository: InMemoryProductsRepository;
 let usersRepository: InMemoryUsersRepository;
@@ -24,6 +26,8 @@ let offersRepository: InMemoryOffersRepository;
 let ordersRepository: InMemoryOrdersRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
 let farmsRepository: InMemoryFarmsRepository;
+let addressesRepository: InMemoryAddressesRepository;
+let paymentsRepository: InMemoryPaymentsRepository;
 
 let repositories: {
   bags: InMemoryBagsRepository;
@@ -53,9 +57,15 @@ describe("print deliveries report", () => {
 
     offersRepository.inMemoryCatalogsRepository = catalogsRepository;
     ordersRepository = new InMemoryOrdersRepository(offersRepository);
-
+    addressesRepository = new InMemoryAddressesRepository();
+    paymentsRepository = new InMemoryPaymentsRepository();
     repositories = {
-      bags: new InMemoryBagsRepository(usersRepository, ordersRepository),
+      bags: new InMemoryBagsRepository(
+        usersRepository,
+        ordersRepository,
+        addressesRepository,
+        paymentsRepository
+      ),
       cycles: new InMemoryCyclesRepository(),
     };
 

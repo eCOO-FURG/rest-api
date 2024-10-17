@@ -181,7 +181,12 @@ export class OrderProductsUseCase {
 
     if (found) return found;
 
-    const bag = Bag.create({ user_id, cycle_id: cycle.id, address_id });
+    const bag = Bag.create({
+      user_id,
+      cycle_id: cycle.id,
+      address_id,
+      code: "123456",
+    });
 
     await this.bagsRepository.create(bag);
 

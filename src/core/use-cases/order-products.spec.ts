@@ -30,6 +30,7 @@ import { InMemoryBoxesRepository } from "@/test/repositories/in-memory-boxes-rep
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
+import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
@@ -39,6 +40,7 @@ let offersRepository: InMemoryOffersRepository;
 let ordersRepository: InMemoryOrdersRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
 let addressesRepository: InMemoryAddressesRepository;
+let paymentsRepository: InMemoryPaymentsRepository;
 
 let repositories: {
   users: InMemoryUsersRepository;
@@ -73,7 +75,7 @@ describe("order product", () => {
     ordersRepository = new InMemoryOrdersRepository(offersRepository);
     farmsRepository = new InMemoryFarmsRepository(usersRepository);
     addressesRepository = new InMemoryAddressesRepository();
-
+    paymentsRepository = new InMemoryPaymentsRepository();
     repositories = {
       users: usersRepository,
       products: productsRepository,
@@ -82,7 +84,8 @@ describe("order product", () => {
       bags: new InMemoryBagsRepository(
         usersRepository,
         ordersRepository,
-        addressesRepository
+        addressesRepository,
+        paymentsRepository
       ),
       cycles: cyclesRepository,
       catalogs: catalogsRepository,
@@ -151,7 +154,7 @@ describe("order product", () => {
     const product = makeProduct();
     await repositories.products.create(product);
 
-    const address = makeAddress({});
+    const address = makeAddress();
     await repositories.addresses.create(address);
 
     const bag = makeBag({
@@ -175,7 +178,12 @@ describe("order product", () => {
     await sut.execute({
       user_id: user.id.value,
       cycle_id: cycle.id.value,
-      address: { ...address.props },
+      address: {
+        street: address.street,
+        number: address.number,
+        neighborhood: address.neighborhood,
+        postal_code: address.postal_code,
+      },
       request: [{ offer_id: offer.id.value, amount: 5 }],
     });
 

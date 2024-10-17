@@ -10,6 +10,7 @@ import { InMemoryProductsRepository } from "@/test/repositories/in-memory-produc
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
+import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
 
 // Entities
 import { BagMerge } from "@/core/entities/merged/bag-merge";
@@ -29,6 +30,7 @@ let ordersRepository: InMemoryOrdersRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
 let farmsRepository: InMemoryFarmsRepository;
 let addressesRepository: InMemoryAddressesRepository;
+let paymentsRepository: InMemoryPaymentsRepository;
 
 let repositories: {
   cycles: InMemoryCyclesRepository;
@@ -54,13 +56,14 @@ describe("list bags", () => {
     offersRepository.inMemoryCatalogsRepository = catalogsRepository;
     ordersRepository = new InMemoryOrdersRepository(offersRepository);
     addressesRepository = new InMemoryAddressesRepository();
-
+    paymentsRepository = new InMemoryPaymentsRepository();
     repositories = {
       cycles: new InMemoryCyclesRepository(),
       bags: new InMemoryBagsRepository(
         usersRepository,
         ordersRepository,
-        addressesRepository
+        addressesRepository,
+        paymentsRepository
       ),
     };
 
