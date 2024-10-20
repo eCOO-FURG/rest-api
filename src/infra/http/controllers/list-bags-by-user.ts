@@ -14,7 +14,10 @@ import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 // Utils
 import { toDate } from "@/infra/utils/to-date";
 
-export const listUserBagsSchema = {
+export const listBagsByUserSchema = {
+  route: z.object({
+    user_id: z.string().uuid(),
+  }),
   query: z.object({
     page: z.coerce.number().openapi({ description: "Página da listagem." }),
   }),
@@ -32,14 +35,15 @@ export const listUserBagsSchema = {
   }),
 };
 
-export async function listUserBagsController(
+export async function listBagsByUserController(
   request: Request,
   response: Response,
   next: NextFunction
 ) {
   try {
-    const { page } = listUserBagsSchema.query.parse(request.query);
-    const { since, before } = listUserBagsSchema.body.parse(request.body);
+    const { user_id } = listBagsByUserSchema.route.parse(request.params);
+    const { page } = listBagsByUserSchema.query.parse(request.query);
+    const { since, before } = listBagsByUserSchema.body.parse(request.body);
 
     const sinceDate = toDate(since);
     const beforeDate = toDate(before);
@@ -53,10 +57,10 @@ export async function listUserBagsController(
     const listUserBagsUsecase = container.resolve<ListUserBagsUseCase>(
       "listUserBagsUseCase"
     );
+    console.log("User ID:", user_id);
 
-    console.log("User ID:", request.user_id);
     const { bags } = await listUserBagsUsecase.execute({
-      user_id: request.user_id,
+      user_id,
       since: sinceDate,
       before: beforeDate,
       page,

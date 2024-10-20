@@ -31,6 +31,8 @@ import { fetchCurrentBoxController } from "@/infra/http/controllers/fetch-curren
 import { fetchCurrentCatalogController } from "@/infra/http/controllers/fetch-current-catalog";
 import { requestPasswordUpdateController } from "@/infra/http/controllers/request-password-update";
 import { listUserBagsController } from "@/infra/http/controllers/list-user-bags";
+import { fetchUserBagController } from "@/infra/http/controllers/fetch-user-bag";
+import { listBagsByUserController } from "@/infra/http/controllers/list-bags-by-user";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -124,7 +126,13 @@ router.get(
 
 // Sacolas
 router.get("/bags", ensureAuthenticated, ensureAdmin, listBagsController);
-router.get("/bags/:bag_id", ensureAuthenticated, fetchBagController);
+router.get(
+  "/bags/:bag_id",
+  ensureAuthenticated,
+  ensureAdmin,
+  fetchBagController
+);
+router.get("/me/bags/:bag_id", ensureAuthenticated, fetchUserBagController);
 router.get(
   "/bags/report/:cycle_id",
   ensureAuthenticated,
@@ -138,6 +146,12 @@ router.patch(
   handleBagController
 );
 router.get("/me/bags", ensureAuthenticated, listUserBagsController);
+router.get(
+  "/bags/user/:user_id",
+  ensureAuthenticated,
+  ensureAdmin,
+  listBagsByUserController
+);
 
 // Ciclos
 router.get("/cycles", listCyclesController);

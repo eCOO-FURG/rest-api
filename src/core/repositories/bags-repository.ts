@@ -22,6 +22,7 @@ export interface BagsRepositorySearchManyRequest {
   };
   status?: Bag["status"];
   since?: Date;
+  before?: Date;
   user?: { id?: string };
 }
 

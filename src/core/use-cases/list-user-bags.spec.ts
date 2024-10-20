@@ -77,7 +77,7 @@ describe("list user bags", () => {
 
     const result = await sut.execute({
       user_id: user.id.value,
-      date: "05-10-2024",
+      since: new Date("2024-10-05"),
       page: 1,
     });
 
@@ -91,9 +91,36 @@ describe("list user bags", () => {
     await expect(() =>
       sut.execute({
         user_id: "1234",
-        date: "05-10-2024",
+        since: new Date("2024-10-05"),
         page: 1,
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+  it("should return only bags within the specified date range", async () => {
+    const user = makeUser();
+    usersRepository.create(user);
+
+    const bagWithinRange = makeBag({
+      user_id: user.id,
+      created_at: new Date("2024-10-06"),
+    });
+    await repositories.bags.create(bagWithinRange);
+
+    const bagOutsideRange = makeBag({
+      user_id: user.id,
+      created_at: new Date("2024-10-04"),
+    });
+    await repositories.bags.create(bagOutsideRange);
+
+    const result = await sut.execute({
+      user_id: user.id.value,
+      since: new Date("2024-10-05"),
+      before: new Date("2024-10-07"),
+      page: 1,
+    });
+
+    expect(result.bags).toHaveLength(1);
+    expect(result.bags[0]).toBeInstanceOf(BagMerge);
+    expect(result.bags[0].created_at).toEqual(new Date("2024-10-06"));
   });
 });
