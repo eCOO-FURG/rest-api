@@ -49,7 +49,7 @@ export class Farm extends Entity<FarmProps> {
   static create(props: Optional<FarmProps, "status" | "tax">) {
     const farm = new Farm({
       ...props,
-      status: props.status ?? "ACTIVE",
+      status: props.status ?? "PENDING",
       tax: props.tax ?? 20,
     });
     return farm;
