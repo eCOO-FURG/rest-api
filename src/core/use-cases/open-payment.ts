@@ -34,14 +34,18 @@ export class OpenPaymentUseCase {
     if (bag.paid() || bag.open())
       throw new ResourceAlreadyExistsError("Pagamento da sacola", bag_id);
 
-    const payment = Payment.create({ bag_id: new UUID(bag_id), method: "PIX" });
+    const payment = Payment.create({
+      bag_id: new UUID(bag_id),
+      method: "PIX",
+      expires_at: new Date(Date.now() + 1000 * 60 * 15),
+    });
 
     await this.paymentsRepository.create(payment);
 
-    const agrregate = PaymentAggregate.create({ ...payment.props, bag });
+    const aggregate = PaymentAggregate.create({ ...payment.props, bag });
 
-    await this.pixProvider.charge(agrregate);
+    const { qrcode, code } = await this.pixProvider.charge(aggregate);
 
-    return { payment };
+    return { aggregate, charge: { qrcode, code } };
   }
 }

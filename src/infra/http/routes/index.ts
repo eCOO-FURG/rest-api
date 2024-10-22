@@ -30,6 +30,7 @@ import { handleFarmStatusController } from "@/infra/http/controllers/handle-farm
 import { fetchCurrentBoxController } from "@/infra/http/controllers/fetch-current-box";
 import { fetchCurrentCatalogController } from "@/infra/http/controllers/fetch-current-catalog";
 import { requestPasswordUpdateController } from "@/infra/http/controllers/request-password-update";
+import { openPaymentController } from "@/infra/http/controllers/open-payment";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -152,3 +153,6 @@ router.get(
   ensureFarmAdmin,
   listProductsController
 );
+
+// Pagamentos
+router.post("/payments", ensureAuthenticated, openPaymentController);

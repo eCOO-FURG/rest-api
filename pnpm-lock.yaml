@@ -23,6 +23,9 @@ importers:
       '@types/node':
         specifier: ^20.14.2
         version: 20.14.2
+      '@woovi/node-sdk':
+        specifier: ^1.0.1
+        version: 1.0.1
       awilix:
         specifier: ^10.0.2
         version: 10.0.2
@@ -837,6 +840,9 @@ packages:
 
   '@vitest/utils@1.6.0':
     resolution: {integrity: sha512-21cPiuGMoMZwiOHa2i4LXkMkMkCGzA+MVFV70jRwHo95dL4x/ts5GZhML1QWuy7yfp3WzK3lRvZi3JnXTYqrBw==}
+
+  '@woovi/node-sdk@1.0.1':
+    resolution: {integrity: sha512-TEH3njyM8qY46Ah13kEpP1oPf7mX1OzNzARkeZV8pyz058tQE65u1Gy1k2UT1sA2XMp1DGWwSnQxn2XdnFByeQ==}
 
   accepts@1.3.8:
     resolution: {integrity: sha512-PYAthTa2m2VKxuvSD3DPC/Gy+U+sOA1LAuT8mkmRuvw+NACSaeXEQ+NHcVF7rONl6qcaxV3Uuemwawk+7+SJLw==}
@@ -2839,6 +2845,8 @@ snapshots:
       estree-walker: 3.0.3
       loupe: 2.3.7
       pretty-format: 29.7.0
+
+  '@woovi/node-sdk@1.0.1': {}
 
   accepts@1.3.8:
     dependencies:

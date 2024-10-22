@@ -8,6 +8,7 @@ import { Jwt } from "@/infra/cryptography/jwt";
 import { BcrypterHasher } from "@/infra/cryptography/bcrypt";
 import { OtpGenerator } from "@/infra/cryptography/otp-generator";
 import { PuppeteerPDFService } from "@/infra/pdf/puppeteer";
+import { OpenPix } from "@/infra/payment/open-pix";
 
 // Env
 import { env } from "@/infra/env";
@@ -46,5 +47,6 @@ export default (container: AwilixContainer) => {
       return new Nodemailer(transporter);
     }),
     pdfService: asClass(PuppeteerPDFService),
+    pixProvider: asClass(OpenPix),
   });
 };
