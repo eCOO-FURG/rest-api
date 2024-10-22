@@ -8,6 +8,7 @@ export interface PaymentProps extends EntityRequest {
   status: "PENDING" | "DONE" | "FAILED";
   method: "CREDIT" | "DEBIT" | "CASH" | "PIX";
   flag: "MASTERCARD" | "VISA" | "OTHER" | null;
+  expires_at: Date | null;
 }
 
 export class Payment extends Entity<PaymentProps> {
@@ -27,12 +28,24 @@ export class Payment extends Entity<PaymentProps> {
     return this.props.flag;
   }
 
-  static create(props: Optional<PaymentProps, "status" | "flag">) {
+  get expires_at() {
+    return this.props.expires_at;
+  }
+
+  get expired() {
+    return this.expires_at && this.expires_at < new Date();
+  }
+
+  static create(
+    props: Optional<PaymentProps, "status" | "flag" | "expires_at">
+  ) {
     const payment = new Payment({
       ...props,
       status: props.status ?? "PENDING",
       flag: props.flag ?? null,
+      expires_at: props.expires_at ?? null,
     });
+
     return payment;
   }
 }
