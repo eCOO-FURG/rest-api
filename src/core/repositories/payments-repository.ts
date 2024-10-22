@@ -7,19 +7,15 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 
 export interface PaymentsRepositorySearchRequest {
   id?: string;
-  bag?: {
-    id?: string;
-  };
+  bag?: { id?: string };
   status?: "PENDING" | "DONE" | "FAILED";
-  method?: "CARD" | "CASH" | "PIX";
+  method?: "CREDIT" | "DEBIT" | "CASH" | "PIX";
 }
 
 export interface PaymentsRepositorySearchManyRequest {
-  bag?: {
-    id?: string;
-  };
+  bag?: { id?: string };
   status?: "PENDING" | "DONE" | "FAILED";
-  method?: "CARD" | "CASH" | "PIX";
+  method?: "CREDIT" | "DEBIT" | "CASH" | "PIX";
   page?: number;
 }
 
