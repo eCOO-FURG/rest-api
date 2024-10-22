@@ -11,7 +11,7 @@ export interface FarmProps extends EntityRequest {
   status: "ACTIVE" | "INACTIVE" | "PENDING";
   admin_id: UUID;
   tax: number;
-  description?: string;
+  description: string;
 }
 
 export class Farm extends Entity<FarmProps> {

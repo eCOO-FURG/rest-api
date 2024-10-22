@@ -47,6 +47,7 @@ export class RegisterFarmUseCase {
       admin_id: user.id,
       counterfoil_number,
       name,
+      description: "",
     });
 
     await this.farmRepository.create(farm);

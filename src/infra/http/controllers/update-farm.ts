@@ -1,5 +1,5 @@
 // Use-cases
-import { UpdateUserUseCase } from "@/core/use-cases/update-user";
+import { UpdateFarmUseCase } from "@/core/use-cases/update-farm";
 
 // Container
 import container from "@/infra/container";
@@ -25,17 +25,14 @@ export async function updateUserController(
     const { name, counterfoil_number, description } =
       updateFarmSchema.body.parse(request.body);
 
-    const updateUserUsecase =
-      container.resolve<UpdateUserUseCase>("updateUserUseCase");
+    const updateFarmUseCase =
+      container.resolve<UpdateFarmUseCase>("updateFarmUseCase");
 
-    await updateUserUsecase.execute({
-      user_id: request.user_id,
-      first_name,
-      last_name,
-      cpf,
-      email,
-      password,
-      phone,
+    await updateFarmUseCase.execute({
+      farm_id: request.params.id,
+      name,
+      counterfoil_number,
+      description
     });
 
     return response.sendStatus(204);

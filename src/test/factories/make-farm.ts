@@ -12,5 +12,6 @@ export function makeFarm(props: Partial<Farm> = {}) {
     tax: props.tax,
     created_at: props.created_at,
     updated_at: props.updated_at,
+    description: ""
   });
 }
