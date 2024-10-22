@@ -12,8 +12,8 @@ export class FarmAggregate extends Entity<FarmAggregateProps> {
     return this.props.name;
   }
 
-  get caf() {
-    return this.props.caf;
+  get counterfoil_number() {
+    return this.props.counterfoil_number;
   }
 
   get status() {

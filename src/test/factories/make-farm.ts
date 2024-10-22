@@ -7,7 +7,7 @@ export function makeFarm(props: Partial<Farm> = {}) {
     id: props.id,
     admin_id: props.admin_id ?? new UUID(),
     name: props.name ?? faker.company.name(),
-    caf: props.caf ?? faker.number.bigInt().toString(),
+    counterfoil_number: props.counterfoil_number ?? faker.number.bigInt().toString(),
     status: props.status ?? "ACTIVE",
     tax: props.tax,
     created_at: props.created_at,

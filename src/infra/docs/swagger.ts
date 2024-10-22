@@ -155,7 +155,7 @@ const docs = createDocument({
           "200": { description: "Fazenda criada com sucesso" },
           "403": {
             description:
-              "Já existe uma fazenda com o CAF informado: caf-already-exists OU já existe uma fazenda para o usuário informado: farm-already-exists",
+              "Já existe uma fazenda com o Número do Talão informado: counterfoil_number-already-exists OU já existe uma fazenda para o usuário informado: farm-already-exists",
           },
           "404": { description: "Usuário não encontrado: user-not-found" },
         },

@@ -58,6 +58,12 @@ router.patch(
   ensureAdmin,
   handleFarmStatusController
 );
+router.patch(
+  "/farms/update/:farm_id",
+  ensureAuthenticated,
+  ensureAdmin,
+  handleFarmStatusController
+);
 
 // Pedidos
 router.post("/orders", ensureAuthenticated, orderProductsController);
