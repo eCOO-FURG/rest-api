@@ -71,9 +71,10 @@ export class InMemoryBagsRepository implements BagsRepository {
       "merged"
     );
 
-    const payments = await this.inMemoryPaymentsRepository.searchMany({
-      bag: { id: bag.id.value },
-    });
+    const payments = await this.inMemoryPaymentsRepository.searchMany(
+      { bag: { id: bag.id.value } },
+      "entity"
+    );
 
     const merged = BagMerge.create({
       ...aggreagate.props,
@@ -141,9 +142,10 @@ export class InMemoryBagsRepository implements BagsRepository {
         "merged"
       );
 
-      const payments = await this.inMemoryPaymentsRepository.searchMany({
-        bag: { id: aggregate.id.value },
-      });
+      const payments = await this.inMemoryPaymentsRepository.searchMany(
+        { bag: { id: aggregate.id.value } },
+        "entity"
+      );
 
       const merge = BagMerge.create({
         ...aggregate.props,
