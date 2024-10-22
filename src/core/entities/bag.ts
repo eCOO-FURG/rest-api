@@ -40,6 +40,10 @@ export class Bag extends Entity<BagProps> {
     this.props.status = value;
   }
 
+  get code() {
+    return this.props.code;
+  }
+
   static create(props: Optional<BagProps, "status" | "address_id">) {
     const bag = new Bag({
       ...props,

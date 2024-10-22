@@ -10,6 +10,10 @@ interface BagMergeProps extends BagAggregateProps {
 }
 
 export class BagMerge extends Entity<BagMergeProps> {
+  get code() {
+    return this.props.code;
+  }
+
   get user() {
     return this.props.user;
   }
