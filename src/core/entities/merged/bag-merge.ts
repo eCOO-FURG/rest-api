@@ -48,6 +48,18 @@ export class BagMerge extends Entity<BagMergeProps> {
     return done;
   }
 
+  open() {
+    const payments = this.props.payments;
+
+    const pending = payments.find(
+      (payment) => payment.status === "PENDING" && !payment.expired
+    );
+
+    if (!pending) return null;
+
+    return pending;
+  }
+
   static create(props: BagMergeProps) {
     const bag = new BagMerge(props);
     return bag;
