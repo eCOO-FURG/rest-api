@@ -13,7 +13,7 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 interface RegisterPaymentUseCaseRequest {
   bag_id: string;
   method: "CREDIT" | "DEBIT" | "CASH" | "PIX";
-  status: "PENDING" | "DONE" | "FAILED";
+  flag?: "MASTERCARD" | "VISA" | "OTHER";
 }
 
 export class RegisterPaymentUseCase {
@@ -22,7 +22,7 @@ export class RegisterPaymentUseCase {
     private paymentsRepository: PaymentsRepository
   ) {}
 
-  async execute({ bag_id, method, status }: RegisterPaymentUseCaseRequest) {
+  async execute({ bag_id, method, flag }: RegisterPaymentUseCaseRequest) {
     const bag = await this.bagsRepository.search({ id: bag_id }, "merged");
 
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
@@ -34,8 +34,9 @@ export class RegisterPaymentUseCase {
 
     const payment = Payment.create({
       bag_id: new UUID(bag_id),
+      status: "DONE",
       method,
-      status,
+      flag,
     });
 
     await this.paymentsRepository.create(payment);
