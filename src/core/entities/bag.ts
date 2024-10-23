@@ -6,10 +6,17 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { Optional } from "@/core/types/optional";
 
 export interface BagProps extends EntityRequest {
+  code: string;
   user_id: UUID;
   cycle_id: UUID;
-  status: "PENDING" | "SEPARATED" | "DISPATCHED" | "RECEIVED" | "CANCELLED" | "DEFERRED";
   address_id: UUID | null;
+  status:
+    | "PENDING"
+    | "SEPARATED"
+    | "DISPATCHED"
+    | "RECEIVED"
+    | "CANCELLED"
+    | "DEFERRED";
 }
 
 export class Bag extends Entity<BagProps> {
@@ -31,6 +38,10 @@ export class Bag extends Entity<BagProps> {
 
   set status(value: BagProps["status"]) {
     this.props.status = value;
+  }
+
+  get code() {
+    return this.props.code;
   }
 
   static create(props: Optional<BagProps, "status" | "address_id">) {

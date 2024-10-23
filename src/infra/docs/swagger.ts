@@ -31,6 +31,9 @@ import { listProductSchema } from "@/infra/http/controllers/list-products";
 import { fetchCurrentBoxSchema } from "@/infra/http/controllers/fetch-current-box";
 import { requestPasswordUpdateSchema } from "@/infra/http/controllers/request-password-update";
 import { fetchCurrentCatalogSchema } from "@/infra/http/controllers/fetch-current-catalog";
+import { registerPaymentSchema } from "@/infra/http/controllers/register-payment";
+import { updatePaymentSchema } from "@/infra/http/controllers/update-payment";
+import { openPaymentSchema } from "@/infra/http/controllers/open-payment";
 
 const tags = {
   users: "Usuários",
@@ -43,6 +46,7 @@ const tags = {
   bags: "Sacolas",
   cycles: "Ciclos",
   products: "Produtos",
+  payments: "Pagamentos",
 };
 
 const docs = createDocument({
@@ -59,7 +63,7 @@ const docs = createDocument({
       post: {
         tags: [tags.users],
         responses: {
-          "201": { description: "Usuário criado com sucesso" },
+          "201": { description: "Usuário criado com sucesso." },
           "403": {
             description:
               "Já existe um usuário com o email informado: email-already-exists OU já exite um usuário com o telefone informado: phone-already-exists OU já existe um usuário com o cpf informado: cpf-already-exists",
@@ -71,7 +75,7 @@ const docs = createDocument({
       patch: {
         tags: [tags.users],
         responses: {
-          "204": { description: "Usuário atualizado com sucesso" },
+          "204": { description: "Usuário atualizado com sucesso." },
           "404": { description: "Usuário não encontrado: user-not-found" },
         },
         description: "Atualiza o usuário.",
@@ -82,7 +86,10 @@ const docs = createDocument({
       get: {
         tags: [tags.users],
         responses: {
-          "301": { description: "Usuário foi verificado com sucesso, será redirecionado" },
+          "301": {
+            description:
+              "Usuário foi verificado com sucesso, será redirecionado",
+          },
           "403": {
             description: "Usuário já está verificado: user-already-verified",
           },
@@ -123,7 +130,7 @@ const docs = createDocument({
       post: {
         tags: [tags.auth],
         responses: {
-          "201": { description: "Sessião criada com sucesso" },
+          "201": { description: "Sessião criada com sucesso." },
           "400": { description: "Credenciais incorretas: wrong-credentials" },
           "403": {
             description:
@@ -138,7 +145,7 @@ const docs = createDocument({
       post: {
         tags: [tags.auth],
         responses: {
-          "201": { description: "Soliciatação de OTP enviada com sucesso" },
+          "201": { description: "Soliciatação de OTP enviada com sucesso." },
           "404": { description: "Usuário não encontrado: user-not-found" },
         },
         description:
@@ -152,7 +159,7 @@ const docs = createDocument({
       post: {
         tags: [tags.farms],
         responses: {
-          "201": { description: "Fazenda criada com sucesso" },
+          "201": { description: "Fazenda criada com sucesso." },
           "403": {
             description:
               "Já existe uma fazenda com o CAF informado: caf-already-exists OU já existe uma fazenda para o usuário informado: farm-already-exists",
@@ -164,7 +171,9 @@ const docs = createDocument({
       },
       get: {
         tags: [tags.farms],
-        responses: { "200": { description: "Fazendas encontradas com sucesso" } },
+        responses: {
+          "200": { description: "Fazendas encontradas com sucesso." },
+        },
         description: "Lista fazendas.",
         ...SwaggerMapper.toDocs(listFarmsSchema),
       },
@@ -173,7 +182,7 @@ const docs = createDocument({
       patch: {
         tags: [tags.farms],
         responses: {
-          "204": { description: "Status da fazenda atualizado com sucesso" },
+          "204": { description: "Status da fazenda atualizado com sucesso." },
           "404": { description: "Fazenda não encontrada: farm-not-found" },
         },
         description:
@@ -187,7 +196,7 @@ const docs = createDocument({
       post: {
         tags: [tags.orders],
         responses: {
-          "201": { description: "Pedido criado com sucesso" },
+          "201": { description: "Pedido criado com sucesso." },
           "400": {
             description:
               "Peso informado de um produto é inválido: invalid-weight",
@@ -212,7 +221,7 @@ const docs = createDocument({
       get: {
         tags: [tags.boxes],
         responses: {
-          "200": { description: "Caixas encontradas com sucesso" },
+          "200": { description: "Caixas encontradas com sucesso." },
           "404": { description: "Ciclo não encontrado: cycle-not-found" },
         },
         description: "Lista caixas.",
@@ -223,7 +232,7 @@ const docs = createDocument({
       get: {
         tags: [tags.boxes],
         responses: {
-          "200": { description: "Caixa encontrada com sucesso" },
+          "200": { description: "Caixa encontrada com sucesso." },
           "404": { description: "Caixa não encontrada: box-not-found" },
         },
         description: "Busca as informações de uma caixa.",
@@ -232,7 +241,7 @@ const docs = createDocument({
       patch: {
         tags: [tags.boxes],
         responses: {
-          "204": { description: "Caixa atualizada com sucesso" },
+          "204": { description: "Caixa atualizada com sucesso." },
           "404": { description: "Caixa não encontrada: box-not-found" },
         },
         description: "Atualiza o status de uma caixa.",
@@ -243,7 +252,7 @@ const docs = createDocument({
       get: {
         tags: [tags.boxes],
         responses: {
-          "200": { description: "Caixa atual encontrada com sucesso" },
+          "200": { description: "Caixa atual encontrada com sucesso." },
           "404": {
             description:
               "Ciclo não encontrado: cycle-not-found OU Caixa da Fazenda não encontrada: box-not-found",
@@ -259,7 +268,7 @@ const docs = createDocument({
       post: {
         tags: [tags.offers],
         responses: {
-          "201": { description: "Oferta criada com sucesso" },
+          "201": { description: "Oferta criada com sucesso." },
           "400": {
             description:
               "Peso informado de um produto é inválido: invalid-weight",
@@ -281,7 +290,7 @@ const docs = createDocument({
       patch: {
         tags: [tags.offers],
         responses: {
-          "204": { description: "Oferta atualizada com sucesso" },
+          "204": { description: "Oferta atualizada com sucesso." },
           "403": {
             description: "Não é possivel ofertar produtos hoje: closed-action",
           },
@@ -296,7 +305,7 @@ const docs = createDocument({
       delete: {
         tags: [tags.offers],
         responses: {
-          "204": { description: "Oferta deletada com sucesso" },
+          "204": { description: "Oferta deletada com sucesso." },
           "403": { description: "Não autorizado: unauthorized" },
           "404": {
             description:
@@ -313,7 +322,7 @@ const docs = createDocument({
       get: {
         tags: [tags.catalogs],
         responses: {
-          "200": { description: "Catatálogos encontrados com sucesso" },
+          "200": { description: "Catatálogos encontrados com sucesso." },
           "404": { description: "Ciclo não encontrado: cycle-not-found" },
         },
         description: "Lista catálogos.",
@@ -324,7 +333,7 @@ const docs = createDocument({
       get: {
         tags: [tags.catalogs],
         responses: {
-          "200": { description: "Catálogo encontrado com sucesso" },
+          "200": { description: "Catálogo encontrado com sucesso." },
           "404": { description: "Catálogo não encontrado: catalog-not-found" },
         },
         description: "Busca as informações de um catálogo.",
@@ -335,7 +344,7 @@ const docs = createDocument({
       get: {
         tags: [tags.catalogs],
         responses: {
-          "200": { description: "Ultimo catálogo encontrado com sucesso" },
+          "200": { description: "Ultimo catálogo encontrado com sucesso." },
           "404": {
             description:
               "Ciclo não encontrado: cycle-not-found OU Fazenda não encontrada: farm-not-found OU Catálogo não encontrado: catalog-not-found",
@@ -349,7 +358,7 @@ const docs = createDocument({
       get: {
         tags: [tags.catalogs],
         responses: {
-          "200": { description: "Catálogo atual encontrado com sucesso" },
+          "200": { description: "Catálogo atual encontrado com sucesso." },
           "404": {
             description:
               "Ciclo não encontrado: cycle-not-found OU Fazenda não encontrada: farm-not-found OU Catálogo não encontrado: catalog-not-found",
@@ -365,7 +374,7 @@ const docs = createDocument({
       get: {
         tags: [tags.bags],
         responses: {
-          "200": { description: "Sacolas encontradas com sucesso" },
+          "200": { description: "Sacolas encontradas com sucesso." },
           "404": { description: "Ciclo não encontrado: cycle-not-found" },
         },
         description: "Lista sacolas.",
@@ -376,7 +385,7 @@ const docs = createDocument({
       get: {
         tags: [tags.bags],
         responses: {
-          "200": { description: "Sacola encontrada com sucesso" },
+          "200": { description: "Sacola encontrada com sucesso." },
           "404": { description: "Sacola não encontrada: bag-not-found" },
         },
         description: "Busca as informações de uma sacola.",
@@ -385,7 +394,7 @@ const docs = createDocument({
       patch: {
         tags: [tags.bags],
         responses: {
-          "204": { description: "Sacola atualizada com sucesso" },
+          "204": { description: "Sacola atualizada com sucesso." },
           "404": { description: "Sacola não encontrada: bag-not-found" },
         },
         description: "Atualiza o status de uma sacola.",
@@ -397,7 +406,7 @@ const docs = createDocument({
         tags: [tags.bags],
         responses: {
           "200": {
-            description: "Relatório de entrega de sacolas gerado com sucesso",
+            description: "Relatório de entrega de sacolas gerado com sucesso.",
           },
           "404": { description: "Ciclo não encontrado: cycle-not-found" },
         },
@@ -411,7 +420,7 @@ const docs = createDocument({
       get: {
         tags: [tags.cycles],
         responses: {
-          "200": { description: "Ciclos encontrados com sucesso" },
+          "200": { description: "Ciclos encontrados com sucesso." },
         },
         description: "Lista ciclos.",
       },
@@ -422,10 +431,53 @@ const docs = createDocument({
       get: {
         tags: [tags.products],
         responses: {
-          "200": { description: "Produtos encontrados com sucesso" },
+          "200": { description: "Produtos encontrados com sucesso." },
         },
         description: "Lista produtos.",
         ...SwaggerMapper.toDocs(listProductSchema),
+      },
+    },
+
+    // Pagamentos
+    "/payments": {
+      post: {
+        tags: [tags.payments],
+        responses: {
+          "201": { description: "Pagamento registrado com sucesso" },
+          "404": { description: "Sacola não encontrada: bag-not-found" },
+          "403": {
+            description:
+              "Pagamento para a sacola já foi realizado: payment-already-exists",
+          },
+        },
+        description: "Registra um pagamento.",
+        ...SwaggerMapper.toDocs(registerPaymentSchema),
+      },
+    },
+
+    "/payments/{payment_id}": {
+      patch: {
+        tags: [tags.payments],
+        responses: {
+          "200": { description: "Pagamento atualizado com sucesso." },
+          "404": { description: "Pagamento não encontrado: payment-not-found" },
+        },
+        ...SwaggerMapper.toDocs(updatePaymentSchema),
+      },
+    },
+
+    "/payments/open": {
+      post: {
+        tags: [tags.payments],
+        responses: {
+          "200": { description: "Pagamento aberto com sucesso." },
+          "404": { description: "Sacola não encontrada: bag-not-found" },
+          "403": {
+            description:
+              "Pagamento para a sacola já foi realizado: payment-already-exists",
+          },
+        },
+        ...SwaggerMapper.toDocs(openPaymentSchema),
       },
     },
   },

@@ -62,6 +62,7 @@ export class PrismaBagsRepository implements BagsRepository {
       include: {
         customer: true,
         address: true,
+        payments: true,
         orders: {
           include: {
             offer: {
@@ -139,6 +140,7 @@ export class PrismaBagsRepository implements BagsRepository {
       include: {
         customer: true,
         address: true,
+        payments: true,
         orders: {
           include: {
             offer: {
