@@ -31,6 +31,7 @@ import { listProductSchema } from "@/infra/http/controllers/list-products";
 import { fetchCurrentBoxSchema } from "@/infra/http/controllers/fetch-current-box";
 import { requestPasswordUpdateSchema } from "@/infra/http/controllers/request-password-update";
 import { fetchCurrentCatalogSchema } from "@/infra/http/controllers/fetch-current-catalog";
+import { registerPaymentSchema } from "@/infra/http/controllers/register-payment";
 
 const tags = {
   users: "Usuários",
@@ -43,6 +44,7 @@ const tags = {
   bags: "Sacolas",
   cycles: "Ciclos",
   products: "Produtos",
+  payments: "Pagamentos",
 };
 
 const docs = createDocument({
@@ -82,7 +84,10 @@ const docs = createDocument({
       get: {
         tags: [tags.users],
         responses: {
-          "301": { description: "Usuário foi verificado com sucesso, será redirecionado" },
+          "301": {
+            description:
+              "Usuário foi verificado com sucesso, será redirecionado",
+          },
           "403": {
             description: "Usuário já está verificado: user-already-verified",
           },
@@ -164,7 +169,9 @@ const docs = createDocument({
       },
       get: {
         tags: [tags.farms],
-        responses: { "200": { description: "Fazendas encontradas com sucesso" } },
+        responses: {
+          "200": { description: "Fazendas encontradas com sucesso" },
+        },
         description: "Lista fazendas.",
         ...SwaggerMapper.toDocs(listFarmsSchema),
       },
@@ -426,6 +433,23 @@ const docs = createDocument({
         },
         description: "Lista produtos.",
         ...SwaggerMapper.toDocs(listProductSchema),
+      },
+    },
+
+    // Pagamentos
+    "/payments": {
+      post: {
+        tags: [tags.payments],
+        responses: {
+          "201": { description: "Pagamento registrado com sucesso" },
+          "404": { description: "Sacola não encontrada: bag-not-found" },
+          "403": {
+            description:
+              "Pagamento para a sacola já foi realizado: payment-already-exists",
+          },
+        },
+        description: "Registra um pagamento.",
+        ...SwaggerMapper.toDocs(registerPaymentSchema),
       },
     },
   },

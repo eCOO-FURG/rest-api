@@ -31,6 +31,7 @@ import { fetchCurrentBoxController } from "@/infra/http/controllers/fetch-curren
 import { fetchCurrentCatalogController } from "@/infra/http/controllers/fetch-current-catalog";
 import { requestPasswordUpdateController } from "@/infra/http/controllers/request-password-update";
 import { openPaymentController } from "@/infra/http/controllers/open-payment";
+import { registerPaymentController } from "@/infra/http/controllers/register-payment";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -155,4 +156,10 @@ router.get(
 );
 
 // Pagamentos
-router.post("/payments", ensureAuthenticated, openPaymentController);
+router.post(
+  "/payments",
+  ensureAuthenticated,
+  ensureAdmin,
+  registerPaymentController
+);
+router.post("/payments/open", ensureAuthenticated, openPaymentController);
