@@ -165,7 +165,7 @@ router.post(
 );
 router.post("/payments/open", ensureAuthenticated, openPaymentController);
 router.patch(
-  "/payments/:id",
+  "/payments/:payment_id",
   ensureAuthenticated,
   ensureAdmin,
   updatePaymentController
