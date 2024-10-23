@@ -72,9 +72,9 @@ enum FARM_STATUS {
 }
 
 model Farm {
-  id     String  @id @default(uuid())
+  id     String       @id @default(uuid())
   name   String
-  caf    String  @unique
+  caf    String       @unique
   status FARM_STATUS? @default(PENDING)
   tax    Float
 
@@ -190,7 +190,7 @@ enum BAG_STATUS {
 
 model Bag {
   id     String     @id @default(uuid())
-  code   String     @unique
+  code   String
   status BAG_STATUS
 
   user_id  String
