@@ -123,10 +123,10 @@ export class OrderProductsUseCase {
       if (item.amount > offer.amount)
         throw new UnavailableAmountError(offer.id.value);
 
-      const validAmount =
-        item.amount % 100 === 0 && offer.product.pricing === "WEIGHT";
+      const invalidAmount =
+        item.amount % 100 != 0 && offer.product.pricing === "WEIGHT";
 
-      if (!validAmount)
+      if (invalidAmount)
         throw new InvalidWeightError("solicitado", offer.product.id.value);
 
       const box = await this.useBox(catalog.id);

@@ -32,6 +32,9 @@ import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-rep
 import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
 import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
 
+// Services
+import { MockedOtpProvider } from "@/test/cryptography/mocked-otp-provider";
+
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 let farmsRepository: InMemoryFarmsRepository;
@@ -41,6 +44,8 @@ let ordersRepository: InMemoryOrdersRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
 let addressesRepository: InMemoryAddressesRepository;
 let paymentsRepository: InMemoryPaymentsRepository;
+
+let otpProvider: MockedOtpProvider;
 
 let repositories: {
   users: InMemoryUsersRepository;
@@ -93,6 +98,8 @@ describe("order product", () => {
       addresses: addressesRepository,
     };
 
+    otpProvider = new MockedOtpProvider();
+
     sut = new OrderProductsUseCase(
       repositories.users,
       repositories.cycles,
@@ -101,7 +108,8 @@ describe("order product", () => {
       repositories.catalogs,
       repositories.bags,
       repositories.boxes,
-      repositories.addresses
+      repositories.addresses,
+      otpProvider
     );
   });
 
@@ -112,7 +120,7 @@ describe("order product", () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
-    const product = makeProduct();
+    const product = makeProduct({ pricing: "UNIT" });
     await repositories.products.create(product);
 
     const catalog = makeCatalog({ cycle_id: cycle.id });
