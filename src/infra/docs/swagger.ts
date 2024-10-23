@@ -32,7 +32,8 @@ import { fetchCurrentBoxSchema } from "@/infra/http/controllers/fetch-current-bo
 import { requestPasswordUpdateSchema } from "@/infra/http/controllers/request-password-update";
 import { fetchCurrentCatalogSchema } from "@/infra/http/controllers/fetch-current-catalog";
 import { registerPaymentSchema } from "@/infra/http/controllers/register-payment";
-import { updatePaymentSchema } from "../http/controllers/update-payment";
+import { updatePaymentSchema } from "@/infra/http/controllers/update-payment";
+import { openPaymentSchema } from "@/infra/http/controllers/open-payment";
 
 const tags = {
   users: "Usuários",
@@ -462,6 +463,21 @@ const docs = createDocument({
           "404": { description: "Pagamento não encontrado: payment-not-found" },
         },
         ...SwaggerMapper.toDocs(updatePaymentSchema),
+      },
+    },
+
+    "/payments/open": {
+      post: {
+        tags: [tags.payments],
+        responses: {
+          "200": { description: "Pagamento aberto com sucesso." },
+          "404": { description: "Sacola não encontrada: bag-not-found" },
+          "403": {
+            description:
+              "Pagamento para a sacola já foi realizado: payment-already-exists",
+          },
+        },
+        ...SwaggerMapper.toDocs(openPaymentSchema),
       },
     },
   },
