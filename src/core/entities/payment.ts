@@ -51,11 +51,16 @@ export class Payment extends Entity<PaymentProps> {
   static create(
     props: Optional<PaymentProps, "status" | "flag" | "expires_at">
   ) {
+    const expires_at =
+      props.method === "PIX"
+        ? new Date(Date.now() + 1000 * 60 * 15) // 15 minutes
+        : props.expires_at;
+
     const payment = new Payment({
       ...props,
       status: props.status ?? "PENDING",
       flag: props.flag ?? null,
-      expires_at: props.expires_at ?? null,
+      expires_at: expires_at ?? null,
     });
 
     return payment;
