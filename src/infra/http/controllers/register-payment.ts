@@ -28,10 +28,14 @@ export async function registerPaymentController(
       "registerPaymentUseCase"
     );
 
+    const { bag_id, method, status } = registerPaymentSchema.body.parse(
+      request.body
+    );
+
     await registerPaymentUseCase.execute({
-      bag_id: request.body.bag_id,
-      method: request.body.method,
-      status: request.body.status,
+      bag_id,
+      method,
+      status,
     });
 
     return response.status(201).send();

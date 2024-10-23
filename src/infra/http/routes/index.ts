@@ -32,6 +32,7 @@ import { fetchCurrentCatalogController } from "@/infra/http/controllers/fetch-cu
 import { requestPasswordUpdateController } from "@/infra/http/controllers/request-password-update";
 import { openPaymentController } from "@/infra/http/controllers/open-payment";
 import { registerPaymentController } from "@/infra/http/controllers/register-payment";
+import { updatePaymentController } from "@/infra/http/controllers/update-payment";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -163,3 +164,9 @@ router.post(
   registerPaymentController
 );
 router.post("/payments/open", ensureAuthenticated, openPaymentController);
+router.patch(
+  "/payments/:id",
+  ensureAuthenticated,
+  ensureAdmin,
+  updatePaymentController
+);

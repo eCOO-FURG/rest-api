@@ -32,6 +32,7 @@ import { FetchCurrentCatalogUseCase } from "@/core/use-cases/fetch-current-catal
 import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
 import { OpenPaymentUseCase } from "@/core/use-cases/open-payment";
 import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
+import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -214,6 +215,9 @@ export default (container: AwilixContainer) => {
     registerPaymentUseCase: asFunction(
       ({ bagsRepository, paymentsRepository }) =>
         new RegisterPaymentUseCase(bagsRepository, paymentsRepository)
+    ),
+    updatePaymentUseCase: asFunction(
+      ({ paymentsRepository }) => new UpdatePaymentUseCase(paymentsRepository)
     ),
   });
 };
