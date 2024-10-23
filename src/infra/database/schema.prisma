@@ -65,11 +65,17 @@ model Otp {
   @@map("otps")
 }
 
+enum FARM_STATUS {
+  ACTIVE
+  INACTIVE
+  PENDING
+}
+
 model Farm {
   id     String  @id @default(uuid())
   name   String
   caf    String  @unique
-  active Boolean @default(false)
+  status FARM_STATUS? @default(PENDING)
   tax    Float
 
   admin_id String @unique

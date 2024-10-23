@@ -16,8 +16,8 @@ export class FarmAggregate extends Entity<FarmAggregateProps> {
     return this.props.caf;
   }
 
-  get active() {
-    return this.props.active;
+  get status() {
+    return this.props.status;
   }
 
   get admin() {

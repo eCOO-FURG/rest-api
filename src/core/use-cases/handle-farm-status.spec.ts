@@ -1,9 +1,6 @@
 // Repositories
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
-import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 
 // Use-cases
 import { HandleFarmStatusUseCase } from "./handle-farm-status";
@@ -37,15 +34,17 @@ describe("handle farm status", () => {
 
     await sut.execute({
       farm_id: farm.id.value,
+      status: "INACTIVE",
     });
 
-    expect(farmsRepository.items[0].active).toEqual(false);
+    expect(farmsRepository.items[0].status).toEqual("INACTIVE");
   });
 
   it("should not be able to handle a farm that does not exist", async () => {
     await expect(
       sut.execute({
         farm_id: "invalid-id",
+        status: "INACTIVE",
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });

@@ -1,5 +1,5 @@
 // Entities
-import { User } from "@/core/entities/user";
+import { Role, User } from "@/core/entities/user";
 
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
@@ -20,6 +20,7 @@ interface RegisterUseCaseRequest {
   cpf: string;
   phone: string;
   password?: string;
+  role: "USER" | "PRODUCER"
 }
 
 export class RegisterUseCase {
@@ -35,6 +36,7 @@ export class RegisterUseCase {
     cpf,
     phone,
     password,
+    role
   }: RegisterUseCaseRequest) {
     const userWithSameEmail = await this.usersRepository.findByEmail(email);
 
@@ -54,13 +56,15 @@ export class RegisterUseCase {
       throw new ResourceAlreadyExistsError("CPF", cpf);
     }
 
+    const roles: Role[] = role === "PRODUCER" ? ["USER", "PRODUCER"] : ["USER"];
+
     const user = User.create({
       first_name,
       last_name,
       cpf,
       email,
       phone,
-      roles: ["USER"],
+      roles,
     });
 
     if (password) {

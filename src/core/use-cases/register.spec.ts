@@ -45,6 +45,7 @@ describe("register", () => {
       first_name: "John",
       last_name: "Doe",
       cpf: "523.065.281-01",
+      role: "USER"
     });
 
     expect(repositories.users.items[0]).toBeInstanceOf(User);
@@ -57,6 +58,7 @@ describe("register", () => {
       first_name: "John",
       last_name: "Doe",
       cpf: "523.065.281-01",
+      role: "USER"
     });
 
     expect(repositories.users.items[0]).toBeInstanceOf(User);
@@ -78,6 +80,7 @@ describe("register", () => {
         first_name: "Rodrigo",
         last_name: "Goes",
         cpf: "523.065.281-02",
+        role: "USER"
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
@@ -97,6 +100,7 @@ describe("register", () => {
         first_name: "Rodrigo",
         last_name: "Goes",
         cpf: "523.065.281-02",
+        role: "USER"
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
@@ -116,6 +120,7 @@ describe("register", () => {
         first_name: "Rodrigo",
         last_name: "Goes",
         cpf,
+        role: "USER"
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
@@ -130,6 +135,7 @@ describe("register", () => {
       first_name: "John",
       last_name: "Doe",
       cpf: "523.065.281-01",
+      role: "USER"
     });
 
     expect(repositories.users.items[0].password === password).toBeFalsy;

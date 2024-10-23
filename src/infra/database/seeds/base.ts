@@ -72,7 +72,7 @@ async function seed() {
         name: "Farm do CDD",
         caf: "12345678",
         tax: 20,
-        active: true,
+        status: "ACTIVE",
         admin_id: cddId.value,
         catalogs: {
           create: {
