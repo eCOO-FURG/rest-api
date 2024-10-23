@@ -34,10 +34,14 @@ import { openPaymentController } from "@/infra/http/controllers/open-payment";
 import { registerPaymentController } from "@/infra/http/controllers/register-payment";
 import { updatePaymentController } from "@/infra/http/controllers/update-payment";
 
+// Webhooks
+import { openPixWebhookListener } from "@/infra/http/webooks/open-pix";
+
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
 import { ensureFarmAdmin } from "@/infra/http/middlewares/ensure-farm-admin";
 import { ensureAdmin } from "@/infra/http/middlewares/ensure-admin";
+import { ensureIntegration } from "@/infra/http/middlewares/ensure-integration";
 
 export const router = Router();
 
@@ -170,3 +174,6 @@ router.patch(
   ensureAdmin,
   updatePaymentController
 );
+
+// Webhooks
+router.post("/webhooks/openpix", ensureIntegration, openPixWebhookListener);
