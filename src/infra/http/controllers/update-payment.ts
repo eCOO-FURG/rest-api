@@ -12,18 +12,29 @@ export const updatePaymentSchema = {
   params: z.object({
     payment_id: z.string().uuid(),
   }),
-  body: z.object({
-    status: z
-      .enum(["PENDING", "DONE", "FAILED"])
-      .optional()
-      .openapi({ type: "string" }),
-    method: z.enum(["CREDIT", "DEBIT", "CASH", "PIX"]).optional().openapi({
-      type: "string",
-    }),
-    flag: z.enum(["VISA", "MASTERCARD", "OTHER"]).optional().openapi({
-      type: "string",
-    }),
-  }),
+  body: z
+    .object({
+      status: z
+        .enum(["PENDING", "DONE", "FAILED"])
+        .optional()
+        .openapi({ type: "string" }),
+      method: z.enum(["CREDIT", "DEBIT", "CASH", "PIX"]).optional().openapi({
+        type: "string",
+      }),
+      flag: z.enum(["VISA", "MASTERCARD", "OTHER"]).optional().openapi({
+        type: "string",
+      }),
+    })
+    .refine(
+      ({ method, flag }) => {
+        if (method && ["CREDIT", "DEBIT"].includes(method)) return !!flag;
+        return true;
+      },
+      {
+        message: "Flag is required when method is CREDIT or DEBIT",
+        path: ["flag"],
+      }
+    ),
 };
 
 export async function updatePaymentController(
