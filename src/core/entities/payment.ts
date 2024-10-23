@@ -20,12 +20,24 @@ export class Payment extends Entity<PaymentProps> {
     return this.props.method;
   }
 
+  set method(method: PaymentProps["method"]) {
+    this.props.method = method;
+  }
+
   get status() {
     return this.props.status;
   }
 
+  set status(status: PaymentProps["status"]) {
+    this.props.status = status;
+  }
+
   get flag() {
     return this.props.flag;
+  }
+
+  set flag(flag: PaymentProps["flag"]) {
+    this.props.flag = flag;
   }
 
   get expires_at() {

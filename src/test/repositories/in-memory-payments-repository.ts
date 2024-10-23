@@ -97,4 +97,9 @@ export class InMemoryPaymentsRepository implements PaymentsRepository {
   async create(payment: Payment): Promise<void> {
     this.items.push(payment);
   }
+
+  async update(payment: Payment): Promise<void> {
+    const index = this.items.findIndex((item) => item.id.equals(payment.id));
+    this.items[index] = payment;
+  }
 }

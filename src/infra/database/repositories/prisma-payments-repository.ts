@@ -96,4 +96,11 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
       data: PrismaPaymentMapper.toPrisma(payment),
     });
   }
+
+  async update(payment: Payment) {
+    await prisma.payment.update({
+      where: { id: payment.id.value },
+      data: PrismaPaymentMapper.toPrisma(payment),
+    });
+  }
 }

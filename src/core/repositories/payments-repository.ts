@@ -32,4 +32,5 @@ export interface PaymentsRepository {
     type: T
   ): Promise<PaymentsRepositoryResponse<T>[]>;
   create(payment: Payment): Promise<void>;
+  update(payment: Payment): Promise<void>;
 }
