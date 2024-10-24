@@ -1,12 +1,9 @@
 // Repositories
-import { UsersRepository } from "@/core/repositories/users-repository";
+import { FarmsRepository } from "../repositories/farms-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
-// Services
-import { Encrypter } from "@/core/cryptography/encrypter";
-import { FarmsRepository } from "../repositories/farms-repository";
 
 interface UpdateFarmUseCaseRequest {
   farm_id: string;
@@ -21,10 +18,11 @@ export class UpdateFarmUseCase {
   ) { }
 
   async execute(props: UpdateFarmUseCaseRequest) {
+
     const farm = await this.farmsRepository.findById(props.farm_id);
 
     if (!farm) {
-      throw new ResourceNotFoundError("Usuário", props.farm_id);
+      throw new ResourceNotFoundError("Fazenda", props.farm_id);
     }
 
     for (const field in props) {

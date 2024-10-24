@@ -30,6 +30,7 @@ import { handleFarmStatusController } from "@/infra/http/controllers/handle-farm
 import { fetchCurrentBoxController } from "@/infra/http/controllers/fetch-current-box";
 import { fetchCurrentCatalogController } from "@/infra/http/controllers/fetch-current-catalog";
 import { requestPasswordUpdateController } from "@/infra/http/controllers/request-password-update";
+import { updateFarmController } from "../controllers/update-farm";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -62,7 +63,7 @@ router.patch(
   "/farms/update/:farm_id",
   ensureAuthenticated,
   ensureAdmin,
-  handleFarmStatusController
+  updateFarmController
 );
 
 // Pedidos

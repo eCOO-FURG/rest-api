@@ -30,6 +30,7 @@ import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
 import { HandleFarmStatusUseCase } from "@/core/use-cases/handle-farm-status";
 import { FetchCurrentCatalogUseCase } from "@/core/use-cases/fetch-current-catalog";
 import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
+import { UpdateFarmUseCase } from "@/core/use-cases/update-farm";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -64,6 +65,9 @@ export default (container: AwilixContainer) => {
     registerFarmUseCase: asFunction(
       ({ usersRepository, farmsRepository }) =>
         new RegisterFarmUseCase(usersRepository, farmsRepository)
+    ),
+    updateFarmUseCase: asFunction(({ farmsRepository }) =>
+        new UpdateFarmUseCase(farmsRepository)
     ),
     offerProductsUseCase: asFunction(
       ({

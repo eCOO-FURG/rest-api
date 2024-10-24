@@ -10,7 +10,6 @@ import { makeFarm } from "@/test/factories/make-farm";
 
 let repositories: {
   farms: InMemoryFarmsRepository;
-  users: InMemoryUsersRepository;
 };
 
 
@@ -19,9 +18,9 @@ let sut: UpdateFarmUseCase;
 
 describe("update user", () => {
   beforeEach(() => {
+    const users = new InMemoryUsersRepository();
     repositories = {
-      users: new InMemoryUsersRepository(),
-      farms: new InMemoryFarmsRepository(repositories.users),
+      farms: new InMemoryFarmsRepository(users),
     };
 
     sut = new UpdateFarmUseCase(repositories.farms);
