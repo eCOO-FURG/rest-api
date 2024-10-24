@@ -17,20 +17,6 @@ import { hash } from "bcryptjs";
 import { env } from "@/infra/env";
 
 async function seed() {
-  await Promise.all([
-    prisma.order.deleteMany(),
-    prisma.box.deleteMany(),
-    prisma.bag.deleteMany(),
-    prisma.offer.deleteMany(),
-    prisma.catalog.deleteMany(),
-    prisma.cycle.deleteMany(),
-    prisma.product.deleteMany(),
-
-    prisma.otp.deleteMany(),
-    prisma.session.deleteMany(),
-  ]);
-  await prisma.farm.deleteMany(), await prisma.user.deleteMany();
-
   const cddId = new UUID();
 
   await prisma.user.create({

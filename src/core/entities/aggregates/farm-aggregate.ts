@@ -29,7 +29,7 @@ export class FarmAggregate extends Entity<FarmAggregateProps> {
   }
 
   static create(props: FarmAggregateProps) {
-    const bag = new FarmAggregate(props);
-    return bag;
+    const farm = new FarmAggregate(props);
+    return farm;
   }
 }

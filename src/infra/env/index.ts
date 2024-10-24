@@ -17,6 +17,8 @@ const deploy = z.object({
   ECOO_FALLBACK_EMAIL: z.string().min(1),
   ECOO_FALLBACK_EMAIL_PASSWORD: z.string().min(1),
   SENTRY_DSN: z.string().min(1),
+  PIX_PROVIDER_API_KEY: z.string().min(1),
+  INTEGRATIONS_AUTHORIZATION: z.string().min(1),
 });
 
 const development = deploy.omit({
@@ -24,6 +26,8 @@ const development = deploy.omit({
   SMTP_FALLBACK_HOST: true,
   ECOO_FALLBACK_EMAIL: true,
   ECOO_FALLBACK_EMAIL_PASSWORD: true,
+  INTEGRATIONS_AUTHORIZATION: true,
+  PIX_PROVIDER_API_KEY: true,
 });
 
 const test = development.omit({

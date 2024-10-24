@@ -24,6 +24,10 @@ import { InvalidWeightError } from "@/core/errors/invalid-weight";
 
 // Utils
 import { mostPast } from "@/core/utils/most-past";
+import { currentDate } from "@/core/utils/current-date";
+
+// Services
+import { OtpProvider } from "@/core/cryptography/otp-provider";
 
 interface OrderProductsUseCaseRequest {
   user_id: string;
@@ -58,7 +62,8 @@ export class OrderProductsUseCase {
     private catalogsRepository: CatalogsRepository,
     private bagsRepository: BagsRepository,
     private boxesRepository: BoxesRepository,
-    private addressesRepository: AddressesRepository
+    private addressesRepository: AddressesRepository,
+    private otpGenerator: OtpProvider
   ) {}
 
   async execute({
@@ -118,12 +123,11 @@ export class OrderProductsUseCase {
       if (item.amount > offer.amount)
         throw new UnavailableAmountError(offer.id.value);
 
-      if (
-        offer.product.pricing === "WEIGHT" &&
-        !this.orderedAmountIsLegal(item.amount)
-      ) {
+      const invalidAmount =
+        item.amount % 100 != 0 && offer.product.pricing === "WEIGHT";
+
+      if (invalidAmount)
         throw new InvalidWeightError("solicitado", offer.product.id.value);
-      }
 
       const box = await this.useBox(catalog.id);
 
@@ -181,7 +185,15 @@ export class OrderProductsUseCase {
 
     if (found) return found;
 
-    const bag = Bag.create({ user_id, cycle_id: cycle.id, address_id });
+    const date = currentDate();
+    const code = await this.otpGenerator.generate();
+
+    const bag = Bag.create({
+      user_id,
+      cycle_id: cycle.id,
+      address_id,
+      code: `${date}-${code}`,
+    });
 
     await this.bagsRepository.create(bag);
 
@@ -201,9 +213,5 @@ export class OrderProductsUseCase {
     await this.boxesRepository.create(box);
 
     return box;
-  }
-
-  private orderedAmountIsLegal(amount: number) {
-    return amount % 100 === 0;
   }
 }

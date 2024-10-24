@@ -72,7 +72,7 @@ enum FARM_STATUS {
 }
 
 model Farm {
-  id     String  @id @default(uuid())
+  id     String       @id @default(uuid())
   name   String
   counterfoil_number    String  @unique
   status FARM_STATUS? @default(PENDING)
@@ -191,6 +191,7 @@ enum BAG_STATUS {
 
 model Bag {
   id     String     @id @default(uuid())
+  code   String
   status BAG_STATUS
 
   user_id  String
@@ -205,9 +206,47 @@ model Bag {
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  orders Order[]
+  orders   Order[]
+  payments Payment[]
 
   @@map("bags")
+}
+
+enum PAYMENT_STATUS {
+  PENDING
+  DONE
+  FAILED
+}
+
+enum PAYMENT_METHOD {
+  CREDIT
+  DEBIT
+  CASH
+  PIX
+}
+
+enum PAYMENT_FLAG {
+  MASTERCARD
+  VISA
+  OTHER
+}
+
+model Payment {
+  id String @id @default(uuid())
+
+  status PAYMENT_STATUS
+  method PAYMENT_METHOD
+  flag   PAYMENT_FLAG?
+
+  expires_at DateTime?
+
+  bag_id String
+  bag    Bag    @relation(fields: [bag_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  @@map("payments")
 }
 
 enum BOX_STATUS {
