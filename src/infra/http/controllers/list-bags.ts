@@ -17,8 +17,9 @@ export const listBagsSchema = {
     cycle_id: z.string().uuid().openapi({ description: "Ciclo da busca." }),
     status: z
       .enum(["PENDING", "SEPARATED", "DISPATCHED", "RECEIVED", "CANCELLED", "DEFERRED"])
+      .array()
       .optional()
-      .openapi({ type: "string", description: "Filto de status." }),
+      .openapi({ type: "array", items: { type: "string" }, description: "Filtro de status." }),
     name: z
       .string()
       .optional()

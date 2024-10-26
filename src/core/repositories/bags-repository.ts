@@ -20,7 +20,7 @@ export interface BagsRepositorySearchManyRequest {
   cycle?: {
     id?: string;
   };
-  status?: Bag["status"];
+  status?: Bag["status"][];
   since?: Date;
 }
 

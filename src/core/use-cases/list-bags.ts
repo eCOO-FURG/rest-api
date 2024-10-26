@@ -14,7 +14,7 @@ import { Bag } from "@/core/entities/bag";
 interface ListBagsUseCaseRequest {
   cycle_id: string;
   page: number;
-  status?: Bag["status"];
+  status?: Bag["status"][];
   name?: string;
 }
 

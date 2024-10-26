@@ -87,7 +87,9 @@ export class PrismaBagsRepository implements BagsRepository {
   ): Promise<BagsRepositoryResponse<T>[]> {
     const where: Prisma.BagWhereInput = {
       cycle,
-      status,
+      status : {
+        in: status
+      },
       customer: {
         OR: [
           {
