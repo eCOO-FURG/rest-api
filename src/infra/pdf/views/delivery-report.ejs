@@ -279,14 +279,25 @@
                     Unidades:
                     <% } else if (order.offer.product.pricing==='WEIGHT' ) { %>
                       Peso:
-                      <%} %>
+                      <% } %>
                         <%= order.amount %>
-                          <% if (order.offer.product.pricing==='WEIGHT' ) { %>
-                            g
-                            <% } %><br>
-                              <% }); %>
+                          <% if (order.offer.product.pricing==='WEIGHT' ) { %>g
+                            <% } %>
+                              <br>
+                              Valor Unitário:
+                              R$<%= (order.offer.price).toLocaleString("pt-BR", { minimumFractionDigits: 2 }) %><br>
+                                Valor Total:
+                                <% if (order.offer.product.pricing==='UNIT' ) { %>
+                                  R$<%= (order.offer.price * order.amount).toLocaleString("pt-BR", {
+                                    minimumFractionDigits: 2 }) %>
+                                    <% } else if (order.offer.product.pricing==='WEIGHT' ) { %>
+                                      R$<%= (order.offer.price * order.amount / 1000).toLocaleString("pt-BR", {
+                                        minimumFractionDigits: 2 }) %>
+                                        <% } %>
+                                          <br>
+                                          <br>
+                                          <% }); %>
             </h5>
-
           </div>
           <div class="bag-info bag-info--pagamento">
             <p>Pagamento:</p>

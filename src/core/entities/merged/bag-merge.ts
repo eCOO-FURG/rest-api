@@ -72,7 +72,20 @@ export class BagMerge extends Entity<BagMergeProps> {
   }
 
   static create(props: BagMergeProps) {
-    const bag = new BagMerge(props);
+    const groupedOrders: { [key: string]: OrderMerge } = {};
+
+    for (const order of props.orders) {
+      const offerId = order.offer.id.value;
+      if (groupedOrders[offerId]) {
+        groupedOrders[offerId].props.amount += order.amount;
+      } else {
+        groupedOrders[offerId] = order;
+      }
+    }
+
+    const aggregatedOrders = Object.values(groupedOrders);
+
+    const bag = new BagMerge({ ...props, orders: aggregatedOrders });
     return bag;
   }
 }
