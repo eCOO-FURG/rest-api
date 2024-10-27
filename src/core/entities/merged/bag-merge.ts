@@ -39,9 +39,16 @@ export class BagMerge extends Entity<BagMergeProps> {
 
     let price = 0;
 
-    for (const order of orders) price += order.amount * order.offer.price;
+    for (const order of orders) {
+      const product = order.offer.product;
+      if (product.pricing === "UNIT") {
+        price += order.amount * order.offer.price;
+      } else if (product.pricing === "WEIGHT") {
+        price += (order.amount * order.offer.price) / 1000;
+      }
+    }
 
-    return price;
+    return price.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
   }
 
   paid() {
