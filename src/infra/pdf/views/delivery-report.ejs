@@ -249,7 +249,10 @@
       <div class="delivery-bag" style="page-break-inside: avoid">
         <div class="bag-header">
           <h3>
-            <%= bag.address %>
+            <%= bag.address.street %>,
+              <%= bag.address.number %>,
+                <%= bag.address.complement %> -
+                  <%= bag.address.postal_code %>
           </h3>
           <!-- <p>CEP: 91350-190</p> -->
         </div>
