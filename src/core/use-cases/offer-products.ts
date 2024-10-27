@@ -82,7 +82,7 @@ export class OfferProductsUseCase {
         throw new ResourceAlreadyExistsError("Oferta do produto", product_id);
     }
 
-    if (product.pricing === "WEIGHT" && amount % 100 !== 0)
+    if (product.pricing === "WEIGHT" && amount % 1000 !== 0)
       throw new InvalidWeightError("ofertado", product_id);
 
     const offer = Offer.create({

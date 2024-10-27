@@ -124,7 +124,7 @@ export class OrderProductsUseCase {
         throw new UnavailableAmountError(offer.id.value);
 
       const invalidAmount =
-        item.amount % 100 != 0 && offer.product.pricing === "WEIGHT";
+        item.amount % 500 != 0 && offer.product.pricing === "WEIGHT";
 
       if (invalidAmount)
         throw new InvalidWeightError("solicitado", offer.product.id.value);
