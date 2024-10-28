@@ -16,8 +16,8 @@ export class FarmAggregate extends Entity<FarmAggregateProps> {
     return this.props.caf;
   }
 
-  get active() {
-    return this.props.active;
+  get status() {
+    return this.props.status;
   }
 
   get admin() {
@@ -29,7 +29,7 @@ export class FarmAggregate extends Entity<FarmAggregateProps> {
   }
 
   static create(props: FarmAggregateProps) {
-    const bag = new FarmAggregate(props);
-    return bag;
+    const farm = new FarmAggregate(props);
+    return farm;
   }
 }

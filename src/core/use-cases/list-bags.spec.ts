@@ -10,6 +10,10 @@ import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalo
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
+import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
+
+// Entities
+import { BagMerge } from "@/core/entities/merged/bag-merge";
 
 // Factories
 import { makeBag } from "@/test/factories/make-bag";
@@ -18,9 +22,6 @@ import { makeUser } from "@/test/factories/make-user";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
-// Entities
-import { BagMerge } from "@/core/entities/merged/bag-merge";
-
 let usersRepository: InMemoryUsersRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
@@ -28,6 +29,7 @@ let ordersRepository: InMemoryOrdersRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
 let farmsRepository: InMemoryFarmsRepository;
 let addressesRepository: InMemoryAddressesRepository;
+let paymentsRepository: InMemoryPaymentsRepository;
 
 let repositories: {
   bags: InMemoryBagsRepository;
@@ -52,12 +54,13 @@ describe("list user bags", () => {
     offersRepository.inMemoryCatalogsRepository = catalogsRepository;
     ordersRepository = new InMemoryOrdersRepository(offersRepository);
     addressesRepository = new InMemoryAddressesRepository();
-
+    paymentsRepository = new InMemoryPaymentsRepository();
     repositories = {
       bags: new InMemoryBagsRepository(
         usersRepository,
         ordersRepository,
-        addressesRepository
+        addressesRepository,
+        paymentsRepository
       ),
     };
 

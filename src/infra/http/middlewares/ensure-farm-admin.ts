@@ -23,12 +23,10 @@ export async function ensureFarmAdmin(
   );
 
   if (!farm) {
-    return response
-      .status(403)
-      .send({
-        message: "Não é um administrador de agronegócio.",
-        code: "not-farm-admin",
-      });
+    return response.status(401).send({
+      message: "Não é um administrador de agronegócio.",
+      code: "not-farm-admin",
+    });
   }
 
   request.farm_id = farm.id.value;

@@ -31,6 +31,9 @@ import { HandleFarmStatusUseCase } from "@/core/use-cases/handle-farm-status";
 import { FetchCurrentCatalogUseCase } from "@/core/use-cases/fetch-current-catalog";
 import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
 import { ListBagsUseCase } from "@/core/use-cases/list-bags";
+import { OpenPaymentUseCase } from "@/core/use-cases/open-payment";
+import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
+import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -110,6 +113,7 @@ export default (container: AwilixContainer) => {
         bagsRepository,
         boxesRepository,
         addressesRepository,
+        otpProvider,
       }) =>
         new OrderProductsUseCase(
           usersRepository,
@@ -119,7 +123,8 @@ export default (container: AwilixContainer) => {
           catalogsRepository,
           bagsRepository,
           boxesRepository,
-          addressesRepository
+          addressesRepository,
+          otpProvider
         )
     ),
     fetchProfileUseCase: asFunction(
@@ -201,11 +206,22 @@ export default (container: AwilixContainer) => {
           catalogsRepository
         )
     ),
+    listUserBagsUseCase: asFunction(
+      ({ bagsRepository }) => new ListBagsUseCase(bagsRepository)
+    ),
     requestPasswordUpdateUseCase: asFunction(
       ({ usersRepository }) => new RequestPasswordUpdateUseCase(usersRepository)
     ),
-    listUserBagsUseCase: asFunction(
-      ({ bagsRepository }) => new ListBagsUseCase(bagsRepository)
+    openPaymentUseCase: asFunction(
+      ({ bagsRepository, paymentsRepository, pixProvider }) =>
+        new OpenPaymentUseCase(bagsRepository, paymentsRepository, pixProvider)
+    ),
+    registerPaymentUseCase: asFunction(
+      ({ bagsRepository, paymentsRepository }) =>
+        new RegisterPaymentUseCase(bagsRepository, paymentsRepository)
+    ),
+    updatePaymentUseCase: asFunction(
+      ({ paymentsRepository }) => new UpdatePaymentUseCase(paymentsRepository)
     ),
   });
 };

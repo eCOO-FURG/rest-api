@@ -2,12 +2,18 @@
 import { Entity } from "@/core/entities/entity";
 import { BagAggregateProps } from "@/core/entities/aggregates/bag-aggregate";
 import { OrderMerge } from "@/core/entities/merged/order-merge";
+import { Payment } from "@/core/entities/payment";
 
 interface BagMergeProps extends BagAggregateProps {
   orders: OrderMerge[];
+  payments: Payment[];
 }
 
 export class BagMerge extends Entity<BagMergeProps> {
+  get code() {
+    return this.props.code;
+  }
+
   get user() {
     return this.props.user;
   }
@@ -36,6 +42,26 @@ export class BagMerge extends Entity<BagMergeProps> {
     for (const order of orders) price += order.amount * order.offer.price;
 
     return price;
+  }
+
+  paid() {
+    const payments = this.props.payments;
+
+    const done = payments.some((payment) => payment.status === "DONE");
+
+    return done;
+  }
+
+  open() {
+    const payments = this.props.payments;
+
+    const pending = payments.find(
+      (payment) => payment.status === "PENDING" && !payment.expired
+    );
+
+    if (!pending) return null;
+
+    return pending;
   }
 
   static create(props: BagMergeProps) {

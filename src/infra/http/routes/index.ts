@@ -32,11 +32,18 @@ import { fetchCurrentCatalogController } from "@/infra/http/controllers/fetch-cu
 import { requestPasswordUpdateController } from "@/infra/http/controllers/request-password-update";
 import { fetchUserBagController } from "@/infra/http/controllers/fetch-user-bag";
 import { listUserBagsController } from "@/infra/http/controllers/list-user-bags";
+import { openPaymentController } from "@/infra/http/controllers/open-payment";
+import { registerPaymentController } from "@/infra/http/controllers/register-payment";
+import { updatePaymentController } from "@/infra/http/controllers/update-payment";
+
+// Webhooks
+import { openPixWebhookListener } from "@/infra/http/webooks/open-pix";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
 import { ensureFarmAdmin } from "@/infra/http/middlewares/ensure-farm-admin";
 import { ensureAdmin } from "@/infra/http/middlewares/ensure-admin";
+import { ensureIntegration } from "@/infra/http/middlewares/ensure-integration";
 
 export const router = Router();
 
@@ -161,3 +168,21 @@ router.get(
   ensureFarmAdmin,
   listProductsController
 );
+
+// Pagamentos
+router.post(
+  "/payments",
+  ensureAuthenticated,
+  ensureAdmin,
+  registerPaymentController
+);
+router.post("/payments/open", ensureAuthenticated, openPaymentController);
+router.patch(
+  "/payments/:payment_id",
+  ensureAuthenticated,
+  ensureAdmin,
+  updatePaymentController
+);
+
+// Webhooks
+router.post("/webhooks/openpix", ensureIntegration, openPixWebhookListener);

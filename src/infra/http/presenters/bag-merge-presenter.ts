@@ -10,6 +10,8 @@ export class BagMergePresenter {
   static toHttp(bag: BagMerge) {
     return {
       id: bag.id.value,
+      paid: bag.paid(),
+      price: bag.price(),
       status: bag.status,
       cycle_id: bag.cycle_id.value,
       address: AddressPresenter.toHttp(bag.address),

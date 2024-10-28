@@ -11,6 +11,10 @@ export interface BagAggregateProps
 }
 
 export class BagAggregate extends Entity<BagAggregateProps> {
+  get code() {
+    return this.props.code;
+  }
+
   get user() {
     return this.props.user;
   }

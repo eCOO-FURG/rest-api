@@ -30,6 +30,10 @@ import { InMemoryBoxesRepository } from "@/test/repositories/in-memory-boxes-rep
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
+import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
+
+// Services
+import { MockedOtpProvider } from "@/test/cryptography/mocked-otp-provider";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
@@ -39,6 +43,9 @@ let offersRepository: InMemoryOffersRepository;
 let ordersRepository: InMemoryOrdersRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
 let addressesRepository: InMemoryAddressesRepository;
+let paymentsRepository: InMemoryPaymentsRepository;
+
+let otpProvider: MockedOtpProvider;
 
 let repositories: {
   users: InMemoryUsersRepository;
@@ -73,7 +80,7 @@ describe("order product", () => {
     ordersRepository = new InMemoryOrdersRepository(offersRepository);
     farmsRepository = new InMemoryFarmsRepository(usersRepository);
     addressesRepository = new InMemoryAddressesRepository();
-
+    paymentsRepository = new InMemoryPaymentsRepository();
     repositories = {
       users: usersRepository,
       products: productsRepository,
@@ -82,13 +89,16 @@ describe("order product", () => {
       bags: new InMemoryBagsRepository(
         usersRepository,
         ordersRepository,
-        addressesRepository
+        addressesRepository,
+        paymentsRepository
       ),
       cycles: cyclesRepository,
       catalogs: catalogsRepository,
       boxes: new InMemoryBoxesRepository(catalogsRepository, ordersRepository),
       addresses: addressesRepository,
     };
+
+    otpProvider = new MockedOtpProvider();
 
     sut = new OrderProductsUseCase(
       repositories.users,
@@ -98,7 +108,8 @@ describe("order product", () => {
       repositories.catalogs,
       repositories.bags,
       repositories.boxes,
-      repositories.addresses
+      repositories.addresses,
+      otpProvider
     );
   });
 
@@ -109,7 +120,7 @@ describe("order product", () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
-    const product = makeProduct();
+    const product = makeProduct({ pricing: "UNIT" });
     await repositories.products.create(product);
 
     const catalog = makeCatalog({ cycle_id: cycle.id });
@@ -151,7 +162,7 @@ describe("order product", () => {
     const product = makeProduct();
     await repositories.products.create(product);
 
-    const address = makeAddress({});
+    const address = makeAddress();
     await repositories.addresses.create(address);
 
     const bag = makeBag({
@@ -175,7 +186,12 @@ describe("order product", () => {
     await sut.execute({
       user_id: user.id.value,
       cycle_id: cycle.id.value,
-      address: { ...address.props },
+      address: {
+        street: address.street,
+        number: address.number,
+        neighborhood: address.neighborhood,
+        postal_code: address.postal_code,
+      },
       request: [{ offer_id: offer.id.value, amount: 5 }],
     });
 

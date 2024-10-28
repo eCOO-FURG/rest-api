@@ -12,7 +12,7 @@ export class FarmPresenter {
       id: farm.id.value,
       name: farm.name,
       caf: farm.caf,
-      active: farm.active,
+      status: farm.status,
       tax: farm.tax,
       admin,
       created_at: farm.created_at,

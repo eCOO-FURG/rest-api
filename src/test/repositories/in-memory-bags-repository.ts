@@ -16,14 +16,15 @@ import {
 import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
-
+import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
 export class InMemoryBagsRepository implements BagsRepository {
   items: Bag[] = [];
 
   constructor(
     private inMemoryUsersRepository: InMemoryUsersRepository,
     private inMemoryOrdersRepository: InMemoryOrdersRepository,
-    private inMemoryAddressesRepository: InMemoryAddressesRepository
+    private inMemoryAddressesRepository: InMemoryAddressesRepository,
+    private inMemoryPaymentsRepository: InMemoryPaymentsRepository
   ) {}
 
   async search<T extends RepositoryResponse = "entity">(
@@ -70,9 +71,15 @@ export class InMemoryBagsRepository implements BagsRepository {
       "merged"
     );
 
+    const payments = await this.inMemoryPaymentsRepository.searchMany(
+      { bag: { id: bag.id.value } },
+      "entity"
+    );
+
     const merged = BagMerge.create({
       ...aggreagate.props,
       orders,
+      payments,
     });
 
     return merged as BagsRepositoryResponse<T>;
@@ -144,9 +151,15 @@ export class InMemoryBagsRepository implements BagsRepository {
         "merged"
       );
 
+      const payments = await this.inMemoryPaymentsRepository.searchMany(
+        { bag: { id: aggregate.id.value } },
+        "entity"
+      );
+
       const merge = BagMerge.create({
         ...aggregate.props,
         orders,
+        payments,
       });
 
       merges.push(merge);
