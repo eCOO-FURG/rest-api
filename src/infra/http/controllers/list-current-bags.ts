@@ -43,11 +43,11 @@ export async function listCurrentBagsController(
       request.query
     );
 
-    const listBagsUsecase = container.resolve<ListCurrentBagsUseCase>(
+    const listCurrentBagsUseCase = container.resolve<ListCurrentBagsUseCase>(
       "listCurrentBagsUseCase"
     );
 
-    const { bags } = await listBagsUsecase.execute({
+    const { bags } = await listCurrentBagsUseCase.execute({
       cycle_id,
       page,
       name,

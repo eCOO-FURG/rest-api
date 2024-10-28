@@ -33,6 +33,7 @@ let paymentsRepository: InMemoryPaymentsRepository;
 
 let repositories: {
   bags: InMemoryBagsRepository;
+  users: InMemoryUsersRepository;
 };
 
 let sut: ListBagsUseCase;
@@ -62,9 +63,10 @@ describe("list user bags", () => {
         addressesRepository,
         paymentsRepository
       ),
+      users: usersRepository,
     };
 
-    sut = new ListBagsUseCase(repositories.bags);
+    sut = new ListBagsUseCase(repositories.bags, repositories.users);
   });
 
   it("should return a list of bags from an user", async () => {

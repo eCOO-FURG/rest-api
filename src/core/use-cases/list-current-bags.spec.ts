@@ -10,6 +10,7 @@ import { InMemoryProductsRepository } from "@/test/repositories/in-memory-produc
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
+import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
 
 // Entities
 import { BagMerge } from "@/core/entities/merged/bag-merge";
@@ -22,6 +23,7 @@ import { makeUser } from "@/test/factories/make-user";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+
 let usersRepository: InMemoryUsersRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
@@ -29,7 +31,8 @@ let ordersRepository: InMemoryOrdersRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
 let farmsRepository: InMemoryFarmsRepository;
 let addressesRepository: InMemoryAddressesRepository;
-
+let bagsRepository: InMemoryBagsRepository;
+let paymentsRepository: InMemoryPaymentsRepository;
 let repositories: {
   cycles: InMemoryCyclesRepository;
   bags: InMemoryBagsRepository;
@@ -54,14 +57,19 @@ describe("list bags", () => {
     offersRepository.inMemoryCatalogsRepository = catalogsRepository;
     ordersRepository = new InMemoryOrdersRepository(offersRepository);
     addressesRepository = new InMemoryAddressesRepository();
+    paymentsRepository = new InMemoryPaymentsRepository();
+    bagsRepository = new InMemoryBagsRepository(
+      usersRepository,
+      ordersRepository,
+      addressesRepository,
+      paymentsRepository
+    );
+
+    paymentsRepository.setBagsRepository(bagsRepository);
 
     repositories = {
       cycles: new InMemoryCyclesRepository(),
-      bags: new InMemoryBagsRepository(
-        usersRepository,
-        ordersRepository,
-        addressesRepository
-      ),
+      bags: bagsRepository,
     };
 
     sut = new ListCurrentBagsUseCase(repositories.cycles, repositories.bags);

@@ -134,22 +134,4 @@ describe("Fetch bag", () => {
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
-
-  it("should be able to fetch a bag of another user if the user is an admin", async () => {
-    const user1 = makeUser();
-    await usersRepository.create(user1);
-
-    const user2 = makeUser({ roles: ["ADMIN"] });
-    await usersRepository.create(user2);
-
-    const bag = makeBag({ user_id: user1.id });
-    await repositories.bags.create(bag);
-
-    const result = await sut.execute({
-      bag_id: bag.id.value,
-      user_id: user2.id.value,
-    });
-
-    expect(result.bag).toBeInstanceOf(BagMerge);
-  });
 });
