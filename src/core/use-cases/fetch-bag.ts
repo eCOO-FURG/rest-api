@@ -4,7 +4,6 @@ import { UsersRepository } from "@/core/repositories/users-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { UnauthorizedError } from "@/core/errors/unauthorized";
 
 interface FetchBagUseCaseRequest {
   bag_id: string;
@@ -19,10 +18,9 @@ export class FetchBagUseCase {
 
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 
-    if (user_id && !bag.user.id.equals(user_id)) throw new UnauthorizedError();
+    if (user_id && !bag.user.id.equals(user_id))
+      throw new ResourceNotFoundError("Sacola", bag_id);
 
-    return {
-      bag,
-    };
+    return { bag };
   }
 }

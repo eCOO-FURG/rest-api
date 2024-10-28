@@ -23,7 +23,6 @@ import { deleteOfferSchema } from "@/infra/http/controllers/delete-offer";
 import { searchCatalogsSchema } from "@/infra/http/controllers/search-catalogs";
 import { fetchCatalogsSchema } from "@/infra/http/controllers/fetch-catalog";
 import { fetchLastCatalogSchema } from "@/infra/http/controllers/fetch-last-catalog";
-import { listBagsSchema } from "@/infra/http/controllers/list-bags";
 import { fetchBagSchema } from "@/infra/http/controllers/fetch-bag";
 import { handleBagSchema } from "@/infra/http/controllers/handle-bag";
 import { printDeliveriesReportSchema } from "@/infra/http/controllers/print-deliveries-report";
@@ -31,6 +30,8 @@ import { listProductSchema } from "@/infra/http/controllers/list-products";
 import { fetchCurrentBoxSchema } from "@/infra/http/controllers/fetch-current-box";
 import { requestPasswordUpdateSchema } from "@/infra/http/controllers/request-password-update";
 import { fetchCurrentCatalogSchema } from "@/infra/http/controllers/fetch-current-catalog";
+import { fetchUserBagSchema } from "@/infra/http/controllers/fetch-user-bag";
+import { listCurrentBagsSchema } from "@/infra/http/controllers/list-current-bags";
 import { listUserBagsSchema } from "@/infra/http/controllers/list-user-bags";
 
 const tags = {
@@ -362,18 +363,18 @@ const docs = createDocument({
     },
 
     // Sacolas
-    "/bags": {
+    "/admin/bags/current": {
       get: {
         tags: [tags.bags],
         responses: {
           "200": { description: "Sacolas encontradas com sucesso" },
           "404": { description: "Ciclo não encontrado: cycle-not-found" },
         },
-        description: "Lista sacolas.",
-        ...SwaggerMapper.toDocs(listBagsSchema),
+        description: "Lista sacolas do período atual de um ciclo.",
+        ...SwaggerMapper.toDocs(listCurrentBagsSchema),
       },
     },
-    "/bags/{bag_id}": {
+    "/admin/bags/{bag_id}": {
       get: {
         tags: [tags.bags],
         responses: {
@@ -386,14 +387,14 @@ const docs = createDocument({
       patch: {
         tags: [tags.bags],
         responses: {
-          "200": { description: "Sacola atualizada com sucesso" },
+          "200": { description: "200 OK" },
           "404": { description: "Sacola não encontrada: bag-not-found" },
         },
         description: "Atualiza o status de uma sacola.",
         ...SwaggerMapper.toDocs(handleBagSchema),
       },
     },
-    "/bags/report/{cycle_id}": {
+    "/admin/bags/report/{cycle_id}": {
       get: {
         tags: [tags.bags],
         responses: {
@@ -412,6 +413,14 @@ const docs = createDocument({
         responses: { "200": { description: "200 OK" } },
         description: "Lista as sacolas do usuário a partir da data fornecida.",
         ...SwaggerMapper.toDocs(listUserBagsSchema),
+      },
+    },
+    "/me/bags/{bag_id}": {
+      get: {
+        tags: [tags.bags],
+        responses: { "200": { description: "200 OK" } },
+        description: "Busca as informações de uma sacola.",
+        ...SwaggerMapper.toDocs(fetchUserBagSchema),
       },
     },
 

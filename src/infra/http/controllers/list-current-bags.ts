@@ -6,17 +6,24 @@ import { z } from "zod";
 import container from "@/infra/container";
 
 // Use-cases
-import { ListBagsUseCase } from "@/core/use-cases/list-bags";
+import { ListCurrentBagsUseCase } from "@/core/use-cases/list-current-bags";
 
 // Presenters
 import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 
-export const listBagsSchema = {
+export const listCurrentBagsSchema = {
   query: z.object({
     page: z.coerce.number().openapi({ description: "Página da listagem." }),
     cycle_id: z.string().uuid().openapi({ description: "Ciclo da busca." }),
     status: z
-      .enum(["PENDING", "SEPARATED", "DISPATCHED", "RECEIVED", "CANCELLED", "DEFERRED"])
+      .enum([
+        "PENDING",
+        "SEPARATED",
+        "DISPATCHED",
+        "RECEIVED",
+        "CANCELLED",
+        "DEFERRED",
+      ])
       .optional()
       .openapi({ type: "string", description: "Filto de status." }),
     name: z
@@ -26,18 +33,19 @@ export const listBagsSchema = {
   }),
 };
 
-export async function listBagsController(
+export async function listCurrentBagsController(
   request: Request,
   response: Response,
   next: NextFunction
 ) {
   try {
-    const { cycle_id, page, name, status } = listBagsSchema.query.parse(
+    const { cycle_id, page, name, status } = listCurrentBagsSchema.query.parse(
       request.query
     );
 
-    const listBagsUsecase =
-      container.resolve<ListBagsUseCase>("listBagsUseCase");
+    const listBagsUsecase = container.resolve<ListCurrentBagsUseCase>(
+      "listCurrentBagsUseCase"
+    );
 
     const { bags } = await listBagsUsecase.execute({
       cycle_id,

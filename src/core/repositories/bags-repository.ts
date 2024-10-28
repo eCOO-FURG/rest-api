@@ -16,14 +16,13 @@ export interface BagsRepositorySearchRequest {
 
 export interface BagsRepositorySearchManyRequest {
   page?: number;
-  name?: string;
   cycle?: {
     id?: string;
   };
   status?: Bag["status"];
   since?: Date;
   before?: Date;
-  user?: { id?: string };
+  user?: { id?: string; name?: string };
 }
 
 export type BagsRepositoryResponse<T extends RepositoryResponse> =

@@ -81,7 +81,6 @@ export class InMemoryBagsRepository implements BagsRepository {
   async searchMany<T extends RepositoryResponse = "entity">(
     {
       cycle,
-      name,
       page,
       since,
       before,
@@ -97,13 +96,13 @@ export class InMemoryBagsRepository implements BagsRepository {
         (!before || item.created_at <= before) &&
         (!status || status === item.status) &&
         (!user?.id || item.user_id.equals(user.id)) &&
-        (!name ||
+        (!user?.name ||
           (() =>
             this.inMemoryUsersRepository.items.find(
-              (user) =>
-                (user.first_name.includes(name) ||
-                  user.last_name.includes(name)) &&
-                user.id.equals(item.user_id)
+              (_user) =>
+                (_user.first_name.includes(user.name!) ||
+                  _user.last_name.includes(user.name!)) &&
+                _user.id.equals(item.user_id)
             ))())
     );
 

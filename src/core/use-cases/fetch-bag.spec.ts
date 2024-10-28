@@ -21,12 +21,10 @@ import { makeFarm } from "@/test/factories/make-farm";
 import { makeCatalog } from "@/test/factories/make-catalog";
 
 // Entities
-import { OrderAggregate } from "@/core/entities/aggregates/order-aggregate";
 import { BagMerge } from "@/core/entities/merged/bag-merge";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { UnauthorizedError } from "@/core/errors/unauthorized";
 
 let usersRepository: InMemoryUsersRepository;
 let productsRepository: InMemoryProductsRepository;
@@ -70,7 +68,7 @@ describe("Fetch bag", () => {
       ),
     };
 
-    sut = new FetchBagUseCase(repositories.bags, usersRepository);
+    sut = new FetchBagUseCase(repositories.bags);
   });
 
   it("should be able to fetch a user bag", async () => {
@@ -101,7 +99,6 @@ describe("Fetch bag", () => {
     });
 
     expect(result.bag).toBeInstanceOf(BagMerge);
-    expect(result.bag.orders).toBeInstanceOf(Array<OrderAggregate>);
     expect(result.bag.orders.length).toBe(1);
   });
 
@@ -132,7 +129,7 @@ describe("Fetch bag", () => {
         bag_id: bag.id.value,
         user_id: user2.id.value,
       })
-    ).rejects.toBeInstanceOf(UnauthorizedError);
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
   it("should be able to fetch a bag of another user if the user is an admin", async () => {

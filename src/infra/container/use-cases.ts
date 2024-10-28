@@ -15,7 +15,7 @@ import { ListCyclesUseCase } from "@/core/use-cases/list-cycles";
 import { ListProductsUsecase } from "@/core/use-cases/list-products";
 import { HandleBagUseCase } from "@/core/use-cases/handle-bag";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
-import { ListBagsUseCase } from "@/core/use-cases/list-bags";
+import { ListCurrentBagsUseCase } from "@/core/use-cases/list-current-bags";
 import { PrintDeliveriesReportUseCase } from "@/core/use-cases/print-deliveries-report";
 import { HandleBoxStatusUseCase } from "@/core/use-cases/handle-box-status";
 import { FetchProfileUseCase } from "@/core/use-cases/fetch-profile";
@@ -30,7 +30,7 @@ import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
 import { HandleFarmStatusUseCase } from "@/core/use-cases/handle-farm-status";
 import { FetchCurrentCatalogUseCase } from "@/core/use-cases/fetch-current-catalog";
 import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
-import { ListUserBagsUseCase } from "@/core/use-cases/list-user-bags";
+import { ListBagsUseCase } from "@/core/use-cases/list-bags";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -161,12 +161,11 @@ export default (container: AwilixContainer) => {
       ({ bagsRepository }) => new HandleBagUseCase(bagsRepository)
     ),
     fetchBagUseCase: asFunction(
-      ({ bagsRepository, usersRepository }) =>
-        new FetchBagUseCase(bagsRepository, usersRepository)
+      ({ bagsRepository }) => new FetchBagUseCase(bagsRepository)
     ),
-    listBagsUseCase: asFunction(
+    listCurrentBagsUseCase: asFunction(
       ({ cyclesRepository, bagsRepository }) =>
-        new ListBagsUseCase(cyclesRepository, bagsRepository)
+        new ListCurrentBagsUseCase(cyclesRepository, bagsRepository)
     ),
     fetchLastCatalogUseCase: asFunction(
       ({ cyclesRepository, farmsRepository, catalogsRepository }) =>
@@ -206,8 +205,7 @@ export default (container: AwilixContainer) => {
       ({ usersRepository }) => new RequestPasswordUpdateUseCase(usersRepository)
     ),
     listUserBagsUseCase: asFunction(
-      ({ bagsRepository, usersRepository }) =>
-        new ListUserBagsUseCase(bagsRepository, usersRepository)
+      ({ bagsRepository }) => new ListBagsUseCase(bagsRepository)
     ),
   });
 };

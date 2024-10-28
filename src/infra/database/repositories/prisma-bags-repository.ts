@@ -84,7 +84,6 @@ export class PrismaBagsRepository implements BagsRepository {
     {
       page,
       cycle,
-      name,
       since,
       before,
       status,
@@ -96,21 +95,19 @@ export class PrismaBagsRepository implements BagsRepository {
       cycle,
       status,
       customer: {
+        id: user?.id,
         OR: [
           {
             first_name: {
-              contains: name ?? "",
+              contains: user?.name ?? "",
               mode: "insensitive",
             },
           },
           {
             last_name: {
-              contains: name ?? "",
+              contains: user?.name ?? "",
               mode: "insensitive",
             },
-          },
-          {
-            id: user?.id,
           },
         ],
       },

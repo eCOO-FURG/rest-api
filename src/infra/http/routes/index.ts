@@ -19,7 +19,7 @@ import { searchCatalogsController } from "@/infra/http/controllers/search-catalo
 import { fetchCatalogController } from "@/infra/http/controllers/fetch-catalog";
 import { listProductsController } from "@/infra/http/controllers/list-products";
 import { printDeliveriesReportController } from "@/infra/http/controllers/print-deliveries-report";
-import { listBagsController } from "@/infra/http/controllers/list-bags";
+import { listCurrentBagsController } from "@/infra/http/controllers/list-current-bags";
 import { fetchBagController } from "@/infra/http/controllers/fetch-bag";
 import { handleBagController } from "@/infra/http/controllers/handle-bag";
 import { handleBoxStatusController } from "@/infra/http/controllers/handle-box-status";
@@ -30,9 +30,8 @@ import { handleFarmStatusController } from "@/infra/http/controllers/handle-farm
 import { fetchCurrentBoxController } from "@/infra/http/controllers/fetch-current-box";
 import { fetchCurrentCatalogController } from "@/infra/http/controllers/fetch-current-catalog";
 import { requestPasswordUpdateController } from "@/infra/http/controllers/request-password-update";
-import { listUserBagsController } from "@/infra/http/controllers/list-user-bags";
 import { fetchUserBagController } from "@/infra/http/controllers/fetch-user-bag";
-import { listBagsByUserController } from "@/infra/http/controllers/list-bags-by-user";
+import { listUserBagsController } from "@/infra/http/controllers/list-user-bags";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -125,33 +124,32 @@ router.get(
 );
 
 // Sacolas
-router.get("/bags", ensureAuthenticated, ensureAdmin, listBagsController);
 router.get(
-  "/bags/:bag_id",
+  "/admin/bags/current",
+  ensureAuthenticated,
+  ensureAdmin,
+  listCurrentBagsController
+);
+router.get(
+  "/admin/bags/:bag_id",
   ensureAuthenticated,
   ensureAdmin,
   fetchBagController
 );
-router.get("/me/bags/:bag_id", ensureAuthenticated, fetchUserBagController);
 router.get(
-  "/bags/report/:cycle_id",
+  "/admin/bags/report/:cycle_id",
   ensureAuthenticated,
   ensureAdmin,
   printDeliveriesReportController
 );
 router.patch(
-  "/bags/:bag_id",
+  "/admin/bags/:bag_id",
   ensureAuthenticated,
   ensureAdmin,
   handleBagController
 );
+router.get("/me/bags/:bag_id", ensureAuthenticated, fetchUserBagController);
 router.get("/me/bags", ensureAuthenticated, listUserBagsController);
-router.get(
-  "/bags/user/:user_id",
-  ensureAuthenticated,
-  ensureAdmin,
-  listBagsByUserController
-);
 
 // Ciclos
 router.get("/cycles", listCyclesController);

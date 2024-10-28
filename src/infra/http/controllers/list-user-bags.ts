@@ -6,7 +6,7 @@ import { z } from "zod";
 import container from "@/infra/container";
 
 // Use-cases
-import { ListUserBagsUseCase } from "@/core/use-cases/list-user-bags";
+import { ListBagsUseCase } from "@/core/use-cases/list-bags";
 
 // Presenters
 import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
@@ -18,18 +18,27 @@ export const listUserBagsSchema = {
   query: z.object({
     page: z.coerce.number().openapi({ description: "Página da listagem." }),
   }),
-  body: z.object({
-    since: z
-      .string()
-      .regex(/^\d{2}-\d{2}-\d{4}$/)
-      .optional()
-      .openapi({ description: "Bags criadas a partir dessa data." }),
-    before: z
-      .string()
-      .regex(/^\d{2}-\d{2}-\d{4}$/)
-      .optional()
-      .openapi({ description: "Bags criadas antes dessa data." }),
-  }),
+  body: z
+    .object({
+      since: z
+        .string()
+        .regex(/^\d{2}-\d{2}-\d{4}$/)
+        .optional()
+        .openapi({ description: "Bags criadas a partir dessa data." }),
+      before: z
+        .string()
+        .regex(/^\d{2}-\d{2}-\d{4}$/)
+        .optional()
+        .openapi({ description: "Bags criadas antes dessa data." }),
+    })
+    .refine(
+      ({ since, before }) =>
+        since && before && toDate(since)! > toDate(before)!,
+      {
+        message: "A data 'since' não pode ser depois da data do 'before'.",
+        path: ["since", "before"],
+      }
+    ),
 };
 
 export async function listUserBagsController(
@@ -41,24 +50,13 @@ export async function listUserBagsController(
     const { page } = listUserBagsSchema.query.parse(request.query);
     const { since, before } = listUserBagsSchema.body.parse(request.body);
 
-    const sinceDate = toDate(since);
-    const beforeDate = toDate(before);
+    const listBagsUseCase =
+      container.resolve<ListBagsUseCase>("listBagsUseCase");
 
-    if (sinceDate && beforeDate && sinceDate > beforeDate) {
-      return response.status(422).send({
-        error: "A data 'since' não pode ser depois da data do 'before'.",
-      });
-    }
-
-    const listUserBagsUsecase = container.resolve<ListUserBagsUseCase>(
-      "listUserBagsUseCase"
-    );
-
-    console.log("User ID:", request.user_id);
-    const { bags } = await listUserBagsUsecase.execute({
+    const { bags } = await listBagsUseCase.execute({
       user_id: request.user_id,
-      since: sinceDate,
-      before: beforeDate,
+      since: toDate(since),
+      before: toDate(before),
       page,
     });
 
