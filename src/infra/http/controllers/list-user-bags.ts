@@ -15,11 +15,9 @@ import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 import { toDate } from "@/infra/utils/to-date";
 
 export const listUserBagsSchema = {
-  query: z.object({
-    page: z.coerce.number().openapi({ description: "Página da listagem." }),
-  }),
-  body: z
+  query: z
     .object({
+      page: z.coerce.number().openapi({ description: "Página da listagem." }),
       since: z
         .string()
         .regex(/^\d{2}-\d{2}-\d{4}$/)
@@ -47,8 +45,9 @@ export async function listUserBagsController(
   next: NextFunction
 ) {
   try {
-    const { page } = listUserBagsSchema.query.parse(request.query);
-    const { since, before } = listUserBagsSchema.body.parse(request.body);
+    const { page, since, before } = listUserBagsSchema.query.parse(
+      request.query
+    );
 
     const listBagsUseCase =
       container.resolve<ListBagsUseCase>("listBagsUseCase");
