@@ -15,7 +15,7 @@ export const listBagsSchema = {
   query: z.object({
     page: z.coerce.number().openapi({ description: "Página da listagem." }),
     cycle_id: z.string().uuid().openapi({ description: "Ciclo da busca." }),
-    status: z
+    statuses: z
       .enum(["PENDING", "SEPARATED", "DISPATCHED", "RECEIVED", "CANCELLED", "DEFERRED"])
       .array()
       .optional()
@@ -33,7 +33,7 @@ export async function listBagsController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id, page, name, status } = listBagsSchema.query.parse(
+    const { cycle_id, page, name, statuses } = listBagsSchema.query.parse(
       request.query
     );
 
@@ -44,7 +44,7 @@ export async function listBagsController(
       cycle_id,
       page,
       name,
-      status,
+      statuses,
     });
 
     return response
