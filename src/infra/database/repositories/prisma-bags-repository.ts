@@ -86,9 +86,10 @@ export class PrismaBagsRepository implements BagsRepository {
     {
       page,
       cycle,
-      name,
       since,
+      before,
       status,
+      user,
       withdraw,
     }: BagsRepositorySearchManyRequest,
     type: T
@@ -97,16 +98,17 @@ export class PrismaBagsRepository implements BagsRepository {
       cycle,
       status,
       customer: {
+        id: user?.id,
         OR: [
           {
             first_name: {
-              contains: name ?? "",
+              contains: user?.name ?? "",
               mode: "insensitive",
             },
           },
           {
             last_name: {
-              contains: name ?? "",
+              contains: user?.name ?? "",
               mode: "insensitive",
             },
           },
@@ -117,6 +119,9 @@ export class PrismaBagsRepository implements BagsRepository {
         address: withdraw ? { is: null } : { isNot: null },
       }),
     };
+
+    if (since) Object.assign(where, { created_at: { gte: since } });
+    if (before) Object.assign(where, { created_at: { lte: before } });
 
     const query: Prisma.BagFindManyArgs = {
       where,

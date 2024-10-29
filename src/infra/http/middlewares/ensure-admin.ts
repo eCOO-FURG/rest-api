@@ -5,7 +5,7 @@ import { NextFunction, Request, Response } from "express";
 import container from "@/infra/container";
 
 // Repositories
-import { PrismaUsersRepository } from "@/infra/database/repositories/prisma-users-repository";
+import { UsersRepository } from "@/core/repositories/users-repository";
 
 export async function ensureAdmin(
   request: Request,
@@ -14,8 +14,7 @@ export async function ensureAdmin(
 ) {
   const user_id = request.user_id;
 
-  const usersRepository =
-    container.resolve<PrismaUsersRepository>("usersRepository");
+  const usersRepository = container.resolve<UsersRepository>("usersRepository");
 
   const user = await usersRepository.findById(user_id);
 

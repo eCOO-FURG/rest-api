@@ -15,7 +15,7 @@ import { ListCyclesUseCase } from "@/core/use-cases/list-cycles";
 import { ListProductsUsecase } from "@/core/use-cases/list-products";
 import { HandleBagUseCase } from "@/core/use-cases/handle-bag";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
-import { ListBagsUseCase } from "@/core/use-cases/list-bags";
+import { ListCurrentBagsUseCase } from "@/core/use-cases/list-current-bags";
 import { PrintBagsReportUseCase } from "@/core/use-cases/print-bags-report";
 import { HandleBoxStatusUseCase } from "@/core/use-cases/handle-box-status";
 import { FetchProfileUseCase } from "@/core/use-cases/fetch-profile";
@@ -30,6 +30,7 @@ import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
 import { HandleFarmStatusUseCase } from "@/core/use-cases/handle-farm-status";
 import { FetchCurrentCatalogUseCase } from "@/core/use-cases/fetch-current-catalog";
 import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
+import { ListBagsUseCase } from "@/core/use-cases/list-bags";
 import { OpenPaymentUseCase } from "@/core/use-cases/open-payment";
 import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
 import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
@@ -161,11 +162,12 @@ export default (container: AwilixContainer) => {
       ({ bagsRepository }) => new HandleBagUseCase(bagsRepository)
     ),
     fetchBagUseCase: asFunction(
-      ({ bagsRepository }) => new FetchBagUseCase(bagsRepository)
+      ({ bagsRepository, usersRepository }) =>
+        new FetchBagUseCase(bagsRepository, usersRepository)
     ),
-    listBagsUseCase: asFunction(
+    listCurrentBagsUseCase: asFunction(
       ({ cyclesRepository, bagsRepository }) =>
-        new ListBagsUseCase(cyclesRepository, bagsRepository)
+        new ListCurrentBagsUseCase(cyclesRepository, bagsRepository)
     ),
     fetchLastCatalogUseCase: asFunction(
       ({ cyclesRepository, farmsRepository, catalogsRepository }) =>
@@ -200,6 +202,10 @@ export default (container: AwilixContainer) => {
           farmsRepository,
           catalogsRepository
         )
+    ),
+    listUserBagsUseCase: asFunction(
+      ({ bagsRepository, usersRepository }) =>
+        new ListBagsUseCase(bagsRepository, usersRepository)
     ),
     requestPasswordUpdateUseCase: asFunction(
       ({ usersRepository }) => new RequestPasswordUpdateUseCase(usersRepository)
