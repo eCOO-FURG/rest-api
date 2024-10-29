@@ -82,23 +82,31 @@ export class PrismaBagsRepository implements BagsRepository {
   }
 
   async searchMany<T extends RepositoryResponse = "entity">(
-    { page, cycle, name, since, status }: BagsRepositorySearchManyRequest,
+    {
+      page,
+      cycle,
+      since,
+      before,
+      status,
+      user,
+    }: BagsRepositorySearchManyRequest,
     type: T
   ): Promise<BagsRepositoryResponse<T>[]> {
     const where: Prisma.BagWhereInput = {
       cycle,
       status,
       customer: {
+        id: user?.id,
         OR: [
           {
             first_name: {
-              contains: name ?? "",
+              contains: user?.name ?? "",
               mode: "insensitive",
             },
           },
           {
             last_name: {
-              contains: name ?? "",
+              contains: user?.name ?? "",
               mode: "insensitive",
             },
           },
@@ -107,6 +115,7 @@ export class PrismaBagsRepository implements BagsRepository {
     };
 
     if (since) Object.assign(where, { created_at: { gte: since } });
+    if (before) Object.assign(where, { created_at: { lte: before } });
 
     const query: Prisma.BagFindManyArgs = {
       where,

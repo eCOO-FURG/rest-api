@@ -1,47 +1,38 @@
 // Repositories
-import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { BagsRepository } from "@/core/repositories/bags-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-
-// Utils
-import { mostPast } from "@/core/utils/most-past";
-
-// Entities
-import { Bag } from "@/core/entities/bag";
+import { UsersRepository } from "@/core/repositories/users-repository";
 
 interface ListBagsUseCaseRequest {
-  cycle_id: string;
+  user_id: string;
   page: number;
-  status?: Bag["status"];
-  name?: string;
+  since?: Date;
+  before?: Date;
 }
 
 export class ListBagsUseCase {
   constructor(
-    private cyclesRepository: CyclesRepository,
-    private bagsRepository: BagsRepository
+    private bagsRepository: BagsRepository,
+    private usersRepository: UsersRepository
   ) {}
 
-  async execute({ cycle_id, ...props }: ListBagsUseCaseRequest) {
-    const cycle = await this.cyclesRepository.findById(cycle_id);
+  async execute({ user_id, since, before, page }: ListBagsUseCaseRequest) {
+    const user = await this.usersRepository.findById(user_id);
 
-    if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
     const bags = await this.bagsRepository.searchMany(
       {
-        ...props,
-        cycle: {
-          id: cycle_id,
-        },
-        since: mostPast(cycle.order),
+        user: { id: user_id },
+        since,
+        before,
+        page,
       },
       "aggregate"
     );
 
-    return {
-      bags,
-    };
+    return { bags };
   }
 }
