@@ -38,6 +38,7 @@ let paymentsRepository: InMemoryPaymentsRepository;
 
 let repositories: {
   bags: InMemoryBagsRepository;
+  users: InMemoryUsersRepository;
 };
 
 let sut: FetchBagUseCase;
@@ -69,9 +70,10 @@ describe("Fetch bag", () => {
         addressesRepository,
         paymentsRepository
       ),
+      users: usersRepository,
     };
 
-    sut = new FetchBagUseCase(repositories.bags);
+    sut = new FetchBagUseCase(repositories.bags, repositories.users);
   });
 
   it("should be able to fetch a user bag", async () => {

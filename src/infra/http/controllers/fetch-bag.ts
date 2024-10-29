@@ -28,7 +28,10 @@ export async function fetchBagController(
     const fetchBagUseCase =
       container.resolve<FetchBagUseCase>("fetchBagUseCase");
 
-    const { bag } = await fetchBagUseCase.execute({ bag_id });
+    const { bag } = await fetchBagUseCase.execute({
+      bag_id,
+      user_id: request.user_id,
+    });
 
     return response.status(200).send(BagMergePresenter.toHttp(bag));
   } catch (error) {

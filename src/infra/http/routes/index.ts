@@ -132,30 +132,24 @@ router.get(
 
 // Sacolas
 router.get(
-  "/admin/bags/current",
+  "/bags/current",
   ensureAuthenticated,
   ensureAdmin,
   listCurrentBagsController
 );
 router.get(
-  "/admin/bags/:bag_id",
-  ensureAuthenticated,
-  ensureAdmin,
-  fetchBagController
-);
-router.get(
-  "/admin/bags/report/:cycle_id",
+  "/bags/report/:cycle_id",
   ensureAuthenticated,
   ensureAdmin,
   printDeliveriesReportController
 );
 router.patch(
-  "/admin/bags/:bag_id",
+  "/bags/:bag_id",
   ensureAuthenticated,
   ensureAdmin,
   handleBagController
 );
-router.get("/me/bags/:bag_id", ensureAuthenticated, fetchUserBagController);
+router.get("/bags/:bag_id", ensureAuthenticated, fetchBagController);
 router.get("/me/bags", ensureAuthenticated, listUserBagsController);
 
 // Ciclos

@@ -372,7 +372,7 @@ const docs = createDocument({
     },
 
     // Sacolas
-    "/admin/bags/current": {
+    "/bags/current": {
       get: {
         tags: [tags.bags],
         responses: {
@@ -383,7 +383,7 @@ const docs = createDocument({
         ...SwaggerMapper.toDocs(listCurrentBagsSchema),
       },
     },
-    "/admin/bags/{bag_id}": {
+    "/bags/{bag_id}": {
       get: {
         tags: [tags.bags],
         responses: {
@@ -403,7 +403,7 @@ const docs = createDocument({
         ...SwaggerMapper.toDocs(handleBagSchema),
       },
     },
-    "/admin/bags/report/{cycle_id}": {
+    "/bags/report/{cycle_id}": {
       get: {
         tags: [tags.bags],
         responses: {
@@ -422,14 +422,6 @@ const docs = createDocument({
         responses: { "200": { description: "200 OK" } },
         description: "Lista as sacolas do usuário a partir da data fornecida.",
         ...SwaggerMapper.toDocs(listUserBagsSchema),
-      },
-    },
-    "/me/bags/{bag_id}": {
-      get: {
-        tags: [tags.bags],
-        responses: { "200": { description: "200 OK" } },
-        description: "Busca as informações de uma sacola.",
-        ...SwaggerMapper.toDocs(fetchUserBagSchema),
       },
     },
 
