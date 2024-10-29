@@ -18,7 +18,7 @@ import { fetchBoxController } from "@/infra/http/controllers/fetch-box";
 import { searchCatalogsController } from "@/infra/http/controllers/search-catalogs";
 import { fetchCatalogController } from "@/infra/http/controllers/fetch-catalog";
 import { listProductsController } from "@/infra/http/controllers/list-products";
-import { printDeliveriesReportController } from "@/infra/http/controllers/print-deliveries-report";
+import { printBagsReportController } from "@/infra/http/controllers/print-bags-report";
 import { listBagsController } from "@/infra/http/controllers/list-bags";
 import { fetchBagController } from "@/infra/http/controllers/fetch-bag";
 import { handleBagController } from "@/infra/http/controllers/handle-bag";
@@ -140,7 +140,7 @@ router.get(
   "/bags/report/:cycle_id",
   ensureAuthenticated,
   ensureAdmin,
-  printDeliveriesReportController
+  printBagsReportController
 );
 router.patch(
   "/bags/:bag_id",

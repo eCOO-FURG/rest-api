@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Delivery List</title>
+  <title>Bags List</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
@@ -226,15 +226,17 @@
     }
 
     .bag-info--cobrar h5 {
-      font-size: 12pt;
-      font-weight: bolder;
+      font-size: 11pt;
+      font-weight: bold;
     }
   </style>
 </head>
 
 <body>
   <div class="header" style="font-family: 'Poppins'">
-    <h1>Lista de Entregas</h1>
+    <h1>
+      <%= props.withdraw ? 'Lista de Retiradas' : 'Lista de Entregas' %>
+    </h1>
     <!-- <p>
       Página <span class="pageNumber">1</span> de
       <span class="totalPages">3</span>
@@ -249,10 +251,12 @@
       <div class="delivery-bag" style="page-break-inside: avoid">
         <div class="bag-header">
           <h3>
-            <%= bag.address.street %>,
-              <%= bag.address.number %>,
-                <%= bag.address.complement %> -
-                  <%= bag.address.postal_code %>
+            <% if (bag.address) { %>
+              <%= bag.address?.street %>, <%= bag.address?.number %>, <%= bag.address?.complement %> - <%=
+                      bag.address?.postal_code %>
+                      <% } else { %>
+                        Retirada no Armazém e-COO
+                        <% } %>
           </h3>
           <!-- <p>CEP: 91350-190</p> -->
         </div>
@@ -260,7 +264,7 @@
           <div class="bag-info bag-info--pedido">
             <p>Pedido:</p>
             <h5>
-              <%= bag.id.value %>
+              <%= bag.code %>
             </h5>
           </div>
           <div class="bag-info bag-info--cliente">
@@ -306,6 +310,11 @@
           <div class="bag-info bag-info--cobrar">
             <p>Cobrar:</p>
             <h5>R$ <%= bag.price() %>
+                <% if (bag.address) { %>
+                  + <br> R$ 10,00 (Entrega)<br>
+                  = R$ <%= (Number(parseFloat(bag.price())) + 10).toLocaleString("pt-BR", { minimumFractionDigits: 2 })
+                    %>
+                    <% } %>
             </h5>
           </div>
         </div>

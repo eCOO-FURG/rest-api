@@ -20,6 +20,7 @@ export interface BagsRepositorySearchManyRequest {
   cycle?: {
     id?: string;
   };
+  withdraw?: boolean;
   status?: Bag["status"];
   since?: Date;
 }

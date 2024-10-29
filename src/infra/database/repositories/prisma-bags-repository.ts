@@ -25,13 +25,14 @@ import { Prisma } from "@prisma/client";
 
 export class PrismaBagsRepository implements BagsRepository {
   async search<T extends RepositoryResponse = "entity">(
-    { cycle, since, id, user }: BagsRepositorySearchRequest,
+    { cycle, since, id, user, address }: BagsRepositorySearchRequest,
     type: T
   ): Promise<BagsRepositoryResponse<T> | null> {
     const where: Prisma.BagWhereInput = {
       id,
       cycle,
       customer: user,
+      address,
     };
 
     if (since) Object.assign(where, { created_at: { gte: since } });
@@ -82,7 +83,14 @@ export class PrismaBagsRepository implements BagsRepository {
   }
 
   async searchMany<T extends RepositoryResponse = "entity">(
-    { page, cycle, name, since, status }: BagsRepositorySearchManyRequest,
+    {
+      page,
+      cycle,
+      name,
+      since,
+      status,
+      withdraw,
+    }: BagsRepositorySearchManyRequest,
     type: T
   ): Promise<BagsRepositoryResponse<T>[]> {
     const where: Prisma.BagWhereInput = {
@@ -104,9 +112,11 @@ export class PrismaBagsRepository implements BagsRepository {
           },
         ],
       },
+      ...(since && { created_at: { gte: since } }),
+      ...(typeof withdraw === "boolean" && {
+        address: withdraw ? { is: null } : { isNot: null },
+      }),
     };
-
-    if (since) Object.assign(where, { created_at: { gte: since } });
 
     const query: Prisma.BagFindManyArgs = {
       where,

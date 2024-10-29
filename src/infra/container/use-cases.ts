@@ -16,7 +16,7 @@ import { ListProductsUsecase } from "@/core/use-cases/list-products";
 import { HandleBagUseCase } from "@/core/use-cases/handle-bag";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 import { ListBagsUseCase } from "@/core/use-cases/list-bags";
-import { PrintDeliveriesReportUseCase } from "@/core/use-cases/print-deliveries-report";
+import { PrintBagsReportUseCase } from "@/core/use-cases/print-bags-report";
 import { HandleBoxStatusUseCase } from "@/core/use-cases/handle-box-status";
 import { FetchProfileUseCase } from "@/core/use-cases/fetch-profile";
 import { ListBoxesUseCase } from "@/core/use-cases/list-boxes";
@@ -153,13 +153,9 @@ export default (container: AwilixContainer) => {
     listProductsUseCase: asFunction(
       ({ productsRepository }) => new ListProductsUsecase(productsRepository)
     ),
-    printDeliveriesReport: asFunction(
+    printBagsReport: asFunction(
       ({ cyclesRepository, bagsRepository, pdfService }) =>
-        new PrintDeliveriesReportUseCase(
-          cyclesRepository,
-          bagsRepository,
-          pdfService
-        )
+        new PrintBagsReportUseCase(cyclesRepository, bagsRepository, pdfService)
     ),
     handleBagUseCase: asFunction(
       ({ bagsRepository }) => new HandleBagUseCase(bagsRepository)

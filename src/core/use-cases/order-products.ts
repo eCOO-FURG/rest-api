@@ -172,7 +172,6 @@ export class OrderProductsUseCase {
 
       return bag;
     }
-
     const found = await this.bagsRepository.search(
       {
         user: { id: user_id.value },

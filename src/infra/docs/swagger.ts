@@ -26,7 +26,7 @@ import { fetchLastCatalogSchema } from "@/infra/http/controllers/fetch-last-cata
 import { listBagsSchema } from "@/infra/http/controllers/list-bags";
 import { fetchBagSchema } from "@/infra/http/controllers/fetch-bag";
 import { handleBagSchema } from "@/infra/http/controllers/handle-bag";
-import { printDeliveriesReportSchema } from "@/infra/http/controllers/print-deliveries-report";
+import { printBagsReportSchema } from "@/infra/http/controllers/print-bags-report";
 import { listProductSchema } from "@/infra/http/controllers/list-products";
 import { fetchCurrentBoxSchema } from "@/infra/http/controllers/fetch-current-box";
 import { requestPasswordUpdateSchema } from "@/infra/http/controllers/request-password-update";
@@ -410,8 +410,8 @@ const docs = createDocument({
           },
           "404": { description: "Ciclo não encontrado: cycle-not-found" },
         },
-        description: "Gera o relatório de entrega de sacolas.",
-        ...SwaggerMapper.toDocs(printDeliveriesReportSchema),
+        description: "Gera o relatório de sacolas.",
+        ...SwaggerMapper.toDocs(printBagsReportSchema),
       },
     },
 
