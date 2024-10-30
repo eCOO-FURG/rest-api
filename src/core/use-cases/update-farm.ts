@@ -4,38 +4,34 @@ import { FarmsRepository } from "../repositories/farms-repository";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
-
 interface UpdateFarmUseCaseRequest {
   farm_id: string;
   name?: string;
-  counterfoil_number?: string;
+  tally?: string;
   description?: string;
 }
 
 export class UpdateFarmUseCase {
-  constructor(
-    private farmsRepository: FarmsRepository
-  ) { }
+  constructor(private farmsRepository: FarmsRepository) {}
 
-  async execute(props: UpdateFarmUseCaseRequest) {
-
-    const farm = await this.farmsRepository.findById(props.farm_id);
+  async execute({
+    farm_id,
+    name,
+    tally,
+    description,
+  }: UpdateFarmUseCaseRequest) {
+    const farm = await this.farmsRepository.findById(farm_id);
 
     if (!farm) {
-      throw new ResourceNotFoundError("Fazenda", props.farm_id);
+      throw new ResourceNotFoundError("Fazenda", farm_id);
     }
 
-    for (const field in props) {
-      const value = props[field as keyof UpdateFarmUseCaseRequest];
+    farm.tally = tally ?? farm.tally;
+    farm.name = name ?? farm.name;
 
-      if (!value) continue;
+    if (description) farm.description = description;
 
-      const key = Object.keys(farm.props).find((key) => key === field);
-
-      // @ts-ignore
-      farm[key] = value;
-      farm.touch();
-    }
+    farm.touch();
 
     await this.farmsRepository.update(farm);
   }

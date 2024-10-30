@@ -19,7 +19,7 @@ export class InMemoryFarmsRepository implements FarmsRepository {
   constructor(private inMemoryUsersRepository: InMemoryUsersRepository) {}
 
   async search<T extends RepositoryResponse>(
-    { id, admin, name, counterfoil_number }: FarmsRepositorySearchRequest,
+    { id, admin, name, tally }: FarmsRepositorySearchRequest,
     type: T
   ): Promise<FarmsRepositoryResponse<T> | null> {
     const farm = this.items.find((item) => {
@@ -27,7 +27,7 @@ export class InMemoryFarmsRepository implements FarmsRepository {
         (!id || item.id.equals(id)) &&
         (!admin?.id || item.admin_id.equals(admin.id)) &&
         (!name || item.name.includes(name)) &&
-        (!counterfoil_number || item.counterfoil_number === counterfoil_number)
+        (!tally || item.tally === tally)
       );
     });
 

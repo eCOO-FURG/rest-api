@@ -7,7 +7,7 @@ import { FarmAggregate } from "@/core/entities/aggregates/farm-aggregate";
 
 export interface FarmsRepositorySearchRequest {
   id?: string;
-  counterfoil_number?: string;
+  tally?: string;
   name?: string;
   admin?: {
     id?: string;
@@ -33,5 +33,4 @@ export interface FarmsRepository {
   create(farm: Farm): Promise<void>;
   update(farm: Farm): Promise<void>;
   findById(id: string): Promise<Farm | null>;
-
 }

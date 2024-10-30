@@ -11,7 +11,7 @@ import container from "@/infra/container";
 export const registerFarmSchema = {
   body: z.object({
     name: z.string(),
-    counterfoil_number: z.string(),
+    tally: z.string(),
   }),
 };
 
@@ -21,7 +21,7 @@ export async function registerFarmController(
   next: NextFunction
 ) {
   try {
-    const { name, counterfoil_number } = registerFarmSchema.body.parse(request.body);
+    const { name, tally } = registerFarmSchema.body.parse(request.body);
 
     const registerFarmUseCase = container.resolve<RegisterFarmUseCase>(
       "registerFarmUseCase"
@@ -29,7 +29,7 @@ export async function registerFarmController(
 
     await registerFarmUseCase.execute({
       user_id: request.user_id,
-      counterfoil_number,
+      tally,
       name,
     });
 

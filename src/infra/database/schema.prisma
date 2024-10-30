@@ -72,12 +72,12 @@ enum FARM_STATUS {
 }
 
 model Farm {
-  id     String       @id @default(uuid())
-  name   String
-  counterfoil_number    String  @unique
-  status FARM_STATUS? @default(PENDING)
-  tax    Float
-  description String? @default("")
+  id          String      @id @default(uuid())
+  name        String
+  tally       String      @unique
+  tax         Float
+  description String?
+  status      FARM_STATUS @default(PENDING)
 
   admin_id String @unique
   admin    User   @relation(fields: [admin_id], references: [id], onDelete: Cascade)

@@ -41,23 +41,23 @@ describe("create farm", () => {
 
     await sut.execute({
       user_id: user.id.value,
-      counterfoil_number: "12345678",
+      tally: "12345678",
       name: "Fazenda Feliz",
     });
   });
 
-  it("should not be able to create two farms with the same counterfoil_number", async () => {
+  it("should not be able to create two farms with the same tally", async () => {
     const user1 = makeUser();
     await repositories.users.create(user1);
 
     const user2 = makeUser();
     await repositories.users.create(user2);
 
-    const counterfoil_number = "12345678";
+    const tally = "12345678";
 
     const farm = Farm.create({
       admin_id: user1.id,
-      counterfoil_number,
+      tally,
       name: "Fazenda Triste",
     });
 
@@ -66,7 +66,7 @@ describe("create farm", () => {
     await expect(() =>
       sut.execute({
         user_id: user2.id.value,
-        counterfoil_number,
+        tally,
         name: "Fazenda Melancólica",
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
@@ -78,7 +78,7 @@ describe("create farm", () => {
 
     const farm = Farm.create({
       admin_id: user.id,
-      counterfoil_number: "12345678",
+      tally: "12345678",
       name: "Fazenda Triste",
     });
 
@@ -87,7 +87,7 @@ describe("create farm", () => {
     await expect(() =>
       sut.execute({
         user_id: user.id.value,
-        counterfoil_number: "34567890",
+        tally: "34567890",
         name: "Fazenda Alegre",
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);

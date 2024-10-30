@@ -67,9 +67,9 @@ router.patch(
   handleFarmStatusController
 );
 router.patch(
-  "/farms/update/:farm_id",
+  "/farms",
   ensureAuthenticated,
-  ensureAdmin,
+  ensureFarmAdmin,
   updateFarmController
 );
 

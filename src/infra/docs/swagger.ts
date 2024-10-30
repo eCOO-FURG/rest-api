@@ -34,6 +34,7 @@ import { fetchCurrentCatalogSchema } from "@/infra/http/controllers/fetch-curren
 import { registerPaymentSchema } from "@/infra/http/controllers/register-payment";
 import { updatePaymentSchema } from "@/infra/http/controllers/update-payment";
 import { openPaymentSchema } from "@/infra/http/controllers/open-payment";
+import { updateFarmSchema } from "@/infra/http/controllers/update-farm";
 
 const tags = {
   users: "Usuários",
@@ -162,12 +163,21 @@ const docs = createDocument({
           "201": { description: "Fazenda criada com sucesso." },
           "403": {
             description:
-              "Já existe uma fazenda com o Número do Talão informado: counterfoil_number-already-exists OU já existe uma fazenda para o usuário informado: farm-already-exists",
+              "Já existe uma fazenda com o Número do Talão informado: tally-already-exists OU já existe uma fazenda para o usuário informado: farm-already-exists",
           },
           "404": { description: "Usuário não encontrado: user-not-found" },
         },
         description: "Cria uma fazenda.",
         ...SwaggerMapper.toDocs(registerFarmSchema),
+      },
+      patch: {
+        tags: [tags.farms],
+        responses: {
+          "204": { description: "Fazenda atualizada com sucesso." },
+          "404": { description: "Fazenda não encontrada: farm-not-found" },
+        },
+        description: "Atualiza a fazenda do usuário.",
+        ...SwaggerMapper.toDocs(updateFarmSchema),
       },
       get: {
         tags: [tags.farms],

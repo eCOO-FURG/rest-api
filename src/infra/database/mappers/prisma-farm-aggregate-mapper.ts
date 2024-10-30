@@ -1,7 +1,12 @@
-import { FarmAggregate } from "@/core/entities/aggregates/farm-aggregate";
+// Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
+import { FarmAggregate } from "@/core/entities/aggregates/farm-aggregate";
+
+// Libs
 import { Prisma } from "@prisma/client";
-import { PrismaUserMapper } from "./prisma-user-mapper";
+
+// Mappers
+import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
 
 export class PrismaFarmAggregateMapper {
   static toDomain(raw: Prisma.FarmGetPayload<{ include: { admin: true } }>) {

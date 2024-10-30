@@ -8,15 +8,20 @@ import container from "@/infra/container";
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
 
+// Validation
+import { notEmpty } from "@/infra/http/validation/not-empty";
+
 export const updateUserSchema = {
-  body: z.object({
-    first_name: z.string().optional(),
-    last_name: z.string().optional(),
-    email: z.string().email().optional(),
-    cpf: z.string().min(11).max(14).optional(),
-    phone: z.string().optional(),
-    password: z.string().min(8).optional(),
-  }),
+  body: z
+    .object({
+      first_name: z.string().optional(),
+      last_name: z.string().optional(),
+      email: z.string().email().optional(),
+      cpf: z.string().min(11).max(14).optional(),
+      phone: z.string().optional(),
+      password: z.string().min(8).optional(),
+    })
+    .refine(notEmpty.validation, notEmpty.warning),
 };
 
 export async function updateUserController(

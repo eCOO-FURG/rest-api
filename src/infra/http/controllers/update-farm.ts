@@ -8,15 +8,17 @@ import container from "@/infra/container";
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
 
+// Validation
+import { notEmpty } from "@/infra/http/validation/not-empty";
+
 export const updateFarmSchema = {
-  route: z.object({
-    farm_id: z.string().uuid(),
-  }),
-  body: z.object({
-    name: z.string().optional(),
-    counterfoil_number: z.string().optional(),
-    description: z.string().optional()
-  }),
+  body: z
+    .object({
+      name: z.string().optional(),
+      tally: z.string().optional(),
+      description: z.string().optional(),
+    })
+    .refine(notEmpty.validation, notEmpty.warning),
 };
 
 export async function updateFarmController(
@@ -25,19 +27,18 @@ export async function updateFarmController(
   next: NextFunction
 ) {
   try {
-    const { name, counterfoil_number, description } =
-      updateFarmSchema.body.parse(request.body);
-
-    const { farm_id } = updateFarmSchema.route.parse(request.params);
+    const { name, tally, description } = updateFarmSchema.body.parse(
+      request.body
+    );
 
     const updateFarmUseCase =
       container.resolve<UpdateFarmUseCase>("updateFarmUseCase");
 
     await updateFarmUseCase.execute({
-      farm_id: farm_id,
+      farm_id: request.farm_id,
       name,
-      counterfoil_number,
-      description
+      tally,
+      description,
     });
 
     return response.sendStatus(204);

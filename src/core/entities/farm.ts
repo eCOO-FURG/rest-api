@@ -7,11 +7,11 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 
 export interface FarmProps extends EntityRequest {
   name: string;
-  counterfoil_number: string;
+  tally: string;
   status: "ACTIVE" | "INACTIVE" | "PENDING";
   admin_id: UUID;
   tax: number;
-  description: string;
+  description: string | null;
 }
 
 export class Farm extends Entity<FarmProps> {
@@ -19,8 +19,8 @@ export class Farm extends Entity<FarmProps> {
     return this.props.name;
   }
 
-  get counterfoil_number() {
-    return this.props.counterfoil_number;
+  get tally() {
+    return this.props.tally;
   }
 
   get status() {
@@ -31,11 +31,11 @@ export class Farm extends Entity<FarmProps> {
     return this.props.admin_id;
   }
 
-  get description() {
+  get description(): string | null {
     return this.props.description;
   }
 
-  set description(value: string) { 
+  set description(value: string) {
     this.props.description = value;
   }
 
@@ -43,8 +43,8 @@ export class Farm extends Entity<FarmProps> {
     this.props.name = value;
   }
 
-  set counterfoil_number(value: string) {
-    this.props.counterfoil_number = value;
+  set tally(value: string) {
+    this.props.tally = value;
   }
 
   set status(status: "ACTIVE" | "INACTIVE" | "PENDING") {
@@ -55,11 +55,12 @@ export class Farm extends Entity<FarmProps> {
     return this.props.tax;
   }
 
-  static create(props: Optional<FarmProps, "status" | "tax">) {
+  static create(props: Optional<FarmProps, "status" | "tax" | "description">) {
     const farm = new Farm({
       ...props,
       status: props.status ?? "PENDING",
       tax: props.tax ?? 20,
+      description: props.description ?? null,
     });
     return farm;
   }

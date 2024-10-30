@@ -12,8 +12,6 @@ let repositories: {
   farms: InMemoryFarmsRepository;
 };
 
-
-
 let sut: UpdateFarmUseCase;
 
 describe("update user", () => {
@@ -34,14 +32,12 @@ describe("update user", () => {
     await sut.execute({
       farm_id: farm.id.value,
       name: "Cláudio",
-      counterfoil_number: "123456",
+      tally: "123456",
       description: "Descrição",
     });
 
     expect(repositories.farms.items[0].name).toEqual("Cláudio");
-    expect(repositories.farms.items[0].counterfoil_number).toEqual("123456");
+    expect(repositories.farms.items[0].tally).toEqual("123456");
     expect(repositories.farms.items[0].description).toEqual("Descrição");
   });
-
-
 });
