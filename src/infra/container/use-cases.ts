@@ -211,7 +211,7 @@ export default (container: AwilixContainer) => {
           catalogsRepository
         )
     ),
-    listUserBagsUseCase: asFunction(
+    listBagsUseCase: asFunction(
       ({ bagsRepository, usersRepository }) =>
         new ListBagsUseCase(bagsRepository, usersRepository)
     ),

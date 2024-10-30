@@ -14,28 +14,27 @@ import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 // Utils
 import { toDate } from "@/infra/utils/to-date";
 
+// Validation
+import { realPeriod } from "@/infra/http/validation/real-period";
+
 export const listUserBagsSchema = {
   query: z
     .object({
       page: z.coerce.number().openapi({ description: "Página da listagem." }),
       since: z
         .string()
-        .regex(/^\d{2}-\d{2}-\d{4}$/)
+        .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
         .optional()
         .openapi({ description: "Bags criadas a partir dessa data." }),
       before: z
         .string()
-        .regex(/^\d{2}-\d{2}-\d{4}$/)
+        .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
         .optional()
         .openapi({ description: "Bags criadas antes dessa data." }),
     })
     .refine(
-      ({ since, before }) =>
-        since && before && toDate(since)! > toDate(before)!,
-      {
-        message: "A data 'since' não pode ser depois da data do 'before'.",
-        path: ["since", "before"],
-      }
+      (data) => realPeriod.validation(toDate(data.since), toDate(data.before)),
+      realPeriod.warning
     ),
 };
 
