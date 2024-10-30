@@ -5,18 +5,21 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 // Types
 import { Optional } from "@/core/types/optional";
 
+export const BAG_STATUSES = [
+  "PENDING",
+  "SEPARATED",
+  "DISPATCHED",
+  "RECEIVED",
+  "CANCELLED",
+  "DEFERRED",
+] as const;
+
 export interface BagProps extends EntityRequest {
   code: string;
   user_id: UUID;
   cycle_id: UUID;
   address_id: UUID | null;
-  status:
-    | "PENDING"
-    | "SEPARATED"
-    | "DISPATCHED"
-    | "RECEIVED"
-    | "CANCELLED"
-    | "DEFERRED";
+  status: (typeof BAG_STATUSES)[number];
 }
 
 export class Bag extends Entity<BagProps> {

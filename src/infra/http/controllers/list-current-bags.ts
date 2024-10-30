@@ -11,26 +11,31 @@ import { ListCurrentBagsUseCase } from "@/core/use-cases/list-current-bags";
 // Presenters
 import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 
+// Validations
+import { optionList } from "@/infra/http/validation/option-list";
+import { toArray } from "@/infra/utils/to-array";
+
+// Entities
+import { Bag, BAG_STATUSES } from "@/core/entities/bag";
+
 export const listCurrentBagsSchema = {
-  query: z.object({
-    page: z.coerce.number().openapi({ description: "Página da listagem." }),
-    cycle_id: z.string().uuid().openapi({ description: "Ciclo da busca." }),
-    status: z
-      .enum([
-        "PENDING",
-        "SEPARATED",
-        "DISPATCHED",
-        "RECEIVED",
-        "CANCELLED",
-        "DEFERRED",
-      ])
-      .optional()
-      .openapi({ type: "string", description: "Filto de status." }),
-    name: z
-      .string()
-      .optional()
-      .openapi({ description: "Filtro de nome do dono da sacola." }),
-  }),
+  query: z
+    .object({
+      page: z.coerce.number().openapi({ description: "Página da listagem." }),
+      cycle_id: z.string().uuid().openapi({ description: "Ciclo da busca." }),
+      statuses: z.string().optional().openapi({
+        description: "Filtro de status, separados por vírgula.",
+      }),
+      name: z
+        .string()
+        .optional()
+        .openapi({ description: "Filtro de nome do dono da sacola." }),
+    })
+    .refine(
+      (data) =>
+        !data.statuses || optionList.validation(data.statuses, BAG_STATUSES),
+      optionList.warning
+    ),
 };
 
 export async function listCurrentBagsController(
@@ -39,9 +44,8 @@ export async function listCurrentBagsController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id, page, name, status } = listCurrentBagsSchema.query.parse(
-      request.query
-    );
+    const { cycle_id, page, name, statuses } =
+      listCurrentBagsSchema.query.parse(request.query);
 
     const listCurrentBagsUseCase = container.resolve<ListCurrentBagsUseCase>(
       "listCurrentBagsUseCase"
@@ -51,7 +55,7 @@ export async function listCurrentBagsController(
       cycle_id,
       page,
       name,
-      status,
+      statuses: toArray<Bag["status"]>(statuses),
     });
 
     return response

@@ -87,14 +87,13 @@ export class PrismaBagsRepository implements BagsRepository {
       cycle,
       since,
       before,
-      status,
+      statuses,
       user,
     }: BagsRepositorySearchManyRequest,
     type: T
   ): Promise<BagsRepositoryResponse<T>[]> {
     const where: Prisma.BagWhereInput = {
       cycle,
-      status,
       customer: {
         id: user?.id,
         OR: [
@@ -112,10 +111,10 @@ export class PrismaBagsRepository implements BagsRepository {
           },
         ],
       },
+      ...(statuses && { status: { in: statuses } }),
+      ...(since && { created_at: { gte: since } }),
+      ...(before && { created_at: { lte: before } }),
     };
-
-    if (since) Object.assign(where, { created_at: { gte: since } });
-    if (before) Object.assign(where, { created_at: { lte: before } });
 
     const query: Prisma.BagFindManyArgs = {
       where,

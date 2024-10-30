@@ -91,7 +91,7 @@ export class InMemoryBagsRepository implements BagsRepository {
       page,
       since,
       before,
-      status,
+      statuses,
       user,
     }: BagsRepositorySearchManyRequest,
     type: T
@@ -101,7 +101,7 @@ export class InMemoryBagsRepository implements BagsRepository {
         (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
         (!since || item.created_at >= since) &&
         (!before || item.created_at <= before) &&
-        (!status || status === item.status) &&
+        (!statuses || statuses.includes(item.status)) &&
         (!user?.id || item.user_id.equals(user.id)) &&
         (!user?.name ||
           (() =>

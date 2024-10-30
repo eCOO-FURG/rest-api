@@ -17,10 +17,28 @@ import { toDate } from "@/infra/utils/to-date";
 // Validation
 import { realPeriod } from "@/infra/http/validation/real-period";
 
+// Utils
+import { toArray } from "@/infra/utils/to-array";
+
+// Entities
+import { Bag, BAG_STATUSES } from "@/core/entities/bag";
+
+// Validation
+import { optionList } from "@/infra/http/validation/option-list";
+
 export const listUserBagsSchema = {
   query: z
     .object({
       page: z.coerce.number().openapi({ description: "Página da listagem." }),
+      cycle_id: z
+        .string()
+        .uuid()
+        .optional()
+        .openapi({ description: "Ciclo da busca." }),
+      statuses: z
+        .string()
+        .optional()
+        .openapi({ description: "Filtro de status, separados por vírgula." }),
       since: z
         .string()
         .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
@@ -33,6 +51,11 @@ export const listUserBagsSchema = {
         .openapi({ description: "Bags criadas antes dessa data." }),
     })
     .refine(
+      (data) =>
+        !data.statuses || optionList.validation(data.statuses, BAG_STATUSES),
+      optionList.warning
+    )
+    .refine(
       (data) => realPeriod.validation(toDate(data.since), toDate(data.before)),
       realPeriod.warning
     ),
@@ -44,15 +67,16 @@ export async function listUserBagsController(
   next: NextFunction
 ) {
   try {
-    const { page, since, before } = listUserBagsSchema.query.parse(
-      request.query
-    );
+    const { page, since, before, statuses, cycle_id } =
+      listUserBagsSchema.query.parse(request.query);
 
     const listBagsUseCase =
       container.resolve<ListBagsUseCase>("listBagsUseCase");
 
     const { bags } = await listBagsUseCase.execute({
       user_id: request.user_id,
+      cycle_id,
+      statuses: toArray<Bag["status"]>(statuses),
       since: toDate(since),
       before: toDate(before),
       page,
