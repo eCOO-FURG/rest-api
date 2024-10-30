@@ -30,12 +30,12 @@ import { listProductSchema } from "@/infra/http/controllers/list-products";
 import { fetchCurrentBoxSchema } from "@/infra/http/controllers/fetch-current-box";
 import { requestPasswordUpdateSchema } from "@/infra/http/controllers/request-password-update";
 import { fetchCurrentCatalogSchema } from "@/infra/http/controllers/fetch-current-catalog";
-import { fetchUserBagSchema } from "@/infra/http/controllers/fetch-user-bag";
 import { listCurrentBagsSchema } from "@/infra/http/controllers/list-current-bags";
 import { listUserBagsSchema } from "@/infra/http/controllers/list-user-bags";
 import { registerPaymentSchema } from "@/infra/http/controllers/register-payment";
 import { updatePaymentSchema } from "@/infra/http/controllers/update-payment";
 import { openPaymentSchema } from "@/infra/http/controllers/open-payment";
+import { updateFarmSchema } from "@/infra/http/controllers/update-farm";
 
 const tags = {
   users: "Usuários",
@@ -164,12 +164,21 @@ const docs = createDocument({
           "201": { description: "Fazenda criada com sucesso." },
           "403": {
             description:
-              "Já existe uma fazenda com o CAF informado: caf-already-exists OU já existe uma fazenda para o usuário informado: farm-already-exists",
+              "Já existe uma fazenda com o Número do Talão informado: tally-already-exists OU já existe uma fazenda para o usuário informado: farm-already-exists",
           },
           "404": { description: "Usuário não encontrado: user-not-found" },
         },
         description: "Cria uma fazenda.",
         ...SwaggerMapper.toDocs(registerFarmSchema),
+      },
+      patch: {
+        tags: [tags.farms],
+        responses: {
+          "204": { description: "Fazenda atualizada com sucesso." },
+          "404": { description: "Fazenda não encontrada: farm-not-found" },
+        },
+        description: "Atualiza a fazenda do usuário.",
+        ...SwaggerMapper.toDocs(updateFarmSchema),
       },
       get: {
         tags: [tags.farms],

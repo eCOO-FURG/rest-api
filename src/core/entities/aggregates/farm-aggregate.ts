@@ -12,8 +12,12 @@ export class FarmAggregate extends Entity<FarmAggregateProps> {
     return this.props.name;
   }
 
-  get caf() {
-    return this.props.caf;
+  get tally() {
+    return this.props.tally;
+  }
+
+  get description() {
+    return this.props.description;
   }
 
   get status() {

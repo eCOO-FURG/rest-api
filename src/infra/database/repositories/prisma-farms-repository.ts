@@ -104,4 +104,16 @@ export class PrismaFarmsRepository implements FarmsRepository {
       data,
     });
   }
+
+  async findById(id: string): Promise<Farm | null> {
+    const farm = await prisma.farm.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!farm) return null;
+
+    return PrismaFarmMapper.toDomain(farm);
+  }
 }

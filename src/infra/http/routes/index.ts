@@ -30,7 +30,7 @@ import { handleFarmStatusController } from "@/infra/http/controllers/handle-farm
 import { fetchCurrentBoxController } from "@/infra/http/controllers/fetch-current-box";
 import { fetchCurrentCatalogController } from "@/infra/http/controllers/fetch-current-catalog";
 import { requestPasswordUpdateController } from "@/infra/http/controllers/request-password-update";
-import { fetchUserBagController } from "@/infra/http/controllers/fetch-user-bag";
+import { updateFarmController } from "../controllers/update-farm";
 import { listUserBagsController } from "@/infra/http/controllers/list-user-bags";
 import { openPaymentController } from "@/infra/http/controllers/open-payment";
 import { registerPaymentController } from "@/infra/http/controllers/register-payment";
@@ -66,6 +66,12 @@ router.patch(
   ensureAuthenticated,
   ensureAdmin,
   handleFarmStatusController
+);
+router.patch(
+  "/farms",
+  ensureAuthenticated,
+  ensureFarmAdmin,
+  updateFarmController
 );
 
 // Pedidos
