@@ -1,6 +1,8 @@
 export const optionList = {
-  validation: (value: string) => {
-    return value.split(",").length > 1;
+  validation: (value: string, options: readonly unknown[]) => {
+    const values = value.split(",");
+
+    return values.every((item) => options.includes(item));
   },
-  warning: "Opções de filtro inválidas. Devem ser separadas por vírgula.",
+  warning: "Opções de filtro inválidas.",
 };

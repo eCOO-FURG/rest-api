@@ -16,24 +16,24 @@ import { optionList } from "@/infra/http/validation/option-list";
 import { toArray } from "@/infra/utils/to-array";
 
 // Entities
-import { Bag } from "@/core/entities/bag";
+import { Bag, BAG_STATUSES } from "@/core/entities/bag";
 
 export const listCurrentBagsSchema = {
   query: z
     .object({
       page: z.coerce.number().openapi({ description: "Página da listagem." }),
       cycle_id: z.string().uuid().openapi({ description: "Ciclo da busca." }),
-      statuses: z
-        .string()
-        .optional()
-        .openapi({ description: "Filtro de status, separados por vírgula." }),
+      statuses: z.string().optional().openapi({
+        description: "Filtro de status, separados por vírgula.",
+      }),
       name: z
         .string()
         .optional()
         .openapi({ description: "Filtro de nome do dono da sacola." }),
     })
     .refine(
-      (data) => data.statuses && optionList.validation(data.statuses),
+      (data) =>
+        !data.statuses || optionList.validation(data.statuses, BAG_STATUSES),
       optionList.warning
     ),
 };

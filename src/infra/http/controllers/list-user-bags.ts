@@ -21,7 +21,10 @@ import { realPeriod } from "@/infra/http/validation/real-period";
 import { toArray } from "@/infra/utils/to-array";
 
 // Entities
-import { Bag } from "@/core/entities/bag";
+import { Bag, BAG_STATUSES } from "@/core/entities/bag";
+
+// Validation
+import { optionList } from "@/infra/http/validation/option-list";
 
 export const listUserBagsSchema = {
   query: z
@@ -47,6 +50,11 @@ export const listUserBagsSchema = {
         .optional()
         .openapi({ description: "Bags criadas antes dessa data." }),
     })
+    .refine(
+      (data) =>
+        !data.statuses || optionList.validation(data.statuses, BAG_STATUSES),
+      optionList.warning
+    )
     .refine(
       (data) => realPeriod.validation(toDate(data.since), toDate(data.before)),
       realPeriod.warning
