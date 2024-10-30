@@ -21,7 +21,7 @@ import { PrismaBagAggregateMapper } from "@/infra/database/mappers/prisma-bag-ag
 import { PrismaBagMergeMapper } from "@/infra/database/mappers/prisma-bag-merge-mapper";
 
 // Libs
-import { BAG_STATUS, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 export class PrismaBagsRepository implements BagsRepository {
   async search<T extends RepositoryResponse = "entity">(
@@ -82,31 +82,39 @@ export class PrismaBagsRepository implements BagsRepository {
   }
 
   async searchMany<T extends RepositoryResponse = "entity">(
-    { page, cycle, name, since, statuses }: BagsRepositorySearchManyRequest,
+    {
+      page,
+      cycle,
+      since,
+      before,
+      statuses,
+      user,
+    }: BagsRepositorySearchManyRequest,
     type: T
   ): Promise<BagsRepositoryResponse<T>[]> {
     const where: Prisma.BagWhereInput = {
       cycle,
-      status: statuses ? { in: statuses.split(",") as BAG_STATUS[] } : undefined,
       customer: {
+        id: user?.id,
         OR: [
           {
             first_name: {
-              contains: name ?? "",
+              contains: user?.name ?? "",
               mode: "insensitive",
             },
           },
           {
             last_name: {
-              contains: name ?? "",
+              contains: user?.name ?? "",
               mode: "insensitive",
             },
           },
         ],
       },
+      ...(statuses && { status: { in: statuses } }),
+      ...(since && { created_at: { gte: since } }),
+      ...(before && { created_at: { lte: before } }),
     };
-
-    if (since) Object.assign(where, { created_at: { gte: since } });
 
     const query: Prisma.BagFindManyArgs = {
       where,

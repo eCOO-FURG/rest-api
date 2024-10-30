@@ -70,7 +70,7 @@ async function seed() {
     await prisma.farm.create({
       data: {
         name: "Farm do CDD",
-        caf: "12345678",
+        tally: "12345678",
         tax: 20,
         status: "ACTIVE",
         admin_id: cddId.value,

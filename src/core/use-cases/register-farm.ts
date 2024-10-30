@@ -11,7 +11,7 @@ import { UsersRepository } from "@/core/repositories/users-repository";
 
 interface RegisterFarmUseCaseRequest {
   user_id: string;
-  caf: string;
+  tally: string;
   name: string;
 }
 
@@ -21,17 +21,20 @@ export class RegisterFarmUseCase {
     private farmRepository: FarmsRepository
   ) {}
 
-  async execute({ user_id, caf, name }: RegisterFarmUseCaseRequest) {
+  async execute({ user_id, tally, name }: RegisterFarmUseCaseRequest) {
     const user = await this.usersRepository.findById(user_id);
 
     if (!user) {
       throw new ResourceNotFoundError("Usuário", user_id);
     }
 
-    const farmWithSameCaf = await this.farmRepository.search({ caf }, "entity");
+    const farmWithSameTally = await this.farmRepository.search(
+      { tally },
+      "entity"
+    );
 
-    if (farmWithSameCaf) {
-      throw new ResourceAlreadyExistsError("CAF", caf);
+    if (farmWithSameTally) {
+      throw new ResourceAlreadyExistsError("Número do Talão", String(tally));
     }
 
     const farmWithSameAdmin = await this.farmRepository.search(
@@ -45,8 +48,9 @@ export class RegisterFarmUseCase {
 
     const farm = Farm.create({
       admin_id: user.id,
-      caf,
+      tally,
       name,
+      description: "",
     });
 
     await this.farmRepository.create(farm);

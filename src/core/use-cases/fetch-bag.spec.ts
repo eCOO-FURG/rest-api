@@ -1,5 +1,13 @@
 // Repositories
 import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
+import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
+import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
+import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
+import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
+import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
+import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
+import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
+import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
 
 // Use-cases
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
@@ -14,19 +22,10 @@ import { makeFarm } from "@/test/factories/make-farm";
 import { makeCatalog } from "@/test/factories/make-catalog";
 
 // Entities
-import { OrderAggregate } from "@/core/entities/aggregates/order-aggregate";
 import { BagMerge } from "@/core/entities/merged/bag-merge";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
-import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
-import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
-import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
-import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
 
 let usersRepository: InMemoryUsersRepository;
 let productsRepository: InMemoryProductsRepository;
@@ -39,6 +38,7 @@ let paymentsRepository: InMemoryPaymentsRepository;
 
 let repositories: {
   bags: InMemoryBagsRepository;
+  users: InMemoryUsersRepository;
 };
 
 let sut: FetchBagUseCase;
@@ -70,9 +70,10 @@ describe("Fetch bag", () => {
         addressesRepository,
         paymentsRepository
       ),
+      users: usersRepository,
     };
 
-    sut = new FetchBagUseCase(repositories.bags);
+    sut = new FetchBagUseCase(repositories.bags, repositories.users);
   });
 
   it("should be able to fetch a user bag", async () => {
@@ -99,17 +100,39 @@ describe("Fetch bag", () => {
 
     const result = await sut.execute({
       bag_id: bag.id.value,
+      user_id: user.id.value,
     });
 
     expect(result.bag).toBeInstanceOf(BagMerge);
-    expect(result.bag.orders).toBeInstanceOf(Array<OrderAggregate>);
     expect(result.bag.orders.length).toBe(1);
   });
 
   it("should not be able to fetch a bag that does not exists", async () => {
+    const user = makeUser();
+    await usersRepository.create(user);
+
     await expect(() =>
       sut.execute({
         bag_id: "1234",
+        user_id: user.id.value,
+      })
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it("should not be able to fetch a bag of another user", async () => {
+    const user1 = makeUser();
+    await usersRepository.create(user1);
+
+    const user2 = makeUser();
+    await usersRepository.create(user2);
+
+    const bag = makeBag({ user_id: user1.id });
+    await repositories.bags.create(bag);
+
+    await expect(() =>
+      sut.execute({
+        bag_id: bag.id.value,
+        user_id: user2.id.value,
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });

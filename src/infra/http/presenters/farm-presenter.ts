@@ -11,9 +11,10 @@ export class FarmPresenter {
     return {
       id: farm.id.value,
       name: farm.name,
-      caf: farm.caf,
       status: farm.status,
+      tally: farm.tally,
       tax: farm.tax,
+      description: farm.description,
       admin,
       created_at: farm.created_at,
       updated_at: farm.updated_at,

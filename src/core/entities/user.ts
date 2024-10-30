@@ -92,6 +92,10 @@ export class User extends Entity<UserProps> {
     });
   }
 
+  get admin() {
+    return this.props.roles.includes("ADMIN");
+  }
+
   static create(props: Optional<UserProps, "password" | "verified_at">) {
     const user = new User({
       ...props,

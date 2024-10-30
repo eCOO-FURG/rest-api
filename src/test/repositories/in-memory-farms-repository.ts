@@ -19,7 +19,7 @@ export class InMemoryFarmsRepository implements FarmsRepository {
   constructor(private inMemoryUsersRepository: InMemoryUsersRepository) {}
 
   async search<T extends RepositoryResponse>(
-    { id, admin, name, caf }: FarmsRepositorySearchRequest,
+    { id, admin, name, tally }: FarmsRepositorySearchRequest,
     type: T
   ): Promise<FarmsRepositoryResponse<T> | null> {
     const farm = this.items.find((item) => {
@@ -27,7 +27,7 @@ export class InMemoryFarmsRepository implements FarmsRepository {
         (!id || item.id.equals(id)) &&
         (!admin?.id || item.admin_id.equals(admin.id)) &&
         (!name || item.name.includes(name)) &&
-        (!caf || item.caf === caf)
+        (!tally || item.tally === tally)
       );
     });
 
@@ -100,5 +100,13 @@ export class InMemoryFarmsRepository implements FarmsRepository {
     const itemIndex = this.items.findIndex((item) => item.id.equals(farm.id));
 
     this.items[itemIndex] = farm;
+  }
+
+  async findById(id: string): Promise<Farm | null> {
+    const farm = this.items.find((item) => item.id.equals(id));
+
+    if (!farm) return null;
+
+    return farm;
   }
 }

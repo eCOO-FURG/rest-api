@@ -7,10 +7,11 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 
 export interface FarmProps extends EntityRequest {
   name: string;
-  caf: string;
+  tally: string;
   status: "ACTIVE" | "INACTIVE" | "PENDING";
   admin_id: UUID;
   tax: number;
+  description: string | null;
 }
 
 export class Farm extends Entity<FarmProps> {
@@ -18,8 +19,8 @@ export class Farm extends Entity<FarmProps> {
     return this.props.name;
   }
 
-  get caf() {
-    return this.props.caf;
+  get tally() {
+    return this.props.tally;
   }
 
   get status() {
@@ -30,12 +31,20 @@ export class Farm extends Entity<FarmProps> {
     return this.props.admin_id;
   }
 
+  get description(): string | null {
+    return this.props.description;
+  }
+
+  set description(value: string) {
+    this.props.description = value;
+  }
+
   set name(value: string) {
     this.props.name = value;
   }
 
-  set caf(value: string) {
-    this.props.caf = value;
+  set tally(value: string) {
+    this.props.tally = value;
   }
 
   set status(status: "ACTIVE" | "INACTIVE" | "PENDING") {
@@ -46,11 +55,12 @@ export class Farm extends Entity<FarmProps> {
     return this.props.tax;
   }
 
-  static create(props: Optional<FarmProps, "status" | "tax">) {
+  static create(props: Optional<FarmProps, "status" | "tax" | "description">) {
     const farm = new Farm({
       ...props,
       status: props.status ?? "PENDING",
       tax: props.tax ?? 20,
+      description: props.description ?? null,
     });
     return farm;
   }
