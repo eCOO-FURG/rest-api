@@ -24,7 +24,7 @@ export class ListBagsUseCase {
     private bagsRepository: BagsRepository
   ) {}
 
-  async execute({ cycle_id, ...props }: ListBagsUseCaseRequest) {
+  async execute({ cycle_id, statuses, ...props }: ListBagsUseCaseRequest) {
     const cycle = await this.cyclesRepository.findById(cycle_id);
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
@@ -35,6 +35,7 @@ export class ListBagsUseCase {
         cycle: {
           id: cycle_id,
         },
+        statuses: statuses ? statuses.join(",") : undefined,
         since: mostPast(cycle.order),
       },
       "aggregate"

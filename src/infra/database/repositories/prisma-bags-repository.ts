@@ -21,7 +21,7 @@ import { PrismaBagAggregateMapper } from "@/infra/database/mappers/prisma-bag-ag
 import { PrismaBagMergeMapper } from "@/infra/database/mappers/prisma-bag-merge-mapper";
 
 // Libs
-import { Prisma } from "@prisma/client";
+import { BAG_STATUS, Prisma } from "@prisma/client";
 
 export class PrismaBagsRepository implements BagsRepository {
   async search<T extends RepositoryResponse = "entity">(
@@ -87,9 +87,7 @@ export class PrismaBagsRepository implements BagsRepository {
   ): Promise<BagsRepositoryResponse<T>[]> {
     const where: Prisma.BagWhereInput = {
       cycle,
-      status : {
-        in: statuses
-      },
+      status: statuses ? { in: statuses.split(",") as BAG_STATUS[] } : undefined,
       customer: {
         OR: [
           {

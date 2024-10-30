@@ -16,10 +16,9 @@ export const listBagsSchema = {
     page: z.coerce.number().openapi({ description: "Página da listagem." }),
     cycle_id: z.string().uuid().openapi({ description: "Ciclo da busca." }),
     statuses: z
-      .enum(["PENDING", "SEPARATED", "DISPATCHED", "RECEIVED", "CANCELLED", "DEFERRED"])
-      .array()
+      .string()
       .optional()
-      .openapi({ type: "array", items: { type: "string" }, description: "Filtro de status." }),
+      .openapi({ description: "Filtro de status, separados por vírgula." }),
     name: z
       .string()
       .optional()
@@ -44,7 +43,16 @@ export async function listBagsController(
       cycle_id,
       page,
       name,
-      statuses,
+      statuses: statuses
+        ? statuses.split(",").map((status) => {
+            if (
+              ["PENDING", "SEPARATED", "DISPATCHED", "RECEIVED", "CANCELLED", "DEFERRED"].includes(status)
+            ) {
+              return status as "PENDING" | "SEPARATED" | "DISPATCHED" | "RECEIVED" | "CANCELLED" | "DEFERRED";
+            }
+            throw new Error(`Invalid status: ${status}`);
+          })
+        : undefined,
     });
 
     return response
