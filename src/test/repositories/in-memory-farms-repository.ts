@@ -16,7 +16,7 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 export class InMemoryFarmsRepository implements FarmsRepository {
   items: Farm[] = [];
 
-  constructor(private inMemoryUsersRepository: InMemoryUsersRepository) {}
+  constructor (private inMemoryUsersRepository: InMemoryUsersRepository) {}
 
   async search<T extends RepositoryResponse>(
     { id, admin, name, caf }: FarmsRepositorySearchRequest,

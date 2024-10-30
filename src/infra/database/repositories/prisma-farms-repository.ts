@@ -17,6 +17,7 @@ import { PrismaFarmAggregateMapper } from "@/infra/database/mappers/prisma-farm-
 import { Prisma } from "@prisma/client";
 
 export class PrismaFarmsRepository implements FarmsRepository {
+  
   async search<T extends RepositoryResponse>(
     filters: FarmsRepositorySearchRequest,
     type: T

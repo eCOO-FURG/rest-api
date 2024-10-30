@@ -35,6 +35,7 @@ import { listUserBagsController } from "@/infra/http/controllers/list-user-bags"
 import { openPaymentController } from "@/infra/http/controllers/open-payment";
 import { registerPaymentController } from "@/infra/http/controllers/register-payment";
 import { updatePaymentController } from "@/infra/http/controllers/update-payment";
+import { fetchUserFarmController } from "@/infra/http/controllers/fetch-user-farm";
 
 // Webhooks
 import { openPixWebhookListener } from "@/infra/http/webooks/open-pix";
@@ -59,6 +60,7 @@ router.post("/auth", authenticateController);
 router.post("/auth/otp", requestOtpController);
 
 // Fazendas
+router.get("/me/farm", ensureAuthenticated, ensureFarmAdmin, fetchUserFarmController)
 router.post("/farms", ensureAuthenticated, registerFarmController);
 router.get("/farms", ensureAuthenticated, ensureAdmin, listFarmsController);
 router.patch(
