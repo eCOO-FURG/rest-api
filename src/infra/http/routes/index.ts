@@ -37,7 +37,7 @@ import { registerPaymentController } from "@/infra/http/controllers/register-pay
 import { updatePaymentController } from "@/infra/http/controllers/update-payment";
 
 // Webhooks
-import { openPixWebhookListener } from "@/infra/http/webooks/open-pix";
+import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
