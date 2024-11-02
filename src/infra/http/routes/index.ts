@@ -60,7 +60,7 @@ router.post("/auth", authenticateController);
 router.post("/auth/otp", requestOtpController);
 
 // Fazendas
-router.get("/me/farm", ensureAuthenticated, ensureFarmAdmin, fetchUserFarmController)
+router.get("/farms/own", ensureAuthenticated, ensureFarmAdmin, fetchUserFarmController)
 router.post("/farms", ensureAuthenticated, registerFarmController);
 router.get("/farms", ensureAuthenticated, ensureAdmin, listFarmsController);
 router.patch(

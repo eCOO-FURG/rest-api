@@ -5,7 +5,7 @@ import container from "@/infra/container";
 import { NextFunction, Request, Response } from "express";
 
 // Use-cases
-import { FetchUserFarmUseCase } from "@/core/use-cases/fetch-user-farm";
+import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
 
 // Presenters
 import { FarmPresenter } from "@/infra/http/presenters/farm-presenter";
@@ -16,8 +16,8 @@ export async function fetchUserFarmController(
   next: NextFunction
 ) {
   try {
-    const fetchUserFarmUseCase = container.resolve<FetchUserFarmUseCase>(
-      "fetchUserFarmUseCase"
+    const fetchUserFarmUseCase = container.resolve<FetchFarmUseCase>(
+      "fetchFarmUseCase"
     );
 
     const farm_id = request.farm_id;

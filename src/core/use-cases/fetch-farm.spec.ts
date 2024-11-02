@@ -3,7 +3,7 @@ import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-rep
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 
 // Use-cases
-import { FetchUserFarmUseCase } from "@/core/use-cases/fetch-user-farm";
+import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
 
 // Test
 import { makeUser } from "@/test/factories/make-user";
@@ -15,14 +15,14 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 let usersRepository: InMemoryUsersRepository;
 let farmsRepository: InMemoryFarmsRepository;
 
-let sut: FetchUserFarmUseCase;
+let sut: FetchFarmUseCase;
 
 describe("Fetch farm", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
     farmsRepository = new InMemoryFarmsRepository(usersRepository);
 
-    sut = new FetchUserFarmUseCase(farmsRepository);
+    sut = new FetchFarmUseCase(farmsRepository);
   })
 
   it("should be able to fetch a farm", async () => {
@@ -32,7 +32,7 @@ describe("Fetch farm", () => {
     const farm = makeFarm({
       admin_id: user.id,
     });
-    
+
     await farmsRepository.create(farm);
 
     const response = await sut.execute({ farm_id: farm.id.value });
@@ -43,7 +43,7 @@ describe("Fetch farm", () => {
   it("should not be able to fetch a farm if the farm does not exist", async () => {
     await expect(() =>
       sut.execute({
-        farm_id: 'timoteo'
+        farm_id: '1234'
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   })

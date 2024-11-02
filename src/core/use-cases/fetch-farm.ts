@@ -4,16 +4,16 @@ import { FarmsRepository } from "@/core/repositories/farms-repository";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
-interface FetchUserFarmUseCaseRequest {
+interface FetchFarmUseCaseRequest {
   farm_id: string;
 }
 
-export class FetchUserFarmUseCase {
+export class FetchFarmUseCase {
   constructor (
     private farmsRepository: FarmsRepository,
   ) {}
 
-  async execute({ farm_id }: FetchUserFarmUseCaseRequest) {
+  async execute({ farm_id }: FetchFarmUseCaseRequest) {
     const farm = await this.farmsRepository.search({
       id: farm_id,
     }, "aggregate");

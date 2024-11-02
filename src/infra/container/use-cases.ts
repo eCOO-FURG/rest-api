@@ -34,7 +34,7 @@ import { ListBagsUseCase } from "@/core/use-cases/list-bags";
 import { OpenPaymentUseCase } from "@/core/use-cases/open-payment";
 import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
 import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
-import { FetchUserFarmUseCase } from "@/core/use-cases/fetch-user-farm";
+import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -131,8 +131,8 @@ export default (container: AwilixContainer) => {
     fetchProfileUseCase: asFunction(
       ({ usersRepository }) => new FetchProfileUseCase(usersRepository)
     ),
-    fetchUserFarmUseCase: asFunction(
-      ({ farmsRepository }) => new FetchUserFarmUseCase(farmsRepository)
+    fetchFarmUseCase: asFunction(
+      ({ farmsRepository }) => new FetchFarmUseCase(farmsRepository)
     ),
     requestOtpUseCase: asFunction(
       ({ usersRepository, otpProvider, otpsRepository }) =>
