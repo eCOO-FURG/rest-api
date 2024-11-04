@@ -8,12 +8,22 @@ import container from "@/infra/container";
 // Use-cases
 import { HandleBoxStatusUseCase } from "@/core/use-cases/handle-box-status";
 
+// Validations
+import { notEmpty } from "@/infra/http/validation/not-empty";
+
 export const handleBoxStatusSchema = {
   route: z.object({
     box_id: z.string().uuid(),
   }),
   body: z.object({
-    status: z.enum(["RECEIVED", "CANCELLED"]),
+    orders: z
+      .array(
+        z.object({
+          id: z.string().uuid(),
+          status: z.enum(["RECEIVED", "CANCELLED"]),
+        })
+      )
+      .refine((data) => notEmpty.validation(data), notEmpty.warning),
   }),
 };
 
@@ -25,7 +35,7 @@ export async function handleBoxStatusController(
   try {
     const { box_id } = handleBoxStatusSchema.route.parse(request.params);
 
-    const { status } = handleBoxStatusSchema.body.parse(request.body);
+    const { orders } = handleBoxStatusSchema.body.parse(request.body);
 
     const handleBoxStatusUseCase = container.resolve<HandleBoxStatusUseCase>(
       "handleBoxStatusUseCase"
@@ -33,7 +43,7 @@ export async function handleBoxStatusController(
 
     await handleBoxStatusUseCase.execute({
       box_id,
-      status,
+      items: orders,
     });
 
     return response.sendStatus(204);

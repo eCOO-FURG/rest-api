@@ -8,22 +8,12 @@ import { BoxMerge } from "@/core/entities/merged/box-merge";
 
 export interface BoxesRepositorySearchRequest {
   id?: string;
-  catalog?: {
-    id?: string;
-    farm_id?: string;
-  };
+  catalog?: { id?: string; farm_id?: string };
   since?: Date;
 }
 
 export interface BoxesRepositorySearchManyRequest {
-  catalog?: {
-    cycle?: {
-      id?: string;
-    };
-    farm?: {
-      name?: string;
-    };
-  };
+  catalog?: { cycle?: { id?: string }; farm?: { name?: string } };
   page?: number;
 }
 

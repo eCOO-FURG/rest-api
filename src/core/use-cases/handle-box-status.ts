@@ -7,7 +7,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 interface HandleBoxStatusUseCaseRequest {
   box_id: string;
-  status: "RECEIVED" | "CANCELLED";
+  items: { id: string; status: "RECEIVED" | "CANCELLED" }[];
 }
 
 export class HandleBoxStatusUseCase {
@@ -16,12 +16,10 @@ export class HandleBoxStatusUseCase {
     private ordersRepository: OrdersRepository
   ) {}
 
-  async execute({ box_id, status }: HandleBoxStatusUseCaseRequest) {
+  async execute({ box_id, items }: HandleBoxStatusUseCaseRequest) {
     const box = await this.boxesRepository.search({ id: box_id }, "entity");
 
     if (!box) throw new ResourceNotFoundError("Caixa", box_id);
-
-    box.status = "VERIFIED";
 
     const orders = await this.ordersRepository.searchMany(
       { box: { id: box_id } },
@@ -29,7 +27,13 @@ export class HandleBoxStatusUseCase {
     );
 
     for (const order of orders) {
-      order.status = status;
+      const item = items.find((item) => item.id === order.id.value);
+
+      if (!item) throw new ResourceNotFoundError("Pedido", order.id.value);
+
+      if (order.status === "PENDING") box.verified++;
+
+      order.status = item.status;
     }
 
     await Promise.all([

@@ -8,7 +8,7 @@ export class BoxPresenter {
   static toHttp(box: BoxAggregate) {
     return {
       id: box.id.value,
-      status: box.status,
+      verified: box.verified,
       catalog: CatalogPresenter.toHttp(box.catalog),
       created_at: box.created_at,
       updated_at: box.updated_at,
