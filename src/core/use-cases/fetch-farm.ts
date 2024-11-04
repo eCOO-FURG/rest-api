@@ -9,17 +9,18 @@ interface FetchFarmUseCaseRequest {
 }
 
 export class FetchFarmUseCase {
-  constructor (
-    private farmsRepository: FarmsRepository,
-  ) {}
+  constructor(private farmsRepository: FarmsRepository) {}
 
   async execute({ farm_id }: FetchFarmUseCaseRequest) {
-    const farm = await this.farmsRepository.search({
-      id: farm_id,
-    }, "aggregate");
+    const farm = await this.farmsRepository.search(
+      {
+        id: farm_id,
+      },
+      "merged"
+    );
 
     if (!farm) throw new ResourceNotFoundError("Fazenda do", farm_id);
 
-    return { farm }
+    return { farm };
   }
 }
