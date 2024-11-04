@@ -12,8 +12,8 @@ export class BoxAggregate extends Entity<BoxAggregateProps> {
     return this.props.catalog;
   }
 
-  get status() {
-    return this.props.status;
+  get verified() {
+    return this.props.verified;
   }
 
   static create(props: BoxAggregateProps) {
