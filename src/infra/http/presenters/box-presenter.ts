@@ -9,6 +9,7 @@ export class BoxPresenter {
     return {
       id: box.id.value,
       verified: box.verified,
+      status: box.status,
       catalog: CatalogPresenter.toHttp(box.catalog),
       created_at: box.created_at,
       updated_at: box.updated_at,

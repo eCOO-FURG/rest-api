@@ -22,7 +22,7 @@ export class HandleBoxStatusUseCase {
     if (!box) throw new ResourceNotFoundError("Caixa", box_id);
 
     const orders = await this.ordersRepository.searchMany(
-      { box: { id: box_id } },
+      { box: { id: box.id.value } },
       "entity"
     );
 
@@ -35,6 +35,8 @@ export class HandleBoxStatusUseCase {
 
       order.status = item.status;
     }
+
+    if (box.verified === orders.length) box.status = "VERIFIED";
 
     await Promise.all([
       this.boxesRepository.update(box),

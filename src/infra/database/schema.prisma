@@ -249,9 +249,15 @@ model Payment {
   @@map("payments")
 }
 
+enum BOX_STATUS {
+  PENDING
+  VERIFIED
+}
+
 model Box {
-  id       String @id @default(uuid())
+  id       String     @id @default(uuid())
   verified Int
+  status   BOX_STATUS
 
   catalog_id String  @unique
   catalog    Catalog @relation(fields: [catalog_id], references: [id])

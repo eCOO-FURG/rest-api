@@ -17,6 +17,14 @@ export class BoxMerge extends Entity<BoxMergeProps> {
     return this.props.verified;
   }
 
+  set verified(value: number) {
+    this.props.verified = value;
+  }
+
+  set status(value: BoxMergeProps["status"]) {
+    this.props.status = value;
+  }
+
   get orders() {
     return this.props.orders;
   }

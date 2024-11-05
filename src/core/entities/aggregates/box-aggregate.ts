@@ -16,6 +16,10 @@ export class BoxAggregate extends Entity<BoxAggregateProps> {
     return this.props.verified;
   }
 
+  get status() {
+    return this.props.status;
+  }
+
   static create(props: BoxAggregateProps) {
     const box = new BoxAggregate(props);
     return box;
