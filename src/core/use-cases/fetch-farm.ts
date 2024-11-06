@@ -16,7 +16,7 @@ export class FetchFarmUseCase {
       {
         id: farm_id,
       },
-      "merged"
+      "aggregate"
     );
 
     if (!farm) throw new ResourceNotFoundError("Fazenda do", farm_id);
