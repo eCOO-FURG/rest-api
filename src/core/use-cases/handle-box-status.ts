@@ -26,10 +26,10 @@ export class HandleBoxStatusUseCase {
       "entity"
     );
 
-    for (const order of orders) {
-      const item = items.find((item) => item.id === order.id.value);
+    for (const item of items) {
+      const order = orders.find((order) => order.id.equals(item.id));
 
-      if (!item) throw new ResourceNotFoundError("Pedido", order.id.value);
+      if (!order) throw new ResourceNotFoundError("Pedido", item.id);
 
       if (order.status === "PENDING") box.verified++;
 
