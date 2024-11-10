@@ -8,6 +8,9 @@ import { OrderProductsUseCase } from "@/core/use-cases/order-products";
 // Container
 import container from "@/infra/container";
 
+// Presenters
+import { BagMergePresenter } from "@/infra/http/presenters/bag-merge-presenter";
+
 export const orderProductsSchema = {
   body: z.object({
     bag_id: z.string().optional(),
@@ -47,7 +50,7 @@ export async function orderProductsController(
       "orderPoductsUseCase"
     );
 
-    await orderProductsUseCase.execute({
+    const { bag } = await orderProductsUseCase.execute({
       bag_id,
       user_id: request.user_id,
       cycle_id,
@@ -55,7 +58,7 @@ export async function orderProductsController(
       request: orders,
     });
 
-    return response.sendStatus(201);
+    return response.status(200).send(BagMergePresenter.toHttp(bag));
   } catch (error) {
     next(error);
   }

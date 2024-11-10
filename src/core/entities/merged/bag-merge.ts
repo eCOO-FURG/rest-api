@@ -4,6 +4,9 @@ import { BagAggregateProps } from "@/core/entities/aggregates/bag-aggregate";
 import { OrderMerge } from "@/core/entities/merged/order-merge";
 import { Payment } from "@/core/entities/payment";
 
+// Types
+import { Optional } from "@/core/types/optional";
+
 interface BagMergeProps extends BagAggregateProps {
   orders: OrderMerge[];
   payments: Payment[];
@@ -64,8 +67,15 @@ export class BagMerge extends Entity<BagMergeProps> {
     return pending;
   }
 
-  static create(props: BagMergeProps) {
-    const bag = new BagMerge(props);
+  static create(
+    props: Optional<BagMergeProps, "orders" | "payments" | "status">
+  ) {
+    const bag = new BagMerge({
+      ...props,
+      orders: [],
+      payments: [],
+      status: "PENDING",
+    });
     return bag;
   }
 }

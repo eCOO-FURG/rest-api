@@ -4,7 +4,9 @@ import { Bag } from "@/core/entities/bag";
 import { Order } from "@/core/entities/order";
 import { Box } from "@/core/entities/box";
 import { Address } from "@/core/entities/address";
+import { User } from "@/core/entities/user";
 import { UUID } from "@/core/entities/aggregates/uuid";
+import { BagMerge } from "@/core/entities/merged/bag-merge";
 
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
@@ -15,6 +17,7 @@ import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
 import { BoxesRepository } from "@/core/repositories/boxes-repository";
 import { AddressesRepository } from "@/core/repositories/addresses-repository";
+import { OrderMerge } from "@/core/entities/merged/order-merge";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -48,8 +51,8 @@ interface OrderProductsUseCaseRequest {
 
 interface UseBagRequest {
   bag_id?: string;
-  address_id: UUID | null;
-  user_id: UUID;
+  address: Address | null;
+  user: User;
   cycle: Cycle;
 }
 
@@ -91,7 +94,7 @@ export class OrderProductsUseCase {
 
     const offers = await this.offersRepository.searchMany(
       { ids: offersIds },
-      "aggregate"
+      "merged"
     );
 
     const destination = await this.useAddress(address);
@@ -99,8 +102,8 @@ export class OrderProductsUseCase {
     const bag = await this.useBag({
       bag_id,
       cycle,
-      user_id: user.id,
-      address_id: destination ? destination.id : null,
+      user,
+      address: destination,
     });
 
     const orders: Order[] = [];
@@ -111,7 +114,7 @@ export class OrderProductsUseCase {
       if (!offer) throw new ResourceNotFoundError("Oferta", item.offer_id);
 
       const catalog = await this.catalogsRepository.search(
-        { id: offer.catalog_id.value },
+        { id: offer.catalog.id.value },
         "entity"
       );
 
@@ -139,9 +142,15 @@ export class OrderProductsUseCase {
       });
 
       orders.push(order);
+
+      const merge = OrderMerge.create({ ...order.props, offer });
+
+      bag.orders.push(merge);
     }
 
     await this.ordersRepository.createMany(orders);
+
+    return { bag };
   }
 
   private async useAddress(address: OrderProductsUseCaseRequest["address"]) {
@@ -164,9 +173,9 @@ export class OrderProductsUseCase {
     return destination;
   }
 
-  private async useBag({ bag_id, user_id, address_id, cycle }: UseBagRequest) {
+  private async useBag({ bag_id, user, address, cycle }: UseBagRequest) {
     if (bag_id) {
-      const bag = await this.bagsRepository.search({ id: bag_id }, "entity");
+      const bag = await this.bagsRepository.search({ id: bag_id }, "merged");
 
       if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 
@@ -175,12 +184,12 @@ export class OrderProductsUseCase {
 
     const found = await this.bagsRepository.search(
       {
-        user: { id: user_id.value },
+        user: { id: user.id.value },
         cycle: { id: cycle.id.value },
-        address: address_id ? { id: address_id.value } : null,
+        address: address ? { id: address.id.value } : null,
         since: mostPast(cycle.order),
       },
-      "entity"
+      "merged"
     );
 
     if (found) return found;
@@ -189,15 +198,15 @@ export class OrderProductsUseCase {
     const code = await this.otpGenerator.generate();
 
     const bag = Bag.create({
-      user_id,
+      user_id: user.id,
       cycle_id: cycle.id,
-      address_id,
+      address_id: address ? address.id : null,
       code: `${date}-${code}`,
     });
 
     await this.bagsRepository.create(bag);
 
-    return bag;
+    return BagMerge.create({ ...bag.props, address, user });
   }
 
   private async useBox(catalog_id: UUID) {
