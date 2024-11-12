@@ -72,9 +72,9 @@ export class BagMerge extends Entity<BagMergeProps> {
   ) {
     const bag = new BagMerge({
       ...props,
-      orders: [],
-      payments: [],
-      status: "PENDING",
+      orders: props.orders ?? [],
+      payments: props.payments ?? [],
+      status: props.status ?? "PENDING",
     });
     return bag;
   }
