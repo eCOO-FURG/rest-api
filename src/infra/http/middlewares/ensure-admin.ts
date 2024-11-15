@@ -7,28 +7,37 @@ import container from "@/infra/container";
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
 
-export async function ensureAdmin(
+export type AdminRoles = "BROKER" | "MANAGER";
+
+export const ensureAdmin = (
+  roles: [AdminRoles, ...AdminRoles[]]
+): ((
   request: Request,
   response: Response,
   next: NextFunction
-) {
-  const user_id = request.user_id;
+) => Promise<void>) => {
+  return async (request: Request, response: Response, next: NextFunction) => {
+    const user_id = request.user_id;
 
-  const usersRepository = container.resolve<UsersRepository>("usersRepository");
+    const usersRepository =
+      container.resolve<UsersRepository>("usersRepository");
 
-  const user = await usersRepository.findById(user_id);
+    const user = await usersRepository.findById(user_id);
 
-  if (!user) {
-    return response
-      .status(401)
-      .send({ message: "Sessão expirada.", code: "session-expired" });
-  }
+    if (!user) {
+      response
+        .status(401)
+        .send({ message: "Sessão expirada.", code: "session-expired" });
+      return next();
+    }
 
-  if (!user.roles.includes("ADMIN")) {
-    return response
-      .status(401)
-      .send({ message: "Não autorizado.", code: "not-admin" });
-  }
+    if (!roles.some((role) => user.roles.includes(role))) {
+      response
+        .status(401)
+        .send({ message: "Não autorizado.", code: "not-admin" });
+      return next();
+    }
 
-  next();
-}
+    next();
+  };
+};
