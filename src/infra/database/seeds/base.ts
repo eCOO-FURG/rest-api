@@ -26,7 +26,7 @@ async function seed() {
       last_name: "CDD",
       email: "admin@ecoo.org.br",
       cpf: "",
-      roles: ["USER", "ADMIN"],
+      roles: ["USER", "BROKER", "MANAGER"],
       password: await hash(env.ECOO_EMAIL_PASSWORD, 8),
       phone: "",
       verified_at: new Date(),
