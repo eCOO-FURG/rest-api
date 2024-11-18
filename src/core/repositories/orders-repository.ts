@@ -29,7 +29,6 @@ export interface OrdersRepository {
     filters: OrdersRepositorySearchManyRequest,
     type: T
   ): Promise<OrdersRepositoryResponse<T>[]>;
-  count(filters: OrdersRepositorySearchRequest): Promise<number>;
   createMany(orders: Order[]): Promise<void>;
   updateMany(orders: Order[]): Promise<void>;
 }
