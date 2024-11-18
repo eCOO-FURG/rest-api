@@ -39,7 +39,7 @@ export class FetchPendingsUseCase {
   private async countFarms() {
     let farms = await this.cacheManager.get<number>("farms:pending");
 
-    if (!farms) {
+    if (farms == null) {
       farms = await this.farmsRepository.count({ status: "PENDING" });
 
       await this.cacheManager.set("farms:pending", farms);
@@ -55,7 +55,7 @@ export class FetchPendingsUseCase {
       `boxes:pending:${cycle_id}:${date}`
     );
 
-    if (!boxes) {
+    if (boxes == null) {
       boxes = await this.boxesRepository.count({ status: "PENDING" });
 
       await this.cacheManager.set(`boxes:pending:${cycle_id}:${date}`, boxes);

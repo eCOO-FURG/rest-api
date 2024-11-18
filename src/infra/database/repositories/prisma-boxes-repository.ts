@@ -134,4 +134,20 @@ export class PrismaBoxesRepository implements BoxesRepository {
     const data = PrismaBoxMapper.toPrisma(box);
     await prisma.box.update({ where: { id: box.id.value }, data });
   }
+
+  async count({
+    catalog,
+    id,
+    since,
+    status,
+  }: BoxesRepositorySearchRequest): Promise<number> {
+    return await prisma.box.count({
+      where: {
+        catalog,
+        id,
+        created_at: { gte: since },
+        status,
+      },
+    });
+  }
 }

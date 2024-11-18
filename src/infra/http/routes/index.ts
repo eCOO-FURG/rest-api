@@ -45,6 +45,7 @@ import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticat
 import { ensureFarmAdmin } from "@/infra/http/middlewares/ensure-farm-admin";
 import { ensureAdmin } from "@/infra/http/middlewares/ensure-admin";
 import { ensureIntegration } from "@/infra/http/middlewares/ensure-integration";
+import { fetchPendingsController } from "@/infra/http/controllers/fetch-pendings";
 
 export const router = Router();
 
@@ -60,7 +61,12 @@ router.post("/auth", authenticateController);
 router.post("/auth/otp", requestOtpController);
 
 // Fazendas
-router.get("/farms/own", ensureAuthenticated, ensureFarmAdmin, fetchUserFarmController)
+router.get(
+  "/farms/own",
+  ensureAuthenticated,
+  ensureFarmAdmin,
+  fetchUserFarmController
+);
 router.post("/farms", ensureAuthenticated, registerFarmController);
 router.get("/farms", ensureAuthenticated, ensureAdmin, listFarmsController);
 router.patch(
@@ -184,6 +190,14 @@ router.patch(
   ensureAuthenticated,
   ensureAdmin,
   updatePaymentController
+);
+
+// Pendências
+router.get(
+  "/pendings/:cycle_id",
+  ensureAuthenticated,
+  ensureAdmin,
+  fetchPendingsController
 );
 
 // Webhooks
