@@ -10,6 +10,15 @@ services:
       - "5432:5432"
     profiles: ["development", "deploy"]
 
+  cache:
+    container_name: ecoo-cache
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis:/data
+    profiles: ["development", "deploy"]
+
   smtp:
     container_name: ecoo-smtp
     image: rnwood/smtp4dev:v3
@@ -35,4 +44,10 @@ services:
     <<: *server
     depends_on:
       - smtp
+      - cache
+      - database
     profiles: ["development"]
+
+volumes:
+  redis:
+    driver: local

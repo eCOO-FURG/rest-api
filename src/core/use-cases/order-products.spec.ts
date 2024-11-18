@@ -34,6 +34,7 @@ import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-paymen
 
 // Services
 import { MockedOtpProvider } from "@/test/cryptography/mocked-otp-provider";
+import { makeFarm } from "@/test/factories/make-farm";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
@@ -63,8 +64,11 @@ let sut: OrderProductsUseCase;
 
 describe("order product", () => {
   beforeEach(() => {
+    usersRepository = new InMemoryUsersRepository();
     cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
+    farmsRepository = new InMemoryFarmsRepository(usersRepository);
+
     offersRepository = new InMemoryOffersRepository(
       productsRepository,
       catalogsRepository
@@ -76,11 +80,12 @@ describe("order product", () => {
     );
 
     offersRepository.inMemoryCatalogsRepository = catalogsRepository;
-    usersRepository = new InMemoryUsersRepository();
+
     ordersRepository = new InMemoryOrdersRepository(offersRepository);
-    farmsRepository = new InMemoryFarmsRepository(usersRepository);
+
     addressesRepository = new InMemoryAddressesRepository();
     paymentsRepository = new InMemoryPaymentsRepository();
+
     repositories = {
       users: usersRepository,
       products: productsRepository,
@@ -123,7 +128,10 @@ describe("order product", () => {
     const product = makeProduct({ pricing: "UNIT" });
     await repositories.products.create(product);
 
-    const catalog = makeCatalog({ cycle_id: cycle.id });
+    const farm = makeFarm({ admin_id: user.id });
+    await farmsRepository.create(farm);
+
+    const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id });
     await repositories.catalogs.create(catalog);
 
     const offer = makeOffer({
@@ -131,7 +139,6 @@ describe("order product", () => {
       catalog_id: catalog.id,
       amount: 10,
     });
-
     await repositories.offers.create(offer);
 
     await sut.execute({
@@ -172,7 +179,10 @@ describe("order product", () => {
     });
     await repositories.bags.create(bag);
 
-    const catalog = makeCatalog({ cycle_id: cycle.id });
+    const farm = makeFarm({ admin_id: user.id });
+    await farmsRepository.create(farm);
+
+    const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id });
     await repositories.catalogs.create(catalog);
 
     const offer = makeOffer({
@@ -302,7 +312,10 @@ describe("order product", () => {
     const product = makeProduct();
     await repositories.products.create(product);
 
-    const catalog = makeCatalog({ cycle_id: cycle.id });
+    const farm = makeFarm({ admin_id: user.id });
+    await farmsRepository.create(farm);
+
+    const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id });
     await repositories.catalogs.create(catalog);
 
     const offer = makeOffer({
@@ -337,7 +350,10 @@ describe("order product", () => {
     const product = makeProduct();
     await repositories.products.create(product);
 
-    const catalog = makeCatalog({ cycle_id: cycle.id });
+    const farm = makeFarm({ admin_id: user.id });
+    await farmsRepository.create(farm);
+
+    const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id });
     await repositories.catalogs.create(catalog);
 
     const offer = makeOffer({
@@ -369,7 +385,10 @@ describe("order product", () => {
     });
     await repositories.products.create(product);
 
-    const catalog = makeCatalog({ cycle_id: cycle.id });
+    const farm = makeFarm({ admin_id: user.id });
+    await farmsRepository.create(farm);
+
+    const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id });
     await repositories.catalogs.create(catalog);
 
     const offer = makeOffer({
