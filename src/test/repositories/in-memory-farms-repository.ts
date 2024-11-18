@@ -7,6 +7,7 @@ import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-rep
 import {
   FarmsRepository,
   FarmsRepositoryResponse,
+  FarmsRepositorySearchManyRequest,
   FarmsRepositorySearchRequest,
 } from "@/core/repositories/farms-repository";
 
@@ -16,10 +17,10 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 export class InMemoryFarmsRepository implements FarmsRepository {
   items: Farm[] = [];
 
-  constructor (private inMemoryUsersRepository: InMemoryUsersRepository) {}
+  constructor(private inMemoryUsersRepository: InMemoryUsersRepository) {}
 
   async search<T extends RepositoryResponse>(
-    { id, admin, name, tally }: FarmsRepositorySearchRequest,
+    { id, admin, name, tally, status }: FarmsRepositorySearchRequest,
     type: T
   ): Promise<FarmsRepositoryResponse<T> | null> {
     const farm = this.items.find((item) => {
@@ -27,7 +28,8 @@ export class InMemoryFarmsRepository implements FarmsRepository {
         (!id || item.id.equals(id)) &&
         (!admin?.id || item.admin_id.equals(admin.id)) &&
         (!name || item.name.includes(name)) &&
-        (!tally || item.tally === tally)
+        (!tally || item.tally === tally) &&
+        (!status || item.status === status)
       );
     });
 
@@ -50,11 +52,16 @@ export class InMemoryFarmsRepository implements FarmsRepository {
   }
 
   async searchMany<T extends RepositoryResponse = "entity">(
-    { page, name }: { page: number; name?: string },
+    { page, name, status, admin, id, tally }: FarmsRepositorySearchManyRequest,
     type = "entity"
   ): Promise<FarmsRepositoryResponse<T>[]> {
     const farms = this.items.filter(
-      (farm) => !name || farm.name.includes(name)
+      (farm) =>
+        (!name || farm.name.includes(name)) &&
+        (!status || farm.status === status) &&
+        (!admin?.id || farm.admin_id.equals(admin.id)) &&
+        (!id || farm.id.equals(id)) &&
+        (!tally || farm.tally === tally)
     );
 
     const slicedFarms = farms.slice((page - 1) * 20, page * 20);
@@ -108,5 +115,21 @@ export class InMemoryFarmsRepository implements FarmsRepository {
     if (!farm) return null;
 
     return farm;
+  }
+
+  async count({
+    status,
+    admin,
+    id,
+    tally,
+  }: FarmsRepositorySearchRequest): Promise<number> {
+    return this.items.filter((item) => {
+      return (
+        (!status || item.status === status) &&
+        (!admin?.id || item.admin_id.equals(admin.id)) &&
+        (!id || item.id.equals(id)) &&
+        (!tally || item.tally === tally)
+      );
+    }).length;
   }
 }
