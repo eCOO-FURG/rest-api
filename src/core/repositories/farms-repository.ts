@@ -9,13 +9,12 @@ export interface FarmsRepositorySearchRequest {
   id?: string;
   tally?: string;
   name?: string;
-  admin?: {
-    id?: string;
-  };
+  status?: "ACTIVE" | "INACTIVE" | "PENDING";
+  admin?: { id?: string };
 }
-export interface FarmsRepositorySearchManyRequest {
+export interface FarmsRepositorySearchManyRequest
+  extends FarmsRepositorySearchRequest {
   page: number;
-  name?: string;
 }
 
 export type FarmsRepositoryResponse<T extends RepositoryResponse> =
@@ -32,5 +31,6 @@ export interface FarmsRepository {
   ): Promise<FarmsRepositoryResponse<T>[]>;
   create(farm: Farm): Promise<void>;
   update(farm: Farm): Promise<void>;
+  count(filters: FarmsRepositorySearchRequest): Promise<number>;
   findById(id: string): Promise<Farm | null>;
 }
