@@ -16,6 +16,9 @@ import { MockedPixProvider } from "@/test/payment/mocked-pix-provider";
 // Env
 import { env } from "@/infra/env";
 
+// Cache
+import { RedisCacheManager } from "@/infra/cache/redis-cache-manager";
+
 export default (container: AwilixContainer) => {
   container.register({
     encrypter: asClass(BcrypterHasher).singleton(),
@@ -56,5 +59,6 @@ export default (container: AwilixContainer) => {
 
       return new MockedPixProvider();
     }),
+    cacheManager: asClass(RedisCacheManager),
   });
 };

@@ -1,7 +1,7 @@
 // Use-cases
 import { FetchCurrentCatalogUseCase } from "@/core/use-cases/fetch-current-catalog";
 
-// Test
+// Factories
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeCatalog } from "@/test/factories/make-catalog";

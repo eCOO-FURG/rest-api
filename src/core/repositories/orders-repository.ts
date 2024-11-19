@@ -6,13 +6,14 @@ import { OrderMerge } from "@/core/entities/merged/order-merge";
 // Types
 import { RepositoryResponse } from "@/core/types/repository-response";
 
-export interface OrdersRepositorySearchManyRequest {
-  bag?: {
-    id?: string;
-  };
-  box?: {
-    id?: string;
-  };
+export interface OrdersRepositorySearchRequest {
+  status?: Order["status"];
+  bag?: { id?: string };
+  box?: { id?: string };
+}
+
+export interface OrdersRepositorySearchManyRequest
+  extends OrdersRepositorySearchRequest {
   page?: number;
 }
 

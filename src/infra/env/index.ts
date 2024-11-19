@@ -8,6 +8,7 @@ const deploy = z.object({
   SERVER_URL: z.string().min(1),
   FRONT_URL: z.string().min(1),
   DATABASE_URL: z.string().min(1),
+  CACHE_MANAGER_URL: z.string().min(1),
   JWT_SECRET: z.string().min(1),
   SMTP_HOST: z.string().min(1),
   SMTP_FALLBACK_HOST: z.string().min(1),
