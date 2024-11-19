@@ -17,7 +17,6 @@ import { PrismaFarmAggregateMapper } from "@/infra/database/mappers/prisma-farm-
 import { Prisma } from "@prisma/client";
 
 export class PrismaFarmsRepository implements FarmsRepository {
-  
   async search<T extends RepositoryResponse>(
     filters: FarmsRepositorySearchRequest,
     type: T
@@ -116,5 +115,23 @@ export class PrismaFarmsRepository implements FarmsRepository {
     if (!farm) return null;
 
     return PrismaFarmMapper.toDomain(farm);
+  }
+
+  async count({
+    status,
+    admin,
+    id,
+    name,
+    tally,
+  }: FarmsRepositorySearchRequest): Promise<number> {
+    return await prisma.farm.count({
+      where: {
+        id,
+        status,
+        admin,
+        name,
+        tally,
+      },
+    });
   }
 }
