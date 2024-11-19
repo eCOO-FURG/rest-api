@@ -14,6 +14,15 @@ import { makeUser } from "@/test/factories/make-user";
 // Entities
 import { Farm } from "@/core/entities/farm";
 
+// Mocks
+import { uploadImage } from "@/infra/image/upload";
+
+vi.mock("@/infra/image/upload", () => ({
+  uploadImage: vi
+    .fn()
+    .mockResolvedValue("http://example.com/fake-image-url.jpg"),
+}));
+
 let usersRepository: InMemoryUsersRepository;
 
 let repositories: {
@@ -43,7 +52,10 @@ describe("create farm", () => {
       user_id: user.id.value,
       tally: "12345678",
       name: "Fazenda Feliz",
+      image: Buffer.from("fake-image-buffer"),
     });
+
+    expect(uploadImage).toHaveBeenCalledWith(Buffer.from("fake-image-buffer"));
   });
 
   it("should not be able to create two farms with the same tally", async () => {
@@ -59,6 +71,7 @@ describe("create farm", () => {
       admin_id: user1.id,
       tally,
       name: "Fazenda Triste",
+      image_url: "",
     });
 
     await repositories.farm.create(farm);
@@ -68,6 +81,7 @@ describe("create farm", () => {
         user_id: user2.id.value,
         tally,
         name: "Fazenda Melancólica",
+        image: Buffer.from("fake-image-buffer"),
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
@@ -80,6 +94,7 @@ describe("create farm", () => {
       admin_id: user.id,
       tally: "12345678",
       name: "Fazenda Triste",
+      image_url: "",
     });
 
     await repositories.farm.create(farm);
@@ -89,6 +104,7 @@ describe("create farm", () => {
         user_id: user.id.value,
         tally: "34567890",
         name: "Fazenda Alegre",
+        image: Buffer.from("fake-image-buffer"),
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });

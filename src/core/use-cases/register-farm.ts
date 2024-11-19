@@ -9,10 +9,14 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { FarmsRepository } from "@/core/repositories/farms-repository";
 import { UsersRepository } from "@/core/repositories/users-repository";
 
+// Services
+import { uploadImage } from "@/infra/image/upload";
+
 interface RegisterFarmUseCaseRequest {
   user_id: string;
   tally: string;
   name: string;
+  image?: Buffer;
 }
 
 export class RegisterFarmUseCase {
@@ -21,7 +25,7 @@ export class RegisterFarmUseCase {
     private farmRepository: FarmsRepository
   ) {}
 
-  async execute({ user_id, tally, name }: RegisterFarmUseCaseRequest) {
+  async execute({ user_id, tally, name, image }: RegisterFarmUseCaseRequest) {
     const user = await this.usersRepository.findById(user_id);
 
     if (!user) {
@@ -46,11 +50,14 @@ export class RegisterFarmUseCase {
       throw new ResourceAlreadyExistsError("Agronegócio de", user_id);
     }
 
+    const image_url = image ? await uploadImage(image) : null;
+
     const farm = Farm.create({
       admin_id: user.id,
       tally,
       name,
       description: "",
+      image_url,
     });
 
     await this.farmRepository.create(farm);

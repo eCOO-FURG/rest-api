@@ -77,6 +77,7 @@ model Farm {
   tally       String      @unique
   tax         Float
   description String?
+  image_url   String?
   status      FARM_STATUS @default(PENDING)
 
   admin_id String @unique

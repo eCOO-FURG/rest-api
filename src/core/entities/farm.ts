@@ -12,6 +12,7 @@ export interface FarmProps extends EntityRequest {
   admin_id: UUID;
   tax: number;
   description: string | null;
+  image_url: string | null;
 }
 
 export class Farm extends Entity<FarmProps> {
@@ -35,6 +36,10 @@ export class Farm extends Entity<FarmProps> {
     return this.props.description;
   }
 
+  get image_url(): string | null {
+    return this.props.image_url;
+  }
+
   set description(value: string) {
     this.props.description = value;
   }
@@ -51,6 +56,10 @@ export class Farm extends Entity<FarmProps> {
     this.props.status = status;
   }
 
+  set image_url(value: string) {
+    this.props.image_url = value;
+  }
+
   get tax() {
     return this.props.tax;
   }
@@ -61,6 +70,7 @@ export class Farm extends Entity<FarmProps> {
       status: props.status ?? "PENDING",
       tax: props.tax ?? 20,
       description: props.description ?? null,
+      image_url: props.image_url ?? null,
     });
     return farm;
   }
