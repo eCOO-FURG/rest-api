@@ -8,12 +8,13 @@ import { BoxMerge } from "@/core/entities/merged/box-merge";
 
 export interface BoxesRepositorySearchRequest {
   id?: string;
-  catalog?: { id?: string; farm_id?: string };
+  status?: Box["status"];
+  catalog?: { id: string; cycle?: { id?: string }; farm?: { name?: string } };
   since?: Date;
 }
 
-export interface BoxesRepositorySearchManyRequest {
-  catalog?: { cycle?: { id?: string }; farm?: { name?: string } };
+export interface BoxesRepositorySearchManyRequest
+  extends BoxesRepositorySearchRequest {
   page?: number;
 }
 
@@ -29,6 +30,7 @@ export interface BoxesRepository {
     filters: BoxesRepositorySearchManyRequest,
     type: T
   ): Promise<BoxesRepositoryResponse<T>[]>;
+  count(filters: BoxesRepositorySearchRequest): Promise<number>;
   create(box: Box): Promise<void>;
   update(box: Box): Promise<void>;
 }

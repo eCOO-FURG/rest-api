@@ -37,6 +37,7 @@ import { updateUserController } from "@/infra/http/controllers/update-user";
 import { verifyUserController } from "@/infra/http/controllers/verify-user";
 import { updateFarmController } from "@/infra/http/controllers/update-farm";
 import { fetchFarmController } from "@/infra/http/controllers/fetch-farm";
+import { fetchPendingsController } from "@/infra/http/controllers/fetch-pendings";
 
 // Webhooks
 import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
@@ -189,6 +190,14 @@ router.patch(
   "/payments/:payment_id",
   ensureAuthenticated,
   updatePaymentController
+);
+
+// Pendências
+router.get(
+  "/pendings/:cycle_id",
+  ensureAuthenticated,
+  ensureRole(["BROKER"]),
+  fetchPendingsController
 );
 
 // Webhooks

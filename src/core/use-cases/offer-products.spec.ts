@@ -88,7 +88,7 @@ describe("offer products", () => {
     const product = makeProduct();
     await repositories.products.create(product);
 
-    const farm = makeFarm();
+    const farm = makeFarm({ status: "ACTIVE" });
     await repositories.farms.create(farm);
 
     await sut.execute({
@@ -152,7 +152,7 @@ describe("offer products", () => {
     const cycle = makeCycle();
     repositories.cycles.items.push(cycle);
 
-    const farm = makeFarm();
+    const farm = makeFarm({ status: "ACTIVE" });
     await repositories.farms.create(farm);
 
     await expect(() =>
@@ -170,7 +170,7 @@ describe("offer products", () => {
     const product = makeProduct();
     await repositories.products.create(product);
 
-    const farm = makeFarm();
+    const farm = makeFarm({ status: "ACTIVE" });
     await repositories.farms.create(farm);
 
     await expect(() =>
@@ -191,7 +191,7 @@ describe("offer products", () => {
     const product = makeProduct();
     await repositories.products.create(product);
 
-    const farm = makeFarm();
+    const farm = makeFarm({ status: "ACTIVE" });
     await repositories.farms.create(farm);
 
     const catalog = makeCatalog({ farm_id: farm.id, cycle_id: cycle.id });
@@ -223,7 +223,7 @@ describe("offer products", () => {
     const product = makeProduct({ pricing: "WEIGHT" });
     await repositories.products.create(product);
 
-    const farm = makeFarm();
+    const farm = makeFarm({ status: "ACTIVE" });
     await repositories.farms.create(farm);
 
     await expect(() =>
@@ -251,7 +251,7 @@ describe("offer products", () => {
     const product = makeProduct();
     await repositories.products.create(product);
 
-    const farm = makeFarm();
+    const farm = makeFarm({ status: "ACTIVE" });
     await repositories.farms.create(farm);
 
     await expect(() =>

@@ -36,6 +36,7 @@ import { registerPaymentSchema } from "@/infra/http/controllers/register-payment
 import { updatePaymentSchema } from "@/infra/http/controllers/update-payment";
 import { openPaymentSchema } from "@/infra/http/controllers/open-payment";
 import { updateFarmSchema } from "@/infra/http/controllers/update-farm";
+import { fetchPendingsSchema } from "@/infra/http/controllers/fetch-pendings";
 
 const tags = {
   users: "Usuários",
@@ -49,6 +50,7 @@ const tags = {
   cycles: "Ciclos",
   products: "Produtos",
   payments: "Pagamentos",
+  pendings: "Pendências",
 };
 
 const docs = createDocument({
@@ -506,6 +508,19 @@ const docs = createDocument({
           },
         },
         ...SwaggerMapper.toDocs(openPaymentSchema),
+      },
+    },
+
+    // Pendências
+    "/pendings/{cycle_id}": {
+      get: {
+        tags: [tags.pendings],
+        responses: {
+          "200": { description: "Pendências encontradas com sucesso." },
+          "404": { description: "Ciclo não encontrado: cycle-not-found" },
+        },
+        description: "Busca as pendências de um ciclo.",
+        ...SwaggerMapper.toDocs(fetchPendingsSchema),
       },
     },
   },

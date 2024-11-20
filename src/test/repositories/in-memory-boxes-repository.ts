@@ -29,17 +29,22 @@ export class InMemoryBoxesRepository implements BoxesRepository {
   ) {}
 
   async search<T extends RepositoryResponse>(
-    { catalog, id }: BoxesRepositorySearchRequest,
+    { catalog, id, status, since }: BoxesRepositorySearchRequest,
     type: T
   ): Promise<BoxesRepositoryResponse<T> | null> {
     const box = await find<Box>(
       this.items,
       async (item) =>
         (!id || item.id.equals(id)) &&
-        (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
-        (!catalog?.farm_id ||
+        (!status || item.status === status) &&
+        (!since || item.created_at >= since) &&
+        (!catalog ||
           !!(await this.inMemoryCatalogsRepository.search(
-            { id: item.catalog_id.value, farm: { id: catalog.farm_id } },
+            {
+              id: catalog?.id,
+              cycle: { id: catalog?.cycle?.id },
+              farm: { name: catalog?.farm?.name },
+            },
             "entity"
           )))
     );
@@ -130,5 +135,31 @@ export class InMemoryBoxesRepository implements BoxesRepository {
     if (!found) return;
 
     this.items[found] = box;
+  }
+
+  async count({
+    status,
+    catalog,
+    id,
+    since,
+  }: BoxesRepositorySearchRequest): Promise<number> {
+    const boxes = await filter<Box>(this.items, async (item) => {
+      return (
+        (!id || item.id.equals(id)) &&
+        (!status || item.status === status) &&
+        (!catalog ||
+          !!(await this.inMemoryCatalogsRepository.search(
+            {
+              id: catalog?.id,
+              cycle: { id: catalog?.cycle?.id },
+              farm: { name: catalog?.farm?.name },
+            },
+            "entity"
+          ))) &&
+        (!since || item.created_at >= since)
+      );
+    });
+
+    return boxes.length;
   }
 }

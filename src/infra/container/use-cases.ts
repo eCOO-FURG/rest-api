@@ -36,6 +36,7 @@ import { OpenPaymentUseCase } from "@/core/use-cases/open-payment";
 import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
 import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
 import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
+import { FetchPendingsUseCase } from "@/core/use-cases/fetch-pendings";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -216,8 +217,8 @@ export default (container: AwilixContainer) => {
         )
     ),
     listBagsUseCase: asFunction(
-      ({ bagsRepository, usersRepository }) =>
-        new ListBagsUseCase(bagsRepository, usersRepository)
+      ({ bagsRepository, usersRepository, cyclesRepository }) =>
+        new ListBagsUseCase(bagsRepository, usersRepository, cyclesRepository)
     ),
     requestPasswordUpdateUseCase: asFunction(
       ({ usersRepository }) => new RequestPasswordUpdateUseCase(usersRepository)
@@ -232,6 +233,15 @@ export default (container: AwilixContainer) => {
     ),
     updatePaymentUseCase: asFunction(
       ({ paymentsRepository }) => new UpdatePaymentUseCase(paymentsRepository)
+    ),
+    fetchPendingsUseCase: asFunction(
+      ({ cyclesRepository, farmsRepository, boxesRepository, cacheManager }) =>
+        new FetchPendingsUseCase(
+          cyclesRepository,
+          farmsRepository,
+          boxesRepository,
+          cacheManager
+        )
     ),
   });
 };
