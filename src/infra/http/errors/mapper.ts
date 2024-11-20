@@ -11,11 +11,16 @@ import { WrongCredentialsError } from "@/core/errors/wrong-credentials";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 import { UnauthorizedError } from "@/core/errors/unauthorized";
+import { SessionExpiredError } from "@/core/errors/session-expired";
 
 const mappedDomainErrors: {
   status: number;
   errors: (typeof DomainError)[];
 }[] = [
+  {
+    status: 401,
+    errors: [SessionExpiredError],
+  },
   {
     status: 400,
     errors: [WrongCredentialsError, WrongCredentialsError, InvalidWeightError],

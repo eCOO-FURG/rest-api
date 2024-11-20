@@ -13,11 +13,11 @@ import { CatalogPresenter } from "@/infra/http/presenters/catalog-presenter";
 import { OfferPresenter } from "@/infra/http/presenters/offer-presenter";
 
 export const fetchCurrentCatalogSchema = {
-  route: z.object({ cycle_id: z.string().uuid() }),
   query: z.object({
     page: z.coerce
       .number()
       .openapi({ description: "Página das ofertas do catálogo." }),
+    cycle_id: z.string().uuid(),
   }),
 };
 
@@ -27,11 +27,11 @@ export async function fetchCurrentCatalogController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id } = fetchCurrentCatalogSchema.route.parse(request.params);
-
     const farm_id = request.farm_id;
 
-    const { page } = fetchCurrentCatalogSchema.query.parse(request.query);
+    const { page, cycle_id } = fetchCurrentCatalogSchema.query.parse(
+      request.query
+    );
 
     const fetchCurrentCatalogUseCase =
       container.resolve<FetchCurrentCatalogUseCase>(
