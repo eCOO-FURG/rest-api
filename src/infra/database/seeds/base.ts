@@ -35,10 +35,10 @@ async function seedBase() {
       first_name: "Agente",
       last_name: "CDD",
       email: "agent@ecoo.org.br",
-      cpf: "00000000000",
+      cpf: "11111111111",
       roles: ["USER", "BROKER"],
       password: await hash(env.ECOO_EMAIL_PASSWORD, 8),
-      phone: "55555555555",
+      phone: "66666666666",
       verified_at: new Date(),
     },
   });

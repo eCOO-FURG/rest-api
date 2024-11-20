@@ -32,10 +32,10 @@ export async function seedDevelopment() {
       first_name: "Fazendeiro",
       last_name: "eCOO",
       email: "farmer@ecoo.org.br",
-      cpf: "00000000000",
+      cpf: "22222222222",
       roles: ["USER"],
       password: await hash(env.ECOO_EMAIL_PASSWORD, 8),
-      phone: "55555555555",
+      phone: "77777777777",
       verified_at: new Date(),
     },
   });
@@ -84,10 +84,10 @@ export async function seedDevelopment() {
       first_name: "Usuário",
       last_name: "APP",
       email: "user@ecoo.org.br",
-      cpf: "00000000000",
+      cpf: "33333333333",
       roles: ["USER"],
       password: await hash(env.ECOO_EMAIL_PASSWORD, 8),
-      phone: "55555555555",
+      phone: "88888888888",
       verified_at: new Date(),
       bags: {
         create: {

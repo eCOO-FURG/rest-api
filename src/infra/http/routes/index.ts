@@ -35,25 +35,25 @@ import { updateOfferController } from "@/infra/http/controllers/update-offer";
 import { updatePaymentController } from "@/infra/http/controllers/update-payment";
 import { updateUserController } from "@/infra/http/controllers/update-user";
 import { verifyUserController } from "@/infra/http/controllers/verify-user";
-import { updateFarmController } from "../controllers/update-farm";
+import { updateFarmController } from "@/infra/http/controllers/update-farm";
+import { fetchFarmController } from "@/infra/http/controllers/fetch-farm";
 
 // Webhooks
 import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
 
 // Middlewares
-import { ensureAdmin } from "@/infra/http/middlewares/ensure-admin";
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
-import { ensureFarmAdmin } from "@/infra/http/middlewares/ensure-farm-admin";
 import { ensureIntegration } from "@/infra/http/middlewares/ensure-integration";
+import { ensureRole } from "@/infra/http/middlewares/ensure-role";
 
 export const router = Router();
 
 // Usuários
 router.post("/users", registerController);
-router.patch("/users", ensureAuthenticated, updateUserController);
-router.get("/users/verify", verifyUserController);
+router.patch("/me", ensureAuthenticated, updateUserController);
+router.get("/me/verify", verifyUserController);
 router.get("/me", ensureAuthenticated, fetchProfileController);
-router.post("/users/password", requestPasswordUpdateController);
+router.post("/me/password", requestPasswordUpdateController);
 
 // Autenticação
 router.post("/auth", authenticateController);
@@ -63,26 +63,27 @@ router.post("/auth/otp", requestOtpController);
 router.get(
   "/farms/own",
   ensureAuthenticated,
-  ensureFarmAdmin,
+  ensureRole(["PRODUCER"]),
   fetchUserFarmController
 );
+router.get("/farms/:farm_id", ensureAuthenticated, fetchFarmController);
 router.post("/farms", ensureAuthenticated, registerFarmController);
 router.get(
   "/farms",
   ensureAuthenticated,
-  ensureAdmin(["BROKER", "MANAGER"]),
+  ensureRole(["BROKER", "MANAGER"]),
   listFarmsController
 );
 router.patch(
   "/farms/:farm_id",
   ensureAuthenticated,
-  ensureAdmin(["BROKER", "MANAGER"]),
+  ensureRole(["MANAGER"]),
   handleFarmStatusController
 );
 router.patch(
   "/farms",
   ensureAuthenticated,
-  ensureFarmAdmin,
+  ensureRole(["PRODUCER"]),
   updateFarmController
 );
 
@@ -93,27 +94,27 @@ router.post("/orders", ensureAuthenticated, orderProductsController);
 router.get(
   "/boxes",
   ensureAuthenticated,
-  ensureAdmin(["BROKER", "MANAGER"]),
+  ensureRole(["BROKER"]),
   listBoxesController
 );
 
 router.get(
   "/boxes/current",
   ensureAuthenticated,
-  ensureFarmAdmin,
+  ensureRole(["BROKER"]),
   fetchCurrentBoxController
 );
 router.get(
   "/boxes/:box_id",
   ensureAuthenticated,
-  ensureAdmin(["BROKER", "MANAGER"]),
+  ensureRole(["BROKER"]),
   fetchBoxController
 );
 
 router.patch(
   "/boxes/:box_id",
   ensureAuthenticated,
-  ensureAdmin(["BROKER", "MANAGER"]),
+  ensureRole(["BROKER"]),
   handleBoxStatusController
 );
 
@@ -121,19 +122,19 @@ router.patch(
 router.post(
   "/offers",
   ensureAuthenticated,
-  ensureFarmAdmin,
+  ensureRole(["PRODUCER"]),
   offerProductsController
 );
 router.patch(
   "/offers/:offer_id",
   ensureAuthenticated,
-  ensureFarmAdmin,
+  ensureRole(["PRODUCER"]),
   updateOfferController
 );
 router.delete(
   "/offers/:offer_id",
   ensureAuthenticated,
-  ensureFarmAdmin,
+  ensureRole(["PRODUCER", "BROKER"]),
   deleteOfferController
 );
 
@@ -141,15 +142,15 @@ router.delete(
 router.get("/catalogs", searchCatalogsController);
 router.get("/catalogs/:catalog_id", fetchCatalogController);
 router.get(
-  "/catalogs/current/:cycle_id",
+  "/catalogs/current",
   ensureAuthenticated,
-  ensureFarmAdmin,
+  ensureRole(["PRODUCER"]),
   fetchCurrentCatalogController
 );
 router.get(
-  "/catalogs/last/:cycle_id",
+  "/catalogs/last/",
   ensureAuthenticated,
-  ensureFarmAdmin,
+  ensureRole(["PRODUCER"]),
   fetchLastCatalogController
 );
 
@@ -157,47 +158,36 @@ router.get(
 router.get(
   "/bags/current",
   ensureAuthenticated,
-  ensureAdmin(["BROKER", "MANAGER"]),
+  ensureRole(["BROKER"]),
   listCurrentBagsController
 );
 router.get(
-  "/bags/report/:cycle_id",
+  "/bags/report",
   ensureAuthenticated,
-  ensureAdmin(["BROKER", "MANAGER"]),
+  ensureRole(["BROKER", "MANAGER"]),
   printDeliveriesReportController
 );
 router.patch(
   "/bags/:bag_id",
   ensureAuthenticated,
-  ensureAdmin(["BROKER", "MANAGER"]),
+  ensureRole(["BROKER"]),
   handleBagController
 );
 router.get("/bags/:bag_id", ensureAuthenticated, fetchBagController);
-router.get("/me/bags", ensureAuthenticated, listUserBagsController);
+router.get("/bags/own", ensureAuthenticated, listUserBagsController);
 
 // Ciclos
-router.get("/cycles", listCyclesController);
+router.get("/cycles", ensureAuthenticated, listCyclesController);
 
 // Produtos
-router.get(
-  "/products",
-  ensureAuthenticated,
-  ensureFarmAdmin,
-  listProductsController
-);
+router.get("/products", ensureAuthenticated, listProductsController);
 
 // Pagamentos
-router.post(
-  "/payments",
-  ensureAuthenticated,
-  ensureAdmin(["BROKER", "MANAGER"]),
-  registerPaymentController
-);
+router.post("/payments", ensureAuthenticated, registerPaymentController);
 router.post("/payments/open", ensureAuthenticated, openPaymentController);
 router.patch(
   "/payments/:payment_id",
   ensureAuthenticated,
-  ensureAdmin(["BROKER", "MANAGER"]),
   updatePaymentController
 );
 

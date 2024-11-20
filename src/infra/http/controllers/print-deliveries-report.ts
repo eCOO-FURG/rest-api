@@ -9,7 +9,7 @@ import { PrintDeliveriesReportUseCase } from "@/core/use-cases/print-deliveries-
 import container from "@/infra/container";
 
 export const printDeliveriesReportSchema = {
-  route: z.object({
+  query: z.object({
     cycle_id: z.string().uuid(),
   }),
 };
@@ -20,9 +20,7 @@ export async function printDeliveriesReportController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id } = printDeliveriesReportSchema.route.parse(
-      request.params
-    );
+    const { cycle_id } = printDeliveriesReportSchema.query.parse(request.query);
 
     const printDeliveriesReportUseCase =
       container.resolve<PrintDeliveriesReportUseCase>("printDeliveriesReport");

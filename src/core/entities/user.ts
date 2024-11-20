@@ -93,8 +93,8 @@ export class User extends Entity<UserProps> {
   }
 
   get admin() {
-    return (["MANAGER", "BROKER"] as Role[]).some((role: Role) =>
-      this.props.roles.includes(role)
+    return !!this.props.roles.find(
+      (role) => role === "MANAGER" || role === "BROKER"
     );
   }
 
