@@ -9,7 +9,9 @@ import { fetchBoxController } from "@/infra/http/controllers/fetch-box";
 import { fetchCatalogController } from "@/infra/http/controllers/fetch-catalog";
 import { fetchCurrentBoxController } from "@/infra/http/controllers/fetch-current-box";
 import { fetchCurrentCatalogController } from "@/infra/http/controllers/fetch-current-catalog";
+import { fetchFarmController } from "@/infra/http/controllers/fetch-farm";
 import { fetchLastCatalogController } from "@/infra/http/controllers/fetch-last-catalog";
+import { fetchPendingsController } from "@/infra/http/controllers/fetch-pendings";
 import { fetchProfileController } from "@/infra/http/controllers/fetch-profile";
 import { fetchUserFarmController } from "@/infra/http/controllers/fetch-user-farm";
 import { handleBagController } from "@/infra/http/controllers/handle-bag";
@@ -31,13 +33,11 @@ import { registerPaymentController } from "@/infra/http/controllers/register-pay
 import { requestOtpController } from "@/infra/http/controllers/request-otp";
 import { requestPasswordUpdateController } from "@/infra/http/controllers/request-password-update";
 import { searchCatalogsController } from "@/infra/http/controllers/search-catalogs";
+import { updateFarmController } from "@/infra/http/controllers/update-farm";
 import { updateOfferController } from "@/infra/http/controllers/update-offer";
 import { updatePaymentController } from "@/infra/http/controllers/update-payment";
 import { updateUserController } from "@/infra/http/controllers/update-user";
 import { verifyUserController } from "@/infra/http/controllers/verify-user";
-import { updateFarmController } from "@/infra/http/controllers/update-farm";
-import { fetchFarmController } from "@/infra/http/controllers/fetch-farm";
-import { fetchPendingsController } from "@/infra/http/controllers/fetch-pendings";
 
 // Webhooks
 import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
@@ -51,9 +51,9 @@ export const router = Router();
 
 // Usuários
 router.post("/users", registerController);
+router.get("/me", ensureAuthenticated, fetchProfileController);
 router.patch("/me", ensureAuthenticated, updateUserController);
 router.get("/me/verify", verifyUserController);
-router.get("/me", ensureAuthenticated, fetchProfileController);
 router.post("/me/password", requestPasswordUpdateController);
 
 // Autenticação
@@ -93,16 +93,9 @@ router.post("/orders", ensureAuthenticated, orderProductsController);
 
 // Caixas
 router.get(
-  "/boxes",
-  ensureAuthenticated,
-  ensureRole(["BROKER"]),
-  listBoxesController
-);
-
-router.get(
   "/boxes/current",
   ensureAuthenticated,
-  ensureRole(["BROKER"]),
+  ensureRole(["PRODUCER"]),
   fetchCurrentBoxController
 );
 router.get(
@@ -111,12 +104,17 @@ router.get(
   ensureRole(["BROKER"]),
   fetchBoxController
 );
-
 router.patch(
   "/boxes/:box_id",
   ensureAuthenticated,
   ensureRole(["BROKER"]),
   handleBoxStatusController
+);
+router.get(
+  "/boxes",
+  ensureAuthenticated,
+  ensureRole(["BROKER"]),
+  listBoxesController
 );
 
 // Ofertas
@@ -140,8 +138,6 @@ router.delete(
 );
 
 // Catalogos
-router.get("/catalogs", searchCatalogsController);
-router.get("/catalogs/:catalog_id", fetchCatalogController);
 router.get(
   "/catalogs/current",
   ensureAuthenticated,
@@ -154,6 +150,8 @@ router.get(
   ensureRole(["PRODUCER"]),
   fetchLastCatalogController
 );
+router.get("/catalogs", searchCatalogsController);
+router.get("/catalogs/:catalog_id", fetchCatalogController);
 
 // Sacolas
 router.get(
@@ -168,6 +166,7 @@ router.get(
   ensureRole(["BROKER", "MANAGER"]),
   printDeliveriesReportController
 );
+router.get("/bags/own", ensureAuthenticated, listUserBagsController);
 router.patch(
   "/bags/:bag_id",
   ensureAuthenticated,
@@ -175,7 +174,6 @@ router.patch(
   handleBagController
 );
 router.get("/bags/:bag_id", ensureAuthenticated, fetchBagController);
-router.get("/bags/own", ensureAuthenticated, listUserBagsController);
 
 // Ciclos
 router.get("/cycles", ensureAuthenticated, listCyclesController);

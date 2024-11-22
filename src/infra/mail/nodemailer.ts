@@ -5,8 +5,8 @@ import { Email } from "@/core/entities/email";
 import { Mailer, MailerLoadRequest } from "@/core/mail/mailer";
 
 // Libs
-import { Transporter } from "nodemailer";
 import { renderFile } from "ejs";
+import { Transporter } from "nodemailer";
 
 // Env
 import { env } from "@/infra/env";
@@ -46,7 +46,7 @@ export class Nodemailer implements Mailer {
   async load({ view, props }: MailerLoadRequest): Promise<string> {
     if (view == "welcome") {
       Object.assign(props, {
-        url: `${env.SERVER_URL}/users/verify?token=${props.token}`,
+        url: `${env.SERVER_URL}/me/verify?token=${props.token}`,
       });
     }
 
