@@ -86,7 +86,7 @@ const docs = createDocument({
         ...SwaggerMapper.toDocs(updateUserSchema),
       },
     },
-    "/users/verify": {
+    "/me/verify": {
       get: {
         tags: [tags.users],
         responses: {
@@ -103,7 +103,7 @@ const docs = createDocument({
         ...SwaggerMapper.toDocs(verifyUserSchema),
       },
     },
-    "/users/password": {
+    "/me/password": {
       post: {
         tags: [tags.users],
         responses: {
@@ -231,6 +231,15 @@ const docs = createDocument({
         description:
           "Atualiza o status de uma fazenda. Por padrão, toda fazenda é criada com o status PENDING. Podendo ser alterado para ACTIVE ou INACTIVE.",
         ...SwaggerMapper.toDocs(handleFarmStatusSchema),
+      },
+    },
+    "/farms/own": {
+      get: {
+        tags: [tags.farms],
+        responses: {
+          "200": { description: "Fazenda encontrada com sucesso." },
+        },
+        description: "Busca a fazenda do usuário logado.",
       },
     },
 
@@ -383,7 +392,7 @@ const docs = createDocument({
         ...SwaggerMapper.toDocs(fetchCatalogsSchema),
       },
     },
-    "/catalogs/last/{cycle_id}": {
+    "/catalogs/last": {
       get: {
         tags: [tags.catalogs],
         responses: {
@@ -397,7 +406,7 @@ const docs = createDocument({
         ...SwaggerMapper.toDocs(fetchLastCatalogSchema),
       },
     },
-    "/catalogs/current/{cycle_id}": {
+    "/catalogs/current": {
       get: {
         tags: [tags.catalogs],
         responses: {
@@ -444,7 +453,7 @@ const docs = createDocument({
         ...SwaggerMapper.toDocs(handleBagSchema),
       },
     },
-    "/bags/report/{cycle_id}": {
+    "/bags/report": {
       get: {
         tags: [tags.bags],
         responses: {

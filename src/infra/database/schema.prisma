@@ -11,7 +11,8 @@ datasource db {
 enum ROLE {
   PRODUCER
   USER
-  ADMIN
+  BROKER
+  MANAGER
 }
 
 model User {

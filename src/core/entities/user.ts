@@ -2,14 +2,14 @@
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
 // Types
-import { Optional } from "@/core/types/optional";
 import { OnRegisteredEvent } from "@/core/events/on-registered";
+import { Optional } from "@/core/types/optional";
 
 // Events
 import { DomainEvents } from "@/core/events/domain-events";
 import { OnUpdatePasswordRequestEvent } from "@/core/events/on-password-update-requested";
 
-export type Role = "USER" | "PRODUCER" | "ADMIN";
+export type Role = "USER" | "PRODUCER" | "MANAGER" | "BROKER";
 
 export interface UserProps extends EntityRequest {
   first_name: string;
@@ -93,7 +93,9 @@ export class User extends Entity<UserProps> {
   }
 
   get admin() {
-    return this.props.roles.includes("ADMIN");
+    return !!this.props.roles.find(
+      (role) => role === "MANAGER" || role === "BROKER"
+    );
   }
 
   static create(props: Optional<UserProps, "password" | "verified_at">) {

@@ -13,6 +13,7 @@ export class BagMergePresenter {
       paid: bag.paid(),
       price: bag.price(),
       status: bag.status,
+      code: bag.code,
       cycle_id: bag.cycle_id.value,
       address: AddressPresenter.toHttp(bag.address),
       user: UserPresenter.toHttp(bag.user),
