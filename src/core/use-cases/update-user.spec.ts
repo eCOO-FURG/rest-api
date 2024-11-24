@@ -98,4 +98,18 @@ describe("update user", () => {
 
     expect(isPasswordHashed).toBeTruthy();
   });
+
+  it("should be able to upload a user photo", async () => {
+    const user = makeUser();
+    await repositories.users.create(user);
+
+    const photo = Buffer.from("photo");
+
+    await sut.execute({ user_id: user.id.value, photo });
+
+    const updatedUser = repositories.users.items[0];
+
+    expect(updatedUser.photo).toBeTruthy();
+    expect(updatedUser.photo).toContain("temp/users");
+  });
 });

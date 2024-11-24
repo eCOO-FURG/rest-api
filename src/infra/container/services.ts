@@ -14,9 +14,12 @@ import { Cloudinary } from "@/infra/storage/cloudinary";
 
 // Mocks
 import { MockedPixProvider } from "@/test/payment/mocked-pix-provider";
+import { MockedStorage } from "@/test/storage/mocked-storage";
 
 // Env
 import { env } from "@/infra/env";
+
+const deploy = env.ENV === "production" || env.ENV === "staging";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -53,12 +56,15 @@ export default (container: AwilixContainer) => {
     }),
     pdfService: asClass(PuppeteerPDFService).singleton(),
     pixProvider: asFunction(() => {
-      if (env.ENV === "staging" || env.ENV === "production")
-        return new OpenPix();
+      if (deploy) return new OpenPix();
 
       return new MockedPixProvider();
     }),
     cacheManager: asClass(RedisCacheManager).singleton(),
-    storage: asClass(Cloudinary).singleton(),
+    storage: asFunction(() => {
+      if (deploy) return new Cloudinary();
+
+      return new MockedStorage();
+    }).singleton(),
   });
 };
