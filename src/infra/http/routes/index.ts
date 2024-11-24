@@ -56,7 +56,7 @@ router.get("/me", ensureAuthenticated, fetchProfileController);
 router.patch(
   "/me",
   ensureAuthenticated,
-  processFile("photo", { allowed: ["image/jpeg", "image/png"] }),
+  processFile("photo", { allowed: ["image/jpeg", "image/png"], size: 1 }),
   updateUserController
 );
 router.get("/me/verify", verifyUserController);

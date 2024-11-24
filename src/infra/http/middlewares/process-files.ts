@@ -1,7 +1,8 @@
 // Libraries
 import multer, { MulterError } from "multer";
 
-const FIVE_MEGABYTES = 5 * 1024 * 1024;
+// Utils
+import { toMb } from "@/infra/utils/to-mb";
 
 interface ProcessFileOptions {
   allowed?: string[];
@@ -13,9 +14,11 @@ function config(
   { size, allowed, max }: ProcessFileOptions,
   field: string
 ): multer.Options {
+  const fileSize = toMb(size ?? 5);
+
   return {
     storage: multer.memoryStorage(),
-    limits: { fileSize: size ?? FIVE_MEGABYTES, files: max ?? 5 },
+    limits: { fileSize, files: max ?? 5 },
     fileFilter: (_, file, callback) => {
       const ok = !allowed || allowed.includes(file.mimetype);
 
