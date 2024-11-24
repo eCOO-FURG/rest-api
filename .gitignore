@@ -8,5 +8,5 @@ node_modules
 src/test/storage/temp/
 
 # Packages
-# pnpm-lock.yaml
+pnpm-lock.yaml
 
