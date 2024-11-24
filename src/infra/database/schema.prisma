@@ -23,6 +23,7 @@ model User {
   email       String    @unique
   phone       String    @unique
   password    String?
+  photo       String?
   roles       ROLE[]    @default([USER])
   verified_at DateTime?
 

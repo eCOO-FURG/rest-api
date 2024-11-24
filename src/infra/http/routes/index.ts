@@ -46,13 +46,19 @@ import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
 import { ensureIntegration } from "@/infra/http/middlewares/ensure-integration";
 import { ensureRole } from "@/infra/http/middlewares/ensure-role";
+import { processFile } from "@/infra/http/middlewares/process-files";
 
 export const router = Router();
 
 // Usuários
 router.post("/users", registerController);
 router.get("/me", ensureAuthenticated, fetchProfileController);
-router.patch("/me", ensureAuthenticated, updateUserController);
+router.patch(
+  "/me",
+  ensureAuthenticated,
+  processFile("photo", { allowed: ["image/jpeg", "image/png"] }),
+  updateUserController
+);
 router.get("/me/verify", verifyUserController);
 router.post("/me/password", requestPasswordUpdateController);
 

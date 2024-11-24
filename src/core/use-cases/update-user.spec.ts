@@ -10,6 +10,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 // Services
 import { makeUser } from "@/test/factories/make-user";
 import { MockedEncrypter } from "@/test/cryptography/mocked-encrypter";
+import { MockedStorage } from "@/test/storage/mocked-storage";
 
 let repositories: {
   users: InMemoryUsersRepository;
@@ -17,6 +18,7 @@ let repositories: {
 
 let mocks: {
   encrypter: MockedEncrypter;
+  storage: MockedStorage;
 };
 
 let sut: UpdateUserUseCase;
@@ -29,9 +31,14 @@ describe("update user", () => {
 
     mocks = {
       encrypter: new MockedEncrypter(),
+      storage: new MockedStorage(),
     };
 
-    sut = new UpdateUserUseCase(repositories.users, mocks.encrypter);
+    sut = new UpdateUserUseCase(
+      repositories.users,
+      mocks.encrypter,
+      mocks.storage
+    );
   });
 
   it("should be able to update only one user field", async () => {

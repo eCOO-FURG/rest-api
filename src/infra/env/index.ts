@@ -20,6 +20,7 @@ const deploy = z.object({
   SENTRY_DSN: z.string().min(1),
   PIX_PROVIDER_API_KEY: z.string().min(1),
   INTEGRATIONS_AUTHORIZATION: z.string().min(1),
+  STORAGE_URL: z.string().min(1),
 });
 
 const development = deploy.omit({

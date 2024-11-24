@@ -20,6 +20,7 @@ export interface UserProps extends EntityRequest {
   password: string | null;
   roles: Role[];
   verified_at: Date | null;
+  photo: string | null;
 }
 
 export class User extends Entity<UserProps> {
@@ -43,7 +44,7 @@ export class User extends Entity<UserProps> {
     return this.props.phone;
   }
 
-  get password() {
+  get password(): string | null {
     return this.props.password;
   }
 
@@ -53,6 +54,10 @@ export class User extends Entity<UserProps> {
 
   get verified_at() {
     return this.props.verified_at;
+  }
+
+  get photo() {
+    return this.props.photo;
   }
 
   set first_name(value: string) {
@@ -75,9 +80,12 @@ export class User extends Entity<UserProps> {
     this.props.phone = value;
   }
 
-  protect(hash: string) {
-    this.props.password = hash;
-    this.touch();
+  set photo(value: string | null) {
+    this.props.photo = value;
+  }
+
+  set password(value: string) {
+    this.props.password = value;
   }
 
   verify() {
@@ -98,11 +106,14 @@ export class User extends Entity<UserProps> {
     );
   }
 
-  static create(props: Optional<UserProps, "password" | "verified_at">) {
+  static create(
+    props: Optional<UserProps, "password" | "verified_at" | "photo">
+  ) {
     const user = new User({
       ...props,
       password: props.password ?? null,
       verified_at: props.verified_at ?? null,
+      photo: props.photo ?? null,
     });
 
     const fresh = !props.id;

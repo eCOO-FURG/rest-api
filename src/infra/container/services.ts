@@ -9,6 +9,8 @@ import { BcrypterHasher } from "@/infra/cryptography/bcrypt";
 import { OtpGenerator } from "@/infra/cryptography/otp-generator";
 import { PuppeteerPDFService } from "@/infra/pdf/puppeteer";
 import { OpenPix } from "@/infra/payment/open-pix";
+import { RedisCacheManager } from "@/infra/cache/redis-cache-manager";
+import { Cloudinary } from "@/infra/storage/cloudinary";
 
 // Mocks
 import { MockedPixProvider } from "@/test/payment/mocked-pix-provider";
@@ -16,14 +18,11 @@ import { MockedPixProvider } from "@/test/payment/mocked-pix-provider";
 // Env
 import { env } from "@/infra/env";
 
-// Cache
-import { RedisCacheManager } from "@/infra/cache/redis-cache-manager";
-
 export default (container: AwilixContainer) => {
   container.register({
     encrypter: asClass(BcrypterHasher).singleton(),
     hasher: asClass(Jwt).singleton(),
-    otpProvider: asClass(OtpGenerator),
+    otpProvider: asClass(OtpGenerator).singleton(),
     mailer: asFunction(() => {
       const transporter = createTransport({
         host: env.SMTP_HOST,
@@ -52,13 +51,14 @@ export default (container: AwilixContainer) => {
 
       return new Nodemailer(transporter);
     }),
-    pdfService: asClass(PuppeteerPDFService),
+    pdfService: asClass(PuppeteerPDFService).singleton(),
     pixProvider: asFunction(() => {
       if (env.ENV === "staging" || env.ENV === "production")
         return new OpenPix();
 
       return new MockedPixProvider();
     }),
-    cacheManager: asClass(RedisCacheManager),
+    cacheManager: asClass(RedisCacheManager).singleton(),
+    storage: asClass(Cloudinary).singleton(),
   });
 };

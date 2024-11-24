@@ -6,6 +6,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Services
 import { Encrypter } from "@/core/cryptography/encrypter";
+import { Storage } from "@/core/storage/storage";
 
 interface UpdateUserUseCaseRequest {
   user_id: string;
@@ -15,38 +16,45 @@ interface UpdateUserUseCaseRequest {
   cpf?: string;
   phone?: string;
   password?: string;
+  photo?: Buffer;
 }
 
 export class UpdateUserUseCase {
   constructor(
     private usersRepository: UsersRepository,
-    private encrypter: Encrypter
-  ) { }
+    private encrypter: Encrypter,
+    private storage: Storage
+  ) {}
 
-  async execute(props: UpdateUserUseCaseRequest) {
-    const user = await this.usersRepository.findById(props.user_id);
+  async execute({
+    user_id,
+    first_name,
+    last_name,
+    email,
+    cpf,
+    phone,
+    password,
+    photo,
+  }: UpdateUserUseCaseRequest) {
+    const user = await this.usersRepository.findById(user_id);
 
-    if (!user) {
-      throw new ResourceNotFoundError("Usuário", props.user_id);
+    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+
+    user.first_name = first_name ?? user.first_name;
+    user.last_name = last_name ?? user.last_name;
+    user.email = email ?? user.email;
+    user.cpf = cpf ?? user.cpf;
+    user.phone = phone ?? user.phone;
+
+    if (password) user.password = await this.encrypter.encrypt(password);
+
+    if (photo) {
+      const urls = await this.storage.upload([photo], "users");
+
+      user.photo = urls[0];
     }
 
-    for (const field in props) {
-      const value = props[field as keyof UpdateUserUseCaseRequest];
-
-      if (!value) continue;
-
-      const key = Object.keys(user.props).find((key) => key === field);
-
-      if (key === 'password') {
-        const hashed = await this.encrypter.encrypt(value)
-        user.protect(hashed)
-        continue
-      }
-
-      // @ts-ignore
-      user[key] = value;
-      user.touch();
-    }
+    user.touch();
 
     await this.usersRepository.update(user);
   }

@@ -20,6 +20,7 @@ export const updateUserSchema = {
       cpf: z.string().min(11).max(14).optional(),
       phone: z.string().optional(),
       password: z.string().min(8).optional(),
+      photo: z.any().optional(),
     })
     .refine(notEmpty.validation, notEmpty.warning),
 };
@@ -31,7 +32,7 @@ export async function updateUserController(
 ) {
   try {
     const { first_name, last_name, email, cpf, phone, password } =
-      updateUserSchema.body.parse(request.body);
+      updateUserSchema.body.parse({ ...request.body, photo: request.file });
 
     const updateUserUsecase =
       container.resolve<UpdateUserUseCase>("updateUserUseCase");
@@ -44,6 +45,7 @@ export async function updateUserController(
       email,
       password,
       phone,
+      photo: request.file?.buffer,
     });
 
     return response.sendStatus(204);

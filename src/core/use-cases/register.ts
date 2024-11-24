@@ -20,7 +20,7 @@ interface RegisterUseCaseRequest {
   cpf: string;
   phone: string;
   password?: string;
-  role: "USER" | "PRODUCER"
+  role: "USER" | "PRODUCER";
 }
 
 export class RegisterUseCase {
@@ -36,7 +36,7 @@ export class RegisterUseCase {
     cpf,
     phone,
     password,
-    role
+    role,
   }: RegisterUseCaseRequest) {
     const userWithSameEmail = await this.usersRepository.findByEmail(email);
 
@@ -67,10 +67,7 @@ export class RegisterUseCase {
       roles,
     });
 
-    if (password) {
-      const hash = await this.encrypter.encrypt(password);
-      user.protect(hash)
-    }
+    if (password) user.password = await this.encrypter.encrypt(password);
 
     await this.usersRepository.create(user);
 

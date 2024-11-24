@@ -92,8 +92,8 @@ export default (container: AwilixContainer) => {
         )
     ),
     updateUserUseCase: asFunction(
-      ({ usersRepository, encrypter }) =>
-        new UpdateUserUseCase(usersRepository, encrypter)
+      ({ usersRepository, encrypter, storage }) =>
+        new UpdateUserUseCase(usersRepository, encrypter, storage)
     ),
     updateOfferUseCase: asFunction(
       ({
