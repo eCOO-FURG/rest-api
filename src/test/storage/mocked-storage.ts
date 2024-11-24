@@ -26,11 +26,13 @@ export class MockedStorage implements Storage {
 
     fs.writeFileSync(url, file);
 
-    return `file://${folder}/${name}`;
+    folder = folder.split("/").reverse()[0];
+
+    return `file://${env.STORAGE_URL}/${folder}/${name}`;
   }
 
   private useDirectory(folder: string): string {
-    const directory = path.join(env.STORAGE_URL, folder);
+    const directory = path.join(__dirname, "temp", folder);
 
     if (!fs.existsSync(directory)) {
       fs.mkdirSync(directory, { recursive: true });
