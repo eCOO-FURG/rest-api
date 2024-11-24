@@ -6,5 +6,6 @@ export default defineConfig({
   test: {
     include: ["**/*.spec.ts"],
     globals: true,
+    setupFiles: ["dotenv/config"],
   },
 });

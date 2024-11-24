@@ -1,6 +1,7 @@
 // Libs
 import { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
+import { MulterError } from "multer";
 
 // Errors
 import { DomainError } from "@/core/errors/domain-error";
@@ -21,11 +22,30 @@ export const handler = (
       message: issue.message,
     }));
 
-    return response.status(400).send({ message: "Erro de validação.", issues });
+    return response.status(400).send({
+      message: "Erro de validação.",
+      code: "validation-error",
+      issues,
+    });
   }
 
   if (error instanceof SyntaxError) {
-    return response.status(400).send({ message: "Sintaxe incorreta." });
+    return response
+      .status(400)
+      .send({ message: "Sintaxe incorreta.", code: "syntax-error" });
+  }
+
+  if (error instanceof MulterError) {
+    return response.status(400).send({
+      message: "Erro ao processar arquivo.",
+      code: "file-error",
+      issues: [
+        {
+          field: error.field,
+          message: error.message,
+        },
+      ],
+    });
   }
 
   if (error instanceof DomainError) {
@@ -39,5 +59,7 @@ export const handler = (
 
   Logger.log(error);
 
-  return response.status(500).send({ message: "💥 Ocorreu um erro interno." });
+  return response
+    .status(500)
+    .send({ message: "💥 Ocorreu um erro interno.", code: "internal-error" });
 };

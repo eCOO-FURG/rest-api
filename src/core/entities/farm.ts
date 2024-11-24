@@ -12,6 +12,7 @@ export interface FarmProps extends EntityRequest {
   admin_id: UUID;
   tax: number;
   description: string | null;
+  image: string | null;
 }
 
 export class Farm extends Entity<FarmProps> {
@@ -35,6 +36,10 @@ export class Farm extends Entity<FarmProps> {
     return this.props.description;
   }
 
+  get image(): string | null {
+    return this.props.image;
+  }
+
   set description(value: string) {
     this.props.description = value;
   }
@@ -51,16 +56,23 @@ export class Farm extends Entity<FarmProps> {
     this.props.status = status;
   }
 
+  set image(value: string) {
+    this.props.image = value;
+  }
+
   get tax() {
     return this.props.tax;
   }
 
-  static create(props: Optional<FarmProps, "status" | "tax" | "description">) {
+  static create(
+    props: Optional<FarmProps, "status" | "tax" | "description" | "image">
+  ) {
     const farm = new Farm({
       ...props,
       status: props.status ?? "PENDING",
       tax: props.tax ?? 20,
       description: props.description ?? null,
+      image: props.image ?? null,
     });
     return farm;
   }

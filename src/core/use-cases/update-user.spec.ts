@@ -10,6 +10,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 // Services
 import { makeUser } from "@/test/factories/make-user";
 import { MockedEncrypter } from "@/test/cryptography/mocked-encrypter";
+import { MockedStorage } from "@/test/storage/mocked-storage";
 
 let repositories: {
   users: InMemoryUsersRepository;
@@ -17,6 +18,7 @@ let repositories: {
 
 let mocks: {
   encrypter: MockedEncrypter;
+  storage: MockedStorage;
 };
 
 let sut: UpdateUserUseCase;
@@ -29,9 +31,14 @@ describe("update user", () => {
 
     mocks = {
       encrypter: new MockedEncrypter(),
+      storage: new MockedStorage(),
     };
 
-    sut = new UpdateUserUseCase(repositories.users, mocks.encrypter);
+    sut = new UpdateUserUseCase(
+      repositories.users,
+      mocks.encrypter,
+      mocks.storage
+    );
   });
 
   it("should be able to update only one user field", async () => {
@@ -90,5 +97,19 @@ describe("update user", () => {
     const isPasswordHashed = updatedUser.password !== password;
 
     expect(isPasswordHashed).toBeTruthy();
+  });
+
+  it("should be able to upload a user photo", async () => {
+    const user = makeUser();
+    await repositories.users.create(user);
+
+    const photo = Buffer.from("photo");
+
+    await sut.execute({ user_id: user.id.value, photo });
+
+    const updatedUser = repositories.users.items[0];
+
+    expect(updatedUser.photo).toBeTruthy();
+    expect(updatedUser.photo).toContain("temp/users");
   });
 });

@@ -23,6 +23,7 @@ model User {
   email       String    @unique
   phone       String    @unique
   password    String?
+  photo       String?
   roles       ROLE[]    @default([USER])
   verified_at DateTime?
 
@@ -78,6 +79,7 @@ model Farm {
   tally       String      @unique
   tax         Float
   description String?
+  image_url   String?
   status      FARM_STATUS @default(PENDING)
 
   admin_id String @unique

@@ -65,8 +65,6 @@ export async function ensureAuthenticated(
 
     next();
   } catch (error) {
-    console.log("ERRO", error);
-
     next(error);
   }
 }

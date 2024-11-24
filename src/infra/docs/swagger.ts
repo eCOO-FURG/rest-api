@@ -162,16 +162,46 @@ const docs = createDocument({
     "/farms": {
       post: {
         tags: [tags.farms],
+        summary: "Cria uma fazenda.",
+        description: "Cria uma fazenda com os dados fornecidos.",
+        requestBody: {
+          required: true,
+          content: {
+            "multipart/form-data": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: {
+                    type: "string",
+                    description: "Nome da fazenda.",
+                  },
+                  tally: {
+                    type: "string",
+                    description: "Número do Talão da fazenda.",
+                  },
+                  image: {
+                    type: "string",
+                    format: "binary",
+                    description: "Imagem representativa da fazenda.",
+                  },
+                },
+                required: ["name", "tally"],
+              },
+            },
+          },
+        },
         responses: {
-          "201": { description: "Fazenda criada com sucesso." },
+          "201": {
+            description: "Fazenda criada com sucesso.",
+          },
           "403": {
             description:
               "Já existe uma fazenda com o Número do Talão informado: tally-already-exists OU já existe uma fazenda para o usuário informado: farm-already-exists",
           },
-          "404": { description: "Usuário não encontrado: user-not-found" },
+          "404": {
+            description: "Usuário não encontrado: user-not-found",
+          },
         },
-        description: "Cria uma fazenda.",
-        ...SwaggerMapper.toDocs(registerFarmSchema),
       },
       patch: {
         tags: [tags.farms],
