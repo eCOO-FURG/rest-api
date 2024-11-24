@@ -11,6 +11,9 @@ import { z } from "zod";
 // Validation
 import { notEmpty } from "@/infra/http/validation/not-empty";
 
+// Utils
+import { toJSON } from "@/infra/utils/to-json";
+
 export const updateUserSchema = {
   body: z
     .object({
@@ -31,8 +34,10 @@ export async function updateUserController(
   next: NextFunction
 ) {
   try {
+    const content = toJSON({ ...request.body, photo: request.file });
+
     const { first_name, last_name, email, cpf, phone, password } =
-      updateUserSchema.body.parse({ ...request.body, photo: request.file });
+      updateUserSchema.body.parse(content);
 
     const updateUserUsecase =
       container.resolve<UpdateUserUseCase>("updateUserUseCase");
