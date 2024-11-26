@@ -33,7 +33,7 @@ export async function seedDevelopment() {
       last_name: "eCOO",
       email: "farmer@ecoo.org.br",
       cpf: "22222222222",
-      roles: ["USER"],
+      roles: ["USER", "PRODUCER"],
       password: await hash(env.ECOO_EMAIL_PASSWORD, 8),
       phone: "77777777777",
       verified_at: new Date(),

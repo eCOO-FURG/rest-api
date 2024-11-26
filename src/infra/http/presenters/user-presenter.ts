@@ -7,6 +7,7 @@ export class UserPresenter {
       id: user.id.value,
       first_name: user.first_name,
       last_name: user.last_name,
+      photo: user.photo,
       cpf: user.cpf,
       email: user.email,
       phone: user.phone,

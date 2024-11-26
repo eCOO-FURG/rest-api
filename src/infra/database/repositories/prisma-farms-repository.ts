@@ -95,13 +95,14 @@ export class PrismaFarmsRepository implements FarmsRepository {
   }
 
   async update(farm: Farm): Promise<void> {
-    const data = PrismaFarmMapper.toPrisma(farm);
+    const { admin_id, ...data } = PrismaFarmMapper.toPrisma(farm);
 
     await prisma.farm.update({
-      where: {
-        id: farm.id.value,
+      where: { id: farm.id.value },
+      data: {
+        ...data,
+        admin: { connect: { id: admin_id } },
       },
-      data,
     });
   }
 
