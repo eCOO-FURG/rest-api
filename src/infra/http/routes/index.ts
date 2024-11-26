@@ -182,7 +182,7 @@ router.patch(
 router.get("/bags/:bag_id", ensureAuthenticated, fetchBagController);
 
 // Ciclos
-router.get("/cycles", ensureAuthenticated, listCyclesController);
+router.get("/cycles", listCyclesController);
 
 // Produtos
 router.get("/products", ensureAuthenticated, listProductsController);
