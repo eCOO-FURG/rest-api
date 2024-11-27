@@ -12,5 +12,6 @@ export function makeProduct(props: Partial<Product> = {}) {
     pricing: props.pricing ?? "UNIT",
     created_at: props.created_at,
     updated_at: props.updated_at,
+    perishable: props.perishable ?? true,
   });
 }

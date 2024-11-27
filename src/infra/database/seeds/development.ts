@@ -69,6 +69,7 @@ export async function seedDevelopment() {
                     ? Math.floor(Math.random() * 20 + 1)
                     : Math.floor(Math.random() * 20 + 1) * 100,
                 price: "10",
+                perishable: product.perishable,
               })),
             },
           },

@@ -10,6 +10,8 @@ export class PrismaProductMapper {
     return Product.create({
       ...raw,
       id: new UUID(raw.id),
+      updated_at: raw.updated_at ?? null,
+      perishable: raw.perishable,
     });
   }
 
@@ -17,6 +19,7 @@ export class PrismaProductMapper {
     return {
       ...product.props,
       id: product.id.value,
+      perishable: product.perishable,
     };
   }
 }

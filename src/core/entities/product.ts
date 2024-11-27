@@ -5,6 +5,8 @@ export interface ProductProps extends EntityRequest {
   name: string;
   image: string;
   pricing: "UNIT" | "WEIGHT";
+  perishable: boolean;
+
 }
 
 export class Product extends Entity<ProductProps> {
@@ -18,6 +20,10 @@ export class Product extends Entity<ProductProps> {
 
   get pricing() {
     return this.props.pricing;
+  }
+
+  get perishable() {
+    return this.props.perishable;
   }
 
   static create(props: ProductProps) {

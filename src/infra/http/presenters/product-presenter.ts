@@ -10,6 +10,7 @@ export class ProductPresenter {
       pricing: product.pricing,
       created_at: product.created_at,
       updated_at: product.updated_at,
+      perishable: product.perishable,
     };
   }
 }

@@ -98,15 +98,14 @@ enum PRICING {
 }
 
 model Product {
-  id      String  @id @default(uuid())
-  name    String
-  image   String
-  pricing PRICING
-
+  id         String  @id @default(uuid())
+  name       String
+  image      String
+  pricing    PRICING
+  perishable Boolean @default(true)
   created_at DateTime  @default(now())
   updated_at DateTime?
-
-  offers Offer[]
+  offers     Offer[]
 
   @@map("products")
 }
