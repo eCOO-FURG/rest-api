@@ -21,7 +21,13 @@ export type MailerLoadRequest =
       props: {
         otp: string;
       };
+    }
+  | {
+    view: "request-help";
+    props: {
+      content: string
     };
+  };
 
 export interface Mailer {
   send(email: Email): Promise<void>;
