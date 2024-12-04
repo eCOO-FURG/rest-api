@@ -23,7 +23,6 @@ export interface OffersRepository {
     filters: OffersRepositorySearchRequest,
     page?: number
   ): Promise<Offer[]>;
-  create(offer: Offer): Promise<void>;
   update(offer: Offer): Promise<void>;
   delete(offer: Offer): Promise<void>;
 }

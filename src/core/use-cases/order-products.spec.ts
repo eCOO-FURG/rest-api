@@ -169,7 +169,7 @@ describe("order product", () => {
     await repositories.products.create(product);
 
     const address = makeAddress();
-    await repositories.addresses.create(address);
+    repositories.addresses.items.push(address);
 
     const bag = makeBag({
       user_id: user.id,

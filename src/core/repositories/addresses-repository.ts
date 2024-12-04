@@ -18,5 +18,4 @@ export interface AddressesRepository {
     type: RepositoryResponse,
     filters: AddressesRepositorySearchRequest
   ): Promise<Address | null>;
-  create(address: Address): Promise<void>;
 }

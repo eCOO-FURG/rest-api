@@ -90,7 +90,7 @@ describe("Fetch bag", () => {
     await catalogsRepository.create(catalog);
 
     const offer = makeOffer({ product_id: product.id, catalog_id: catalog.id });
-    await offersRepository.create(offer);
+    offersRepository.items.push(offer);
 
     const bag = makeBag({ user_id: user.id });
 

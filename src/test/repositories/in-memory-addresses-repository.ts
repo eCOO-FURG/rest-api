@@ -42,8 +42,4 @@ export class InMemoryAddressesRepository implements AddressesRepository {
 
     return address;
   }
-
-  async create(address: Address): Promise<void> {
-    this.items.push(address);
-  }
 }

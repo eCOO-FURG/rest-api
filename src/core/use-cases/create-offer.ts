@@ -35,7 +35,6 @@ export class CreateOfferUseCase {
     private farmsRepository: FarmsRepository,
     private productsRepository: ProductsRepository,
     private catalogsRepository: CatalogsRepository,
-    private offersRepository: OffersRepository,
     private cyclesRepository: CyclesRepository
   ) {}
 
@@ -71,11 +70,9 @@ export class CreateOfferUseCase {
     const { catalog, existed } = await this.useCatalog(farm.id, cycle);
 
     if (existed) {
-      const offered = await this.offersRepository.find("basic", {
-        catalog: { id: catalog.id.value },
-        product: { id: product_id },
-        since: mostPast(cycle.offer),
-      });
+      const offered = catalog.offers.find(
+        (offer) => offer.product_id.value === product_id
+      );
 
       if (offered)
         throw new ResourceAlreadyExistsError("Oferta do produto", product_id);
@@ -100,7 +97,7 @@ export class CreateOfferUseCase {
   }
 
   private async useCatalog(farm_id: UUID, cycle: Cycle) {
-    const existent = await this.catalogsRepository.find("basic", {
+    const existent = await this.catalogsRepository.find("merge", {
       farm: { id: farm_id.value },
       cycle: { id: cycle.id.value },
       since: mostPast(cycle.offer),

@@ -62,13 +62,13 @@ describe("list farm sales", () => {
     const user = makeUser();
     await usersRepository.create(user);
 
-    const farm = makeFarm({ admin_id: user.id });
+    const farm = makeFarm({ admin_id: user.id, admin: user });
     await farmsRepository.create(farm);
 
     const product = makeProduct();
     await productsRepository.create(product);
 
-    const catalog = makeCatalog({ farm_id: farm.id });
+    const catalog = makeCatalog({ farm_id: farm.id, farm });
     await catalogsRepository.create(catalog);
 
     const offer = makeOffer({
@@ -76,7 +76,7 @@ describe("list farm sales", () => {
       product_id: product.id,
     });
 
-    await offersRepository.create(offer);
+    offersRepository.items.push(offer);
 
     const box = makeBox({ catalog_id: catalog.id, catalog });
     await boxesRepository.create(box);

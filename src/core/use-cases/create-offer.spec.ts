@@ -5,6 +5,7 @@ import { CreateOfferUseCase } from "@/core/use-cases/create-offer";
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeProduct } from "@/test/factories/make-product";
+import { makeUser } from "@/test/factories/make-user";
 
 // Repositories
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
@@ -40,25 +41,23 @@ describe("offer products", () => {
     usersRepository = new InMemoryUsersRepository();
     cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
+
     offersRepository = new InMemoryOffersRepository(
       productsRepository,
       catalogsRepository
     );
+
+    farmsRepository = new InMemoryFarmsRepository(usersRepository);
 
     catalogsRepository = new InMemoryCatalogsRepository(
       farmsRepository,
       offersRepository
     );
 
-    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
-
-    farmsRepository = new InMemoryFarmsRepository(usersRepository);
-
     sut = new CreateOfferUseCase(
       farmsRepository,
       productsRepository,
       catalogsRepository,
-      offersRepository,
       cyclesRepository
     );
   });
@@ -168,19 +167,30 @@ describe("offer products", () => {
     const product = makeProduct();
     await productsRepository.create(product);
 
-    const farm = makeFarm({ status: "ACTIVE" });
+    const user = makeUser();
+    await usersRepository.create(user);
+
+    const farm = makeFarm({ status: "ACTIVE", admin_id: user.id, admin: user });
     await farmsRepository.create(farm);
 
-    const catalog = makeCatalog({ farm_id: farm.id, cycle_id: cycle.id });
-    await catalogsRepository.create(catalog);
+    const catalog = makeCatalog({
+      farm_id: farm.id,
+      cycle_id: cycle.id,
+    });
 
     const offer = Offer.create({
       catalog_id: catalog.id,
       product_id: product.id,
+      product,
       amount: 20,
       price: 30,
     });
-    await offersRepository.create(offer);
+
+    offersRepository.items.push(offer);
+
+    catalog.offers.push(offer);
+
+    await catalogsRepository.create(catalog);
 
     await expect(() =>
       sut.execute({

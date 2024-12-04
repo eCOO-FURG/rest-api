@@ -97,7 +97,7 @@ describe("list farms with orders", () => {
     await productsRepository.create(product);
 
     const offer = makeOffer({ catalog_id: catalog.id, product_id: product.id });
-    await offersRepository.create(offer);
+    offersRepository.items.push(offer);
 
     const order = makeOrder({ offer_id: offer.id });
     box.orders.push(order);
@@ -128,7 +128,7 @@ describe("list farms with orders", () => {
     await productsRepository.create(product);
 
     const offer = makeOffer({ catalog_id: catalog.id, product_id: product.id });
-    await offersRepository.create(offer);
+    offersRepository.items.push(offer);
 
     const order = makeOrder({ offer_id: offer.id });
 
@@ -170,7 +170,7 @@ describe("list farms with orders", () => {
       const offer = makeOffer({
         product_id: product.id,
       });
-      await offersRepository.create(offer);
+      offersRepository.items.push(offer);
 
       const order = makeOrder({
         offer_id: offer.id,

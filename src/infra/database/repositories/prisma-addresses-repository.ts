@@ -39,10 +39,4 @@ export class PrismaAddressesRepository implements AddressesRepository {
 
     return PrismaAddressMapper.toDomain(found) as AddressesRepositoryResponse;
   }
-
-  async create(address: Address): Promise<void> {
-    const data = PrismaAddressMapper.toPrisma(address);
-
-    await prisma.address.create({ data });
-  }
 }

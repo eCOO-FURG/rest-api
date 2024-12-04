@@ -91,7 +91,7 @@ describe("searh offering farms", () => {
         product,
       });
 
-      await offersRepository.create(offer);
+      offersRepository.items.push(offer);
 
       catalog.offers.push(offer);
 
