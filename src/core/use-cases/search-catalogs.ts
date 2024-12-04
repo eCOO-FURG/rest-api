@@ -25,24 +25,22 @@ export class SearchCatalogsUseCase {
     page,
     product,
   }: SearchOfferingFarmsUseCaseRequest) {
-    const cycle = await this.cyclesRepository.findById(cycle_id);
+    const cycle = await this.cyclesRepository.find("basic", {
+      id: cycle_id,
+    });
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const catalogs = await this.catalogsRepository.searchMany(
+    const catalogs = await this.catalogsRepository.list(
+      "aggregate",
       {
-        cycle: {
-          id: cycle_id,
-        },
+        cycle: { id: cycle_id },
         since: mostPast(cycle.offer),
-        page,
-        offer: { product: { name: product } },
+        offers: { product: { name: product }, page },
       },
-      "aggregate"
+      page
     );
 
-    return {
-      catalogs,
-    };
+    return { catalogs };
   }
 }

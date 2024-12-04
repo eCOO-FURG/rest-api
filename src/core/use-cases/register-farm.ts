@@ -22,22 +22,22 @@ export class RegisterFarmUseCase {
   ) {}
 
   async execute({ user_id, tally, name }: RegisterFarmUseCaseRequest) {
-    const user = await this.usersRepository.findById(user_id);
+    const user = await this.usersRepository.find("basic", {
+      id: user_id,
+    });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
-    const farmWithSameTally = await this.farmRepository.search(
-      { tally },
-      "entity"
-    );
+    const farmWithSameTally = await this.farmRepository.find("basic", {
+      tally,
+    });
 
     if (farmWithSameTally)
       throw new ResourceAlreadyExistsError("Número do Talão", tally);
 
-    const farmWithSameAdmin = await this.farmRepository.search(
-      { admin: { id: user_id } },
-      "entity"
-    );
+    const farmWithSameAdmin = await this.farmRepository.find("basic", {
+      admin: { id: user_id },
+    });
 
     if (farmWithSameAdmin)
       throw new ResourceAlreadyExistsError("Agronegócio de", user_id);

@@ -6,6 +6,9 @@ export function makeCatalog(props: Partial<Catalog> = {}) {
     id: props.id,
     cycle_id: props.cycle_id ?? new UUID(),
     farm_id: props.farm_id ?? new UUID(),
+    farm: props.farm,
+    cycle: props.cycle,
+    offers: props.offers,
     created_at: props.created_at,
     updated_at: props.updated_at,
   });

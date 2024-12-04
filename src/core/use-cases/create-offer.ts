@@ -16,12 +16,12 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
-import { ClosedActionError } from "@/core/errors/closed-action";
+import { ResourceClosedError } from "@/core/errors/resource-closed";
 
 // Utils
 import { mostPast } from "@/core/utils/most-past";
 
-interface OfferProductsUseCaseRequest {
+interface CreateOfferUseCaseRequest {
   farm_id: string;
   product_id: string;
   cycle_id: string;
@@ -30,7 +30,7 @@ interface OfferProductsUseCaseRequest {
   description?: string;
 }
 
-export class OfferProductsUseCase {
+export class CreateOfferUseCase {
   constructor(
     private farmsRepository: FarmsRepository,
     private productsRepository: ProductsRepository,
@@ -46,39 +46,38 @@ export class OfferProductsUseCase {
     amount,
     price,
     description,
-  }: OfferProductsUseCaseRequest) {
-    const farm = await this.farmsRepository.search({ id: farm_id }, "entity");
+  }: CreateOfferUseCaseRequest) {
+    const farm = await this.farmsRepository.find("basic", { id: farm_id });
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
     if (farm.status !== "ACTIVE") throw new FarmNotActiveError();
 
-    const product = await this.productsRepository.findById(product_id);
+    const product = await this.productsRepository.find("basic", {
+      id: product_id,
+    });
 
     if (!product) throw new ResourceNotFoundError("Produto", product_id);
 
-    const cycle = await this.cyclesRepository.findById(cycle_id);
+    const cycle = await this.cyclesRepository.find("basic", { id: cycle_id });
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
     const today = (new Date().getDay() + 1) as Week[0];
 
     if (!cycle.offer.includes(today))
-      throw new ClosedActionError("ofertar", cycle_id);
+      throw new ResourceClosedError("Ciclo", cycle.id.value);
 
-    const { catalog, created } = await this.useCatalog(farm.id, cycle);
+    const { catalog, existed } = await this.useCatalog(farm.id, cycle);
 
-    if (!created) {
-      const alreadyOffered = await this.offersRepository.search(
-        {
-          catalog: { id: catalog.id.value },
-          product: { id: product_id },
-          since: mostPast(cycle.offer),
-        },
-        "entity"
-      );
+    if (existed) {
+      const offered = await this.offersRepository.find("basic", {
+        catalog: { id: catalog.id.value },
+        product: { id: product_id },
+        since: mostPast(cycle.offer),
+      });
 
-      if (alreadyOffered)
+      if (offered)
         throw new ResourceAlreadyExistsError("Oferta do produto", product_id);
     }
 
@@ -93,25 +92,24 @@ export class OfferProductsUseCase {
       price: price + (price * farm.tax) / 100,
     });
 
-    await this.offersRepository.create(offer);
+    catalog.offers.push(offer);
+
+    if (existed) return await this.catalogsRepository.update(catalog);
+
+    await this.catalogsRepository.create(catalog);
   }
 
   private async useCatalog(farm_id: UUID, cycle: Cycle) {
-    const existent = await this.catalogsRepository.search(
-      {
-        farm: { id: farm_id.value },
-        cycle: { id: cycle.id.value },
-        since: mostPast(cycle.offer),
-      },
-      "entity"
-    );
+    const existent = await this.catalogsRepository.find("basic", {
+      farm: { id: farm_id.value },
+      cycle: { id: cycle.id.value },
+      since: mostPast(cycle.offer),
+    });
 
-    if (existent) return { catalog: existent, created: false };
+    if (existent) return { catalog: existent, existed: true };
 
     const catalog = Catalog.create({ farm_id, cycle_id: cycle.id });
 
-    await this.catalogsRepository.create(catalog);
-
-    return { catalog, created: true };
+    return { catalog, existed: false };
   }
 }

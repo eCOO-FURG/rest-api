@@ -1,20 +1,22 @@
 // Entities
 import { Address } from "@/core/entities/address";
 
+// Types
+import { RepositoryResponse } from "@/core/types/repository-response";
+
 export interface AddressesRepositorySearchRequest {
   id?: string;
   street?: string;
   number?: string;
   neighborhood?: string;
-  complement?: string;
   postal_code?: string;
+  complement?: string | null;
 }
 
-export type AddressesRepositoryResponse = Address;
-
 export interface AddressesRepository {
-  search(
+  find(
+    type: RepositoryResponse,
     filters: AddressesRepositorySearchRequest
-  ): Promise<AddressesRepositoryResponse | null>;
+  ): Promise<Address | null>;
   create(address: Address): Promise<void>;
 }

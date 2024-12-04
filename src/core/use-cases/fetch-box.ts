@@ -1,23 +1,34 @@
 // Repositories
-import { InMemoryBoxesRepository } from "@/test/repositories/in-memory-boxes-repository";
+import { BoxesRepository } from "@/core/repositories/boxes-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { UsersRepository } from "@/core/repositories/users-repository";
 
 interface FetchBoxUseCaseRequest {
+  user_id: string;
   box_id: string;
 }
 
 export class FetchBoxUseCase {
-  constructor(private boxesRepository: InMemoryBoxesRepository) {}
+  constructor(
+    private usersRepository: UsersRepository,
+    private boxesRepository: BoxesRepository
+  ) {}
 
-  async execute({ box_id }: FetchBoxUseCaseRequest) {
-    const box = await this.boxesRepository.search({ id: box_id }, "merged");
+  async execute({ box_id, user_id }: FetchBoxUseCaseRequest) {
+    const user = await this.usersRepository.find("basic", { id: user_id });
+
+    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+
+    const box = await this.boxesRepository.find("merge", { id: box_id });
 
     if (!box) throw new ResourceNotFoundError("Caixa", box_id);
 
-    return {
-      box,
-    };
+    const owner = box.catalog?.farm?.admin_id.equals(user_id);
+
+    if (!owner && !user.admin) throw new ResourceNotFoundError("Caixa", box_id);
+
+    return { box };
   }
 }

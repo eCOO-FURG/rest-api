@@ -27,10 +27,7 @@ let offersRepository: InMemoryOffersRepository;
 let ordersRepository: InMemoryOrdersRepository;
 let farmsRepository: InMemoryFarmsRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
-
-let repositories: {
-  boxes: InMemoryBoxesRepository;
-};
+let boxesRepository: InMemoryBoxesRepository;
 
 let sut: FetchBoxUseCase;
 
@@ -53,11 +50,12 @@ describe("list farm sales", () => {
     offersRepository.inMemoryCatalogsRepository = catalogsRepository;
     ordersRepository = new InMemoryOrdersRepository(offersRepository);
 
-    repositories = {
-      boxes: new InMemoryBoxesRepository(catalogsRepository, ordersRepository),
-    };
+    boxesRepository = new InMemoryBoxesRepository(
+      catalogsRepository,
+      ordersRepository
+    );
 
-    sut = new FetchBoxUseCase(repositories.boxes);
+    sut = new FetchBoxUseCase(usersRepository, boxesRepository);
   });
 
   it("should be able to fetch a box", async () => {
@@ -80,8 +78,8 @@ describe("list farm sales", () => {
 
     await offersRepository.create(offer);
 
-    const box = makeBox({ catalog_id: catalog.id });
-    await repositories.boxes.create(box);
+    const box = makeBox({ catalog_id: catalog.id, catalog });
+    await boxesRepository.create(box);
 
     const order = makeOrder({
       offer_id: offer.id,
@@ -89,17 +87,24 @@ describe("list farm sales", () => {
       box_id: box.id,
     });
 
-    await ordersRepository.createMany([order]);
+    ordersRepository.items.push(order);
 
-    const result = await sut.execute({ box_id: box.id.value });
+    const result = await sut.execute({
+      box_id: box.id.value,
+      user_id: user.id.value,
+    });
 
     expect(result.box.orders.length).toBeGreaterThan(0);
   });
 
   it("should not be able to fetch a box that does not exist", async () => {
+    const user = makeUser();
+    await usersRepository.create(user);
+
     await expect(() =>
       sut.execute({
         box_id: "",
+        user_id: user.id.value,
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });

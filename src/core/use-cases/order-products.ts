@@ -6,7 +6,6 @@ import { Box } from "@/core/entities/box";
 import { Address } from "@/core/entities/address";
 import { User } from "@/core/entities/user";
 import { UUID } from "@/core/entities/aggregates/uuid";
-import { BagMerge } from "@/core/entities/merged/bag-merge";
 
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
@@ -17,17 +16,15 @@ import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
 import { BoxesRepository } from "@/core/repositories/boxes-repository";
 import { AddressesRepository } from "@/core/repositories/addresses-repository";
-import { OrderMerge } from "@/core/entities/merged/order-merge";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
-import { ClosedActionError } from "@/core/errors/closed-action";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
+import { ResourceClosedError } from "@/core/errors/resource-closed";
 
 // Utils
 import { mostPast } from "@/core/utils/most-past";
-import { currentDate } from "@/core/utils/current-date";
 
 // Services
 import { OtpProvider } from "@/core/cryptography/otp-provider";
@@ -61,7 +58,6 @@ export class OrderProductsUseCase {
     private usersRepository: UsersRepository,
     private cyclesRepository: CyclesRepository,
     private offersRepository: OffersRepository,
-    private ordersRepository: OrdersRepository,
     private catalogsRepository: CatalogsRepository,
     private bagsRepository: BagsRepository,
     private boxesRepository: BoxesRepository,
@@ -76,30 +72,28 @@ export class OrderProductsUseCase {
     address,
     request,
   }: OrderProductsUseCaseRequest) {
-    const user = await this.usersRepository.findById(user_id);
+    const user = await this.usersRepository.find("basic", { id: user_id });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
-    const cycle = await this.cyclesRepository.findById(cycle_id);
+    const cycle = await this.cyclesRepository.find("basic", { id: cycle_id });
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
     const today = (new Date().getDay() + 1) as Week[0];
 
-    if (!cycle.order.includes(today)) {
-      throw new ClosedActionError("comprar", cycle_id);
-    }
+    if (!cycle.order.includes(today))
+      throw new ResourceClosedError("Ciclo", cycle_id);
 
     const offersIds = request.map((order) => order.offer_id);
 
-    const offers = await this.offersRepository.searchMany(
-      { ids: offersIds },
-      "merged"
-    );
+    const offers = await this.offersRepository.list("aggregate", {
+      ids: offersIds,
+    });
 
     const destination = await this.useAddress(address);
 
-    const bag = await this.useBag({
+    const { bag, existed } = await this.useBag({
       bag_id,
       cycle,
       user,
@@ -113,10 +107,9 @@ export class OrderProductsUseCase {
 
       if (!offer) throw new ResourceNotFoundError("Oferta", item.offer_id);
 
-      const catalog = await this.catalogsRepository.search(
-        { id: offer.catalog.id.value },
-        "entity"
-      );
+      const catalog = await this.catalogsRepository.find("basic", {
+        id: offer.catalog?.id.value,
+      });
 
       if (!catalog) throw new ResourceNotFoundError("Catálogo", item.offer_id);
 
@@ -127,7 +120,7 @@ export class OrderProductsUseCase {
         throw new UnavailableAmountError(offer.id.value);
 
       const invalidAmount =
-        item.amount % 100 != 0 && offer.product.pricing === "WEIGHT";
+        item.amount % 100 != 0 && offer?.product?.pricing === "WEIGHT";
 
       if (invalidAmount)
         throw new InvalidWeightError("solicitado", offer.product.id.value);
@@ -136,19 +129,21 @@ export class OrderProductsUseCase {
 
       const order = Order.create({
         amount: item.amount,
-        offer_id: offer.id,
         bag_id: bag.id,
         box_id: box.id,
+        offer_id: offer.id,
       });
 
       orders.push(order);
-
-      const merge = OrderMerge.create({ ...order.props, offer });
-
-      bag.orders.push(merge);
     }
 
-    await this.ordersRepository.createMany(orders);
+    bag.orders = orders;
+
+    if (existed) {
+      await this.bagsRepository.update(bag);
+    } else {
+      await this.bagsRepository.create(bag);
+    }
 
     return { bag };
   }
@@ -156,7 +151,7 @@ export class OrderProductsUseCase {
   private async useAddress(address: OrderProductsUseCaseRequest["address"]) {
     if (!address) return null;
 
-    const found = await this.addressesRepository.search({
+    const found = await this.addressesRepository.find("basic", {
       street: address.street,
       number: address.number,
       complement: address.complement,
@@ -168,52 +163,45 @@ export class OrderProductsUseCase {
 
     const destination = Address.create(address);
 
-    await this.addressesRepository.create(destination);
-
     return destination;
   }
 
   private async useBag({ bag_id, user, address, cycle }: UseBagRequest) {
     if (bag_id) {
-      const bag = await this.bagsRepository.search({ id: bag_id }, "merged");
+      const bag = await this.bagsRepository.find("merge", { id: bag_id });
 
       if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 
-      return bag;
+      return { bag, existed: true };
     }
 
-    const found = await this.bagsRepository.search(
-      {
-        user: { id: user.id.value },
-        cycle: { id: cycle.id.value },
-        address: address ? { id: address.id.value } : null,
-        since: mostPast(cycle.order),
-      },
-      "merged"
-    );
+    const found = await this.bagsRepository.find("merge", {
+      user: { id: user.id.value },
+      cycle: { id: cycle.id.value },
+      address: address ? { id: address.id.value } : null,
+      since: mostPast(cycle.order),
+    });
 
-    if (found) return found;
+    if (found) return { bag: found, existed: true };
 
-    const date = currentDate();
     const code = await this.otpGenerator.generate();
 
     const bag = Bag.create({
       user_id: user.id,
       cycle_id: cycle.id,
       address_id: address ? address.id : null,
-      code: `${date}-${code}`,
+      code,
+      user,
+      address,
     });
 
-    await this.bagsRepository.create(bag);
-
-    return BagMerge.create({ ...bag.props, address, user });
+    return { bag, existed: false };
   }
 
   private async useBox(catalog_id: UUID) {
-    const found = await this.boxesRepository.search(
-      { catalog: { id: catalog_id.value } },
-      "entity"
-    );
+    const found = await this.boxesRepository.find("basic", {
+      catalog: { id: catalog_id.value },
+    });
 
     if (found) return found;
 

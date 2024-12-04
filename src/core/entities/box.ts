@@ -1,21 +1,22 @@
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
 import { UUID } from "@/core/entities/aggregates/uuid";
+import { Order } from "@/core/entities/order";
+import { Catalog } from "@/core/entities/catalog";
 
 // Types
 import { Optional } from "@/core/types/optional";
 
 export interface BoxProps extends EntityRequest {
-  catalog_id: UUID;
   status: "PENDING" | "VERIFIED";
   verified: number;
+  orders: Order[];
+
+  catalog_id: UUID;
+  catalog?: Catalog;
 }
 
 export class Box extends Entity<BoxProps> {
-  get catalog_id() {
-    return this.props.catalog_id;
-  }
-
   get verified() {
     return this.props.verified;
   }
@@ -32,12 +33,26 @@ export class Box extends Entity<BoxProps> {
     this.props.verified = value;
   }
 
-  static create(props: Optional<BoxProps, "verified" | "status">) {
+  get orders() {
+    return this.props.orders;
+  }
+
+  get catalog_id() {
+    return this.props.catalog_id;
+  }
+
+  get catalog() {
+    return this.props.catalog;
+  }
+
+  static create(props: Optional<BoxProps, "verified" | "status" | "orders">) {
     const box = new Box({
       ...props,
       verified: props.verified ?? 0,
       status: props.status ?? "PENDING",
+      orders: props.orders ?? [],
     });
+
     return box;
   }
 }

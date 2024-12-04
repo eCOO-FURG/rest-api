@@ -6,7 +6,7 @@ import { z } from "zod";
 import container from "@/infra/container";
 
 // Use-cases
-import { HandleBagUseCase } from "@/core/use-cases/handle-bag";
+import { UpdateBagUseCase } from "@/core/use-cases/update-bag";
 
 export const handleBagSchema = {
   route: z.object({
@@ -14,7 +14,14 @@ export const handleBagSchema = {
   }),
   body: z.object({
     status: z
-      .enum(["PENDING", "SEPARATED", "DISPATCHED", "RECEIVED", "CANCELLED", "DEFERRED"])
+      .enum([
+        "PENDING",
+        "SEPARATED",
+        "DISPATCHED",
+        "RECEIVED",
+        "CANCELLED",
+        "DEFERRED",
+      ])
       .openapi({ type: "string" }),
   }),
 };
@@ -28,11 +35,12 @@ export async function handleBagController(
     const { bag_id } = handleBagSchema.route.parse(request.params);
     const { status } = handleBagSchema.body.parse(request.body);
 
-    const handleBagUseCase =
-      container.resolve<HandleBagUseCase>("handleBagUseCase");
+    const updateBagUseCase =
+      container.resolve<UpdateBagUseCase>("updateBagUseCase");
 
-    await handleBagUseCase.execute({
+    await updateBagUseCase.execute({
       bag_id,
+      user_id: request.user_id,
       status,
     });
 

@@ -1,7 +1,6 @@
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { Payment } from "@/core/entities/payment";
-import { PaymentAggregate } from "@/core/entities/aggregates/payment-aggregate";
 
 // Repositories
 import { BagsRepository } from "@/core/repositories/bags-repository";
@@ -27,7 +26,7 @@ export class OpenPaymentUseCase {
   ) {}
 
   async execute({ bag_id }: OpenPaymentUseCaseRequest) {
-    const bag = await this.bagsRepository.search({ id: bag_id }, "merged");
+    const bag = await this.bagsRepository.find("basic", { id: bag_id });
 
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 
@@ -42,10 +41,8 @@ export class OpenPaymentUseCase {
 
     await this.paymentsRepository.create(payment);
 
-    const aggregate = PaymentAggregate.create({ ...payment.props, bag });
+    const charge = await this.pixProvider.charge(payment);
 
-    const { qrcode, code } = await this.pixProvider.charge(aggregate);
-
-    return { aggregate, charge: { qrcode, code } };
+    return { payment, charge };
   }
 }

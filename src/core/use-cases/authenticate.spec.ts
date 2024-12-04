@@ -19,47 +19,39 @@ import { WrongCredentialsError } from "@/core/errors/wrong-credentials";
 import { makeOtp } from "@/test/factories/make-otp";
 import { UserNotVerifiedError } from "@/core/errors/user-not-verified";
 
-let repositories: {
-  users: InMemoryUsersRepository;
-  otps: InMemoryOtpsRepository;
-  sessions: InMemorySessionsRepository;
-};
+let usersRepository: InMemoryUsersRepository;
+let otpsRepository: InMemoryOtpsRepository;
+let sessionsRepository: InMemorySessionsRepository;
 
-let mocks: {
-  encrypter: MockedEncrypter;
-  hasher: MockedHasher;
-};
+let mockedEncrypter: MockedEncrypter;
+let mockedHasher: MockedHasher;
 
 let sut: AuthenticateUseCase;
 
 describe("authenticate", () => {
   beforeEach(() => {
-    repositories = {
-      users: new InMemoryUsersRepository(),
-      otps: new InMemoryOtpsRepository(),
-      sessions: new InMemorySessionsRepository(),
-    };
+    usersRepository = new InMemoryUsersRepository();
+    otpsRepository = new InMemoryOtpsRepository(usersRepository);
+    sessionsRepository = new InMemorySessionsRepository();
 
-    mocks = {
-      encrypter: new MockedEncrypter(),
-      hasher: new MockedHasher(),
-    };
+    mockedEncrypter = new MockedEncrypter();
+    mockedHasher = new MockedHasher();
 
     sut = new AuthenticateUseCase(
-      repositories.users,
-      repositories.otps,
-      repositories.sessions,
-      mocks.encrypter,
-      mocks.hasher
+      usersRepository,
+      otpsRepository,
+      sessionsRepository,
+      mockedEncrypter,
+      mockedHasher
     );
   });
 
   it("should be able to authenticate via basic auth", async () => {
-    const password = await mocks.encrypter.encrypt("12345678");
+    const password = await mockedEncrypter.encrypt("12345678");
 
     const user = makeUser({ password, verified_at: new Date() });
 
-    await repositories.users.create(user);
+    await usersRepository.create(user);
 
     const result = await sut.execute({
       email: user.email,
@@ -71,17 +63,17 @@ describe("authenticate", () => {
 
     expect(result.user).toBeInstanceOf(User);
     expect(result.token).toBeTypeOf("string");
-    expect(repositories.sessions.items).toHaveLength(1);
+    expect(sessionsRepository.items).toHaveLength(1);
   });
 
   it("should be able to authenticate via otp", async () => {
     const user = makeUser({ verified_at: new Date() });
 
-    await repositories.users.create(user);
+    await usersRepository.create(user);
 
     const otp = makeOtp({ user_id: user.id });
 
-    await repositories.otps.create(otp);
+    await otpsRepository.create(otp);
 
     const result = await sut.execute({
       email: user.email,
@@ -92,16 +84,16 @@ describe("authenticate", () => {
     });
 
     expect(result.token).toBeTypeOf("string");
-    expect(repositories.sessions.items).toHaveLength(1);
-    expect(repositories.otps.items[0].used).toBe(true);
+    expect(sessionsRepository.items).toHaveLength(1);
+    expect(otpsRepository.items[0].used).toBe(true);
   });
 
   it("should not be able to authenticate with wrong basic credentials", async () => {
-    const password = await mocks.encrypter.encrypt("12345678");
+    const password = await mockedEncrypter.encrypt("12345678");
 
     const user = makeUser({ password, verified_at: new Date() });
 
-    repositories.users.create(user);
+    await usersRepository.create(user);
 
     await expect(() =>
       sut.execute({
@@ -117,7 +109,7 @@ describe("authenticate", () => {
   it("should not be able to authenticate with wrong otp credentials", async () => {
     const user = makeUser({ verified_at: new Date() });
 
-    await repositories.users.create(user);
+    await usersRepository.create(user);
 
     await expect(() =>
       sut.execute({
@@ -131,11 +123,11 @@ describe("authenticate", () => {
   });
 
   it("should not authenticate an unverifed user", async () => {
-    const password = await mocks.encrypter.encrypt("12345678");
+    const password = await mockedEncrypter.encrypt("12345678");
 
     const user = makeUser({ password });
 
-    await repositories.users.create(user);
+    await usersRepository.create(user);
 
     await expect(() =>
       sut.execute({

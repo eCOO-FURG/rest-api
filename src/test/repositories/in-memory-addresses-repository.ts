@@ -4,24 +4,29 @@ import { Address } from "@/core/entities/address";
 // Repositories
 import {
   AddressesRepository,
-  AddressesRepositoryResponse,
   AddressesRepositorySearchRequest,
 } from "@/core/repositories/addresses-repository";
 
+// Types
+import { RepositoryResponse } from "@/core/types/repository-response";
+
 // Utils
-import { find } from "@/core/utils/find";
+import { find } from "@/test/utils/find";
 
 export class InMemoryAddressesRepository implements AddressesRepository {
   items: Address[] = [];
 
-  async search({
-    id,
-    complement,
-    neighborhood,
-    number,
-    street,
-    postal_code,
-  }: AddressesRepositorySearchRequest): Promise<AddressesRepositoryResponse | null> {
+  async find(
+    _: RepositoryResponse,
+    {
+      id,
+      complement,
+      neighborhood,
+      number,
+      street,
+      postal_code,
+    }: AddressesRepositorySearchRequest
+  ): Promise<Address | null> {
     const address = await find<Address>(
       this.items,
       async (item) =>
@@ -35,7 +40,7 @@ export class InMemoryAddressesRepository implements AddressesRepository {
 
     if (!address) return null;
 
-    return address as AddressesRepositoryResponse;
+    return address;
   }
 
   async create(address: Address): Promise<void> {

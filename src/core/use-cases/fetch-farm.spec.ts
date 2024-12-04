@@ -12,6 +12,9 @@ import { makeFarm } from "@/test/factories/make-farm";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
+// Entities
+import { Farm } from "@/core/entities/farm";
+
 let usersRepository: InMemoryUsersRepository;
 let farmsRepository: InMemoryFarmsRepository;
 
@@ -23,7 +26,7 @@ describe("Fetch farm", () => {
     farmsRepository = new InMemoryFarmsRepository(usersRepository);
 
     sut = new FetchFarmUseCase(farmsRepository);
-  })
+  });
 
   it("should be able to fetch a farm", async () => {
     const user = makeUser();
@@ -37,14 +40,14 @@ describe("Fetch farm", () => {
 
     const response = await sut.execute({ farm_id: farm.id.value });
 
-    expect(response).toHaveProperty("farm");
-  })
+    expect(response.farm).toBeInstanceOf(Farm);
+  });
 
   it("should not be able to fetch a farm if the farm does not exist", async () => {
     await expect(() =>
       sut.execute({
-        farm_id: '1234'
+        farm_id: "1234",
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
-  })
-})
+  });
+});

@@ -12,6 +12,9 @@ import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-paymen
 // Use-cases
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 
+// Entities
+import { Bag } from "@/core/entities/bag";
+
 // Factories
 import { makeBag } from "@/test/factories/make-bag";
 import { makeUser } from "@/test/factories/make-user";
@@ -20,9 +23,6 @@ import { makeProduct } from "@/test/factories/make-product";
 import { makeOffer } from "@/test/factories/make-offer";
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeCatalog } from "@/test/factories/make-catalog";
-
-// Entities
-import { BagMerge } from "@/core/entities/merged/bag-merge";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -80,9 +80,6 @@ describe("Fetch bag", () => {
     const user = makeUser();
     await usersRepository.create(user);
 
-    const bag = makeBag({ user_id: user.id });
-    await repositories.bags.create(bag);
-
     const product = makeProduct();
     await productsRepository.create(product);
 
@@ -95,15 +92,20 @@ describe("Fetch bag", () => {
     const offer = makeOffer({ product_id: product.id, catalog_id: catalog.id });
     await offersRepository.create(offer);
 
+    const bag = makeBag({ user_id: user.id });
+
     const order = makeOrder({ bag_id: bag.id, offer_id: offer.id });
-    await ordersRepository.createMany([order]);
+
+    bag.orders.push(order);
+
+    await repositories.bags.create(bag);
 
     const result = await sut.execute({
       bag_id: bag.id.value,
       user_id: user.id.value,
     });
 
-    expect(result.bag).toBeInstanceOf(BagMerge);
+    expect(result.bag).toBeInstanceOf(Bag);
     expect(result.bag.orders.length).toBe(1);
   });
 

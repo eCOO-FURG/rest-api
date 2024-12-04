@@ -1,12 +1,10 @@
 // Entities
 import { Order } from "@/core/entities/order";
-import { OrderAggregate } from "@/core/entities/aggregates/order-aggregate";
 
 // Repositories
 import {
   OrdersRepository,
-  OrdersRepositoryResponse,
-  OrdersRepositorySearchManyRequest,
+  OrdersRepositorySearchRequest,
 } from "@/core/repositories/orders-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 
@@ -14,93 +12,52 @@ import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-r
 import { RepositoryResponse } from "@/core/types/repository-response";
 
 // Utils
-import { filter } from "@/core/utils/filter";
-import { OrderMerge } from "@/core/entities/merged/order-merge";
+import { filter } from "@/test/utils/filter";
 
 export class InMemoryOrdersRepository implements OrdersRepository {
   items: Order[] = [];
 
   constructor(private inMemoryOffersRepository: InMemoryOffersRepository) {}
 
-  async searchMany<T extends RepositoryResponse>(
-    { bag, box, page }: OrdersRepositorySearchManyRequest,
-    type: T
-  ): Promise<OrdersRepositoryResponse<T>[]> {
-    let entities = await filter<Order>(
+  async list<T extends RepositoryResponse>(
+    type: T,
+    { bag, box, status }: OrdersRepositorySearchRequest,
+    page?: number
+  ): Promise<Order[]> {
+    let orders = await filter<Order>(
       this.items,
       async (item) =>
         (!bag?.id || item.bag_id.equals(bag.id)) &&
-        (!box?.id || item.box_id.equals(box.id))
+        (!box?.id || item.box_id.equals(box.id)) &&
+        (!status || item.status === status)
     );
 
-    if (page) {
-      const start = (page - 1) * 20;
-      const end = start + 20;
-      entities = entities.slice(start, end);
+    if (page) orders = this.slice(orders, page);
+
+    if (type === "basic") return orders;
+
+    for (const [index, order] of orders.entries()) {
+      const offer = await this.inMemoryOffersRepository.find(type, {
+        id: order.offer_id.value,
+      });
+
+      if (!offer) continue;
+
+      orders[index] = Order.create({ ...order.props, offer });
     }
 
-    if (type === "entity") return entities as OrdersRepositoryResponse<T>[];
-
-    const results: OrdersRepositoryResponse<T>[] = [];
-
-    for (const entity of entities) {
-      if (type === "aggregate") {
-        const _offer = await this.inMemoryOffersRepository.search(
-          { id: entity.offer_id.value },
-          "aggregate"
-        );
-
-        if (!_offer) continue;
-
-        const order = OrderAggregate.create({
-          ...entity.props,
-          offer: _offer,
-        }) as OrdersRepositoryResponse<T>;
-
-        results.push(order);
-
-        continue;
-      }
-
-      const _offer = await this.inMemoryOffersRepository.search(
-        { id: entity.offer_id.value },
-        "merged"
-      );
-
-      if (!_offer) continue;
-
-      const order = OrderMerge.create({
-        ...entity.props,
-        offer: _offer,
-      }) as OrdersRepositoryResponse<T>;
-
-      results.push(order);
-    }
-
-    return results;
+    return orders;
   }
 
-  async createMany(orders: Order[]): Promise<void> {
-    for (const order of orders) {
-      const offer = await this.inMemoryOffersRepository.search(
-        { id: order.offer_id.value },
-        "entity"
-      );
+  async count(filters: OrdersRepositorySearchRequest): Promise<number> {
+    const entities = await this.list("basic", filters);
 
-      if (!offer) return;
-
-      this.items.push(order);
-      offer.amount -= order.amount;
-      await this.inMemoryOffersRepository.update(offer);
-    }
+    return entities.length;
   }
 
-  async updateMany(orders: Order[]): Promise<void> {
-    for (const order of orders) {
-      const itemIndex = this.items.findIndex((item) =>
-        item.id.equals(order.id)
-      );
-      this.items[itemIndex] = order;
-    }
+  private slice(items: Order[], page: number, size: number = 20): Order[] {
+    const start = (page - 1) * size;
+    const end = start + size;
+    return items.slice(start, end);
   }
 }

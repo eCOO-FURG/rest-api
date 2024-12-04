@@ -106,9 +106,12 @@ describe("open payment", () => {
     usersRepository.items.push(user);
 
     const bag = makeBag({ user_id: user.id });
-    repositories.bags.create(bag);
 
     const payment = makePayment({ bag_id: bag.id, status: "DONE" });
+
+    bag.payments.push(payment);
+
+    repositories.bags.create(bag);
     repositories.payments.create(payment);
 
     await expect(() =>
@@ -121,9 +124,12 @@ describe("open payment", () => {
     usersRepository.items.push(user);
 
     const bag = makeBag({ user_id: user.id });
-    repositories.bags.create(bag);
 
     const payment = makePayment({ bag_id: bag.id, status: "PENDING" });
+
+    bag.payments.push(payment);
+
+    repositories.bags.create(bag);
     repositories.payments.create(payment);
 
     await expect(() =>

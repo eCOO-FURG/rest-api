@@ -23,10 +23,9 @@ export class UpdatePaymentUseCase {
     status,
     flag,
   }: UpdatePaymentUseCaseRequest) {
-    const payment = await this.paymentsRepository.search(
-      { id: payment_id },
-      "entity"
-    );
+    const payment = await this.paymentsRepository.find("basic", {
+      id: payment_id,
+    });
 
     if (!payment) throw new ResourceNotFoundError("Pagamento", payment_id);
 

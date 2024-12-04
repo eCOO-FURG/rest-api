@@ -6,13 +6,12 @@ import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { UnauthorizedError } from "@/core/errors/unauthorized";
-import { ClosedActionError } from "@/core/errors/closed-action";
+import { ResourceClosedError } from "@/core/errors/resource-closed";
 
 // Entities
 import { Week } from "@/core/entities/cycle";
 
-interface UpdateOfferUpdateUseCaseRequest {
+interface UpdateOfferUseCaseRequest {
   farm_id: string;
   offer_id: string;
   amount?: number;
@@ -34,29 +33,28 @@ export class UpdateOfferUseCase {
     amount,
     price,
     description,
-  }: UpdateOfferUpdateUseCaseRequest) {
-    const farm = await this.farmsRepository.search({ id: farm_id }, "entity");
+  }: UpdateOfferUseCaseRequest) {
+    const farm = await this.farmsRepository.find("basic", { id: farm_id });
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
-    const offer = await this.offersRepository.search(
-      { id: offer_id },
-      "entity"
-    );
+    const offer = await this.offersRepository.find("basic", { id: offer_id });
 
     if (!offer) throw new ResourceNotFoundError("Oferta", offer_id);
 
-    const catalog = await this.catalogsRepository.search(
-      { id: offer.catalog_id.value },
-      "entity"
-    );
+    const catalog = await this.catalogsRepository.find("basic", {
+      id: offer.catalog_id.value,
+    });
 
     if (!catalog)
       throw new ResourceNotFoundError("Catálogo", offer.catalog_id.value);
 
-    if (!catalog.farm_id.equals(farm_id)) throw new UnauthorizedError();
+    if (!catalog.farm_id.equals(farm_id))
+      throw new ResourceNotFoundError("Oferta", offer_id);
 
-    const cycle = await this.cyclesRepository.findById(catalog.cycle_id.value);
+    const cycle = await this.cyclesRepository.find("basic", {
+      id: catalog.cycle_id.value,
+    });
 
     if (!cycle)
       throw new ResourceNotFoundError("Ciclo", catalog.cycle_id.value);
@@ -64,12 +62,10 @@ export class UpdateOfferUseCase {
     const today = (new Date().getDay() + 1) as Week[0];
 
     if (!cycle.offer.includes(today))
-      throw new ClosedActionError("ofertar", cycle.id.value);
+      throw new ResourceClosedError("Ciclo", cycle.id.value);
 
     offer.amount = amount ?? offer.amount;
-    
-    offer.price = price ? (price + (price * farm.tax) / 100) : offer.price;
-
+    offer.price = price ? price + (price * farm.tax) / 100 : offer.price;
     offer.description = description ?? offer.description;
 
     await this.offersRepository.update(offer);

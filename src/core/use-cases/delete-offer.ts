@@ -1,6 +1,5 @@
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { UnauthorizedError } from "@/core/errors/unauthorized";
 
 // Repositories
 import { FarmsRepository } from "@/core/repositories/farms-repository";
@@ -20,26 +19,23 @@ export class DeleteOfferUseCase {
   ) {}
 
   async execute({ farm_id, offer_id }: DeleteOfferUseCaseRequest) {
-    const farm = await this.farmsRepository.search({ id: farm_id }, "entity");
+    const farm = await this.farmsRepository.find("basic", { id: farm_id });
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
-    const offer = await this.offersRepository.search(
-      { id: offer_id },
-      "entity"
-    );
+    const offer = await this.offersRepository.find("basic", { id: offer_id });
 
     if (!offer) throw new ResourceNotFoundError("Oferta", offer_id);
 
-    const catalog = await this.catalogsRepository.search(
-      { id: offer.catalog_id.value },
-      "entity"
-    );
+    const catalog = await this.catalogsRepository.find("basic", {
+      id: offer.catalog_id.value,
+    });
 
     if (!catalog)
       throw new ResourceNotFoundError("Catálogo", offer.catalog_id.value);
 
-    if (!catalog.farm_id.equals(farm_id)) throw new UnauthorizedError();
+    if (!catalog.farm_id.equals(farm_id))
+      throw new ResourceNotFoundError("Oferta", offer_id);
 
     await this.offersRepository.delete(offer);
   }

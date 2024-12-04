@@ -19,10 +19,10 @@ import { makeOffer } from "@/test/factories/make-offer";
 import { makeOrder } from "@/test/factories/make-order";
 import { makeCatalog } from "@/test/factories/make-catalog";
 import { makeBox } from "@/test/factories/make-box";
+import { makeUser } from "@/test/factories/make-user";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { makeUser } from "@/test/factories/make-user";
 
 let offersRepository: InMemoryOffersRepository;
 let ordersRepository: InMemoryOrdersRepository;
@@ -89,10 +89,9 @@ describe("list farms with orders", () => {
     repositories.cycles.items.push(cycle);
 
     const catalog = makeCatalog({ farm_id: farm.id, cycle_id: cycle.id });
-    await catalogsRepository.create(catalog);
 
+    await catalogsRepository.create(catalog);
     const box = makeBox({ catalog_id: catalog.id });
-    await repositories.boxes.create(box);
 
     const product = makeProduct();
     await productsRepository.create(product);
@@ -101,8 +100,9 @@ describe("list farms with orders", () => {
     await offersRepository.create(offer);
 
     const order = makeOrder({ offer_id: offer.id });
+    box.orders.push(order);
 
-    await ordersRepository.createMany([order]);
+    await repositories.boxes.create(box);
 
     const { boxes } = await sut.execute({ cycle_id: cycle.id.value, page: 1 });
 
@@ -123,7 +123,6 @@ describe("list farms with orders", () => {
     await catalogsRepository.create(catalog);
 
     const box = makeBox({ catalog_id: catalog.id });
-    await repositories.boxes.create(box);
 
     const product = makeProduct();
     await productsRepository.create(product);
@@ -132,7 +131,10 @@ describe("list farms with orders", () => {
     await offersRepository.create(offer);
 
     const order = makeOrder({ offer_id: offer.id });
-    await ordersRepository.createMany([order]);
+
+    box.orders.push(order);
+
+    await repositories.boxes.create(box);
 
     const { boxes } = await sut.execute({
       cycle_id: cycle.id.value,
@@ -164,7 +166,6 @@ describe("list farms with orders", () => {
       await catalogsRepository.create(catalog);
 
       const box = makeBox({ catalog_id: catalog.id });
-      await repositories.boxes.create(box);
 
       const offer = makeOffer({
         product_id: product.id,
@@ -174,7 +175,9 @@ describe("list farms with orders", () => {
       const order = makeOrder({
         offer_id: offer.id,
       });
-      await ordersRepository.createMany([order]);
+      box.orders.push(order);
+
+      await repositories.boxes.create(box);
     }
 
     const { boxes } = await sut.execute({

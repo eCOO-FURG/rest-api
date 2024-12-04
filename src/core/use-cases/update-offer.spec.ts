@@ -13,14 +13,11 @@ import { InMemoryProductsRepository } from "@/test/repositories/in-memory-produc
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { UnauthorizedError } from "@/core/errors/unauthorized";
-import { ClosedActionError } from "@/core/errors/closed-action";
-
+import { ResourceClosedError } from "@/core/errors/resource-closed";
 // Entities
 import { Week } from "@/core/entities/cycle";
 import { makeCatalog } from "@/test/factories/make-catalog";
@@ -139,7 +136,7 @@ describe("update offer", () => {
         offer_id: offer.id.value,
         farm_id: farm.id.value,
       })
-    ).rejects.toBeInstanceOf(UnauthorizedError);
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
   it("should not be able to update an offer past the cycle offering days", async () => {
@@ -173,6 +170,6 @@ describe("update offer", () => {
         offer_id: offer.id.value,
         amount: 100,
       })
-    ).rejects.toBeInstanceOf(ClosedActionError);
+    ).rejects.toBeInstanceOf(ResourceClosedError);
   });
 });

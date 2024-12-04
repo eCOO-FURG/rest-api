@@ -17,15 +17,15 @@ export class FetchBagUseCase {
   ) {}
 
   async execute({ bag_id, user_id }: FetchBagUseCaseRequest) {
-    const bag = await this.bagsRepository.search({ id: bag_id }, "merged");
+    const bag = await this.bagsRepository.find("basic", { id: bag_id });
 
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 
-    const user = await this.usersRepository.findById(user_id);
+    const user = await this.usersRepository.find("basic", { id: user_id });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
-    const owner = bag.user.id.equals(user_id);
+    const owner = bag.user_id.equals(user_id);
 
     if (!owner && !user.admin)
       throw new ResourceNotFoundError("Sacola", bag_id);

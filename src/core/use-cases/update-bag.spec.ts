@@ -10,7 +10,7 @@ import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addre
 import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
 
 // Use-cases
-import { HandleBagUseCase } from "@/core/use-cases/handle-bag";
+import { UpdateBagUseCase } from "@/core/use-cases/update-bag";
 
 // Services
 import { makeBag } from "@/test/factories/make-bag";
@@ -32,9 +32,9 @@ let repositories: {
   users: InMemoryUsersRepository;
 };
 
-let sut: HandleBagUseCase;
+let sut: UpdateBagUseCase;
 
-describe("handle bag", () => {
+describe("update bag", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
     productsRepository = new InMemoryProductsRepository();
@@ -65,7 +65,7 @@ describe("handle bag", () => {
       users: new InMemoryUsersRepository(),
     };
 
-    sut = new HandleBagUseCase(repositories.bags);
+    sut = new UpdateBagUseCase(repositories.bags, repositories.users);
   });
 
   it("should be able to handle a bag", async () => {
@@ -74,6 +74,7 @@ describe("handle bag", () => {
 
     await sut.execute({
       bag_id: bag.id.value,
+      user_id: bag.user_id.value,
       status: "SEPARATED",
     });
 
@@ -84,6 +85,7 @@ describe("handle bag", () => {
     await expect(
       sut.execute({
         bag_id: "invalid-id",
+        user_id: "invalid-id",
         status: "SEPARATED",
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);

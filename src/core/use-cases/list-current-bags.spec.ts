@@ -1,3 +1,6 @@
+// Entities
+import { Bag } from "@/core/entities/bag";
+
 // Use-cases
 import { ListCurrentBagsUseCase } from "@/core/use-cases/list-current-bags";
 
@@ -11,9 +14,6 @@ import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalo
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
 import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
-
-// Entities
-import { BagMerge } from "@/core/entities/merged/bag-merge";
 
 // Factories
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
@@ -82,7 +82,7 @@ describe("list bags", () => {
     const user = makeUser({ first_name: "José" });
     usersRepository.create(user);
 
-    const bag = makeBag({ cycle_id: cycle.id, user_id: user.id });
+    const bag = makeBag({ cycle_id: cycle.id, user_id: user.id, user });
     await repositories.bags.create(bag);
 
     const result = await sut.execute({
@@ -91,7 +91,7 @@ describe("list bags", () => {
       page: 1,
     });
 
-    expect(result.bags[0]).toBeInstanceOf(BagMerge);
+    expect(result.bags[0]).toBeInstanceOf(Bag);
   });
 
   it("should not be able to list bags from a cycle that does not exists", async () => {

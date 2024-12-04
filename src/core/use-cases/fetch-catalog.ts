@@ -14,15 +14,13 @@ export class FetchCatalogUseCase {
   constructor(private catalogsRepository: CatalogsRepository) {}
 
   async execute({ catalog_id, product, page }: FetchCatalogUseCaseRequest) {
-    const catalog = await this.catalogsRepository.search(
-      { id: catalog_id, offer: { product: { name: product }, page } },
-      "merged"
-    );
+    const catalog = await this.catalogsRepository.find("aggregate", {
+      id: catalog_id,
+      offers: { product: { name: product }, page },
+    });
 
     if (!catalog) throw new ResourceNotFoundError("Catálogo", catalog_id);
 
-    return {
-      catalog,
-    };
+    return { catalog };
   }
 }

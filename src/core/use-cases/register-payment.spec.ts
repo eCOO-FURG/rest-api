@@ -67,7 +67,6 @@ describe("Register payment", () => {
     await sut.execute({
       bag_id: bag.id.value,
       method: "CREDIT",
-      status: "PENDING",
     });
   });
 
@@ -76,7 +75,6 @@ describe("Register payment", () => {
       sut.execute({
         bag_id: "non-existent-bag-id",
         method: "CREDIT",
-        status: "PENDING",
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
@@ -91,14 +89,12 @@ describe("Register payment", () => {
     await sut.execute({
       bag_id: bag.id.value,
       method: "CREDIT",
-      status: "DONE",
     });
 
     await expect(() =>
       sut.execute({
         bag_id: bag.id.value,
         method: "CREDIT",
-        status: "PENDING",
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });

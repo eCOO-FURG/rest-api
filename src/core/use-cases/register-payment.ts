@@ -23,7 +23,9 @@ export class RegisterPaymentUseCase {
   ) {}
 
   async execute({ bag_id, method, flag }: RegisterPaymentUseCaseRequest) {
-    const bag = await this.bagsRepository.search({ id: bag_id }, "merged");
+    const bag = await this.bagsRepository.find("merge", {
+      id: bag_id,
+    });
 
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 

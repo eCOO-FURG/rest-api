@@ -4,21 +4,18 @@ import { Payment } from "@/core/entities/payment";
 // Repositories
 import {
   PaymentsRepository,
-  PaymentsRepositoryResponse,
-  PaymentsRepositorySearchManyRequest,
   PaymentsRepositorySearchRequest,
 } from "@/core/repositories/payments-repository";
 
 // Utils
-import { find } from "@/core/utils/find";
-import { filter } from "@/core/utils/filter";
+import { find } from "@/test/utils/find";
+import { filter } from "@/test/utils/filter";
 
 // Types
 import { RepositoryResponse } from "@/core/types/repository-response";
 
 // Repositories
 import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
-import { PaymentAggregate } from "@/core/entities/aggregates/payment-aggregate";
 
 export class InMemoryPaymentsRepository implements PaymentsRepository {
   items: Payment[] = [];
@@ -28,10 +25,10 @@ export class InMemoryPaymentsRepository implements PaymentsRepository {
     this.inMemoryBagsRepository = bagsRepository;
   }
 
-  async search<T extends RepositoryResponse>(
-    { id, bag, status, method }: PaymentsRepositorySearchRequest,
-    type: T
-  ): Promise<PaymentsRepositoryResponse<T> | null> {
+  async find(
+    type: RepositoryResponse,
+    { id, bag, status, method }: PaymentsRepositorySearchRequest
+  ): Promise<Payment | null> {
     const payment = await find<Payment>(
       this.items,
       async (item) =>
@@ -43,55 +40,46 @@ export class InMemoryPaymentsRepository implements PaymentsRepository {
 
     if (!payment) return null;
 
-    if (type === "entity") return payment as PaymentsRepositoryResponse<T>;
+    if (type === "basic") return payment;
 
-    const _bag = await this.inMemoryBagsRepository?.search(
-      { id: payment.bag_id.value },
-      "merged"
-    );
+    const _bag = await this.inMemoryBagsRepository?.find("basic", {
+      id: payment.bag_id.value,
+    });
 
     if (!_bag) return null;
 
-    return PaymentAggregate.create({
-      ...payment.props,
-      bag: _bag,
-    }) as PaymentsRepositoryResponse<T>;
+    return Payment.create({ ...payment.props, bag: _bag });
   }
 
-  async searchMany<T extends RepositoryResponse>(
-    { bag, status, method, page }: PaymentsRepositorySearchManyRequest,
-    type: T
-  ): Promise<PaymentsRepositoryResponse<T>[]> {
-    let payments = await filter(
+  async list(
+    type: RepositoryResponse,
+    { id, bag, status, method }: PaymentsRepositorySearchRequest,
+    page?: number
+  ): Promise<Payment[]> {
+    let payments = await filter<Payment>(
       this.items,
       async (item) =>
+        (!id || item.id.equals(id)) &&
         (!bag?.id || item.bag_id.equals(bag.id)) &&
         (!status || item.status === status) &&
         (!method || item.method === method)
     );
 
-    if (page) {
-      const start = (page - 1) * 20;
-      const end = start + 20;
-      payments = payments.slice(start, end);
-    }
+    if (page) payments = this.slice(payments, page);
 
-    if (type === "entity") return payments as PaymentsRepositoryResponse<T>[];
+    if (type === "basic") return payments;
 
-    const aggregates: PaymentAggregate[] = [];
-
-    for (const payment of payments) {
-      const _bag = await this.inMemoryBagsRepository?.search(
-        { id: payment.bag_id.value },
-        "merged"
-      );
+    for (const [index, payment] of payments.entries()) {
+      const _bag = await this.inMemoryBagsRepository?.find("basic", {
+        id: payment.bag_id.value,
+      });
 
       if (!_bag) continue;
 
-      aggregates.push(PaymentAggregate.create({ ...payment.props, bag: _bag }));
+      payments[index] = Payment.create({ ...payment.props, bag: _bag });
     }
 
-    return aggregates as PaymentsRepositoryResponse<T>[];
+    return payments;
   }
 
   async create(payment: Payment): Promise<void> {
@@ -101,5 +89,11 @@ export class InMemoryPaymentsRepository implements PaymentsRepository {
   async update(payment: Payment): Promise<void> {
     const index = this.items.findIndex((item) => item.id.equals(payment.id));
     this.items[index] = payment;
+  }
+
+  private slice(items: Payment[], page: number, size: number = 20): Payment[] {
+    const start = (page - 1) * size;
+    const end = start + size;
+    return items.slice(start, end);
   }
 }

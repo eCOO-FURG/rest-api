@@ -6,9 +6,9 @@ import { OrderProductsUseCase } from "@/core/use-cases/order-products";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { ClosedActionError } from "@/core/errors/closed-action";
 import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
+import { ResourceClosedError } from "@/core/errors/resource-closed";
 
 // Factories
 import { makeOffer } from "@/test/factories/make-offer";
@@ -18,6 +18,7 @@ import { makeProduct } from "@/test/factories/make-product";
 import { makeBag } from "@/test/factories/make-bag";
 import { makeCatalog } from "@/test/factories/make-catalog";
 import { makeAddress } from "@/test/factories/make-address";
+import { makeFarm } from "@/test/factories/make-farm";
 
 // Repositories
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
@@ -34,7 +35,6 @@ import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-paymen
 
 // Services
 import { MockedOtpProvider } from "@/test/cryptography/mocked-otp-provider";
-import { makeFarm } from "@/test/factories/make-farm";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
@@ -109,7 +109,6 @@ describe("order product", () => {
       repositories.users,
       repositories.cycles,
       repositories.offers,
-      repositories.orders,
       repositories.catalogs,
       repositories.bags,
       repositories.boxes,
@@ -139,6 +138,7 @@ describe("order product", () => {
       catalog_id: catalog.id,
       amount: 10,
     });
+
     await repositories.offers.create(offer);
 
     await sut.execute({
@@ -155,8 +155,7 @@ describe("order product", () => {
     });
 
     expect(repositories.bags.items.length).toBe(1);
-    expect(repositories.orders.items.length).toBe(1);
-    expect(offer.amount).toBe(5);
+    expect(repositories.bags.items[0].orders.length).toBe(1);
   });
 
   it("should be add orders to a existing bag if exists", async () => {
@@ -176,6 +175,7 @@ describe("order product", () => {
       user_id: user.id,
       cycle_id: cycle.id,
       address_id: address.id,
+      address: address,
     });
     await repositories.bags.create(bag);
 
@@ -205,9 +205,7 @@ describe("order product", () => {
       request: [{ offer_id: offer.id.value, amount: 5 }],
     });
 
-    expect(repositories.bags.items.length).toBe(1);
-    expect(repositories.orders.items.length).toBe(1);
-    expect(offer.amount).toBe(5);
+    expect(repositories.bags.items[0].orders.length).toBe(1);
   });
 
   it("should not allow an non existing user to create an order", async () => {
@@ -337,7 +335,7 @@ describe("order product", () => {
           },
         ],
       })
-    ).rejects.toBeInstanceOf(ClosedActionError);
+    ).rejects.toBeInstanceOf(ResourceClosedError);
   });
 
   it("should not be able create an order with an amount greater than the offer", async () => {

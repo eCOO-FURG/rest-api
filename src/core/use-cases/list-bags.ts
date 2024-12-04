@@ -35,28 +35,26 @@ export class ListBagsUseCase {
     cycle_id,
   }: ListBagsUseCaseRequest) {
     if (user_id) {
-      const user = await this.usersRepository.findById(user_id);
+      const user = await this.usersRepository.find("basic", { id: user_id });
 
       if (!user) throw new ResourceNotFoundError("Usuário", user_id);
     }
 
     if (cycle_id) {
-      const cycle = await this.cyclesRepository.findById(cycle_id);
+      const cycle = await this.cyclesRepository.find("basic", {
+        id: cycle_id,
+      });
 
       if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
     }
 
-    const bags = await this.bagsRepository.searchMany(
-      {
-        user: { id: user_id },
-        cycle: { id: cycle_id },
-        statuses,
-        since,
-        before,
-        page,
-      },
-      "aggregate"
-    );
+    const bags = await this.bagsRepository.list("aggregate", {
+      user: { id: user_id },
+      cycle: { id: cycle_id },
+      statuses,
+      since,
+      before,
+    });
 
     return { bags };
   }

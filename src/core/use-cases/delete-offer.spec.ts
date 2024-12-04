@@ -15,7 +15,6 @@ import { makeCatalog } from "@/test/factories/make-catalog";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { UnauthorizedError } from "@/core/errors/unauthorized";
 
 let productsRepository: InMemoryProductsRepository;
 let usersRepository: InMemoryUsersRepository;
@@ -118,6 +117,6 @@ describe("delete offer", () => {
         offer_id: offer.id.value,
         farm_id: farm.id.value,
       })
-    ).rejects.toBeInstanceOf(UnauthorizedError);
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

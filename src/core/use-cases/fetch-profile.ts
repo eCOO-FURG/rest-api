@@ -12,14 +12,10 @@ export class FetchProfileUseCase {
   constructor(private usersRepository: UsersRepository) {}
 
   async execute({ user_id }: FetchProfileUseCaseRequest) {
-    const user = await this.usersRepository.findById(user_id);
+    const user = await this.usersRepository.find("extended", { id: user_id });
 
-    if (!user) {
-      throw new ResourceNotFoundError("Usuário", user_id);
-    }
+    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
-    return {
-      user,
-    };
+    return { user };
   }
 }

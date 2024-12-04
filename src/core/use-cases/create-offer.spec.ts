@@ -1,5 +1,5 @@
 // Use-cases
-import { OfferProductsUseCase } from "@/core/use-cases/offer-products";
+import { CreateOfferUseCase } from "@/core/use-cases/create-offer";
 
 // Services
 import { makeCycle } from "@/test/factories/make-cycle";
@@ -19,29 +19,21 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
+import { ResourceClosedError } from "@/core/errors/resource-closed";
 
 // Entities
 import { Offer } from "@/core/entities/offer";
 import { Week } from "@/core/entities/cycle";
-import { ClosedActionError } from "@/core/errors/closed-action";
 import { makeCatalog } from "@/test/factories/make-catalog";
 
 let usersRepository: InMemoryUsersRepository;
-let cyclesRepository: InMemoryCyclesRepository;
 let farmsRepository: InMemoryFarmsRepository;
 let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
+let cyclesRepository: InMemoryCyclesRepository;
 
-let repositories: {
-  farms: InMemoryFarmsRepository;
-  products: InMemoryProductsRepository;
-  catalogs: InMemoryCatalogsRepository;
-  offers: InMemoryOffersRepository;
-  cycles: InMemoryCyclesRepository;
-};
-
-let sut: OfferProductsUseCase;
+let sut: CreateOfferUseCase;
 
 describe("offer products", () => {
   beforeEach(() => {
@@ -59,37 +51,27 @@ describe("offer products", () => {
     );
 
     offersRepository.inMemoryCatalogsRepository = catalogsRepository;
+
     farmsRepository = new InMemoryFarmsRepository(usersRepository);
 
-    repositories = {
-      farms: farmsRepository,
-      catalogs: new InMemoryCatalogsRepository(
-        farmsRepository,
-        offersRepository
-      ),
-      products: productsRepository,
-      cycles: cyclesRepository,
-      offers: offersRepository,
-    };
-
-    sut = new OfferProductsUseCase(
-      repositories.farms,
-      repositories.products,
-      repositories.catalogs,
-      repositories.offers,
-      repositories.cycles
+    sut = new CreateOfferUseCase(
+      farmsRepository,
+      productsRepository,
+      catalogsRepository,
+      offersRepository,
+      cyclesRepository
     );
   });
 
   it("should be able to offer products", async () => {
     const cycle = makeCycle();
-    repositories.cycles.items.push(cycle);
+    cyclesRepository.items.push(cycle);
 
     const product = makeProduct();
-    await repositories.products.create(product);
+    await productsRepository.create(product);
 
     const farm = makeFarm({ status: "ACTIVE" });
-    await repositories.farms.create(farm);
+    await farmsRepository.create(farm);
 
     await sut.execute({
       product_id: product.id.value,
@@ -100,21 +82,16 @@ describe("offer products", () => {
       description: "Novo.",
     });
 
-    expect(repositories.offers.items.length).toBe(1);
-    expect(repositories.catalogs.items.length).toBe(1);
-    expect(
-      repositories.catalogs.items[0].id.equals(
-        repositories.offers.items[0].catalog_id
-      )
-    ).toBe(true);
+    expect(catalogsRepository.items.length).toBe(1);
+    expect(catalogsRepository.items[0].offers.length).toBe(1);
   });
 
   it("should not be able to offer products from a nonexistent farm", async () => {
     const cycle = makeCycle();
-    repositories.cycles.items.push(cycle);
+    cyclesRepository.items.push(cycle);
 
     const product = makeProduct();
-    await repositories.products.create(product);
+    await productsRepository.create(product);
 
     await expect(() =>
       sut.execute({
@@ -129,13 +106,13 @@ describe("offer products", () => {
 
   it("should not be able to offer products from a not active farm", async () => {
     const cycle = makeCycle();
-    repositories.cycles.items.push(cycle);
+    cyclesRepository.items.push(cycle);
 
     const product = makeProduct();
-    await repositories.products.create(product);
+    await productsRepository.create(product);
 
     const farm = makeFarm({ status: "INACTIVE" });
-    await repositories.farms.create(farm);
+    await farmsRepository.create(farm);
 
     await expect(() =>
       sut.execute({
@@ -150,10 +127,10 @@ describe("offer products", () => {
 
   it("should not be able to offer nonexistent products", async () => {
     const cycle = makeCycle();
-    repositories.cycles.items.push(cycle);
+    cyclesRepository.items.push(cycle);
 
     const farm = makeFarm({ status: "ACTIVE" });
-    await repositories.farms.create(farm);
+    await farmsRepository.create(farm);
 
     await expect(() =>
       sut.execute({
@@ -168,10 +145,10 @@ describe("offer products", () => {
 
   it("should not be able to offer products in a nonexistent cycle", async () => {
     const product = makeProduct();
-    await repositories.products.create(product);
+    await productsRepository.create(product);
 
     const farm = makeFarm({ status: "ACTIVE" });
-    await repositories.farms.create(farm);
+    await farmsRepository.create(farm);
 
     await expect(() =>
       sut.execute({
@@ -186,16 +163,16 @@ describe("offer products", () => {
 
   it("should not be able to offer the same product twice in the same cycle", async () => {
     const cycle = makeCycle();
-    repositories.cycles.items.push(cycle);
+    cyclesRepository.items.push(cycle);
 
     const product = makeProduct();
-    await repositories.products.create(product);
+    await productsRepository.create(product);
 
     const farm = makeFarm({ status: "ACTIVE" });
-    await repositories.farms.create(farm);
+    await farmsRepository.create(farm);
 
     const catalog = makeCatalog({ farm_id: farm.id, cycle_id: cycle.id });
-    await repositories.catalogs.create(catalog);
+    await catalogsRepository.create(catalog);
 
     const offer = Offer.create({
       catalog_id: catalog.id,
@@ -203,7 +180,7 @@ describe("offer products", () => {
       amount: 20,
       price: 30,
     });
-    await repositories.offers.create(offer);
+    await offersRepository.create(offer);
 
     await expect(() =>
       sut.execute({
@@ -218,13 +195,13 @@ describe("offer products", () => {
 
   it("should not be able to offer products with invalid weight", async () => {
     const cycle = makeCycle();
-    repositories.cycles.items.push(cycle);
+    cyclesRepository.items.push(cycle);
 
     const product = makeProduct({ pricing: "WEIGHT" });
-    await repositories.products.create(product);
+    await productsRepository.create(product);
 
     const farm = makeFarm({ status: "ACTIVE" });
-    await repositories.farms.create(farm);
+    await farmsRepository.create(farm);
 
     await expect(() =>
       sut.execute({
@@ -246,13 +223,13 @@ describe("offer products", () => {
       offer: offer as Week,
     });
 
-    repositories.cycles.items.push(cycle);
+    cyclesRepository.items.push(cycle);
 
     const product = makeProduct();
-    await repositories.products.create(product);
+    await productsRepository.create(product);
 
     const farm = makeFarm({ status: "ACTIVE" });
-    await repositories.farms.create(farm);
+    await farmsRepository.create(farm);
 
     await expect(() =>
       sut.execute({
@@ -262,6 +239,6 @@ describe("offer products", () => {
         amount: 10,
         price: 10,
       })
-    ).rejects.toBeInstanceOf(ClosedActionError);
+    ).rejects.toBeInstanceOf(ResourceClosedError);
   });
 });

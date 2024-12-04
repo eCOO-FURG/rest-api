@@ -75,20 +75,27 @@ describe("searh offering farms", () => {
       const user = makeUser();
       await usersRepository.create(user);
 
-      const farm = makeFarm({ admin_id: user.id });
+      const farm = makeFarm({ admin_id: user.id, admin: user });
       await farmsRepository.create(farm);
 
       const catalog = makeCatalog({
         farm_id: farm.id,
         cycle_id: cycle.id,
+        farm,
+        cycle,
       });
-      await repositories.catalogs.create(catalog);
 
       const offer = makeOffer({
         catalog_id: catalog.id,
         product_id: product.id,
+        product,
       });
+
       await offersRepository.create(offer);
+
+      catalog.offers.push(offer);
+
+      await repositories.catalogs.create(catalog);
     }
 
     const result = await sut.execute({
