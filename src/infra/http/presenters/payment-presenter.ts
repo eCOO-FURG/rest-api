@@ -1,19 +1,25 @@
 // Entities
-import { PaymentAggregate } from "@/core/entities/aggregates/payment-aggregate";
-import { BagMergePresenter } from "./bag-merge-presenter";
+import { Payment, PaymentProps } from "@/core/entities/payment";
+
+// Presenters
+import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
+// Types
+import { View } from "@/infra/types/view";
 
 export class PaymentPresenter {
-  static toHttp(payment: PaymentAggregate) {
-    return {
-      id: payment.id.value,
-      method: payment.method,
-      flag: payment.flag,
-      status: payment.status,
-      bag: BagMergePresenter.toHttp(payment.bag),
-      expired: payment.expired,
-      expires_at: payment.expires_at,
-      created_at: payment.created_at,
-      updated_at: payment.updated_at,
-    };
+  static toHttp(payment?: Payment): View<PaymentProps> {
+    if (payment)
+      return {
+        id: payment.id.value,
+        method: payment.method,
+        flag: payment.flag,
+        status: payment.status,
+        expired: payment.expired,
+        bag_id: payment.bag_id.value,
+        bag: BagPresenter.toHttp(payment.bag),
+        expires_at: payment.expires_at,
+        created_at: payment.created_at,
+        updated_at: payment.updated_at,
+      };
   }
 }

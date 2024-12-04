@@ -1,23 +1,35 @@
 // Entities
-import { FarmAggregate } from "@/core/entities/aggregates/farm-aggregate";
+import { Farm, FarmProps } from "@/core/entities/farm";
 
 // Presenters
 import { UserPresenter } from "@/infra/http/presenters/user-presenter";
+import { CatalogPresenter } from "@/infra/http/presenters/catalog-presenter";
+
+// Types
+import { View } from "@/infra/types/view";
 
 export class FarmPresenter {
-  static toHttp(farm: FarmAggregate) {
-    const { roles, verified_at, ...admin } = UserPresenter.toHttp(farm.admin);
+  static toHttp(farm?: Farm): View<FarmProps> {
+    const admin = UserPresenter.toHttp(farm?.admin);
 
-    return {
-      id: farm.id.value,
-      name: farm.name,
-      status: farm.status,
-      tally: farm.tally,
-      tax: farm.tax,
-      description: farm.description,
-      admin,
-      created_at: farm.created_at,
-      updated_at: farm.updated_at,
-    };
+    if (admin) {
+      delete admin.roles;
+      delete admin.verified_at;
+    }
+
+    if (farm)
+      return {
+        id: farm.id.value,
+        name: farm.name,
+        status: farm.status,
+        tally: farm.tally,
+        tax: farm.tax,
+        description: farm.description,
+        admin_id: farm.admin_id,
+        admin: admin,
+        catalogs: farm.catalogs?.map(CatalogPresenter.toHttp),
+        created_at: farm.created_at,
+        updated_at: farm.updated_at,
+      };
   }
 }

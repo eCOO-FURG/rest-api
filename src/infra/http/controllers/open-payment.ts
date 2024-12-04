@@ -24,10 +24,10 @@ export async function openPaymentController(
     const openPaymentUseCase =
       container.resolve<OpenPaymentUseCase>("openPaymentUseCase");
 
-    const { aggregate, charge } = await openPaymentUseCase.execute({ bag_id });
+    const { payment, charge } = await openPaymentUseCase.execute({ bag_id });
 
     return response.status(200).send({
-      payment: PaymentPresenter.toHttp(aggregate),
+      payment: PaymentPresenter.toHttp(payment),
       charge,
     });
   } catch (error) {

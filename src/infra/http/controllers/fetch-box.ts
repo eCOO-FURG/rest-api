@@ -30,6 +30,7 @@ export async function fetchBoxController(
       container.resolve<FetchBoxUseCase>("fetchBoxUseCase");
 
     const { box } = await fetchBoxUseCase.execute({
+      user_id: request.user_id,
       box_id,
     });
 

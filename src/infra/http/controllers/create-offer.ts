@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
 // Use-cases
-import { OfferProductsUseCase } from "@/core/use-cases/offer-products";
+import { CreateOfferUseCase } from "@/core/use-cases/create-offer";
 
 // Container
 import container from "@/infra/container";
@@ -27,11 +27,10 @@ export async function offerProductsController(
     const { product_id, cycle_id, amount, price, description } =
       offerProductsSchema.body.parse(request.body);
 
-    const offerProductsUseCase = container.resolve<OfferProductsUseCase>(
-      "offerProductsUseCase"
-    );
+    const createOfferUseCase =
+      container.resolve<CreateOfferUseCase>("createOfferUseCase");
 
-    await offerProductsUseCase.execute({
+    await createOfferUseCase.execute({
       farm_id: request.farm_id,
       product_id,
       cycle_id,

@@ -41,9 +41,7 @@ const test = development.omit({
 
 const environment = process.env.ENV;
 
-if (!environment) {
-  throw new Error("❌ Ambiente não especificado.");
-}
+if (!environment) throw new Error("❌ Ambiente não especificado.");
 
 const schema =
   environment === "staging" || environment === "production"
@@ -60,8 +58,7 @@ if (_env.success === false) {
     message: issue.message,
   }));
 
-  console.error("\n ❌ Variáveis ambiente incorretas: \n", issues);
-  throw new Error();
+  throw new Error(`❌ Variáveis ambiente incorretas: \n${issues}`);
 }
 
 export const env = _env.data as z.infer<typeof deploy>;

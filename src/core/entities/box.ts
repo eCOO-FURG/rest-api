@@ -10,10 +10,11 @@ import { Optional } from "@/core/types/optional";
 export interface BoxProps extends EntityRequest {
   status: "PENDING" | "VERIFIED";
   verified: number;
-  orders: Order[];
 
   catalog_id: UUID;
   catalog?: Catalog;
+
+  orders: Order[];
 }
 
 export class Box extends Entity<BoxProps> {

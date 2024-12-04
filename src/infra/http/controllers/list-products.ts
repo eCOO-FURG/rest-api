@@ -14,7 +14,7 @@ import { ProductPresenter } from "@/infra/http/presenters/product-presenter";
 export const listProductSchema = {
   query: z.object({
     page: z.coerce.number().openapi({ description: "Página da listagem." }),
-    product: z
+    name: z
       .string()
       .optional()
       .openapi({ description: "Filtro do nome do produto." }),
@@ -27,15 +27,15 @@ export async function listProductsController(
   next: NextFunction
 ) {
   try {
-    const { page, product } = listProductSchema.query.parse(request.query);
+    const { page, name } = listProductSchema.query.parse(request.query);
 
     const listProductsUseCase = container.resolve<ListProductsUsecase>(
       "listProductsUseCase"
     );
 
     const { products } = await listProductsUseCase.execute({
+      name,
       page,
-      product,
     });
 
     return response

@@ -14,7 +14,11 @@ import { OrderPresenter } from "@/infra/http/presenters/order-presenter";
 
 export const fetchCurrentBoxSchema = {
   query: z.object({
-    cycle_id: z.string().uuid(),
+    cycle_id: z.string().uuid().openapi({ description: "ID do ciclo." }),
+    page: z.coerce
+      .number()
+      .min(1)
+      .openapi({ description: "Página das ofertas do catálogo." }),
   }),
 };
 
@@ -24,7 +28,7 @@ export async function fetchCurrentBoxController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id } = fetchCurrentBoxSchema.query.parse(request.query);
+    const { cycle_id, page } = fetchCurrentBoxSchema.query.parse(request.query);
 
     const fetchCurrentBoxUsecase = container.resolve<FetchCurrentBoxUseCase>(
       "fetchCurrentBoxUseCase"
@@ -33,6 +37,7 @@ export async function fetchCurrentBoxController(
     const { box } = await fetchCurrentBoxUsecase.execute({
       farm_id: request.farm_id,
       cycle_id,
+      page,
     });
 
     return response.status(200).send({

@@ -6,18 +6,16 @@ import { z } from "zod";
 import container from "@/infra/container";
 
 // Use-cases
-import { HandleFarmStatusUseCase } from "@/core/use-cases/handle-farm-status";
+import { UpdateFarmUseCase } from "@/core/use-cases/update-farm";
 
 export const handleFarmStatusSchema = {
   route: z.object({
     farm_id: z.string().uuid(),
   }),
   body: z.object({
-    status: z
-      .enum(["ACTIVE", "INACTIVE", "PENDING"])
-      .openapi({
-        description: "Status de uma fazenda. ACTIVE, INACTIVE ou PENDING.",
-      }),
+    status: z.enum(["ACTIVE", "INACTIVE", "PENDING"]).openapi({
+      description: "Status de uma fazenda. ACTIVE, INACTIVE ou PENDING.",
+    }),
   }),
 };
 
@@ -28,14 +26,14 @@ export async function handleFarmStatusController(
 ) {
   try {
     const { farm_id } = handleFarmStatusSchema.route.parse(request.params);
+    const { status } = handleFarmStatusSchema.body.parse(request.body);
 
-    const handleFarmStatusUseCase = container.resolve<HandleFarmStatusUseCase>(
-      "handleFarmStatusUseCase"
-    );
+    const updateFarmUseCase =
+      container.resolve<UpdateFarmUseCase>("updateFarmUseCase");
 
-    await handleFarmStatusUseCase.execute({
+    await updateFarmUseCase.execute({
       farm_id,
-      status: request.body.status,
+      status,
     });
 
     return response.sendStatus(204);

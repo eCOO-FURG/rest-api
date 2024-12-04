@@ -23,8 +23,6 @@ export const BAG_STATUSES = [
 export interface BagProps extends EntityRequest {
   code: string;
   status: (typeof BAG_STATUSES)[number];
-  orders: Order[];
-  payments: Payment[];
 
   user_id: UUID;
   user?: User;
@@ -33,7 +31,10 @@ export interface BagProps extends EntityRequest {
   cycle?: Cycle;
 
   address_id: UUID | null;
-  address?: Address | null;
+  address?: Address;
+
+  orders: Order[];
+  payments: Payment[];
 }
 
 export class Bag extends Entity<BagProps> {
@@ -103,7 +104,7 @@ export class Bag extends Entity<BagProps> {
   paid() {
     const payments = this.props.payments;
 
-    const done = payments.some((payment) => payment.status === "DONE");
+    const done = payments?.some((payment) => payment.status === "DONE");
 
     return done;
   }
@@ -111,7 +112,7 @@ export class Bag extends Entity<BagProps> {
   open() {
     const payments = this.props.payments;
 
-    const pending = payments.find(
+    const pending = payments?.find(
       (payment) => payment.status === "PENDING" && !payment.expired
     );
 
@@ -126,7 +127,6 @@ export class Bag extends Entity<BagProps> {
     const bag = new Bag({
       ...props,
       status: props.status ?? "PENDING",
-      address: props.address ?? null,
       orders: props.orders ?? [],
       payments: props.payments ?? [],
     });

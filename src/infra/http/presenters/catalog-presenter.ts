@@ -1,17 +1,25 @@
 // Entities
-import { CatalogAggregate } from "@/core/entities/aggregates/catalog-aggregate";
+import { Catalog, CatalogProps } from "@/core/entities/catalog";
 
 // Presenters
 import { FarmPresenter } from "@/infra/http/presenters/farm-presenter";
+import { CyclePresenter } from "@/infra/http/presenters/cycle-presenter";
+import { OfferPresenter } from "@/infra/http/presenters/offer-presenter";
+
+import { View } from "@/infra/types/view";
 
 export class CatalogPresenter {
-  static toHttp(catalog: CatalogAggregate) {
-    return {
-      id: catalog.id.value,
-      cycle_id: catalog.cycle_id.value,
-      farm: FarmPresenter.toHttp(catalog.farm),
-      created_at: catalog.created_at,
-      updated_at: catalog.updated_at,
-    };
+  static toHttp(catalog?: Catalog): View<CatalogProps> {
+    if (catalog)
+      return {
+        id: catalog.id.value,
+        cycle_id: catalog.cycle_id.value,
+        cycle: CyclePresenter.toHttp(catalog.cycle),
+        farm_id: catalog.farm_id.value,
+        farm: FarmPresenter.toHttp(catalog.farm),
+        offers: catalog.offers.map(OfferPresenter.toHttp),
+        created_at: catalog.created_at,
+        updated_at: catalog.updated_at,
+      };
   }
 }

@@ -6,7 +6,7 @@ import { z } from "zod";
 import container from "@/infra/container";
 
 // Use-cases
-import { HandleBoxStatusUseCase } from "@/core/use-cases/handle-box-status";
+import { UpdateBoxUseCase } from "@/core/use-cases/update-box";
 
 // Validations
 import { notEmpty } from "@/infra/http/validation/not-empty";
@@ -37,11 +37,10 @@ export async function handleBoxStatusController(
 
     const { orders } = handleBoxStatusSchema.body.parse(request.body);
 
-    const handleBoxStatusUseCase = container.resolve<HandleBoxStatusUseCase>(
-      "handleBoxStatusUseCase"
-    );
+    const updateBoxUseCase =
+      container.resolve<UpdateBoxUseCase>("updateBoxUseCase");
 
-    await handleBoxStatusUseCase.execute({
+    await updateBoxUseCase.execute({
       box_id,
       items: orders,
     });
