@@ -37,6 +37,7 @@ import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
 import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
 import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
 import { FetchPendingsUseCase } from "@/core/use-cases/fetch-pendings";
+import { RequestHelpUseCase } from "@/core/use-cases/request-help";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -242,6 +243,9 @@ export default (container: AwilixContainer) => {
           boxesRepository,
           cacheManager
         )
+    ),
+    requestHelpUseCase: asFunction(
+      ({ usersRepository }) => new RequestHelpUseCase(usersRepository)
     ),
   });
 };
