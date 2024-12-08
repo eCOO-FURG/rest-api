@@ -9,7 +9,7 @@ import container from "@/infra/container";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 
 // Presenters
-import { BagMergePresenter } from "@/infra/http/presenters/bag-merge-presenter";
+import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 
 export const fetchBagSchema = {
   route: z.object({
@@ -33,7 +33,7 @@ export async function fetchBagController(
       user_id: request.user_id,
     });
 
-    return response.status(200).send(BagMergePresenter.toHttp(bag));
+    return response.status(200).send(BagPresenter.toHttp(bag));
   } catch (error) {
     next(error);
   }
