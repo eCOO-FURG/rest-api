@@ -1,8 +1,11 @@
 // Entities
-import { Address } from "@/core/entities/address";
+import { Address, AddressProps } from "@/core/entities/address";
+
+// Types
+import { View } from "@/infra/types/view";
 
 export class AddressPresenter {
-  static toHttp(address?: Address) {
+  static toHttp(address?: Address): View<AddressProps> {
     if (address)
       return {
         id: address.id.value,

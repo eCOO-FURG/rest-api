@@ -1,8 +1,11 @@
 // Entities
-import { Cycle } from "@/core/entities/cycle";
+import { Cycle, CycleProps } from "@/core/entities/cycle";
+
+// Types
+import { View } from "@/infra/types/view";
 
 export class CyclePresenter {
-  static toHttp(cycle?: Cycle) {
+  static toHttp(cycle?: Cycle): View<CycleProps> {
     if (cycle)
       return {
         id: cycle.id.value,

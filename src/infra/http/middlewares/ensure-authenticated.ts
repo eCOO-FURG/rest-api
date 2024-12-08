@@ -47,8 +47,8 @@ export async function ensureAuthenticated(
 
       const ONE_HOUR_AGO = new Date(Date.now() - 60 * 60 * 1000);
 
-      const session = await sessionsRepository.search({
-        user_id,
+      const session = await sessionsRepository.find("basic", {
+        user: { id: user_id },
         ip: request.ip!,
         agent: request.headers["user-agent"] ?? "not-identified",
         since: ONE_HOUR_AGO,

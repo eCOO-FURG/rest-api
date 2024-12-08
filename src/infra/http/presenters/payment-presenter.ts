@@ -1,8 +1,6 @@
 // Entities
 import { Payment, PaymentProps } from "@/core/entities/payment";
 
-// Presenters
-import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 // Types
 import { View } from "@/infra/types/view";
 
@@ -16,7 +14,6 @@ export class PaymentPresenter {
         status: payment.status,
         expired: payment.expired,
         bag_id: payment.bag_id.value,
-        bag: BagPresenter.toHttp(payment.bag),
         expires_at: payment.expires_at,
         created_at: payment.created_at,
         updated_at: payment.updated_at,

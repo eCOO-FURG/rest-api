@@ -3,7 +3,6 @@ import { Farm, FarmProps } from "@/core/entities/farm";
 
 // Presenters
 import { UserPresenter } from "@/infra/http/presenters/user-presenter";
-import { CatalogPresenter } from "@/infra/http/presenters/catalog-presenter";
 
 // Types
 import { View } from "@/infra/types/view";
