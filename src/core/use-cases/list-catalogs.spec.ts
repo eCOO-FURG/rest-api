@@ -1,12 +1,8 @@
 // Use-cases
-import { SearchCatalogsUseCase } from "@/core/use-cases/search-catalogs";
+import { ListCatalogsUseCase } from "@/core/use-cases/list-catalogs";
 
 // Repositories
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
-import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
-import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
-import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
 // Services
 import { makeCycle } from "@/test/factories/make-cycle";
@@ -20,63 +16,31 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { makeCatalog } from "@/test/factories/make-catalog";
 
-let sut: SearchCatalogsUseCase;
+let sut: ListCatalogsUseCase;
 
 let cyclesRepository: InMemoryCyclesRepository;
-let usersRepository: InMemoryUsersRepository;
-let offersRepository: InMemoryOffersRepository;
-let productsRepository: InMemoryProductsRepository;
-let farmsRepository: InMemoryFarmsRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
 
-let repositories: {
-  cycles: InMemoryCyclesRepository;
-  catalogs: InMemoryCatalogsRepository;
-};
-
-describe("searh offering farms", () => {
+describe("list catalogs", () => {
   beforeEach(() => {
-    usersRepository = new InMemoryUsersRepository();
     cyclesRepository = new InMemoryCyclesRepository();
-    productsRepository = new InMemoryProductsRepository();
-    farmsRepository = new InMemoryFarmsRepository(usersRepository);
+    catalogsRepository = new InMemoryCatalogsRepository();
 
-    offersRepository = new InMemoryOffersRepository(
-      productsRepository,
-      catalogsRepository
-    );
-
-    catalogsRepository = new InMemoryCatalogsRepository(
-      farmsRepository,
-      offersRepository
-    );
-
-    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
-
-    repositories = {
-      cycles: cyclesRepository,
-      catalogs: catalogsRepository,
-    };
-
-    sut = new SearchCatalogsUseCase(repositories.cycles, repositories.catalogs);
+    sut = new ListCatalogsUseCase(cyclesRepository, catalogsRepository);
   });
 
   it("should be able to list catalogs", async () => {
     const cycle = makeCycle();
-    repositories.cycles.items.push(cycle);
+    cyclesRepository.items.push(cycle);
 
     const product = makeProduct({
       name: "Potato",
     });
 
-    await productsRepository.create(product);
-
     for (let i = 0; i < 5; i++) {
       const user = makeUser();
-      await usersRepository.create(user);
 
       const farm = makeFarm({ admin_id: user.id, admin: user });
-      await farmsRepository.create(farm);
 
       const catalog = makeCatalog({
         farm_id: farm.id,
@@ -91,11 +55,9 @@ describe("searh offering farms", () => {
         product,
       });
 
-      offersRepository.items.push(offer);
+      catalog.offers.set(offer.id.value, offer);
 
-      catalog.offers.push(offer);
-
-      await repositories.catalogs.create(catalog);
+      catalogsRepository.items.push(catalog);
     }
 
     const result = await sut.execute({

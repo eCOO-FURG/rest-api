@@ -8,9 +8,6 @@ import { makeProduct } from "@/test/factories/make-product";
 import { makeCycle } from "@/test/factories/make-cycle";
 
 // Repositories
-import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
-import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
@@ -22,74 +19,44 @@ import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { Week } from "@/core/entities/cycle";
 import { makeCatalog } from "@/test/factories/make-catalog";
 
-let productsRepository: InMemoryProductsRepository;
-let usersRepository: InMemoryUsersRepository;
-let offersRepository: InMemoryOffersRepository;
 let farmsRepository: InMemoryFarmsRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
-
-let repositories: {
-  offers: InMemoryOffersRepository;
-  farms: InMemoryFarmsRepository;
-  cycles: InMemoryCyclesRepository;
-  catalogs: InMemoryCatalogsRepository;
-};
+let cyclesRepository: InMemoryCyclesRepository;
 
 let sut: UpdateOfferUseCase;
 
 describe("update offer", () => {
   beforeEach(() => {
-    productsRepository = new InMemoryProductsRepository();
-    usersRepository = new InMemoryUsersRepository();
-    farmsRepository = new InMemoryFarmsRepository(usersRepository);
-    offersRepository = new InMemoryOffersRepository(
-      productsRepository,
-      catalogsRepository
-    );
-
-    catalogsRepository = new InMemoryCatalogsRepository(
-      farmsRepository,
-      offersRepository
-    );
-
-    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
-
-    repositories = {
-      offers: offersRepository,
-      farms: farmsRepository,
-      cycles: new InMemoryCyclesRepository(),
-      catalogs: new InMemoryCatalogsRepository(
-        farmsRepository,
-        offersRepository
-      ),
-    };
+    farmsRepository = new InMemoryFarmsRepository();
+    cyclesRepository = new InMemoryCyclesRepository();
+    catalogsRepository = new InMemoryCatalogsRepository();
 
     sut = new UpdateOfferUseCase(
-      repositories.farms,
-      repositories.offers,
-      repositories.cycles,
-      repositories.catalogs
+      farmsRepository,
+      cyclesRepository,
+      catalogsRepository
     );
   });
 
   it("should be able to update an offer", async () => {
     const farm = makeFarm();
-    await repositories.farms.create(farm);
+    await farmsRepository.create(farm);
 
     const product = makeProduct();
-    await productsRepository.create(product);
 
     const cycle = makeCycle();
-    repositories.cycles.items.push(cycle);
+    cyclesRepository.items.push(cycle);
 
     const catalog = makeCatalog({ farm_id: farm.id, cycle_id: cycle.id });
-    repositories.catalogs.create(catalog);
 
     const offer = makeOffer({
       catalog_id: catalog.id,
       product_id: product.id,
     });
-    await repositories.offers.create(offer);
+
+    catalog.offers.set(offer.id.value, offer);
+
+    await catalogsRepository.create(catalog);
 
     await sut.execute({
       offer_id: offer.id.value,
@@ -97,7 +64,7 @@ describe("update offer", () => {
       amount: 150,
     });
 
-    expect(repositories.offers.items[0].amount).toEqual(150);
+    expect(catalog.offers.get(offer.id.value)?.amount).toEqual(150);
   });
 
   it("should not be able to update a non-existing offer", async () => {
@@ -111,25 +78,23 @@ describe("update offer", () => {
 
   it("should not be able to update an offer from another farm", async () => {
     const farm = makeFarm();
-    await repositories.farms.create(farm);
+    await farmsRepository.create(farm);
 
     const farm2 = makeFarm();
-    await repositories.farms.create(farm2);
+    await farmsRepository.create(farm2);
 
     const product = makeProduct();
-    await productsRepository.create(product);
 
     const cycle = makeCycle();
-    repositories.cycles.items.push(cycle);
+    cyclesRepository.items.push(cycle);
 
     const catalog = makeCatalog({ cycle_id: cycle.id });
-    repositories.catalogs.create(catalog);
+    await catalogsRepository.create(catalog);
 
     const offer = makeOffer({
       catalog_id: catalog.id,
       product_id: product.id,
     });
-    await repositories.offers.create(offer);
 
     await expect(
       sut.execute({
@@ -147,22 +112,25 @@ describe("update offer", () => {
     const cycle = makeCycle({
       offer: offeringDays as Week,
     });
-    repositories.cycles.items.push(cycle);
+    cyclesRepository.items.push(cycle);
 
     const farm = makeFarm();
-    await repositories.farms.create(farm);
+    await farmsRepository.create(farm);
 
     const product = makeProduct();
-    await productsRepository.create(product);
 
     const catalog = makeCatalog({ farm_id: farm.id, cycle_id: cycle.id });
-    repositories.catalogs.create(catalog);
 
     const offer = makeOffer({
       catalog_id: catalog.id,
       product_id: product.id,
     });
-    await repositories.offers.create(offer);
+
+    catalog.offers.set(offer.id.value, offer);
+
+    catalogsRepository.items.push(catalog);
+
+    await catalogsRepository.create(catalog);
 
     await expect(
       sut.execute({

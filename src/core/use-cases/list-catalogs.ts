@@ -14,7 +14,7 @@ interface SearchOfferingFarmsUseCaseRequest {
   product?: string;
 }
 
-export class SearchCatalogsUseCase {
+export class ListCatalogsUseCase {
   constructor(
     private cyclesRepository: CyclesRepository,
     private catalogsRepository: CatalogsRepository

@@ -5,7 +5,6 @@ import { Otp } from "@/core/entities/otp";
 import { RepositoryResponse } from "@/core/types/repository-response";
 
 export interface OtpsRepositorySearchRequest {
-  user_id: string;
   value: string;
   user?: { id?: string };
   used?: boolean;

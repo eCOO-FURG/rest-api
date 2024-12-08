@@ -27,7 +27,6 @@ export class FarmPresenter {
         description: farm.description,
         admin_id: farm.admin_id,
         admin: admin,
-        catalogs: farm.catalogs?.map(CatalogPresenter.toHttp),
         created_at: farm.created_at,
         updated_at: farm.updated_at,
       };

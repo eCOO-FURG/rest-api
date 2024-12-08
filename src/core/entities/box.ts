@@ -14,7 +14,7 @@ export interface BoxProps extends EntityRequest {
   catalog_id: UUID;
   catalog?: Catalog;
 
-  orders: Order[];
+  orders: Map<string, Order>;
 }
 
 export class Box extends Entity<BoxProps> {
@@ -38,6 +38,10 @@ export class Box extends Entity<BoxProps> {
     return this.props.orders;
   }
 
+  set orders(value: Map<string, Order>) {
+    this.props.orders = value;
+  }
+
   get catalog_id() {
     return this.props.catalog_id;
   }
@@ -51,7 +55,7 @@ export class Box extends Entity<BoxProps> {
       ...props,
       verified: props.verified ?? 0,
       status: props.status ?? "PENDING",
-      orders: props.orders ?? [],
+      orders: props.orders ?? new Map(),
     });
 
     return box;

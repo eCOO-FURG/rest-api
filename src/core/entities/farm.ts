@@ -5,7 +5,6 @@ import { Optional } from "@/core/types/optional";
 import { Entity, EntityRequest } from "@/core/entities/entity";
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { User } from "@/core/entities/user";
-import { Catalog } from "@/core/entities/catalog";
 export interface FarmProps extends EntityRequest {
   name: string;
   tally: string;
@@ -15,8 +14,6 @@ export interface FarmProps extends EntityRequest {
 
   admin_id: UUID;
   admin?: User;
-
-  catalogs?: Catalog[];
 }
 
 export class Farm extends Entity<FarmProps> {
@@ -62,10 +59,6 @@ export class Farm extends Entity<FarmProps> {
 
   get tax() {
     return this.props.tax;
-  }
-
-  get catalogs() {
-    return this.props.catalogs;
   }
 
   static create(props: Optional<FarmProps, "status" | "tax" | "description">) {

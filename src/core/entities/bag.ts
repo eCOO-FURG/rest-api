@@ -33,8 +33,8 @@ export interface BagProps extends EntityRequest {
   address_id: UUID | null;
   address?: Address;
 
-  orders: Order[];
-  payments: Payment[];
+  orders: Map<string, Order>;
+  payments: Map<string, Payment>;
 }
 
 export class Bag extends Entity<BagProps> {
@@ -66,7 +66,7 @@ export class Bag extends Entity<BagProps> {
     return this.props.orders;
   }
 
-  set orders(value: Order[]) {
+  set orders(value: Map<string, Order>) {
     this.props.orders = value;
   }
 
@@ -74,7 +74,7 @@ export class Bag extends Entity<BagProps> {
     return this.props.payments;
   }
 
-  set payments(value: Payment[]) {
+  set payments(value: Map<string, Payment>) {
     this.props.payments = value;
   }
 
@@ -95,24 +95,24 @@ export class Bag extends Entity<BagProps> {
 
     let price = 0;
 
-    for (const order of orders)
+    for (const order of orders.values())
       price += order.amount * (order?.offer?.price ?? 0);
 
     return price;
   }
 
   paid() {
-    const payments = this.props.payments;
+    const payments = Array.from(this.props.payments.values());
 
-    const done = payments?.some((payment) => payment.status === "DONE");
+    const done = payments.some((payment) => payment.status === "DONE");
 
     return done;
   }
 
   open() {
-    const payments = this.props.payments;
+    const payments = Array.from(this.props.payments.values());
 
-    const pending = payments?.find(
+    const pending = payments.find(
       (payment) => payment.status === "PENDING" && !payment.expired
     );
 
@@ -127,8 +127,8 @@ export class Bag extends Entity<BagProps> {
     const bag = new Bag({
       ...props,
       status: props.status ?? "PENDING",
-      orders: props.orders ?? [],
-      payments: props.payments ?? [],
+      orders: props.orders ?? new Map(),
+      payments: props.payments ?? new Map(),
     });
 
     return bag;

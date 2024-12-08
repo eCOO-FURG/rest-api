@@ -3,7 +3,6 @@ import { Payment } from "@/core/entities/payment";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Repositories
-import { PaymentsRepository } from "@/core/repositories/payments-repository";
 import { BagsRepository } from "@/core/repositories/bags-repository";
 
 // Errors
@@ -17,10 +16,7 @@ interface RegisterPaymentUseCaseRequest {
 }
 
 export class RegisterPaymentUseCase {
-  constructor(
-    private bagsRepository: BagsRepository,
-    private paymentsRepository: PaymentsRepository
-  ) {}
+  constructor(private bagsRepository: BagsRepository) {}
 
   async execute({ bag_id, method, flag }: RegisterPaymentUseCaseRequest) {
     const bag = await this.bagsRepository.find("merge", {
@@ -41,6 +37,8 @@ export class RegisterPaymentUseCase {
       flag,
     });
 
-    await this.paymentsRepository.create(payment);
+    bag.payments.set(payment.id.value, payment);
+
+    await this.bagsRepository.update(bag);
   }
 }

@@ -4,185 +4,130 @@ import { Catalog } from "@/core/entities/catalog";
 // Repositories
 import {
   CatalogsRepository,
-  CatalogsRepositoryResponse,
-  CatalogsRepositorySearchManyRequest,
   CatalogsRepositorySearchRequest,
 } from "@/core/repositories/catalogs-repository";
 
 // Types
 import { RepositoryResponse } from "@/core/types/repository-response";
 
-// Libs
-import { Prisma } from "@prisma/client";
-
 // Services
 import { prisma } from "@/infra/database/prisma-service";
 
-// Mappesrs
+// Mappers
 import { PrismaCatalogMapper } from "@/infra/database/mappers/prisma-catalog-mapper";
-import { PrismaCatalogAggregateMapper } from "@/infra/database/mappers/prisma-catalog-aggregate-mapper";
-import { PrismaCatalogMergeMapper } from "@/infra/database/mappers/prisma-catalog-merge-mapper";
+import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
+
+// Utils
+import { equals } from "@/infra/utils/equals";
 
 export class PrismaCatalogsRepository implements CatalogsRepository {
-  async search<T extends RepositoryResponse>(
-    { cycle, farm, id, offer, since, before }: CatalogsRepositorySearchRequest,
-    type: T
-  ): Promise<CatalogsRepositoryResponse<T> | null> {
-    const where: Prisma.CatalogWhereInput = {
-      id,
-      cycle,
-      farm: {
-        ...farm,
-        name: {
-          contains: farm?.name,
-          mode: "insensitive",
-        },
-      },
-      ...(since && { created_at: { gte: since } }),
-      ...(before && { created_at: { lt: before } }),
-    };
-
-    if (type === "entity") {
-      const catalog = await prisma.catalog.findFirst({
-        where,
-        orderBy: {
-          created_at: "desc",
-        },
-      });
-
-      if (!catalog) return null;
-
-      return PrismaCatalogMapper.toDomain(
-        catalog
-      ) as CatalogsRepositoryResponse<T>;
-    }
-
-    if (type === "aggregate") {
-      const catalog = await prisma.catalog.findFirst({
-        where,
-        include: {
-          farm: {
-            include: {
-              admin: true,
-            },
-          },
-        },
-        orderBy: {
-          created_at: "desc",
-        },
-      });
-
-      if (!catalog) return null;
-
-      return PrismaCatalogAggregateMapper.toDomain(
-        catalog
-      ) as CatalogsRepositoryResponse<T>;
-    }
-
+  async find(
+    type: RepositoryResponse,
+    { id, cycle, farm, offers, since, before }: CatalogsRepositorySearchRequest
+  ): Promise<Catalog | null> {
     const catalog = await prisma.catalog.findFirst({
-      where,
-      include: {
+      where: {
+        id,
+        cycle: { id: cycle?.id },
         farm: {
-          include: {
-            admin: true,
-          },
+          id: farm?.id,
+          name: { contains: farm?.name, mode: "insensitive" },
         },
-        offers: {
-          include: {
-            product: true,
-          },
-          where: {
-            product: {
-              name: {
-                contains: offer?.product?.name,
-                mode: "insensitive",
-              },
-            },
-          },
-          skip: ((offer?.page ?? 1) - 1) * 20,
-          take: 20,
-          orderBy: {
-            product: {
-              name: "asc",
-            },
-          },
-        },
+        created_at: { lte: before, gte: since },
       },
-      orderBy: {
-        created_at: "desc",
+      include: {
+        ...(type !== "basic" && {
+          farm: { include: { admin: true } },
+        }),
+        ...(type === "merge" && {
+          offers: {
+            include: { product: true },
+            orderBy: { created_at: "asc" },
+            ...(offers?.page && {
+              skip: (offers.page - 1) * 20,
+              take: 20,
+            }),
+          },
+        }),
       },
     });
 
     if (!catalog) return null;
 
-    return PrismaCatalogMergeMapper.toDomain(
-      catalog
-    ) as CatalogsRepositoryResponse<T>;
+    return PrismaCatalogMapper.toDomain(catalog);
   }
-
-  async searchMany<T extends RepositoryResponse>(
-    { cycle, offer, page, since, before }: CatalogsRepositorySearchManyRequest,
-    type: T
-  ): Promise<CatalogsRepositoryResponse<T>[]> {
-    const query: Prisma.CatalogFindManyArgs = {
+  async list(
+    type: RepositoryResponse,
+    { cycle, farm, offers, since, before }: CatalogsRepositorySearchRequest,
+    page?: number
+  ): Promise<Catalog[]> {
+    const catalogs = await prisma.catalog.findMany({
       where: {
-        cycle,
-        offers: {
-          some: {
-            product: {
-              name: {
-                contains: offer?.product?.name,
-                mode: "insensitive",
-              },
-            },
-          },
+        cycle: { id: cycle?.id },
+        farm: {
+          id: farm?.id,
+          name: { contains: farm?.name, mode: "insensitive" },
         },
-        ...(since && { created_at: { gte: since } }),
-        ...(before && { created_at: { lt: before } }),
+        created_at: { lte: before, gte: since },
+      },
+      include: {
+        ...(type !== "basic" && { farm: { include: { admin: true } } }),
+        ...(type === "merge" && {
+          offers: {
+            include: { product: true },
+            orderBy: { created_at: "asc" },
+            ...(offers?.page && {
+              skip: (offers.page - 1) * 20,
+              take: 20,
+            }),
+          },
+        }),
       },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
-    };
-
-    if (type === "entity") {
-      const catalogs = await prisma.catalog.findMany(query);
-
-      return catalogs.map((catalog) =>
-        PrismaCatalogMapper.toDomain(catalog)
-      ) as CatalogsRepositoryResponse<T>[];
-    }
-
-    if (type === "aggregate") {
-      const catalogs = await prisma.catalog.findMany({
-        ...query,
-        include: {
-          farm: { include: { admin: true } },
-        },
-      });
-
-      return catalogs.map((catalog) =>
-        PrismaCatalogAggregateMapper.toDomain(catalog)
-      ) as CatalogsRepositoryResponse<T>[];
-    }
-
-    const catalogs = await prisma.catalog.findMany({
-      ...query,
-      include: {
-        farm: { include: { admin: true } },
-        offers: {
-          include: {
-            product: true,
-          },
-        },
-      },
     });
 
-    return catalogs.map((catalog) =>
-      PrismaCatalogMergeMapper.toDomain(catalog)
-    ) as CatalogsRepositoryResponse<T>[];
+    return catalogs.map(PrismaCatalogMapper.toDomain);
   }
 
   async create(catalog: Catalog): Promise<void> {
     const data = PrismaCatalogMapper.toPrisma(catalog);
-    await prisma.catalog.create({ data });
+
+    await prisma.$transaction(async (ctx) => {
+      await ctx.catalog.create({ data });
+
+      const offers = Array.from(catalog.offers.values()).map(
+        PrismaOfferMapper.toPrisma
+      );
+
+      await ctx.offer.createMany({ data: offers });
+    });
+  }
+
+  async update(catalog: Catalog): Promise<void> {
+    const data = PrismaCatalogMapper.toPrisma(catalog);
+
+    await prisma.$transaction(async (ctx) => {
+      await ctx.catalog.update({ where: { id: catalog.id.value }, data });
+
+      for (const offer of catalog.offers.values()) {
+        const existed = await ctx.offer.findUnique({
+          where: { id: offer.id.value },
+        });
+
+        if (!existed) {
+          await ctx.offer.create({ data: PrismaOfferMapper.toPrisma(offer) });
+          continue;
+        }
+
+        const diff = equals(PrismaOfferMapper.toDomain(existed), offer);
+
+        if (!diff) continue;
+
+        await ctx.offer.update({
+          where: { id: offer.id.value },
+          data: PrismaOfferMapper.toPrisma(offer),
+        });
+      }
+    });
   }
 }

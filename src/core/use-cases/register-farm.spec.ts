@@ -15,29 +15,21 @@ import { makeUser } from "@/test/factories/make-user";
 import { Farm } from "@/core/entities/farm";
 
 let usersRepository: InMemoryUsersRepository;
-
-let repositories: {
-  users: InMemoryUsersRepository;
-  farm: InMemoryFarmsRepository;
-};
+let farmsRepository: InMemoryFarmsRepository;
 
 let sut: RegisterFarmUseCase;
 
 describe("create farm", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
+    farmsRepository = new InMemoryFarmsRepository();
 
-    repositories = {
-      users: usersRepository,
-      farm: new InMemoryFarmsRepository(usersRepository),
-    };
-
-    sut = new RegisterFarmUseCase(repositories.users, repositories.farm);
+    sut = new RegisterFarmUseCase(usersRepository, farmsRepository);
   });
 
   it("should be able to create an farm", async () => {
     const user = makeUser();
-    await repositories.users.create(user);
+    await usersRepository.create(user);
 
     await sut.execute({
       user_id: user.id.value,
@@ -48,10 +40,10 @@ describe("create farm", () => {
 
   it("should not be able to create two farms with the same tally", async () => {
     const user1 = makeUser();
-    await repositories.users.create(user1);
+    await usersRepository.create(user1);
 
     const user2 = makeUser();
-    await repositories.users.create(user2);
+    await usersRepository.create(user2);
 
     const tally = "12345678";
 
@@ -61,7 +53,7 @@ describe("create farm", () => {
       name: "Fazenda Triste",
     });
 
-    await repositories.farm.create(farm);
+    await farmsRepository.create(farm);
 
     await expect(() =>
       sut.execute({
@@ -74,7 +66,7 @@ describe("create farm", () => {
 
   it("should not be able to create two farms with the same admin", async () => {
     const user = makeUser();
-    await repositories.users.create(user);
+    await usersRepository.create(user);
 
     const farm = Farm.create({
       admin_id: user.id,
@@ -82,7 +74,7 @@ describe("create farm", () => {
       name: "Fazenda Triste",
     });
 
-    await repositories.farm.create(farm);
+    await farmsRepository.create(farm);
 
     await expect(() =>
       sut.execute({

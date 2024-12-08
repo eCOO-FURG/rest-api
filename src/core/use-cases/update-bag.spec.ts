@@ -1,13 +1,6 @@
 // Repositories
 import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
-import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
-import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
-import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
-import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
-import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
 
 // Use-cases
 import { UpdateBagUseCase } from "@/core/use-cases/update-bag";
@@ -19,58 +12,21 @@ import { makeBag } from "@/test/factories/make-bag";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 let usersRepository: InMemoryUsersRepository;
-let productsRepository: InMemoryProductsRepository;
-let offersRepository: InMemoryOffersRepository;
-let ordersRepository: InMemoryOrdersRepository;
-let catalogsRepository: InMemoryCatalogsRepository;
-let farmsRepository: InMemoryFarmsRepository;
-let addressesRepository: InMemoryAddressesRepository;
-let paymentsRepository: InMemoryPaymentsRepository;
-
-let repositories: {
-  bags: InMemoryBagsRepository;
-  users: InMemoryUsersRepository;
-};
+let bagsRepository: InMemoryBagsRepository;
 
 let sut: UpdateBagUseCase;
 
 describe("update bag", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
-    productsRepository = new InMemoryProductsRepository();
-    farmsRepository = new InMemoryFarmsRepository(usersRepository);
+    bagsRepository = new InMemoryBagsRepository();
 
-    offersRepository = new InMemoryOffersRepository(
-      productsRepository,
-      catalogsRepository
-    );
-
-    catalogsRepository = new InMemoryCatalogsRepository(
-      farmsRepository,
-      offersRepository
-    );
-
-    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
-
-    ordersRepository = new InMemoryOrdersRepository(offersRepository);
-    addressesRepository = new InMemoryAddressesRepository();
-    paymentsRepository = new InMemoryPaymentsRepository();
-    repositories = {
-      bags: new InMemoryBagsRepository(
-        usersRepository,
-        ordersRepository,
-        addressesRepository,
-        paymentsRepository
-      ),
-      users: new InMemoryUsersRepository(),
-    };
-
-    sut = new UpdateBagUseCase(repositories.bags, repositories.users);
+    sut = new UpdateBagUseCase(bagsRepository, usersRepository);
   });
 
   it("should be able to handle a bag", async () => {
     const bag = makeBag({ status: "PENDING" });
-    await repositories.bags.create(bag);
+    await bagsRepository.create(bag);
 
     await sut.execute({
       bag_id: bag.id.value,
@@ -78,7 +34,7 @@ describe("update bag", () => {
       status: "SEPARATED",
     });
 
-    expect(repositories.bags.items[0].status).toEqual("SEPARATED");
+    expect(bagsRepository.items[0].status).toEqual("SEPARATED");
   });
 
   it("should not be able to handle a bag that does not exist", async () => {

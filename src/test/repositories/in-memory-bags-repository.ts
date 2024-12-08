@@ -9,32 +9,24 @@ import {
   BagsRepository,
   BagsRepositorySearchRequest,
 } from "@/core/repositories/bags-repository";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
-import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
-import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
-import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
 
 // Utils
 import { find } from "@/test/utils/find";
 import { filter } from "@/test/utils/filter";
+import { paginate } from "@/test/utils/paginate";
 
 export class InMemoryBagsRepository implements BagsRepository {
   items: Bag[] = [];
 
-  constructor(
-    private inMemoryUsersRepository: InMemoryUsersRepository,
-    private inMemoryOrdersRepository: InMemoryOrdersRepository,
-    private inMemoryAddressesRepository: InMemoryAddressesRepository,
-    private inMemoryPaymentsRepository: InMemoryPaymentsRepository
-  ) {}
-
   async find<T extends RepositoryResponse>(
-    type: T,
+    _: T,
     {
       id,
       user,
       address,
       cycle,
+      orders,
+      payments,
       statuses,
       since,
       before,
@@ -58,35 +50,29 @@ export class InMemoryBagsRepository implements BagsRepository {
         (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
         (!statuses || statuses.includes(item.status)) &&
         (!since || item.created_at >= since) &&
-        (!before || item.created_at <= before)
+        (!before || item.created_at <= before) &&
+        (!orders?.id || item.orders.has(orders.id)) &&
+        (!payments?.id || item.payments.has(payments.id))
     );
 
     if (!bag) return null;
 
-    if (type === "basic") return bag;
-
-    const orders = await this.inMemoryOrdersRepository.list("basic", {
-      bag: { id: bag.id.value },
-    });
-
-    const payments = await this.inMemoryPaymentsRepository.list("basic", {
-      bag: { id: bag.id.value },
-    });
-
-    bag.orders = orders;
-    bag.payments = payments;
+    if (orders?.page) bag.orders = paginate(bag.orders, orders.page);
+    if (payments?.page) bag.payments = paginate(bag.payments, payments.page);
 
     return bag;
   }
 
   async list<T extends RepositoryResponse>(
-    type: T,
+    _: T,
     {
       id,
       user,
       address,
       cycle,
       statuses,
+      orders,
+      payments,
       since,
       before,
     }: BagsRepositorySearchRequest,
@@ -110,37 +96,20 @@ export class InMemoryBagsRepository implements BagsRepository {
         (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
         (!statuses || statuses.includes(item.status)) &&
         (!since || item.created_at >= since) &&
-        (!before || item.created_at <= before)
+        (!before || item.created_at <= before) &&
+        (!orders?.id || item.orders.has(orders.id)) &&
+        (!payments?.id || item.payments.has(payments.id))
     );
 
-    if (page) bags = this.slice(bags, page);
+    if (page) bags = paginate(bags, page);
 
-    if (type === "basic") return bags;
-
-    for (const [index, bag] of bags.entries()) {
-      const _user = await this.inMemoryUsersRepository.find("basic", {
-        id: bag.user_id.value,
-      });
-
-      if (!_user) continue;
-
-      const address = await this.inMemoryAddressesRepository.find("basic", {
-        id: bag.address_id?.value,
-      });
-
-      if (!address) continue;
-
-      bags[index] = Bag.create({ ...bag.props, user: _user, address });
+    if (orders?.page) {
+      for (const bag of bags) bag.orders = paginate(bag.orders, orders.page);
     }
 
-    if (type === "aggregate") return bags;
-
-    for (const [index, bag] of bags.entries()) {
-      const orders = await this.inMemoryOrdersRepository.list("basic", {
-        bag: { id: bag.id.value },
-      });
-
-      bags[index] = Bag.create({ ...bag.props, orders });
+    if (payments?.page) {
+      for (const bag of bags)
+        bag.payments = paginate(bag.payments, payments.page);
     }
 
     return bags;
@@ -153,12 +122,5 @@ export class InMemoryBagsRepository implements BagsRepository {
   async update(bag: Bag): Promise<void> {
     const index = this.items.findIndex((item) => item.id.equals(bag.id));
     this.items[index] = bag;
-  }
-
-  private slice(items: Bag[], page: number): Bag[] {
-    const size = 20;
-    const start = (page - 1) * size;
-    const end = start + size;
-    return items.slice(start, end);
   }
 }

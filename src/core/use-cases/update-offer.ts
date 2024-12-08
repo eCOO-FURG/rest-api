@@ -22,7 +22,6 @@ interface UpdateOfferUseCaseRequest {
 export class UpdateOfferUseCase {
   constructor(
     private farmsRepository: FarmsRepository,
-    private offersRepository: OffersRepository,
     private cyclesRepository: CyclesRepository,
     private catalogsRepository: CatalogsRepository
   ) {}
@@ -38,16 +37,12 @@ export class UpdateOfferUseCase {
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
-    const offer = await this.offersRepository.find("basic", { id: offer_id });
-
-    if (!offer) throw new ResourceNotFoundError("Oferta", offer_id);
-
-    const catalog = await this.catalogsRepository.find("basic", {
-      id: offer.catalog_id.value,
+    const catalog = await this.catalogsRepository.find("merge", {
+      offers: { id: offer_id },
     });
 
     if (!catalog)
-      throw new ResourceNotFoundError("Catálogo", offer.catalog_id.value);
+      throw new ResourceNotFoundError("Catálogo com oferta", offer_id);
 
     if (!catalog.farm_id.equals(farm_id))
       throw new ResourceNotFoundError("Oferta", offer_id);
@@ -64,10 +59,16 @@ export class UpdateOfferUseCase {
     if (!cycle.offer.includes(today))
       throw new ResourceClosedError("Ciclo", cycle.id.value);
 
+    const offer = catalog.offers.get(offer_id);
+
+    if (!offer) throw new ResourceNotFoundError("Oferta", offer_id);
+
     offer.amount = amount ?? offer.amount;
     offer.price = price ? price + (price * farm.tax) / 100 : offer.price;
     offer.description = description ?? offer.description;
 
-    await this.offersRepository.update(offer);
+    catalog.offers.set(offer_id, offer);
+
+    await this.catalogsRepository.update(catalog);
   }
 }

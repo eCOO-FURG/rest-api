@@ -17,7 +17,7 @@ export class FetchBagUseCase {
   ) {}
 
   async execute({ bag_id, user_id }: FetchBagUseCaseRequest) {
-    const bag = await this.bagsRepository.find("basic", { id: bag_id });
+    const bag = await this.bagsRepository.find("merge", { id: bag_id });
 
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 

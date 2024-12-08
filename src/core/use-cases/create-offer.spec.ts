@@ -10,9 +10,7 @@ import { makeUser } from "@/test/factories/make-user";
 // Repositories
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
-import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
-import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 
 // Errors
@@ -27,10 +25,8 @@ import { Offer } from "@/core/entities/offer";
 import { Week } from "@/core/entities/cycle";
 import { makeCatalog } from "@/test/factories/make-catalog";
 
-let usersRepository: InMemoryUsersRepository;
 let farmsRepository: InMemoryFarmsRepository;
 let productsRepository: InMemoryProductsRepository;
-let offersRepository: InMemoryOffersRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 
@@ -38,21 +34,10 @@ let sut: CreateOfferUseCase;
 
 describe("offer products", () => {
   beforeEach(() => {
-    usersRepository = new InMemoryUsersRepository();
     cyclesRepository = new InMemoryCyclesRepository();
     productsRepository = new InMemoryProductsRepository();
-
-    offersRepository = new InMemoryOffersRepository(
-      productsRepository,
-      catalogsRepository
-    );
-
-    farmsRepository = new InMemoryFarmsRepository(usersRepository);
-
-    catalogsRepository = new InMemoryCatalogsRepository(
-      farmsRepository,
-      offersRepository
-    );
+    farmsRepository = new InMemoryFarmsRepository();
+    catalogsRepository = new InMemoryCatalogsRepository();
 
     sut = new CreateOfferUseCase(
       farmsRepository,
@@ -82,7 +67,7 @@ describe("offer products", () => {
     });
 
     expect(catalogsRepository.items.length).toBe(1);
-    expect(catalogsRepository.items[0].offers.length).toBe(1);
+    expect(catalogsRepository.items[0].offers.size).toBe(1);
   });
 
   it("should not be able to offer products from a nonexistent farm", async () => {
@@ -168,7 +153,6 @@ describe("offer products", () => {
     await productsRepository.create(product);
 
     const user = makeUser();
-    await usersRepository.create(user);
 
     const farm = makeFarm({ status: "ACTIVE", admin_id: user.id, admin: user });
     await farmsRepository.create(farm);
@@ -186,10 +170,7 @@ describe("offer products", () => {
       price: 30,
     });
 
-    offersRepository.items.push(offer);
-
-    catalog.offers.push(offer);
-
+    catalog.offers.set(product.id.value, offer);
     await catalogsRepository.create(catalog);
 
     await expect(() =>

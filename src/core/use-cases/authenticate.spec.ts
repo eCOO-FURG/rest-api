@@ -31,7 +31,7 @@ let sut: AuthenticateUseCase;
 describe("authenticate", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
-    otpsRepository = new InMemoryOtpsRepository(usersRepository);
+    otpsRepository = new InMemoryOtpsRepository();
     sessionsRepository = new InMemorySessionsRepository();
 
     mockedEncrypter = new MockedEncrypter();
@@ -68,11 +68,9 @@ describe("authenticate", () => {
 
   it("should be able to authenticate via otp", async () => {
     const user = makeUser({ verified_at: new Date() });
-
     await usersRepository.create(user);
 
-    const otp = makeOtp({ user_id: user.id });
-
+    const otp = makeOtp({ user_id: user.id, user });
     await otpsRepository.create(otp);
 
     const result = await sut.execute({

@@ -9,13 +9,13 @@ import { Farm } from "@/core/entities/farm";
 import { Optional } from "@/core/types/optional";
 
 export interface CatalogProps extends EntityRequest {
-  offers: Offer[];
-
   farm_id: UUID;
   farm?: Farm;
 
   cycle_id: UUID;
   cycle?: Cycle;
+
+  offers: Map<string, Offer>;
 }
 
 export class Catalog extends Entity<CatalogProps> {
@@ -39,8 +39,15 @@ export class Catalog extends Entity<CatalogProps> {
     return this.props.offers;
   }
 
+  set offers(offers: Map<string, Offer>) {
+    this.props.offers = offers;
+  }
+
   static create(props: Optional<CatalogProps, "offers">) {
-    const catalog = new Catalog({ ...props, offers: props.offers ?? [] });
+    const catalog = new Catalog({
+      ...props,
+      offers: props.offers ?? new Map(),
+    });
     return catalog;
   }
 }

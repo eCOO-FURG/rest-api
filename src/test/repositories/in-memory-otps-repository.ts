@@ -7,7 +7,6 @@ import {
   OtpsRepositorySearchRequest,
 } from "@/core/repositories/otps-repositoy";
 import { RepositoryResponse } from "@/core/types/repository-response";
-import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
 // Utils
 import { find } from "@/test/utils/find";
@@ -17,12 +16,12 @@ export class InMemoryOtpsRepository implements OtpsRepository {
 
   async find(
     _: RepositoryResponse,
-    { user_id, value, used }: OtpsRepositorySearchRequest
+    { value, used, user }: OtpsRepositorySearchRequest
   ): Promise<Otp | null> {
     const otp = await find<Otp>(
       this.items,
       async (item) =>
-        (!user_id || item.user_id.equals(user_id)) &&
+        Boolean(user?.id && item.user?.id.equals(user.id)) &&
         (!used || item.used === used) &&
         (!value || item.value === value)
     );

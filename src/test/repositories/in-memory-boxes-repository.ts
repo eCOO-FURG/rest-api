@@ -6,8 +6,6 @@ import {
   BoxesRepository,
   BoxesRepositorySearchRequest,
 } from "@/core/repositories/boxes-repository";
-import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 
 // Types
 import { RepositoryResponse } from "@/core/types/repository-response";
@@ -15,17 +13,13 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 // Utils
 import { find } from "@/test/utils/find";
 import { filter } from "@/test/utils/filter";
+import { paginate } from "@/test/utils/paginate";
 
 export class InMemoryBoxesRepository implements BoxesRepository {
   items: Box[] = [];
 
-  constructor(
-    private inMemoryCatalogsRepository: InMemoryCatalogsRepository,
-    private inMemoryOrdersRepository: InMemoryOrdersRepository
-  ) {}
-
   async find(
-    type: RepositoryResponse,
+    _: RepositoryResponse,
     { id, catalog, orders, since, status }: BoxesRepositorySearchRequest
   ): Promise<Box | null> {
     const box = await find<Box>(
@@ -49,30 +43,13 @@ export class InMemoryBoxesRepository implements BoxesRepository {
 
     if (!box) return null;
 
-    if (type === "basic") return box;
+    if (orders?.page) box.orders = paginate(box.orders, orders.page);
 
-    const _catalog = await this.inMemoryCatalogsRepository.find("aggregate", {
-      id: box.catalog_id.value,
-    });
-
-    if (!_catalog) return null;
-
-    if (type === "aggregate")
-      return Box.create({ ...box.props, catalog: _catalog });
-
-    const _orders = await this.inMemoryOrdersRepository.list(
-      "basic",
-      {
-        box: { id: box.id.value },
-      },
-      orders?.page
-    );
-
-    return Box.create({ ...box.props, catalog: _catalog, orders: _orders });
+    return box;
   }
 
   async list(
-    type: RepositoryResponse,
+    _: RepositoryResponse,
     { catalog, orders, since, status }: BoxesRepositorySearchRequest,
     page?: number
   ): Promise<Box[]> {
@@ -80,36 +57,22 @@ export class InMemoryBoxesRepository implements BoxesRepository {
       this.items,
       async (item) =>
         Boolean(!catalog?.id || item.catalog_id.equals(catalog.id)) &&
+        Boolean(
+          !catalog?.farm?.id || item.catalog?.farm_id.equals(catalog.farm.id)
+        ) &&
+        Boolean(
+          !catalog?.farm?.name ||
+            item.catalog?.farm?.name.includes(catalog.farm.name!)
+        ) &&
         (!since || item.created_at >= since) &&
         (!status || item.status === status)
     );
 
-    if (page) boxes = this.slice(boxes, page);
-
-    if (type === "basic") return boxes;
-
-    for (const [index, box] of boxes.entries()) {
-      const _catalog = await this.inMemoryCatalogsRepository.find("basic", {
-        id: box.catalog_id.value,
-      });
-
-      if (!_catalog) continue;
-
-      boxes[index] = Box.create({ ...box.props, catalog: _catalog });
+    if (orders?.page) {
+      for (const box of boxes) box.orders = paginate(box.orders, orders.page);
     }
 
-    if (type === "aggregate") return boxes;
-
-    for (const [index, box] of boxes.entries()) {
-      const _orders = await this.inMemoryOrdersRepository.list("basic", {
-        box: { id: box.id.value },
-      });
-
-      boxes[index] = Box.create({
-        ...box.props,
-        orders: _orders,
-      });
-    }
+    if (page) boxes = paginate(boxes, page);
 
     return boxes;
   }
@@ -129,12 +92,5 @@ export class InMemoryBoxesRepository implements BoxesRepository {
     if (!found) return;
 
     this.items[found] = box;
-  }
-
-  private slice(items: Box[], page: number): Box[] {
-    const size = 20;
-    const start = (page - 1) * size;
-    const end = start + size;
-    return items.slice(start, end);
   }
 }

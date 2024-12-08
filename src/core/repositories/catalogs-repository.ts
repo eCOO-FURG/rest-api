@@ -14,6 +14,7 @@ export interface CatalogsRepositorySearchRequest {
     id?: string;
   };
   offers?: {
+    id?: string;
     product?: { name?: string };
     page?: number;
   };

@@ -1,5 +1,4 @@
 // Repositories
-import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 
 // Use-cases
@@ -15,22 +14,19 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 // Entities
 import { Farm } from "@/core/entities/farm";
 
-let usersRepository: InMemoryUsersRepository;
 let farmsRepository: InMemoryFarmsRepository;
 
 let sut: FetchFarmUseCase;
 
 describe("Fetch farm", () => {
   beforeEach(() => {
-    usersRepository = new InMemoryUsersRepository();
-    farmsRepository = new InMemoryFarmsRepository(usersRepository);
+    farmsRepository = new InMemoryFarmsRepository();
 
     sut = new FetchFarmUseCase(farmsRepository);
   });
 
   it("should be able to fetch a farm", async () => {
     const user = makeUser();
-    await usersRepository.create(user);
 
     const farm = makeFarm({
       admin_id: user.id,

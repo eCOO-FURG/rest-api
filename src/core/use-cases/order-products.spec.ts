@@ -23,7 +23,6 @@ import { makeFarm } from "@/test/factories/make-farm";
 // Repositories
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
@@ -31,7 +30,6 @@ import { InMemoryBoxesRepository } from "@/test/repositories/in-memory-boxes-rep
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
-import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
 
 // Services
 import { MockedOtpProvider } from "@/test/cryptography/mocked-otp-provider";
@@ -39,26 +37,13 @@ import { MockedOtpProvider } from "@/test/cryptography/mocked-otp-provider";
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 let farmsRepository: InMemoryFarmsRepository;
-let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
-let ordersRepository: InMemoryOrdersRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
 let addressesRepository: InMemoryAddressesRepository;
-let paymentsRepository: InMemoryPaymentsRepository;
+let bagsRepository: InMemoryBagsRepository;
+let boxesRepository: InMemoryBoxesRepository;
 
 let otpProvider: MockedOtpProvider;
-
-let repositories: {
-  users: InMemoryUsersRepository;
-  offers: InMemoryOffersRepository;
-  orders: InMemoryOrdersRepository;
-  products: InMemoryProductsRepository;
-  bags: InMemoryBagsRepository;
-  cycles: InMemoryCyclesRepository;
-  catalogs: InMemoryCatalogsRepository;
-  boxes: InMemoryBoxesRepository;
-  addresses: InMemoryAddressesRepository;
-};
 
 let sut: OrderProductsUseCase;
 
@@ -66,80 +51,50 @@ describe("order product", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
     cyclesRepository = new InMemoryCyclesRepository();
-    productsRepository = new InMemoryProductsRepository();
-    farmsRepository = new InMemoryFarmsRepository(usersRepository);
-
-    offersRepository = new InMemoryOffersRepository(
-      productsRepository,
-      catalogsRepository
-    );
-
-    catalogsRepository = new InMemoryCatalogsRepository(
-      farmsRepository,
-      offersRepository
-    );
-
-    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
-
-    ordersRepository = new InMemoryOrdersRepository(offersRepository);
-
+    farmsRepository = new InMemoryFarmsRepository();
+    offersRepository = new InMemoryOffersRepository();
+    catalogsRepository = new InMemoryCatalogsRepository();
     addressesRepository = new InMemoryAddressesRepository();
-    paymentsRepository = new InMemoryPaymentsRepository();
-
-    repositories = {
-      users: usersRepository,
-      products: productsRepository,
-      offers: offersRepository,
-      orders: ordersRepository,
-      bags: new InMemoryBagsRepository(
-        usersRepository,
-        ordersRepository,
-        addressesRepository,
-        paymentsRepository
-      ),
-      cycles: cyclesRepository,
-      catalogs: catalogsRepository,
-      boxes: new InMemoryBoxesRepository(catalogsRepository, ordersRepository),
-      addresses: addressesRepository,
-    };
+    bagsRepository = new InMemoryBagsRepository();
+    boxesRepository = new InMemoryBoxesRepository();
 
     otpProvider = new MockedOtpProvider();
 
     sut = new OrderProductsUseCase(
-      repositories.users,
-      repositories.cycles,
-      repositories.offers,
-      repositories.catalogs,
-      repositories.bags,
-      repositories.boxes,
-      repositories.addresses,
+      usersRepository,
+      cyclesRepository,
+      offersRepository,
+      catalogsRepository,
+      bagsRepository,
+      boxesRepository,
+      addressesRepository,
       otpProvider
     );
   });
 
   it("should be able to order a product from an offer", async () => {
     const user = makeUser();
-    await repositories.users.create(user);
+    await usersRepository.create(user);
 
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
     const product = makeProduct({ pricing: "UNIT" });
-    await repositories.products.create(product);
 
     const farm = makeFarm({ admin_id: user.id });
     await farmsRepository.create(farm);
 
     const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id });
-    await repositories.catalogs.create(catalog);
+    await catalogsRepository.create(catalog);
 
     const offer = makeOffer({
       product_id: product.id,
+      product,
       catalog_id: catalog.id,
       amount: 10,
     });
 
-    await repositories.offers.create(offer);
+    offersRepository.items.push(offer);
 
     await sut.execute({
       user_id: user.id.value,
@@ -154,22 +109,21 @@ describe("order product", () => {
       request: [{ offer_id: offer.id.value, amount: 5 }],
     });
 
-    expect(repositories.bags.items.length).toBe(1);
-    expect(repositories.bags.items[0].orders.length).toBe(1);
+    expect(bagsRepository.items.length).toBe(1);
+    expect(bagsRepository.items[0].orders.size).toBe(1);
   });
 
   it("should be add orders to a existing bag if exists", async () => {
     const user = makeUser();
-    await repositories.users.create(user);
+    await usersRepository.create(user);
 
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
     const product = makeProduct();
-    await repositories.products.create(product);
 
     const address = makeAddress();
-    repositories.addresses.items.push(address);
+    addressesRepository.items.push(address);
 
     const bag = makeBag({
       user_id: user.id,
@@ -177,21 +131,21 @@ describe("order product", () => {
       address_id: address.id,
       address: address,
     });
-    await repositories.bags.create(bag);
+    bagsRepository.items.push(bag);
 
     const farm = makeFarm({ admin_id: user.id });
     await farmsRepository.create(farm);
 
     const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id });
-    await repositories.catalogs.create(catalog);
+    await catalogsRepository.create(catalog);
 
     const offer = makeOffer({
       product_id: product.id,
       catalog_id: catalog.id,
+      product,
       amount: 10,
     });
-
-    await repositories.offers.create(offer);
+    offersRepository.items.push(offer);
 
     await sut.execute({
       user_id: user.id.value,
@@ -205,7 +159,7 @@ describe("order product", () => {
       request: [{ offer_id: offer.id.value, amount: 5 }],
     });
 
-    expect(repositories.bags.items[0].orders.length).toBe(1);
+    expect(bagsRepository.items[0].orders.size).toBe(1);
   });
 
   it("should not allow an non existing user to create an order", async () => {
@@ -235,7 +189,7 @@ describe("order product", () => {
 
   it("should not create orders from a non existent cycle", async () => {
     const user = makeUser();
-    repositories.users.items.push(user);
+    usersRepository.items.push(user);
 
     await expect(() =>
       sut.execute({
@@ -253,7 +207,7 @@ describe("order product", () => {
 
   it("should not be able create an order from a non existing offer", async () => {
     const user = makeUser();
-    await repositories.users.create(user);
+    await usersRepository.create(user);
 
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
@@ -272,17 +226,17 @@ describe("order product", () => {
     cyclesRepository.items.push(cycle);
 
     const user = makeUser();
-    await repositories.users.create(user);
+    await usersRepository.create(user);
 
     const product = makeProduct();
-    await repositories.products.create(product);
 
     const offer = makeOffer({
       product_id: product.id,
+      product,
       amount: 10,
     });
 
-    await repositories.offers.create(offer);
+    offersRepository.items.push(offer);
 
     await expect(() =>
       sut.execute({
@@ -295,7 +249,7 @@ describe("order product", () => {
 
   it("should not be able create an order outside the cycle day", async () => {
     const user = makeUser();
-    await repositories.users.create(user);
+    await usersRepository.create(user);
 
     const today = (new Date().getDay() + 1) as Week[0];
 
@@ -308,13 +262,12 @@ describe("order product", () => {
     cyclesRepository.items.push(cycle);
 
     const product = makeProduct();
-    await repositories.products.create(product);
 
     const farm = makeFarm({ admin_id: user.id });
     await farmsRepository.create(farm);
 
     const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id });
-    await repositories.catalogs.create(catalog);
+    catalogsRepository.items.push(catalog);
 
     const offer = makeOffer({
       product_id: product.id,
@@ -322,7 +275,7 @@ describe("order product", () => {
       amount: 10,
     });
 
-    await repositories.offers.create(offer);
+    offersRepository.items.push(offer);
 
     await expect(() =>
       sut.execute({
@@ -340,27 +293,27 @@ describe("order product", () => {
 
   it("should not be able create an order with an amount greater than the offer", async () => {
     const user = makeUser();
-    await repositories.users.create(user);
+    await usersRepository.create(user);
 
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
     const product = makeProduct();
-    await repositories.products.create(product);
 
     const farm = makeFarm({ admin_id: user.id });
     await farmsRepository.create(farm);
 
     const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id });
-    await repositories.catalogs.create(catalog);
+    catalogsRepository.items.push(catalog);
 
     const offer = makeOffer({
       product_id: product.id,
+      product,
       catalog_id: catalog.id,
       amount: 5,
     });
 
-    await repositories.offers.create(offer);
+    offersRepository.items.push(offer);
 
     await expect(() =>
       sut.execute({
@@ -373,7 +326,7 @@ describe("order product", () => {
 
   it("should not be able create an order with an invalid amount", async () => {
     const user = makeUser();
-    await repositories.users.create(user);
+    await usersRepository.create(user);
 
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
@@ -381,21 +334,21 @@ describe("order product", () => {
     const product = makeProduct({
       pricing: "WEIGHT",
     });
-    await repositories.products.create(product);
 
     const farm = makeFarm({ admin_id: user.id });
     await farmsRepository.create(farm);
 
     const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id });
-    await repositories.catalogs.create(catalog);
+    catalogsRepository.items.push(catalog);
 
     const offer = makeOffer({
       product_id: product.id,
+      product,
       catalog_id: catalog.id,
       amount: 500,
     });
 
-    await repositories.offers.create(offer);
+    offersRepository.items.push(offer);
 
     await expect(() =>
       sut.execute({

@@ -57,7 +57,7 @@ export class AuthenticateUseCase {
 
       case "OTP":
         const otp = await this.otpsRepository.find("basic", {
-          user_id: user.id.value,
+          user: { id: user.id.value },
           value: password,
           used: false,
         });
@@ -82,9 +82,6 @@ export class AuthenticateUseCase {
 
     const token = await this.hasher.hash({ user_id: user.id.value });
 
-    return {
-      user,
-      token,
-    };
+    return { user, token };
   }
 }

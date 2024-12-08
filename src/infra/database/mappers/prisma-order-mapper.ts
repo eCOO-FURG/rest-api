@@ -3,17 +3,27 @@ import { Order } from "@/core/entities/order";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Libs
-import { Prisma, Order as PrismaOrder } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+
+// Mappers
+import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
+
+type PrismaOrder = Prisma.OrderGetPayload<{}> & {
+  offer?: Prisma.OfferGetPayload<{}>;
+};
 
 export class PrismaOrderMapper {
-  static toDomain(raw: PrismaOrder) {
+  static toDomain(raw: PrismaOrder): Order {
     return Order.create({
-      ...raw,
       id: new UUID(raw.id),
-      offer_id: new UUID(raw.offer_id),
-      bag_id: new UUID(raw.bag_id),
-      box_id: new UUID(raw.box_id),
       amount: raw.amount.toNumber(),
+      status: raw.status,
+      box_id: new UUID(raw.box_id),
+      bag_id: new UUID(raw.bag_id),
+      offer_id: new UUID(raw.offer_id),
+      ...(raw.offer && { offer: PrismaOfferMapper.toDomain(raw.offer) }),
+      created_at: raw.created_at,
+      updated_at: raw.updated_at,
     });
   }
 

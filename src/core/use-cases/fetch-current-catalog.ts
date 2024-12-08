@@ -35,7 +35,7 @@ export class FetchCurrentCatalogUseCase {
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
-    const catalog = await this.catalogsRepository.find("extended", {
+    const catalog = await this.catalogsRepository.find("merge", {
       cycle: { id: cycle_id },
       farm: { id: farm_id },
       offers: { page },

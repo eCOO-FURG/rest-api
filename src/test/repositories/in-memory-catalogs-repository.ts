@@ -6,8 +6,6 @@ import {
   CatalogsRepository,
   CatalogsRepositorySearchRequest,
 } from "@/core/repositories/catalogs-repository";
-import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
-import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 
 // Types
 import { RepositoryResponse } from "@/core/types/repository-response";
@@ -15,17 +13,13 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 // Utils
 import { find } from "@/test/utils/find";
 import { filter } from "@/test/utils/filter";
+import { paginate } from "@/test/utils/paginate";
 
 export class InMemoryCatalogsRepository implements CatalogsRepository {
   items: Catalog[] = [];
 
-  constructor(
-    private inMemoryFarmsRepository: InMemoryFarmsRepository,
-    private inMemoryOffersRepository: InMemoryOffersRepository
-  ) {}
-
   async find(
-    type: RepositoryResponse,
+    _: RepositoryResponse,
     { id, before, cycle, farm, offers, since }: CatalogsRepositorySearchRequest
   ): Promise<Catalog | null> {
     const catalog = await find<Catalog>(
@@ -37,39 +31,22 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
         (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
         (!farm?.id || item.farm_id.equals(farm.id)) &&
         Boolean(!farm?.name || item?.farm?.name.includes(farm.name)) &&
+        (!offers?.id || item.offers.has(offers.id)) &&
         (!offers?.product?.name ||
-          item.offers.some((offer) =>
+          Array.from(item.offers.values()).some((offer) =>
             offer.product?.name.includes(offers?.product?.name!)
           ))
     );
 
     if (!catalog) return null;
 
-    if (type === "basic") return catalog;
+    if (offers?.page) catalog.offers = paginate(catalog.offers, offers.page);
 
-    const _farm = await this.inMemoryFarmsRepository.find("basic", {
-      id: catalog.farm_id.value,
-    });
-
-    if (!_farm) return null;
-
-    if (type === "aggregate")
-      return Catalog.create({ ...catalog.props, farm: _farm });
-
-    const _offers = await this.inMemoryOffersRepository.list(
-      "basic",
-      {
-        catalog: { id: catalog.id.value },
-        product: { name: offers?.product?.name },
-      },
-      offers?.page
-    );
-
-    return Catalog.create({ ...catalog.props, farm: _farm, offers: _offers });
+    return catalog;
   }
 
   async list(
-    type: RepositoryResponse,
+    _: RepositoryResponse,
     { before, cycle, farm, offers, since }: CatalogsRepositorySearchRequest,
     page?: number
   ): Promise<Catalog[]> {
@@ -81,40 +58,16 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
         (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
         (!farm?.id || item.farm_id.equals(farm.id)) &&
         Boolean(!farm?.name || item?.farm?.name.includes(farm.name)) &&
+        (!offers?.id || item.offers.has(offers.id)) &&
         (!offers?.product?.name ||
-          item.offers.some((offer) =>
+          Array.from(item.offers.values()).some((offer) =>
             offer.product?.name.includes(offers?.product?.name!)
           ))
     );
 
-    if (page) catalogs = this.slice(catalogs, page);
+    if (page) catalogs = paginate(catalogs, page);
 
-    if (type === "basic") return catalogs;
-
-    for (const [index, catalog] of catalogs.entries()) {
-      const _farm = await this.inMemoryFarmsRepository.find("basic", {
-        id: catalog.farm_id.value,
-      });
-
-      if (!_farm) continue;
-
-      catalogs[index] = Catalog.create({ ...catalog.props, farm: _farm });
-    }
-
-    if (type === "aggregate") return catalogs;
-
-    for (const [index, catalog] of catalogs.entries()) {
-      const _offers = await this.inMemoryOffersRepository.list(
-        "basic",
-        {
-          catalog: { id: catalog.id.value },
-          product: { name: offers?.product?.name },
-        },
-        offers?.page
-      );
-
-      catalogs[index] = Catalog.create({ ...catalog.props, offers: _offers });
-    }
+    if (offers?.page) catalogs = paginate(catalogs, offers.page);
 
     return catalogs;
   }
@@ -126,11 +79,5 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
 
   async create(catalog: Catalog): Promise<void> {
     this.items.push(catalog);
-  }
-
-  private slice(items: Catalog[], page: number, size: number = 20): Catalog[] {
-    const start = (page - 1) * size;
-    const end = start + size;
-    return items.slice(start, end);
   }
 }

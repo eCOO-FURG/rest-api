@@ -3,22 +3,36 @@ import { Session } from "@/core/entities/session";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Libs
-import { Prisma, Session as PrismaSession } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+
+// Mappers
+import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
+
+type PrismaSession = Prisma.SessionGetPayload<{}> & {
+  user?: Prisma.UserGetPayload<{}>;
+};
 
 export class PrismaSessionMapper {
-  static toDomain(raw: PrismaSession) {
+  static toDomain(raw: PrismaSession): Session {
     return Session.create({
-      ...raw,
       id: new UUID(raw.id),
+      ip: raw.ip,
+      agent: raw.agent,
       user_id: new UUID(raw.user_id),
+      ...(raw.user && { user: PrismaUserMapper.toDomain(raw.user) }),
+      created_at: raw.created_at,
+      updated_at: raw.updated_at,
     });
   }
 
   static toPrisma(session: Session): Prisma.SessionUncheckedCreateInput {
     return {
-      ...session.props,
       id: session.id.value,
+      ip: session.ip,
+      agent: session.agent,
       user_id: session.user_id.value,
+      created_at: session.created_at,
+      updated_at: session.updated_at,
     };
   }
 }

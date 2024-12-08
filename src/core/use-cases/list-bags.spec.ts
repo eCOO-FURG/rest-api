@@ -6,14 +6,7 @@ import { ListBagsUseCase } from "@/core/use-cases/list-bags";
 
 // Repositories
 import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
-import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
-import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
-import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
-import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
-import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 
 // Factories
@@ -24,13 +17,6 @@ import { makeUser } from "@/test/factories/make-user";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 let usersRepository: InMemoryUsersRepository;
-let productsRepository: InMemoryProductsRepository;
-let offersRepository: InMemoryOffersRepository;
-let ordersRepository: InMemoryOrdersRepository;
-let catalogsRepository: InMemoryCatalogsRepository;
-let farmsRepository: InMemoryFarmsRepository;
-let addressesRepository: InMemoryAddressesRepository;
-let paymentsRepository: InMemoryPaymentsRepository;
 let bagsRepository: InMemoryBagsRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 
@@ -40,27 +26,8 @@ describe("list user bags", () => {
   beforeEach(() => {
     cyclesRepository = new InMemoryCyclesRepository();
     usersRepository = new InMemoryUsersRepository();
-    productsRepository = new InMemoryProductsRepository();
-    offersRepository = new InMemoryOffersRepository(
-      productsRepository,
-      catalogsRepository
-    );
 
-    catalogsRepository = new InMemoryCatalogsRepository(
-      farmsRepository,
-      offersRepository
-    );
-
-    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
-    ordersRepository = new InMemoryOrdersRepository(offersRepository);
-    addressesRepository = new InMemoryAddressesRepository();
-    paymentsRepository = new InMemoryPaymentsRepository();
-    bagsRepository = new InMemoryBagsRepository(
-      usersRepository,
-      ordersRepository,
-      addressesRepository,
-      paymentsRepository
-    );
+    bagsRepository = new InMemoryBagsRepository();
 
     sut = new ListBagsUseCase(
       bagsRepository,

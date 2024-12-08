@@ -5,8 +5,6 @@ import { Payment } from "@/core/entities/payment";
 // Repositories
 import { BagsRepository } from "@/core/repositories/bags-repository";
 
-import { PaymentsRepository } from "@/core/repositories/payments-repository";
-
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
@@ -21,12 +19,11 @@ interface OpenPaymentUseCaseRequest {
 export class OpenPaymentUseCase {
   constructor(
     private bagsRepository: BagsRepository,
-    private paymentsRepository: PaymentsRepository,
     private pixProvider: PixProvider
   ) {}
 
   async execute({ bag_id }: OpenPaymentUseCaseRequest) {
-    const bag = await this.bagsRepository.find("basic", { id: bag_id });
+    const bag = await this.bagsRepository.find("merge", { id: bag_id });
 
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 
@@ -39,7 +36,9 @@ export class OpenPaymentUseCase {
       expires_at: new Date(Date.now() + 1000 * 60 * 15),
     });
 
-    await this.paymentsRepository.create(payment);
+    bag.payments.set(payment.id.value, payment);
+
+    await this.bagsRepository.update(bag);
 
     const charge = await this.pixProvider.charge(payment);
 

@@ -8,7 +8,6 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { FarmsRepository } from "@/core/repositories/farms-repository";
 import { ProductsRepository } from "@/core/repositories/products-repository";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
-import { OffersRepository } from "@/core/repositories/offers-repository";
 import { CatalogsRepository } from "@/core//repositories/catalogs-repository";
 
 // Errors
@@ -70,9 +69,7 @@ export class CreateOfferUseCase {
     const { catalog, existed } = await this.useCatalog(farm.id, cycle);
 
     if (existed) {
-      const offered = catalog.offers.find(
-        (offer) => offer.product_id.value === product_id
-      );
+      const offered = catalog.offers.get(product_id);
 
       if (offered)
         throw new ResourceAlreadyExistsError("Oferta do produto", product_id);
@@ -89,7 +86,7 @@ export class CreateOfferUseCase {
       price: price + (price * farm.tax) / 100,
     });
 
-    catalog.offers.push(offer);
+    catalog.offers.set(product_id, offer);
 
     if (existed) return await this.catalogsRepository.update(catalog);
 

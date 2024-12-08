@@ -10,7 +10,6 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
 import { OffersRepository } from "@/core/repositories/offers-repository";
-import { OrdersRepository } from "@/core/repositories/orders-repository";
 import { BagsRepository } from "@/core/repositories/bags-repository";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
@@ -48,7 +47,7 @@ interface OrderProductsUseCaseRequest {
 
 interface UseBagRequest {
   bag_id?: string;
-  address: Address | null;
+  address?: Address;
   user: User;
   cycle: Cycle;
 }
@@ -100,8 +99,6 @@ export class OrderProductsUseCase {
       address: destination,
     });
 
-    const orders: Order[] = [];
-
     for (const item of request) {
       const offer = offers.find((offer) => offer.id.equals(item.offer_id));
 
@@ -134,10 +131,8 @@ export class OrderProductsUseCase {
         offer_id: offer.id,
       });
 
-      orders.push(order);
+      bag.orders.set(offer.id.value, order);
     }
-
-    bag.orders = orders;
 
     if (existed) {
       await this.bagsRepository.update(bag);
@@ -149,7 +144,7 @@ export class OrderProductsUseCase {
   }
 
   private async useAddress(address: OrderProductsUseCaseRequest["address"]) {
-    if (!address) return null;
+    if (!address) return;
 
     const found = await this.addressesRepository.find("basic", {
       street: address.street,

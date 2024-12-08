@@ -4,8 +4,6 @@ import { Box } from "@/core/entities/box";
 // Repositories
 import {
   BoxesRepository,
-  BoxesRepositoryResponse,
-  BoxesRepositorySearchManyRequest,
   BoxesRepositorySearchRequest,
 } from "@/core/repositories/boxes-repository";
 
@@ -15,114 +13,69 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 // Services
 import { prisma } from "@/infra/database/prisma-service";
 
-// Libs
-import { Prisma } from "@prisma/client";
-
 // Mappers
 import { PrismaBoxMapper } from "@/infra/database/mappers/prisma-box-mapper";
-import { PrismaBoxAggregateMapper } from "@/infra/database/mappers/prisma-box-aggregate-mapper";
-import { PrismaBoxMergeMapper } from "@/infra/database/mappers/prisma-box-merge-mapper";
 
 export class PrismaBoxesRepository implements BoxesRepository {
-  async search<T extends RepositoryResponse>(
-    filters: BoxesRepositorySearchRequest,
-    type: T
-  ): Promise<BoxesRepositoryResponse<T> | null> {
-    const { since, ...data } = filters;
-
-    const where: Prisma.BoxWhereInput = data;
-
-    if (since) Object.assign(where, { created_at: { gte: since } });
-
-    if (type === "entity") {
-      const box = await prisma.box.findFirst({ where });
-
-      if (!box) return null;
-
-      return PrismaBoxMapper.toDomain(box) as BoxesRepositoryResponse<T>;
-    }
-
-    if (type === "aggregate") {
-      const box = await prisma.box.findFirst({
-        where,
-        include: {
-          catalog: { include: { farm: { include: { admin: true } } } },
-        },
-      });
-
-      if (!box) return null;
-
-      return PrismaBoxAggregateMapper.toDomain(
-        box
-      ) as BoxesRepositoryResponse<T>;
-    }
-
-    const box = await prisma.box.findFirst({
-      where,
+  async find(
+    type: RepositoryResponse,
+    { id, status, catalog, orders, since }: BoxesRepositorySearchRequest
+  ): Promise<Box | null> {
+    const box = await prisma.box.findUnique({
+      where: { id, status, catalog, created_at: { gte: since } },
       include: {
-        catalog: { include: { farm: { include: { admin: true } } } },
-        orders: { include: { offer: { include: { product: true } } } },
+        ...(type !== "basic" && {
+          catalog: { include: { farm: { include: { admin: true } } } },
+        }),
+        ...(type === "merge" && {
+          orders: {
+            include: { offer: { include: { product: true } } },
+            orderBy: { created_at: "asc" },
+            ...(orders?.page && {
+              skip: (orders.page - 1) * 20,
+              take: 20,
+            }),
+          },
+        }),
       },
     });
 
     if (!box) return null;
 
-    return PrismaBoxMergeMapper.toDomain(box) as BoxesRepositoryResponse<T>;
+    return PrismaBoxMapper.toDomain(box);
   }
 
-  async searchMany<T extends RepositoryResponse>(
-    { catalog, page }: BoxesRepositorySearchManyRequest,
-    type: T
-  ): Promise<BoxesRepositoryResponse<T>[]> {
-    const query: Prisma.BoxFindManyArgs = {
+  async list(
+    type: RepositoryResponse,
+    { id, status, catalog, orders, since }: BoxesRepositorySearchRequest,
+    page?: number
+  ): Promise<Box[]> {
+    const boxes = await prisma.box.findMany({
       where: {
-        catalog: {
-          farm: {
-            name: {
-              contains: catalog?.farm?.name,
-              mode: "insensitive",
-            },
+        id,
+        status,
+        catalog,
+        created_at: { gte: since },
+      },
+      include: {
+        ...(type !== "basic" && {
+          catalog: { include: { farm: { include: { admin: true } } } },
+        }),
+        ...(type === "merge" && {
+          orders: {
+            include: { offer: { include: { product: true } } },
+            orderBy: { created_at: "asc" },
+            ...(orders?.page && {
+              skip: (orders.page - 1) * 20,
+              take: 20,
+            }),
           },
-          cycle: {
-            id: catalog?.cycle?.id,
-          },
-        },
+        }),
       },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
-    };
-
-    if (type === "entity") {
-      const boxes = await prisma.box.findMany(query);
-
-      return boxes.map((box) =>
-        PrismaBoxMapper.toDomain(box)
-      ) as BoxesRepositoryResponse<T>[];
-    }
-
-    if (type === "aggregate") {
-      const boxes = await prisma.box.findMany({
-        ...query,
-        include: {
-          catalog: { include: { farm: { include: { admin: true } } } },
-        },
-      });
-
-      return boxes.map((box) =>
-        PrismaBoxAggregateMapper.toDomain(box)
-      ) as BoxesRepositoryResponse<T>[];
-    }
-
-    const boxes = await prisma.box.findMany({
-      ...query,
-      include: {
-        catalog: { include: { farm: { include: { admin: true } } } },
-        orders: { include: { offer: { include: { product: true } } } },
-      },
     });
 
-    return boxes.map((box) =>
-      PrismaBoxMergeMapper.toDomain(box)
-    ) as BoxesRepositoryResponse<T>[];
+    return boxes.map(PrismaBoxMapper.toDomain);
   }
 
   async create(box: Box): Promise<void> {

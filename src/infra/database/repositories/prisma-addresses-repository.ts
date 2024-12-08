@@ -4,7 +4,6 @@ import { Address } from "@/core/entities/address";
 // Repositories
 import {
   AddressesRepository,
-  AddressesRepositoryResponse,
   AddressesRepositorySearchRequest,
 } from "@/core/repositories/addresses-repository";
 
@@ -15,28 +14,26 @@ import { prisma } from "@/infra/database/prisma-service";
 import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";
 
 // Libs
-import { Prisma } from "@prisma/client";
+import { RepositoryResponse } from "@/core/types/repository-response";
 
 export class PrismaAddressesRepository implements AddressesRepository {
-  async search({
-    id,
-    complement,
-    number,
-    street,
-    postal_code,
-  }: AddressesRepositorySearchRequest): Promise<AddressesRepositoryResponse | null> {
-    const where: Prisma.AddressWhereInput = {
+  async find(
+    _: RepositoryResponse,
+    {
       id,
       complement,
       number,
       street,
       postal_code,
-    };
+      neighborhood,
+    }: AddressesRepositorySearchRequest
+  ): Promise<Address | null> {
+    const address = await prisma.address.findFirst({
+      where: { id, complement, number, street, postal_code, neighborhood },
+    });
 
-    const found = await prisma.address.findFirst({ where });
+    if (!address) return null;
 
-    if (!found) return null;
-
-    return PrismaAddressMapper.toDomain(found) as AddressesRepositoryResponse;
+    return PrismaAddressMapper.toDomain(address) as Address;
   }
 }

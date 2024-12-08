@@ -6,10 +6,12 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 
 export interface BagsRepositorySearchRequest {
   id?: string;
+  statuses?: Bag["status"][];
   user?: { id?: string; name?: string };
   cycle?: { id?: string };
   address?: { id?: string } | null;
-  statuses?: Bag["status"][];
+  orders?: { id?: string; page?: number };
+  payments?: { id?: string; page?: number };
   since?: Date;
   before?: Date;
 }
