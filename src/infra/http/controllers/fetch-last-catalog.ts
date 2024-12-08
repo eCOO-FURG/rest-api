@@ -10,7 +10,6 @@ import { z } from "zod";
 
 // Presenters
 import { CatalogPresenter } from "@/infra/http/presenters/catalog-presenter";
-import { OfferPresenter } from "@/infra/http/presenters/offer-presenter";
 
 export const fetchLastCatalogSchema = {
   query: z.object({
@@ -43,10 +42,7 @@ export async function fetchLastCatalogController(
       page,
     });
 
-    return response.status(200).send({
-      ...CatalogPresenter.toHttp(catalog),
-      offers: catalog.offers.map((offer) => OfferPresenter.toHttp(offer)),
-    });
+    return response.status(200).send(CatalogPresenter.toHttp(catalog));
   } catch (error) {
     next(error);
   }

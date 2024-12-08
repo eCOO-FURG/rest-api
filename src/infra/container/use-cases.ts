@@ -6,28 +6,23 @@ import { RegisterUseCase } from "@/core/use-cases/register";
 import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
 import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
 import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
-import { OfferProductsUseCase } from "@/core/use-cases/offer-products";
 import { UpdateUserUseCase } from "@/core/use-cases/update-user";
 import { UpdateOfferUseCase } from "@/core/use-cases/update-offer";
 import { OrderProductsUseCase } from "@/core/use-cases/order-products";
 import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
 import { ListCyclesUseCase } from "@/core/use-cases/list-cycles";
 import { ListProductsUsecase } from "@/core/use-cases/list-products";
-import { HandleBagUseCase } from "@/core/use-cases/handle-bag";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 import { ListCurrentBagsUseCase } from "@/core/use-cases/list-current-bags";
 import { PrintDeliveriesReportUseCase } from "@/core/use-cases/print-deliveries-report";
-import { HandleBoxStatusUseCase } from "@/core/use-cases/handle-box-status";
 import { FetchProfileUseCase } from "@/core/use-cases/fetch-profile";
 import { ListBoxesUseCase } from "@/core/use-cases/list-boxes";
-import { SearchCatalogsUseCase } from "@/core/use-cases/search-catalogs";
 import { FetchBoxUseCase } from "@/core/use-cases/fetch-box";
 import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
 import { FetchLastCatalogUseCase } from "@/core/use-cases/fetch-last-catalog";
 import { FetchCurrentBoxUseCase } from "@/core/use-cases/fetch-current-box";
 import { DeleteOfferUseCase } from "@/core/use-cases/delete-offer";
 import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
-import { HandleFarmStatusUseCase } from "@/core/use-cases/handle-farm-status";
 import { FetchCurrentCatalogUseCase } from "@/core/use-cases/fetch-current-catalog";
 import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
 import { UpdateFarmUseCase } from "@/core/use-cases/update-farm";
@@ -37,6 +32,10 @@ import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
 import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
 import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
 import { FetchPendingsUseCase } from "@/core/use-cases/fetch-pendings";
+import { UpdateBoxUseCase } from "@/core/use-cases/update-box";
+import { CreateOfferUseCase } from "@/core/use-cases/create-offer";
+import { ListCatalogsUseCase } from "@/core/use-cases/list-catalogs";
+import { UpdateBagUseCase } from "@/core/use-cases/update-bag";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -64,9 +63,8 @@ export default (container: AwilixContainer) => {
       ({ usersRepository, sessionsRepository, hasher }) =>
         new VerifyUserUsecase(usersRepository, sessionsRepository, hasher)
     ),
-    handleBoxStatusUseCase: asFunction(
-      ({ boxesRepository, ordersRepository }) =>
-        new HandleBoxStatusUseCase(boxesRepository, ordersRepository)
+    updateBoxUseCase: asFunction(
+      ({ boxesRepository }) => new UpdateBoxUseCase(boxesRepository)
     ),
     registerFarmUseCase: asFunction(
       ({ usersRepository, farmsRepository }) =>
@@ -75,19 +73,17 @@ export default (container: AwilixContainer) => {
     updateFarmUseCase: asFunction(
       ({ farmsRepository }) => new UpdateFarmUseCase(farmsRepository)
     ),
-    offerProductsUseCase: asFunction(
+    createOfferUseCase: asFunction(
       ({
         farmsRepository,
         productsRepository,
         catalogsRepository,
-        offersRepository,
         cyclesRepository,
       }) =>
-        new OfferProductsUseCase(
+        new CreateOfferUseCase(
           farmsRepository,
           productsRepository,
           catalogsRepository,
-          offersRepository,
           cyclesRepository
         )
     ),
@@ -96,15 +92,9 @@ export default (container: AwilixContainer) => {
         new UpdateUserUseCase(usersRepository, encrypter, storage)
     ),
     updateOfferUseCase: asFunction(
-      ({
-        farmsRepository,
-        offersRepository,
-        cyclesRepository,
-        catalogsRepository,
-      }) =>
+      ({ farmsRepository, cyclesRepository, catalogsRepository }) =>
         new UpdateOfferUseCase(
           farmsRepository,
-          offersRepository,
           cyclesRepository,
           catalogsRepository
         )
@@ -114,7 +104,6 @@ export default (container: AwilixContainer) => {
         usersRepository,
         cyclesRepository,
         offersRepository,
-        ordersRepository,
         catalogsRepository,
         bagsRepository,
         boxesRepository,
@@ -125,7 +114,6 @@ export default (container: AwilixContainer) => {
           usersRepository,
           cyclesRepository,
           offersRepository,
-          ordersRepository,
           catalogsRepository,
           bagsRepository,
           boxesRepository,
@@ -150,12 +138,13 @@ export default (container: AwilixContainer) => {
     listCyclesUseCase: asFunction(
       ({ cyclesRepository }) => new ListCyclesUseCase(cyclesRepository)
     ),
-    searchCatalogsUseCase: asFunction(
+    listCatalogsUseCase: asFunction(
       ({ cyclesRepository, catalogsRepository }) =>
-        new SearchCatalogsUseCase(cyclesRepository, catalogsRepository)
+        new ListCatalogsUseCase(cyclesRepository, catalogsRepository)
     ),
     fetchBoxUseCase: asFunction(
-      ({ boxesRepository }) => new FetchBoxUseCase(boxesRepository)
+      ({ usersRepository, boxesRepository }) =>
+        new FetchBoxUseCase(usersRepository, boxesRepository)
     ),
     fetchCatalogUseCase: asFunction(
       ({ catalogsRepository }) => new FetchCatalogUseCase(catalogsRepository)
@@ -171,8 +160,9 @@ export default (container: AwilixContainer) => {
           pdfService
         )
     ),
-    handleBagUseCase: asFunction(
-      ({ bagsRepository }) => new HandleBagUseCase(bagsRepository)
+    updateBagUseCase: asFunction(
+      ({ bagsRepository, usersRepository }) =>
+        new UpdateBagUseCase(bagsRepository, usersRepository)
     ),
     fetchBagUseCase: asFunction(
       ({ bagsRepository, usersRepository }) =>
@@ -191,18 +181,11 @@ export default (container: AwilixContainer) => {
         )
     ),
     deleteOfferUseCase: asFunction(
-      ({ farmsRepository, offersRepository, catalogsRepository }) =>
-        new DeleteOfferUseCase(
-          farmsRepository,
-          offersRepository,
-          catalogsRepository
-        )
+      ({ farmsRepository, catalogsRepository }) =>
+        new DeleteOfferUseCase(farmsRepository, catalogsRepository)
     ),
     listFarmsUseCase: asFunction(
       ({ farmsRepository }) => new ListFarmsUseCase(farmsRepository)
-    ),
-    handleFarmStatusUseCase: asFunction(
-      ({ farmsRepository }) => new HandleFarmStatusUseCase(farmsRepository)
     ),
     fetchCurrentBoxUseCase: asFunction(
       ({ boxesRepository, cyclesRepository }) =>
@@ -224,12 +207,11 @@ export default (container: AwilixContainer) => {
       ({ usersRepository }) => new RequestPasswordUpdateUseCase(usersRepository)
     ),
     openPaymentUseCase: asFunction(
-      ({ bagsRepository, paymentsRepository, pixProvider }) =>
-        new OpenPaymentUseCase(bagsRepository, paymentsRepository, pixProvider)
+      ({ bagsRepository, pixProvider }) =>
+        new OpenPaymentUseCase(bagsRepository, pixProvider)
     ),
     registerPaymentUseCase: asFunction(
-      ({ bagsRepository, paymentsRepository }) =>
-        new RegisterPaymentUseCase(bagsRepository, paymentsRepository)
+      ({ bagsRepository }) => new RegisterPaymentUseCase(bagsRepository)
     ),
     updatePaymentUseCase: asFunction(
       ({ paymentsRepository }) => new UpdatePaymentUseCase(paymentsRepository)

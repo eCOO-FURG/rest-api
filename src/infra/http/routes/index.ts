@@ -23,7 +23,7 @@ import { listCyclesController } from "@/infra/http/controllers/list-cycles";
 import { listFarmsController } from "@/infra/http/controllers/list-farms";
 import { listProductsController } from "@/infra/http/controllers/list-products";
 import { listUserBagsController } from "@/infra/http/controllers/list-user-bags";
-import { offerProductsController } from "@/infra/http/controllers/offer-products";
+import { createOfferController } from "@/infra/http/controllers/create-offer";
 import { openPaymentController } from "@/infra/http/controllers/open-payment";
 import { orderProductsController } from "@/infra/http/controllers/order-products";
 import { printDeliveriesReportController } from "@/infra/http/controllers/print-deliveries-report";
@@ -32,7 +32,7 @@ import { registerFarmController } from "@/infra/http/controllers/register-farm";
 import { registerPaymentController } from "@/infra/http/controllers/register-payment";
 import { requestOtpController } from "@/infra/http/controllers/request-otp";
 import { requestPasswordUpdateController } from "@/infra/http/controllers/request-password-update";
-import { searchCatalogsController } from "@/infra/http/controllers/search-catalogs";
+import { listCatalogsController } from "@/infra/http/controllers/list-catalogs";
 import { updateFarmController } from "@/infra/http/controllers/update-farm";
 import { updateOfferController } from "@/infra/http/controllers/update-offer";
 import { updatePaymentController } from "@/infra/http/controllers/update-payment";
@@ -128,7 +128,7 @@ router.post(
   "/offers",
   ensureAuthenticated,
   ensureRole(["PRODUCER"]),
-  offerProductsController
+  createOfferController
 );
 router.patch(
   "/offers/:offer_id",
@@ -156,7 +156,7 @@ router.get(
   ensureRole(["PRODUCER"]),
   fetchLastCatalogController
 );
-router.get("/catalogs", searchCatalogsController);
+router.get("/catalogs", listCatalogsController);
 router.get("/catalogs/:catalog_id", fetchCatalogController);
 
 // Sacolas

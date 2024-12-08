@@ -17,10 +17,10 @@ import { orderProductsSchema } from "@/infra/http/controllers/order-products";
 import { listBoxesSchema } from "@/infra/http/controllers/list-boxes";
 import { fetchBoxSchema } from "@/infra/http/controllers/fetch-box";
 import { handleBoxStatusSchema } from "@/infra/http/controllers/handle-box-status";
-import { offerProductsSchema } from "@/infra/http/controllers/offer-products";
+import { createOfferSchema } from "@/infra/http/controllers/create-offer";
 import { updateOfferSchema } from "@/infra/http/controllers/update-offer";
 import { deleteOfferSchema } from "@/infra/http/controllers/delete-offer";
-import { searchCatalogsSchema } from "@/infra/http/controllers/search-catalogs";
+import { listCatalogsSchema } from "@/infra/http/controllers/list-catalogs";
 import { fetchCatalogsSchema } from "@/infra/http/controllers/fetch-catalog";
 import { fetchLastCatalogSchema } from "@/infra/http/controllers/fetch-last-catalog";
 import { fetchBagSchema } from "@/infra/http/controllers/fetch-bag";
@@ -335,7 +335,7 @@ const docs = createDocument({
           },
         },
         description: "Cria uma oferta.",
-        ...SwaggerMapper.toDocs(offerProductsSchema),
+        ...SwaggerMapper.toDocs(createOfferSchema),
       },
     },
     "/offers/{offer_id}": {
@@ -378,7 +378,7 @@ const docs = createDocument({
           "404": { description: "Ciclo não encontrado: cycle-not-found" },
         },
         description: "Lista catálogos.",
-        ...SwaggerMapper.toDocs(searchCatalogsSchema),
+        ...SwaggerMapper.toDocs(listCatalogsSchema),
       },
     },
     "/catalogs/{catalog_id}": {

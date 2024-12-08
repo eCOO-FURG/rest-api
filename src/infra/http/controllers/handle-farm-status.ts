@@ -26,6 +26,7 @@ export async function handleFarmStatusController(
 ) {
   try {
     const { farm_id } = handleFarmStatusSchema.route.parse(request.params);
+
     const { status } = handleFarmStatusSchema.body.parse(request.body);
 
     const updateFarmUseCase =

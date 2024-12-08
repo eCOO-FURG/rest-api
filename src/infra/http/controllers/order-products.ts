@@ -9,7 +9,7 @@ import { OrderProductsUseCase } from "@/core/use-cases/order-products";
 import container from "@/infra/container";
 
 // Presenters
-import { BagMergePresenter } from "@/infra/http/presenters/bag-merge-presenter";
+import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 
 export const orderProductsSchema = {
   body: z.object({
@@ -58,7 +58,7 @@ export async function orderProductsController(
       request: orders,
     });
 
-    return response.status(200).send(BagMergePresenter.toHttp(bag));
+    return response.status(200).send(BagPresenter.toHttp(bag));
   } catch (error) {
     next(error);
   }

@@ -8,7 +8,7 @@ import { CreateOfferUseCase } from "@/core/use-cases/create-offer";
 // Container
 import container from "@/infra/container";
 
-export const offerProductsSchema = {
+export const createOfferSchema = {
   body: z.object({
     product_id: z.string(),
     cycle_id: z.string(),
@@ -18,14 +18,14 @@ export const offerProductsSchema = {
   }),
 };
 
-export async function offerProductsController(
+export async function createOfferController(
   request: Request,
   response: Response,
   next: NextFunction
 ) {
   try {
     const { product_id, cycle_id, amount, price, description } =
-      offerProductsSchema.body.parse(request.body);
+      createOfferSchema.body.parse(request.body);
 
     const createOfferUseCase =
       container.resolve<CreateOfferUseCase>("createOfferUseCase");

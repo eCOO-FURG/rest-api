@@ -10,7 +10,6 @@ import { FetchCurrentBoxUseCase } from "@/core/use-cases/fetch-current-box";
 
 // Presenters
 import { BoxPresenter } from "@/infra/http/presenters/box-presenter";
-import { OrderPresenter } from "@/infra/http/presenters/order-presenter";
 
 export const fetchCurrentBoxSchema = {
   query: z.object({
@@ -40,10 +39,7 @@ export async function fetchCurrentBoxController(
       page,
     });
 
-    return response.status(200).send({
-      ...BoxPresenter.toHttp(box),
-      orders: box.orders.map((order) => OrderPresenter.toHttp(order)),
-    });
+    return response.status(200).send(BoxPresenter.toHttp(box));
   } catch (error) {
     next(error);
   }

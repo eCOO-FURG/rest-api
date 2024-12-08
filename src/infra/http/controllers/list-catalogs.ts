@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
 // Use-cases
-import { SearchCatalogsUseCase } from "@/core/use-cases/search-catalogs";
+import { ListCatalogsUseCase } from "@/core/use-cases/list-catalogs";
 
 // Container
 import container from "@/infra/container";
@@ -11,7 +11,7 @@ import container from "@/infra/container";
 // Presenters
 import { CatalogPresenter } from "@/infra/http/presenters/catalog-presenter";
 
-export const searchCatalogsSchema = {
+export const listCatalogsSchema = {
   query: z.object({
     cycle_id: z.string().openapi({ description: "O ciclo da busca." }),
     page: z.coerce.number().openapi({ description: "A página da listagem." }),
@@ -22,21 +22,21 @@ export const searchCatalogsSchema = {
   }),
 };
 
-export async function searchCatalogsController(
+export async function listCatalogsController(
   request: Request,
   response: Response,
   next: NextFunction
 ) {
   try {
-    const { cycle_id, page, product } = searchCatalogsSchema.query.parse(
+    const { cycle_id, page, product } = listCatalogsSchema.query.parse(
       request.query
     );
 
-    const searchCatalogsUseCase = container.resolve<SearchCatalogsUseCase>(
-      "searchCatalogsUseCase"
+    const listCatalogsUseCase = container.resolve<ListCatalogsUseCase>(
+      "listCatalogsUseCase"
     );
 
-    const { catalogs } = await searchCatalogsUseCase.execute({
+    const { catalogs } = await listCatalogsUseCase.execute({
       cycle_id,
       product,
       page,
