@@ -88,7 +88,7 @@ router.patch(
   handleFarmController
 );
 router.patch(
-  "/farms",
+  "/farms/own",
   ensureAuthenticated,
   ensureRole(["PRODUCER"]),
   updateFarmController

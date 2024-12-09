@@ -185,14 +185,15 @@ const docs = createDocument({
         description: "Lista fazendas.",
         ...SwaggerMapper.toDocs(listFarmsSchema),
       },
-      patch: {
+    },
+    "/farms/{farm_id}": {
+      get: {
         tags: [tags.farms],
         responses: {
-          "204": { description: "Fazenda atualizada com sucesso." },
+          "200": { description: "Fazenda encontrada com sucesso." },
           "404": { description: "Fazenda não encontrada: farm-not-found" },
         },
-        description: "Atualiza a fazenda do usuário logado.",
-        ...SwaggerMapper.toDocs(updateFarmSchema),
+        description: "Busca as informações de uma fazenda específica.",
       },
     },
     "/farms/{farm_id}/handle": {
@@ -214,6 +215,15 @@ const docs = createDocument({
           "200": { description: "Fazenda encontrada com sucesso." },
         },
         description: "Busca a fazenda do usuário logado.",
+      },
+      patch: {
+        tags: [tags.farms],
+        responses: {
+          "204": { description: "Fazenda atualizada com sucesso." },
+          "404": { description: "Fazenda não encontrada: farm-not-found" },
+        },
+        description: "Atualiza a fazenda do usuário logado.",
+        ...SwaggerMapper.toDocs(updateFarmSchema),
       },
     },
     // Caixas
@@ -265,8 +275,17 @@ const docs = createDocument({
       },
     },
 
-    // Ofertas
-    "/Catalo": {
+    // Catálogos
+    "/catalogs": {
+      get: {
+        tags: [tags.catalogs],
+        responses: {
+          "200": { description: "Catatálogos encontrados com sucesso." },
+          "404": { description: "Ciclo não encontrado: cycle-not-found" },
+        },
+        description: "Lista catálogos.",
+        ...SwaggerMapper.toDocs(listCatalogsSchema),
+      },
       post: {
         tags: [tags.offers],
         responses: {
@@ -286,19 +305,6 @@ const docs = createDocument({
         },
         description: "Cria uma oferta.",
         ...SwaggerMapper.toDocs(createOfferSchema),
-      },
-    },
-
-    // Catálogos
-    "/catalogs": {
-      get: {
-        tags: [tags.catalogs],
-        responses: {
-          "200": { description: "Catatálogos encontrados com sucesso." },
-          "404": { description: "Ciclo não encontrado: cycle-not-found" },
-        },
-        description: "Lista catálogos.",
-        ...SwaggerMapper.toDocs(listCatalogsSchema),
       },
     },
     "/catalogs/{catalog_id}": {
@@ -463,6 +469,16 @@ const docs = createDocument({
         description:
           "Atualiza o status de uma sacola ou pagamentos de uma sacola.",
         ...SwaggerMapper.toDocs(handleBagSchema),
+      },
+    },
+    "/bags/{bag_id}/open": {
+      post: {
+        tags: [tags.payments],
+        responses: {
+          "200": { description: "Pagamento iniciado com sucesso." },
+          "404": { description: "Sacola não encontrada: bag-not-found" },
+        },
+        description: "Inicia o processo de pagamento para uma sacola.",
       },
     },
 
