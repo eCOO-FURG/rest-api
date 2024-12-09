@@ -11,7 +11,7 @@ import { UpdateBoxUseCase } from "@/core/use-cases/update-box";
 // Validations
 import { notEmpty } from "@/infra/http/validation/not-empty";
 
-export const handleBoxStatusSchema = {
+export const handleBoxSchema = {
   route: z.object({
     box_id: z.string().uuid(),
   }),
@@ -23,26 +23,26 @@ export const handleBoxStatusSchema = {
           status: z.enum(["RECEIVED", "CANCELLED"]),
         })
       )
-      .refine((data) => notEmpty.validation(data), notEmpty.warning),
+      .refine(notEmpty.validation, notEmpty.warning),
   }),
 };
 
-export async function handleBoxStatusController(
+export async function handleBoxController(
   request: Request,
   response: Response,
   next: NextFunction
 ) {
   try {
-    const { box_id } = handleBoxStatusSchema.route.parse(request.params);
+    const { box_id } = handleBoxSchema.route.parse(request.params);
 
-    const { orders } = handleBoxStatusSchema.body.parse(request.body);
+    const { orders } = handleBoxSchema.body.parse(request.body);
 
     const updateBoxUseCase =
       container.resolve<UpdateBoxUseCase>("updateBoxUseCase");
 
     await updateBoxUseCase.execute({
       box_id,
-      items: orders,
+      orders,
     });
 
     return response.sendStatus(204);

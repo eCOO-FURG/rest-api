@@ -129,6 +129,7 @@ export class OrderProductsUseCase {
         bag_id: bag.id,
         box_id: box.id,
         offer_id: offer.id,
+        offer,
       });
 
       bag.orders.set(offer.id.value, order);
@@ -163,9 +164,17 @@ export class OrderProductsUseCase {
 
   private async useBag({ bag_id, user, address, cycle }: UseBagRequest) {
     if (bag_id) {
-      const bag = await this.bagsRepository.find("merge", { id: bag_id });
+      const bag = await this.bagsRepository.find("merge", {
+        id: bag_id,
+        statuses: ["PENDING"],
+        cycle: { id: cycle.id.value },
+        since: mostPast(cycle.order),
+      });
 
       if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
+
+      if (bag.status !== "PENDING" || bag.created_at < mostPast(cycle.order))
+        throw new ResourceClosedError("Sacola", bag_id);
 
       return { bag, existed: true };
     }
@@ -173,6 +182,7 @@ export class OrderProductsUseCase {
     const found = await this.bagsRepository.find("merge", {
       user: { id: user.id.value },
       cycle: { id: cycle.id.value },
+      statuses: ["PENDING"],
       address: address ? { id: address.id.value } : null,
       since: mostPast(cycle.order),
     });

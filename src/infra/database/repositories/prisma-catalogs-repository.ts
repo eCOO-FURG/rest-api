@@ -17,9 +17,6 @@ import { prisma } from "@/infra/database/prisma-service";
 import { PrismaCatalogMapper } from "@/infra/database/mappers/prisma-catalog-mapper";
 import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
 
-// Utils
-import { equals } from "@/infra/utils/equals";
-
 export class PrismaCatalogsRepository implements CatalogsRepository {
   async find(
     type: RepositoryResponse,
@@ -42,6 +39,11 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
         ...(type === "merge" && {
           offers: {
             include: { product: true },
+            where: {
+              product: {
+                name: { contains: offers?.product?.name, mode: "insensitive" },
+              },
+            },
             orderBy: { created_at: "asc" },
             ...(offers?.page && {
               skip: (offers.page - 1) * 20,
@@ -76,6 +78,11 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
           offers: {
             include: { product: true },
             orderBy: { created_at: "asc" },
+            where: {
+              product: {
+                name: { contains: offers?.product?.name, mode: "insensitive" },
+              },
+            },
             ...(offers?.page && {
               skip: (offers.page - 1) * 20,
               take: 20,
@@ -109,25 +116,38 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
     await prisma.$transaction(async (ctx) => {
       await ctx.catalog.update({ where: { id: catalog.id.value }, data });
 
+      const previous = await ctx.offer.findMany({
+        where: { catalog_id: catalog.id.value },
+      });
+
+      const created = [];
+
       for (const offer of catalog.offers.values()) {
-        const existed = await ctx.offer.findUnique({
-          where: { id: offer.id.value },
-        });
+        const existed = previous.find((p) => offer.id.equals(p.id));
 
         if (!existed) {
-          await ctx.offer.create({ data: PrismaOfferMapper.toPrisma(offer) });
+          created.push(offer);
           continue;
         }
 
-        const diff = equals(PrismaOfferMapper.toDomain(existed), offer);
-
-        if (!diff) continue;
+        if (existed.updated_at === offer.updated_at) continue;
 
         await ctx.offer.update({
           where: { id: offer.id.value },
           data: PrismaOfferMapper.toPrisma(offer),
         });
       }
+
+      await ctx.offer.createMany({
+        data: created.map(PrismaOfferMapper.toPrisma),
+      });
+
+      const deletedIds = previous
+        .filter((p) => !catalog.offers.has(p.id))
+        .map((offer) => offer.id);
+
+      if (deletedIds.length)
+        await ctx.offer.deleteMany({ where: { id: { in: deletedIds } } });
     });
   }
 }

@@ -14,7 +14,7 @@ export class FetchCatalogUseCase {
   constructor(private catalogsRepository: CatalogsRepository) {}
 
   async execute({ catalog_id, product, page }: FetchCatalogUseCaseRequest) {
-    const catalog = await this.catalogsRepository.find("aggregate", {
+    const catalog = await this.catalogsRepository.find("merge", {
       id: catalog_id,
       offers: { product: { name: product }, page },
     });

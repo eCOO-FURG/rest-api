@@ -8,8 +8,13 @@ import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-
 // Container
 import container from "@/infra/container";
 
+// Validation
+import { notEmpty } from "@/infra/http/validation/not-empty";
+
 export const requestPasswordUpdateSchema = {
-  body: z.object({ email: z.string() }),
+  body: z
+    .object({ email: z.string() })
+    .refine(notEmpty.validation, notEmpty.warning),
 };
 
 export async function requestPasswordUpdateController(

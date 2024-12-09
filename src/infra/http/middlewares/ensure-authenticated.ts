@@ -14,7 +14,6 @@ import { env } from "@/infra/env";
 
 // Errors
 import { SessionExpiredError } from "@/core/errors/session-expired";
-import { UnauthorizedError } from "@/core/errors/unauthorized";
 
 const jwtPayloadSchema = z.object({
   user_id: z.string(),
@@ -29,7 +28,7 @@ export async function ensureAuthenticated(
   try {
     const authHeader = request.headers.authorization;
 
-    if (!authHeader) throw new UnauthorizedError();
+    if (!authHeader) throw new SessionExpiredError();
 
     const [, token] = authHeader.split(" ");
 

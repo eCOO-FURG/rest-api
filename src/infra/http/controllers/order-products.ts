@@ -11,30 +11,35 @@ import container from "@/infra/container";
 // Presenters
 import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 
+// Validation
+import { notEmpty } from "@/infra/http/validation/not-empty";
+
 export const orderProductsSchema = {
-  body: z.object({
-    bag_id: z.string().optional(),
-    cycle_id: z.string(),
-    address: z
-      .object({
-        street: z.string(),
-        number: z.string(),
-        neighborhood: z.string(),
-        complement: z.string().optional(),
-        postal_code: z.string(),
-      })
-      .optional(),
-    orders: z
-      .array(
-        z.object({
-          offer_id: z.string(),
-          amount: z.number(),
+  body: z
+    .object({
+      bag_id: z.string().optional(),
+      cycle_id: z.string(),
+      address: z
+        .object({
+          street: z.string(),
+          number: z.string(),
+          neighborhood: z.string(),
+          complement: z.string().optional(),
+          postal_code: z.string(),
         })
-      )
-      .refine((products) => products.length, {
-        message: "Pelo menos um pedido deve ser feito.",
-      }),
-  }),
+        .optional(),
+      orders: z
+        .array(
+          z.object({
+            offer_id: z.string(),
+            amount: z.number(),
+          })
+        )
+        .refine((products) => products.length, {
+          message: "Pelo menos um pedido deve ser feito.",
+        }),
+    })
+    .refine(notEmpty.validation, notEmpty.warning),
 };
 
 export async function orderProductsController(

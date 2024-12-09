@@ -29,11 +29,14 @@ export class PrismaOrderMapper {
 
   static toPrisma(order: Order): Prisma.OrderUncheckedCreateInput {
     return {
-      ...order.props,
       id: order.id.value,
+      amount: order.amount,
+      status: order.status,
       bag_id: order.bag_id.value,
       offer_id: order.offer_id.value,
       box_id: order.box_id.value,
+      created_at: order.created_at,
+      updated_at: order.updated_at,
     };
   }
 }

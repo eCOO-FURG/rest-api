@@ -31,9 +31,10 @@ export class OpenPaymentUseCase {
       throw new ResourceAlreadyExistsError("Pagamento da sacola", bag_id);
 
     const payment = Payment.create({
-      bag_id: new UUID(bag_id),
       method: "PIX",
       expires_at: new Date(Date.now() + 1000 * 60 * 15),
+      bag_id: new UUID(bag_id),
+      bag,
     });
 
     bag.payments.set(payment.id.value, payment);

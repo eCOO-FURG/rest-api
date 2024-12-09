@@ -79,7 +79,7 @@ describe("list farms with orders", () => {
     const { boxes } = await sut.execute({
       cycle_id: cycle.id.value,
       page: 1,
-      name: "Fazenda",
+      farm: "Fazenda",
     });
 
     expect(boxes).toHaveLength(1);

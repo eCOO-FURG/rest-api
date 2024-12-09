@@ -1,6 +1,5 @@
 // Entities
-import { PaymentAggregate } from "@/core/entities/aggregates/payment-aggregate";
-
+import { Payment } from "@/core/entities/payment";
 // Payments
 import { PixProvider } from "@/core/payment/pix-provider";
 
@@ -19,16 +18,18 @@ export class OpenPix implements PixProvider {
     this.client = createClient({ appId: env.PIX_PROVIDER_API_KEY });
   }
 
-  async charge(payment: PaymentAggregate) {
-    const name = `${payment.bag.user.first_name} ${payment.bag.user.last_name}`;
+  async charge(payment: Payment) {
+    const name = `${payment.bag!.user!.first_name} ${
+      payment.bag!.user!.last_name
+    }`;
 
     const { charge } = await this.client.charge.create({
       correlationID: payment.id.value,
-      value: payment.bag.price(),
+      value: payment.bag!.price(),
       expiresIn: 60 * 15, // 15 minutes
       customer: {
         name,
-        phone: payment.bag.user.phone,
+        phone: payment.bag!.user!.phone,
       },
       additionalInfo: [
         {

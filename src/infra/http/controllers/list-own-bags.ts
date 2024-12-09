@@ -26,7 +26,7 @@ import { Bag, BAG_STATUSES } from "@/core/entities/bag";
 // Validation
 import { optionList } from "@/infra/http/validation/option-list";
 
-export const listUserBagsSchema = {
+export const listOwnBagsSchema = {
   query: z
     .object({
       page: z.coerce.number().openapi({ description: "Página da listagem." }),
@@ -61,14 +61,14 @@ export const listUserBagsSchema = {
     ),
 };
 
-export async function listUserBagsController(
+export async function listOwnBagsController(
   request: Request,
   response: Response,
   next: NextFunction
 ) {
   try {
     const { page, since, before, statuses, cycle_id } =
-      listUserBagsSchema.query.parse(request.query);
+      listOwnBagsSchema.query.parse(request.query);
 
     const listBagsUseCase =
       container.resolve<ListBagsUseCase>("listBagsUseCase");

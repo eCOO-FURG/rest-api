@@ -8,7 +8,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 interface ListFarmsWithOrdersProps {
   cycle_id: string;
   page: number;
-  name?: string;
+  farm?: string;
 }
 
 export class ListBoxesUseCase {
@@ -17,7 +17,7 @@ export class ListBoxesUseCase {
     private boxesRepository: BoxesRepository
   ) {}
 
-  async execute({ cycle_id, page, name }: ListFarmsWithOrdersProps) {
+  async execute({ cycle_id, page, farm }: ListFarmsWithOrdersProps) {
     const cycle = await this.cyclesRepository.find("basic", {
       id: cycle_id,
     });
@@ -29,7 +29,7 @@ export class ListBoxesUseCase {
       {
         catalog: {
           cycle: { id: cycle_id },
-          farm: { name },
+          farm: { name: farm },
         },
       },
       page

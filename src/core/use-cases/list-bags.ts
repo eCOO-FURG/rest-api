@@ -3,11 +3,11 @@ import { Bag } from "@/core/entities/bag";
 
 // Repositories
 import { BagsRepository } from "@/core/repositories/bags-repository";
+import { UsersRepository } from "@/core/repositories/users-repository";
+import { CyclesRepository } from "@/core/repositories/cycles-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { UsersRepository } from "@/core/repositories/users-repository";
-import { CyclesRepository } from "@/core/repositories/cycles-repository";
 
 interface ListBagsUseCaseRequest {
   page: number;
@@ -48,13 +48,17 @@ export class ListBagsUseCase {
       if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
     }
 
-    const bags = await this.bagsRepository.list("aggregate", {
-      user: { id: user_id },
-      cycle: { id: cycle_id },
-      statuses,
-      since,
-      before,
-    });
+    const bags = await this.bagsRepository.list(
+      "aggregate",
+      {
+        user: { id: user_id },
+        cycle: { id: cycle_id },
+        statuses,
+        since,
+        before,
+      },
+      page
+    );
 
     return { bags };
   }

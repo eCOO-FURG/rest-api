@@ -69,7 +69,9 @@ export class CreateOfferUseCase {
     const { catalog, existed } = await this.useCatalog(farm.id, cycle);
 
     if (existed) {
-      const offered = catalog.offers.get(product_id);
+      const offered = Array.from(catalog.offers.values()).find(
+        (offer) => offer.product_id.value === product_id
+      );
 
       if (offered)
         throw new ResourceAlreadyExistsError("Oferta do produto", product_id);

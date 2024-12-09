@@ -29,7 +29,7 @@ export class PrintDeliveriesReportUseCase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const bags = await this.bagsRepository.list("aggregate", {
+    const bags = await this.bagsRepository.list("merge", {
       cycle: { id: cycle_id },
       since: mostPast(cycle.order),
     });

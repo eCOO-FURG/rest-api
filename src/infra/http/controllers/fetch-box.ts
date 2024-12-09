@@ -15,6 +15,9 @@ export const fetchBoxSchema = {
   route: z.object({
     box_id: z.string().uuid(),
   }),
+  query: z.object({
+    page: z.coerce.number(),
+  }),
 };
 
 export async function fetchBoxController(
@@ -24,6 +27,7 @@ export async function fetchBoxController(
 ) {
   try {
     const { box_id } = fetchBoxSchema.route.parse(request.params);
+    const { page } = fetchBoxSchema.query.parse(request.query);
 
     const fetchBoxUseCase =
       container.resolve<FetchBoxUseCase>("fetchBoxUseCase");
@@ -31,6 +35,7 @@ export async function fetchBoxController(
     const { box } = await fetchBoxUseCase.execute({
       user_id: request.user_id,
       box_id,
+      page,
     });
 
     return response.status(200).send(BoxPresenter.toHttp(box));

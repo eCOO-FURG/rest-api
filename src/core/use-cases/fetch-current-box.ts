@@ -25,7 +25,7 @@ export class FetchCurrentBoxUseCase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const box = await this.boxesRepository.find("basic", {
+    const box = await this.boxesRepository.find("merge", {
       catalog: { farm: { id: farm_id }, cycle: { id: cycle_id } },
       orders: { page },
       since: mostPast(cycle.order),

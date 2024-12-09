@@ -8,14 +8,19 @@ import { CreateOfferUseCase } from "@/core/use-cases/create-offer";
 // Container
 import container from "@/infra/container";
 
+// Validation
+import { notEmpty } from "@/infra/http/validation/not-empty";
+
 export const createOfferSchema = {
-  body: z.object({
-    product_id: z.string(),
-    cycle_id: z.string(),
-    amount: z.coerce.number(),
-    price: z.coerce.number(),
-    description: z.string().optional(),
-  }),
+  body: z
+    .object({
+      product_id: z.string(),
+      cycle_id: z.string(),
+      amount: z.coerce.number(),
+      price: z.coerce.number(),
+      description: z.string().optional(),
+    })
+    .refine(notEmpty.validation, notEmpty.warning),
 };
 
 export async function createOfferController(

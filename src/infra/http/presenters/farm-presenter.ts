@@ -24,7 +24,7 @@ export class FarmPresenter {
         tally: farm.tally,
         tax: farm.tax,
         description: farm.description,
-        admin_id: farm.admin_id,
+        admin_id: farm.admin_id.value,
         admin: admin,
         created_at: farm.created_at,
         updated_at: farm.updated_at,

@@ -17,7 +17,6 @@ export const BAG_STATUSES = [
   "RECEIVED",
   "CANCELLED",
   "DEFERRED",
-  "CANCELLED",
 ] as const;
 
 export interface BagProps extends EntityRequest {

@@ -15,7 +15,7 @@ interface ListCurrentBagsUseCaseRequest {
   cycle_id: string;
   page: number;
   statuses?: Bag["status"][];
-  name?: string;
+  user?: string;
 }
 
 export class ListCurrentBagsUseCase {
@@ -27,7 +27,7 @@ export class ListCurrentBagsUseCase {
   async execute({
     cycle_id,
     statuses,
-    name,
+    user,
     page,
   }: ListCurrentBagsUseCaseRequest) {
     const cycle = await this.cyclesRepository.find("basic", {
@@ -39,7 +39,7 @@ export class ListCurrentBagsUseCase {
     const bags = await this.bagsRepository.list(
       "aggregate",
       {
-        user: { name },
+        user: { name: user },
         statuses,
         cycle: { id: cycle_id },
         since: mostPast(cycle.order),

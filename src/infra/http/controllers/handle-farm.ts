@@ -8,26 +8,32 @@ import container from "@/infra/container";
 // Use-cases
 import { UpdateFarmUseCase } from "@/core/use-cases/update-farm";
 
-export const handleFarmStatusSchema = {
+// Validation
+import { notEmpty } from "@/infra/http/validation/not-empty";
+
+export const handleFarmSchema = {
   route: z.object({
     farm_id: z.string().uuid(),
   }),
   body: z.object({
-    status: z.enum(["ACTIVE", "INACTIVE", "PENDING"]).openapi({
-      description: "Status de uma fazenda. ACTIVE, INACTIVE ou PENDING.",
-    }),
+    status: z
+      .enum(["ACTIVE", "INACTIVE", "PENDING"])
+      .openapi({
+        description: "Status de uma fazenda. ACTIVE, INACTIVE ou PENDING.",
+      })
+      .refine(notEmpty.validation, notEmpty.warning),
   }),
 };
 
-export async function handleFarmStatusController(
+export async function handleFarmController(
   request: Request,
   response: Response,
   next: NextFunction
 ) {
   try {
-    const { farm_id } = handleFarmStatusSchema.route.parse(request.params);
+    const { farm_id } = handleFarmSchema.route.parse(request.params);
 
-    const { status } = handleFarmStatusSchema.body.parse(request.body);
+    const { status } = handleFarmSchema.body.parse(request.body);
 
     const updateFarmUseCase =
       container.resolve<UpdateFarmUseCase>("updateFarmUseCase");

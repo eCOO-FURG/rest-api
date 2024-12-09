@@ -10,9 +10,11 @@ import { makeBag } from "@/test/factories/make-bag";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 
 let usersRepository: InMemoryUsersRepository;
 let bagsRepository: InMemoryBagsRepository;
+let cyclesRepository: InMemoryCyclesRepository;
 
 let sut: UpdateBagUseCase;
 
@@ -20,8 +22,13 @@ describe("update bag", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
     bagsRepository = new InMemoryBagsRepository();
+    cyclesRepository = new InMemoryCyclesRepository();
 
-    sut = new UpdateBagUseCase(bagsRepository, usersRepository);
+    sut = new UpdateBagUseCase(
+      bagsRepository,
+      usersRepository,
+      cyclesRepository
+    );
   });
 
   it("should be able to handle a bag", async () => {

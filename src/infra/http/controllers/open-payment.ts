@@ -11,7 +11,11 @@ import container from "@/infra/container";
 // Presenters
 import { PaymentPresenter } from "@/infra/http/presenters/payment-presenter";
 
-export const openPaymentSchema = { body: z.object({ bag_id: z.string() }) };
+export const openPaymentSchema = {
+  route: z.object({
+    bag_id: z.string().uuid(),
+  }),
+};
 
 export async function openPaymentController(
   request: Request,
@@ -19,7 +23,7 @@ export async function openPaymentController(
   next: NextFunction
 ) {
   try {
-    const { bag_id } = openPaymentSchema.body.parse(request.body);
+    const { bag_id } = openPaymentSchema.route.parse(request.params);
 
     const openPaymentUseCase =
       container.resolve<OpenPaymentUseCase>("openPaymentUseCase");
