@@ -25,8 +25,6 @@ export async function printDeliveriesReportController(
     const printDeliveriesReportUseCase =
       container.resolve<PrintDeliveriesReportUseCase>("printDeliveriesReport");
 
-    await printDeliveriesReportUseCase.execute({ cycle_id });
-
     const { pdf } = await printDeliveriesReportUseCase.execute({ cycle_id });
 
     response.set({
