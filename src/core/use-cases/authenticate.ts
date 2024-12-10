@@ -30,7 +30,7 @@ export class AuthenticateUseCase {
     private sessionsRepository: SessionsRepository,
     private encrypter: Encrypter,
     private hasher: Hasher
-  ) { }
+  ) {}
 
   async execute({
     email,
@@ -39,11 +39,9 @@ export class AuthenticateUseCase {
     ip,
     type,
   }: AuthenticateUseCaseRequest) {
-    const user = await this.usersRepository.findByEmail(email);
+    const user = await this.usersRepository.find("basic", { email });
 
-    if (!user) {
-      throw new WrongCredentialsError();
-    }
+    if (!user) throw new WrongCredentialsError();
 
     switch (type) {
       case "BASIC":
@@ -58,7 +56,11 @@ export class AuthenticateUseCase {
         break;
 
       case "OTP":
-        const otp = await this.otpsRepository.findValid(user.id.value, password);
+        const otp = await this.otpsRepository.find("basic", {
+          user: { id: user.id.value },
+          value: password,
+          used: false,
+        });
 
         if (!otp || otp.value !== password) throw new WrongCredentialsError();
 
@@ -80,9 +82,6 @@ export class AuthenticateUseCase {
 
     const token = await this.hasher.hash({ user_id: user.id.value });
 
-    return {
-      user,
-      token,
-    };
+    return { user, token };
   }
 }

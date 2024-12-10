@@ -1,5 +1,4 @@
 // Repositories
-import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 
 // Use-cases
@@ -12,22 +11,22 @@ import { makeFarm } from "@/test/factories/make-farm";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
-let usersRepository: InMemoryUsersRepository;
+// Entities
+import { Farm } from "@/core/entities/farm";
+
 let farmsRepository: InMemoryFarmsRepository;
 
 let sut: FetchFarmUseCase;
 
 describe("Fetch farm", () => {
   beforeEach(() => {
-    usersRepository = new InMemoryUsersRepository();
-    farmsRepository = new InMemoryFarmsRepository(usersRepository);
+    farmsRepository = new InMemoryFarmsRepository();
 
     sut = new FetchFarmUseCase(farmsRepository);
-  })
+  });
 
   it("should be able to fetch a farm", async () => {
     const user = makeUser();
-    await usersRepository.create(user);
 
     const farm = makeFarm({
       admin_id: user.id,
@@ -37,14 +36,14 @@ describe("Fetch farm", () => {
 
     const response = await sut.execute({ farm_id: farm.id.value });
 
-    expect(response).toHaveProperty("farm");
-  })
+    expect(response.farm).toBeInstanceOf(Farm);
+  });
 
   it("should not be able to fetch a farm if the farm does not exist", async () => {
     await expect(() =>
       sut.execute({
-        farm_id: '1234'
+        farm_id: "1234",
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
-  })
-})
+  });
+});

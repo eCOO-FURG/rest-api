@@ -30,10 +30,6 @@ export async function verifyUserController(
 
     const ip = request.ip || request.socket.remoteAddress || "unknown";
 
-    if (!ip) {
-      return response.status(400).send({ message: "Cliente descontado" });
-    }
-
     const { roles, refresh } = await verifyUserUseCase.execute({
       token,
       ip,
@@ -42,7 +38,7 @@ export async function verifyUserController(
 
     const isProducer = roles.includes("PRODUCER");
 
-    const path = isProducer ? 'login' : 'telegram';
+    const path = isProducer ? "login" : "telegram";
 
     return response.redirect(301, `${env.FRONT_URL}/${path}?token=${refresh}`);
   } catch (error) {

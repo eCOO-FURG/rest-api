@@ -23,27 +23,22 @@ export class PrintDeliveriesReportUseCase {
   ) {}
 
   async execute({ cycle_id }: PrintDeliveriesReportUseCaseRequest) {
-    const cycle = await this.cyclesRepository.findById(cycle_id);
+    const cycle = await this.cyclesRepository.find("basic", {
+      id: cycle_id,
+    });
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const bags = await this.bagsRepository.searchMany(
-      {
-        cycle: {
-          id: cycle_id,
-        },
-        since: mostPast(cycle.order),
-      },
-      "merged"
-    );
+    const bags = await this.bagsRepository.list("merge", {
+      cycle: { id: cycle_id },
+      since: mostPast(cycle.order),
+    });
 
     const pdf = await this.pdfService.generate({
       type: "delivery-report",
       props: { bags },
     });
 
-    return {
-      pdf,
-    };
+    return { pdf };
   }
 }

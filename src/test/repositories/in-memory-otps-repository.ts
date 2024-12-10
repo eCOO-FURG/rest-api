@@ -2,19 +2,33 @@
 import { Otp } from "@/core/entities/otp";
 
 // Repositories
-import { OtpsRepository } from "@/core/repositories/otps-repositoy";
+import {
+  OtpsRepository,
+  OtpsRepositorySearchRequest,
+} from "@/core/repositories/otps-repositoy";
+import { RepositoryResponse } from "@/core/types/repository-response";
+
+// Utils
+import { find } from "@/test/utils/find";
 
 export class InMemoryOtpsRepository implements OtpsRepository {
   items: Otp[] = [];
 
-  async findValid(user_id: string, value: string): Promise<Otp | null> {
-    const valid = this.items.find(
-      (item) => item.user_id.equals(user_id) && item.used === false && item.value === value
+  async find(
+    _: RepositoryResponse,
+    { value, used, user }: OtpsRepositorySearchRequest
+  ): Promise<Otp | null> {
+    const otp = await find<Otp>(
+      this.items,
+      async (item) =>
+        Boolean(user?.id && item.user?.id.equals(user.id)) &&
+        (!used || item.used === used) &&
+        (!value || item.value === value)
     );
 
-    if (!valid) return null;
+    if (!otp) return null;
 
-    return valid;
+    return otp;
   }
 
   async create(otp: Otp): Promise<void> {

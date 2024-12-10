@@ -20,17 +20,19 @@ export class RequestOtpUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private otpGenerator: OtpProvider,
-    private otpsRepository: OtpsRepository,
-  ) { }
+    private otpsRepository: OtpsRepository
+  ) {}
 
   async execute({ email }: RequestOtpUseCaseRequest) {
-    const user = await this.usersRepository.findByEmail(email);
+    const user = await this.usersRepository.find("basic", {
+      email,
+    });
 
     if (!user) throw new ResourceNotFoundError("Usuário", email);
 
     const otp = Otp.create({
       user_id: user.id,
-      value: await this.otpGenerator.generate()
+      value: await this.otpGenerator.generate(),
     });
 
     await this.otpsRepository.create(otp);

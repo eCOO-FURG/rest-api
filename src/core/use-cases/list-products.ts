@@ -3,17 +3,19 @@ import { ProductsRepository } from "@/core/repositories/products-repository";
 
 interface ListProductsUseCaseRequest {
   page: number;
-  product?: string;
+  name?: string;
 }
 
 export class ListProductsUsecase {
   constructor(private productsRepository: ProductsRepository) {}
 
-  async execute({ page, product }: ListProductsUseCaseRequest) {
-    const products = await this.productsRepository.findMany(page, product);
+  async execute({ page, name }: ListProductsUseCaseRequest) {
+    const products = await this.productsRepository.list(
+      "basic",
+      { name },
+      page
+    );
 
-    return {
-      products,
-    };
+    return { products };
   }
 }

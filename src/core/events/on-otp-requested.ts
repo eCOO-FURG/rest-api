@@ -34,7 +34,9 @@ export class OnOtpRequestEvent {
   }
 
   async execute({ user_id, value }: OnOtpRequestEventRequest) {
-    const user = await this.usersRepository.findById(user_id.value);
+    const user = await this.usersRepository.find("basic", {
+      id: user_id.value,
+    });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id.value);
 

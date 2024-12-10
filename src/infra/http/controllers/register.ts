@@ -8,6 +8,9 @@ import { RegisterUseCase } from "@/core/use-cases/register";
 // Container
 import container from "@/infra/container";
 
+// Validation
+import { notEmpty } from "@/infra/http/validation/not-empty";
+
 export const registerSchema = {
   body: z.object({
     first_name: z.string(),
@@ -16,10 +19,13 @@ export const registerSchema = {
     email: z.string().email(),
     phone: z.string(),
     password: z.string().min(8).optional(),
-    role: z.enum(['USER', 'PRODUCER']).openapi({ 
-      type: "string",
-      enum: ['USER', 'PRODUCER'],
-    }),
+    role: z
+      .enum(["USER", "PRODUCER"])
+      .openapi({
+        type: "string",
+        enum: ["USER", "PRODUCER"],
+      })
+      .refine(notEmpty.validation, notEmpty.warning),
   }),
 };
 
@@ -44,7 +50,7 @@ export async function registerController(
       email,
       phone,
       password,
-      role
+      role,
     });
 
     return response.sendStatus(201);

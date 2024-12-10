@@ -1,11 +1,21 @@
 // Entities
 import { User } from "@/core/entities/user";
 
+// Types
+import { RepositoryResponse } from "@/core/types/repository-response";
+
+export interface UsersRepositorySearchRequest {
+  id?: string;
+  email?: string;
+  phone?: string;
+  cpf?: string;
+}
+
 export interface UsersRepository {
-  findById(id: string): Promise<User | null>;
-  findByEmail(email: string): Promise<User | null>;
-  findByPhone(phone: string): Promise<User | null>;
-  findByCpf(cpf: string): Promise<User | null>;
+  find(
+    type: RepositoryResponse,
+    filters: UsersRepositorySearchRequest
+  ): Promise<User | null>;
   create(user: User): Promise<void>;
   update(user: User): Promise<void>;
 }

@@ -3,33 +3,29 @@ import { Box } from "@/core/entities/box";
 
 // Types
 import { RepositoryResponse } from "@/core/types/repository-response";
-import { BoxAggregate } from "@/core/entities/aggregates/box-aggregate";
-import { BoxMerge } from "@/core/entities/merged/box-merge";
 
 export interface BoxesRepositorySearchRequest {
   id?: string;
   status?: Box["status"];
-  catalog?: { id: string; cycle?: { id?: string }; farm?: { name?: string } };
+  catalog?: {
+    id?: string;
+    farm?: { id?: string; name?: string };
+    cycle?: { id?: string };
+  };
+  orders?: { page?: number };
   since?: Date;
 }
 
-export interface BoxesRepositorySearchManyRequest
-  extends BoxesRepositorySearchRequest {
-  page?: number;
-}
-
-export type BoxesRepositoryResponse<T extends RepositoryResponse> =
-  T extends "entity" ? Box : T extends "aggregate" ? BoxAggregate : BoxMerge;
-
 export interface BoxesRepository {
-  search<T extends RepositoryResponse>(
+  find(
+    type: RepositoryResponse,
+    filters: BoxesRepositorySearchRequest
+  ): Promise<Box | null>;
+  list(
+    type: RepositoryResponse,
     filters: BoxesRepositorySearchRequest,
-    type: T
-  ): Promise<BoxesRepositoryResponse<T> | null>;
-  searchMany<T extends RepositoryResponse>(
-    filters: BoxesRepositorySearchManyRequest,
-    type: T
-  ): Promise<BoxesRepositoryResponse<T>[]>;
+    page?: number
+  ): Promise<Box[]>;
   count(filters: BoxesRepositorySearchRequest): Promise<number>;
   create(box: Box): Promise<void>;
   update(box: Box): Promise<void>;

@@ -38,23 +38,24 @@ export class RegisterUseCase {
     password,
     role,
   }: RegisterUseCaseRequest) {
-    const userWithSameEmail = await this.usersRepository.findByEmail(email);
+    const userWithSameEmail = await this.usersRepository.find("basic", {
+      email,
+    });
 
-    if (userWithSameEmail) {
-      throw new ResourceAlreadyExistsError("Email", email);
-    }
+    if (userWithSameEmail) throw new ResourceAlreadyExistsError("Email", email);
 
-    const userWithSamePhone = await this.usersRepository.findByPhone(phone);
+    const userWithSamePhone = await this.usersRepository.find("basic", {
+      phone,
+    });
 
-    if (userWithSamePhone) {
+    if (userWithSamePhone)
       throw new ResourceAlreadyExistsError("Telefone", phone);
-    }
 
-    const userWithSameCpf = await this.usersRepository.findByCpf(cpf);
+    const userWithSameCpf = await this.usersRepository.find("basic", {
+      cpf,
+    });
 
-    if (userWithSameCpf) {
-      throw new ResourceAlreadyExistsError("CPF", cpf);
-    }
+    if (userWithSameCpf) throw new ResourceAlreadyExistsError("CPF", cpf);
 
     const roles: Role[] = role === "PRODUCER" ? ["USER", "PRODUCER"] : ["USER"];
 

@@ -15,16 +15,13 @@ export function makeUser(props: Partial<User> = {}) {
       .toString();
 
   return User.create({
-    id: props.id,
+    ...props,
     first_name: props.first_name ?? faker.person.firstName(),
     last_name: props.last_name ?? faker.person.lastName(),
     email: props.email ?? faker.internet.email(),
     cpf: props.cpf ? cpf : faker.internet.email(),
     phone: props.phone ?? faker.phone.number(),
     roles: props.roles ?? ["USER"],
-    password: props.password,
     verified_at: props.verified_at,
-    created_at: props.created_at,
-    updated_at: props.updated_at,
   });
 }

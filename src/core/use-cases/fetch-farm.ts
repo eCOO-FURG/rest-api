@@ -12,14 +12,9 @@ export class FetchFarmUseCase {
   constructor(private farmsRepository: FarmsRepository) {}
 
   async execute({ farm_id }: FetchFarmUseCaseRequest) {
-    const farm = await this.farmsRepository.search(
-      {
-        id: farm_id,
-      },
-      "aggregate"
-    );
+    const farm = await this.farmsRepository.find("merge", { id: farm_id });
 
-    if (!farm) throw new ResourceNotFoundError("Fazenda do", farm_id);
+    if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
     return { farm };
   }
