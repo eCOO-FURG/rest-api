@@ -1,10 +1,12 @@
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
+export type pricings = "UNIT" | "WEIGHT"
+
 export interface ProductProps extends EntityRequest {
   name: string;
   image: string;
-  pricing: "UNIT" | "WEIGHT";
+  pricing: pricings;
 }
 
 export class Product extends Entity<ProductProps> {
