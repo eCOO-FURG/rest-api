@@ -8,7 +8,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 interface ListFarmsWithOrdersProps {
   cycle_id: string;
   page: number;
-  name?: string;
+  farm?: string;
 }
 
 export class ListBoxesUseCase {
@@ -17,20 +17,22 @@ export class ListBoxesUseCase {
     private boxesRepository: BoxesRepository
   ) {}
 
-  async execute({ cycle_id, page, name }: ListFarmsWithOrdersProps) {
-    const cycle = await this.cyclesRepository.findById(cycle_id);
+  async execute({ cycle_id, page, farm }: ListFarmsWithOrdersProps) {
+    const cycle = await this.cyclesRepository.find("basic", {
+      id: cycle_id,
+    });
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const boxes = await this.boxesRepository.searchMany(
+    const boxes = await this.boxesRepository.list(
+      "aggregate",
       {
         catalog: {
           cycle: { id: cycle_id },
-          farm: { name },
+          farm: { name: farm },
         },
-        page,
       },
-      "aggregate"
+      page
     );
 
     return { boxes };

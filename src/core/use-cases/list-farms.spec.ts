@@ -1,32 +1,25 @@
 // Repositories
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
-import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
 // Use-cases
 import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
 
 // Services
-import { makeUser } from "@/test/factories/make-user";
 import { makeFarm } from "@/test/factories/make-farm";
 
 let farmsRepository: InMemoryFarmsRepository;
-let usersRepository: InMemoryUsersRepository;
 
 let sut: ListFarmsUseCase;
 
 describe("list farms", () => {
   beforeEach(() => {
-    usersRepository = new InMemoryUsersRepository();
-    farmsRepository = new InMemoryFarmsRepository(usersRepository);
+    farmsRepository = new InMemoryFarmsRepository();
     sut = new ListFarmsUseCase(farmsRepository);
   });
 
   it("should be able to list farms", async () => {
-    const user = makeUser();
-    await usersRepository.create(user);
-
-    const farm1 = makeFarm({ admin_id: user.id });
-    await farmsRepository.create(farm1);
+    const farm1 = makeFarm();
+    farmsRepository.items.push(farm1);
 
     const response = await sut.execute({
       page: 1,
@@ -36,14 +29,11 @@ describe("list farms", () => {
   });
 
   it("should be able to list farms by name", async () => {
-    const user = makeUser();
-    await usersRepository.create(user);
+    const farm1 = makeFarm({ name: "Farm 1" });
+    farmsRepository.items.push(farm1);
 
-    const farm1 = makeFarm({ admin_id: user.id, name: "Farm 1" });
-    await farmsRepository.create(farm1);
-
-    const farm2 = makeFarm({ admin_id: user.id, name: "Farm 2" });
-    await farmsRepository.create(farm2);
+    const farm2 = makeFarm({ name: "Farm 2" });
+    farmsRepository.items.push(farm2);
 
     const response = await sut.execute({
       page: 1,

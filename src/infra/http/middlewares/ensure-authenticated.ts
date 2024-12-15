@@ -14,7 +14,6 @@ import { env } from "@/infra/env";
 
 // Errors
 import { SessionExpiredError } from "@/core/errors/session-expired";
-import { UnauthorizedError } from "@/core/errors/unauthorized";
 
 const jwtPayloadSchema = z.object({
   user_id: z.string(),
@@ -29,7 +28,7 @@ export async function ensureAuthenticated(
   try {
     const authHeader = request.headers.authorization;
 
-    if (!authHeader) throw new UnauthorizedError();
+    if (!authHeader) throw new SessionExpiredError();
 
     const [, token] = authHeader.split(" ");
 
@@ -47,8 +46,8 @@ export async function ensureAuthenticated(
 
       const ONE_HOUR_AGO = new Date(Date.now() - 60 * 60 * 1000);
 
-      const session = await sessionsRepository.search({
-        user_id,
+      const session = await sessionsRepository.find("basic", {
+        user: { id: user_id },
         ip: request.ip!,
         agent: request.headers["user-agent"] ?? "not-identified",
         since: ONE_HOUR_AGO,

@@ -10,11 +10,13 @@ import { FetchBoxUseCase } from "@/core/use-cases/fetch-box";
 
 // Presenters
 import { BoxPresenter } from "@/infra/http/presenters/box-presenter";
-import { OrderPresenter } from "@/infra/http/presenters/order-presenter";
 
 export const fetchBoxSchema = {
   route: z.object({
     box_id: z.string().uuid(),
+  }),
+  query: z.object({
+    page: z.coerce.number(),
   }),
 };
 
@@ -25,18 +27,18 @@ export async function fetchBoxController(
 ) {
   try {
     const { box_id } = fetchBoxSchema.route.parse(request.params);
+    const { page } = fetchBoxSchema.query.parse(request.query);
 
     const fetchBoxUseCase =
       container.resolve<FetchBoxUseCase>("fetchBoxUseCase");
 
     const { box } = await fetchBoxUseCase.execute({
+      user_id: request.user_id,
       box_id,
+      page,
     });
 
-    return response.status(200).send({
-      ...BoxPresenter.toHttp(box),
-      orders: box.orders.map((order) => OrderPresenter.toHttp(order)),
-    });
+    return response.status(200).send(BoxPresenter.toHttp(box));
   } catch (error) {
     next(error);
   }

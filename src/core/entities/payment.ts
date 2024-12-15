@@ -2,18 +2,25 @@
 import { Entity, EntityRequest } from "@/core/entities/entity";
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { Optional } from "@/core/types/optional";
+import { Bag } from "@/core/entities/bag";
 
 export interface PaymentProps extends EntityRequest {
-  bag_id: UUID;
   status: "PENDING" | "DONE" | "FAILED";
   method: "CREDIT" | "DEBIT" | "CASH" | "PIX";
   flag: "MASTERCARD" | "VISA" | "OTHER" | null;
   expires_at: Date | null;
+
+  bag_id: UUID;
+  bag?: Bag;
 }
 
 export class Payment extends Entity<PaymentProps> {
   get bag_id() {
     return this.props.bag_id;
+  }
+
+  get bag() {
+    return this.props.bag;
   }
 
   get method() {

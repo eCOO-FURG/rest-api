@@ -6,7 +6,7 @@ import { Role } from "@/core/entities/user";
 
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
-
+import { FarmsRepository } from "@/core/repositories/farms-repository";
 // Container
 import container from "@/infra/container";
 
@@ -15,7 +15,6 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { UnauthorizedError } from "@/core/errors/unauthorized";
 
 // Repositories
-import { PrismaFarmsRepository } from "@/infra/database/repositories/prisma-farms-repository";
 
 export function ensureRole(roles: Role[]): RequestHandler {
   return async (request: Request, _: Response, next: NextFunction) => {
@@ -23,7 +22,7 @@ export function ensureRole(roles: Role[]): RequestHandler {
       const usersRepository =
         container.resolve<UsersRepository>("usersRepository");
 
-      const user = await usersRepository.findById(request.user_id);
+      const user = await usersRepository.find("basic", { id: request.user_id });
 
       if (!user) throw new ResourceNotFoundError("Usuário", request.user_id);
 
@@ -33,12 +32,11 @@ export function ensureRole(roles: Role[]): RequestHandler {
 
       if (roles.includes("PRODUCER")) {
         const farmsRepository =
-          container.resolve<PrismaFarmsRepository>("farmsRepository");
+          container.resolve<FarmsRepository>("farmsRepository");
 
-        const farm = await farmsRepository.search(
-          { admin: { id: request.user_id } },
-          "entity"
-        );
+        const farm = await farmsRepository.find("basic", {
+          admin: { id: request.user_id },
+        });
 
         if (!farm) throw new ResourceNotFoundError("Fazenda", request.user_id);
 

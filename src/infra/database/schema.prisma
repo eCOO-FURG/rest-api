@@ -276,6 +276,7 @@ enum ORDER_STATUS {
   PENDING
   CANCELLED
   RECEIVED
+  REJECTED
 }
 
 model Order {

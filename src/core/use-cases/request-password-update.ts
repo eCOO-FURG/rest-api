@@ -15,11 +15,11 @@ export class RequestPasswordUpdateUseCase {
   constructor(private usersRepository: UsersRepository) {}
 
   async execute({ email }: RequestPasswordUpdateUseCaseRequest) {
-    const user = await this.usersRepository.findByEmail(email);
+    const user = await this.usersRepository.find("basic", {
+      email,
+    });
 
-    if (!user) {
-      throw new ResourceNotFoundError("Usuário", email);
-    }
+    if (!user) throw new ResourceNotFoundError("Usuário", email);
 
     user.reset();
 

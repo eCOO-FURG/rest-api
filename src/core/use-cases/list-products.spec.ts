@@ -27,7 +27,7 @@ describe("list products", () => {
     productsRepository.create(product2);
 
     const response = await sut.execute({
-      product: "App",
+      name: "Apple",
       page: 1,
     });
 

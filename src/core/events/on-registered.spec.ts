@@ -59,6 +59,7 @@ describe("on account created", () => {
       first_name: "Rodrigo",
       last_name: "Goes",
       cpf: "523.065.281-02",
+      role: "USER",
     });
 
     await waitFor(() => {

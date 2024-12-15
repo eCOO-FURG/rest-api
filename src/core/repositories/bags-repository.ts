@@ -1,40 +1,31 @@
 // Entities
 import { Bag } from "@/core/entities/bag";
-import { BagAggregate } from "@/core/entities/aggregates/bag-aggregate";
-import { BagMerge } from "@/core/entities/merged/bag-merge";
 
 // Types
 import { RepositoryResponse } from "@/core/types/repository-response";
 
 export interface BagsRepositorySearchRequest {
   id?: string;
-  user?: { id?: string };
+  statuses?: Bag["status"][];
+  user?: { id?: string; name?: string };
   cycle?: { id?: string };
   address?: { id?: string } | null;
-  since?: Date;
-}
-
-export interface BagsRepositorySearchManyRequest {
-  statuses?: Bag["status"][];
+  orders?: { id?: string; page?: number };
+  payments?: { id?: string; page?: number };
   since?: Date;
   before?: Date;
-  cycle?: { id?: string };
-  user?: { id?: string; name?: string };
-  page?: number;
 }
 
-export type BagsRepositoryResponse<T extends RepositoryResponse> =
-  T extends "entity" ? Bag : T extends "aggregate" ? BagAggregate : BagMerge;
-
 export interface BagsRepository {
-  search<T extends RepositoryResponse>(
+  find(
+    type: RepositoryResponse,
+    filters: BagsRepositorySearchRequest
+  ): Promise<Bag | null>;
+  list(
+    type: RepositoryResponse,
     filters: BagsRepositorySearchRequest,
-    type: T
-  ): Promise<BagsRepositoryResponse<T> | null>;
-  searchMany<T extends RepositoryResponse>(
-    filters: BagsRepositorySearchManyRequest,
-    type: T
-  ): Promise<BagsRepositoryResponse<T>[]>;
+    page?: number
+  ): Promise<Bag[]>;
   create(bag: Bag): Promise<void>;
   update(bag: Bag): Promise<void>;
 }

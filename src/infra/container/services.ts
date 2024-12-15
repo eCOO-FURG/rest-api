@@ -32,7 +32,7 @@ export default (container: AwilixContainer) => {
         port: env.SMTP_PORT,
       });
 
-      if (["production", "staging"].includes(env.ENV)) {
+      if (deploy) {
         Object.assign(transporter, {
           auth: {
             user: env.ECOO_EMAIL,
@@ -57,13 +57,11 @@ export default (container: AwilixContainer) => {
     pdfService: asClass(PuppeteerPDFService).singleton(),
     pixProvider: asFunction(() => {
       if (deploy) return new OpenPix();
-
       return new MockedPixProvider();
     }),
     cacheManager: asClass(RedisCacheManager).singleton(),
     storage: asFunction(() => {
       if (deploy) return new Cloudinary();
-
       return new MockedStorage();
     }).singleton(),
   });

@@ -9,11 +9,14 @@ import container from "@/infra/container";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 
 // Presenters
-import { BagMergePresenter } from "@/infra/http/presenters/bag-merge-presenter";
+import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 
 export const fetchBagSchema = {
   route: z.object({
     bag_id: z.string().uuid(),
+  }),
+  query: z.object({
+    page: z.coerce.number(),
   }),
 };
 
@@ -24,16 +27,17 @@ export async function fetchBagController(
 ) {
   try {
     const { bag_id } = fetchBagSchema.route.parse(request.params);
-
+    const { page } = fetchBagSchema.query.parse(request.query);
     const fetchBagUseCase =
       container.resolve<FetchBagUseCase>("fetchBagUseCase");
 
     const { bag } = await fetchBagUseCase.execute({
       bag_id,
       user_id: request.user_id,
+      page,
     });
 
-    return response.status(200).send(BagMergePresenter.toHttp(bag));
+    return response.status(200).send(BagPresenter.toHttp(bag));
   } catch (error) {
     next(error);
   }

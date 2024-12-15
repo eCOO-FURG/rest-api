@@ -3,8 +3,6 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 
 // Entities
 import { Catalog } from "@/core/entities/catalog";
-import { CatalogAggregate } from "@/core/entities/aggregates/catalog-aggregate";
-import { CatalogMerge } from "@/core/entities/merged/catalog-merge";
 
 export interface CatalogsRepositorySearchRequest {
   id?: string;
@@ -15,45 +13,25 @@ export interface CatalogsRepositorySearchRequest {
   cycle?: {
     id?: string;
   };
-  offer?: {
-    product?: {
-      name?: string;
-    };
-    page: number;
+  offers?: {
+    id?: string;
+    product?: { name?: string };
+    page?: number;
   };
   since?: Date;
   before?: Date;
 }
-
-export interface CatalogsRepositorySearchManyRequest {
-  cycle?: {
-    id: string;
-  };
-  offer?: {
-    product?: {
-      name?: string;
-    };
-  };
-  page?: number;
-  since?: Date;
-  before?: Date;
-}
-
-export type CatalogsRepositoryResponse<T extends RepositoryResponse> =
-  T extends "entity"
-    ? Catalog
-    : T extends "aggregate"
-    ? CatalogAggregate
-    : CatalogMerge;
 
 export interface CatalogsRepository {
-  search<T extends RepositoryResponse>(
+  find(
+    type: RepositoryResponse,
+    filters: CatalogsRepositorySearchRequest
+  ): Promise<Catalog | null>;
+  list(
+    type: RepositoryResponse,
     filters: CatalogsRepositorySearchRequest,
-    type: T
-  ): Promise<CatalogsRepositoryResponse<T> | null>;
-  searchMany<T extends RepositoryResponse>(
-    filters: CatalogsRepositorySearchManyRequest,
-    type: T
-  ): Promise<CatalogsRepositoryResponse<T>[]>;
+    page?: number
+  ): Promise<Catalog[]>;
   create(catalog: Catalog): Promise<void>;
+  update(catalog: Catalog): Promise<void>;
 }

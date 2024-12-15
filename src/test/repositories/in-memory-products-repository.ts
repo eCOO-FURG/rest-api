@@ -2,32 +2,56 @@
 import { Product } from "@/core/entities/product";
 
 // Repositories
-import { ProductsRepository } from "@/core/repositories/products-repository";
+import {
+  ProductsRepository,
+  ProductsRepositorySearchRequest,
+} from "@/core/repositories/products-repository";
+import { RepositoryResponse } from "@/core/types/repository-response";
+
+// Utils
+import { find } from "@/test/utils/find";
+import { filter } from "@/test/utils/filter";
 
 export class InMemoryProductsRepository implements ProductsRepository {
   items: Product[] = [];
 
-  async findById(id: string): Promise<Product | null> {
-    const product = this.items.find((item) => item.id.equals(id));
+  async find(
+    _: RepositoryResponse,
+    { id, name }: ProductsRepositorySearchRequest
+  ): Promise<Product | null> {
+    const product = await find<Product>(
+      this.items,
+      async (item) =>
+        (!id || item.id.equals(id)) && (!name || item.name === name)
+    );
 
     if (!product) return null;
 
     return product;
   }
 
-  async findMany(page: number, name?: string): Promise<Product[]> {
-    if (!name) {
-      return this.items.slice((page - 1) * 20, page * 20);
-    }
-
-    const filtered = this.items.filter((product) =>
-      product.name.includes(name)
+  async list(
+    _: RepositoryResponse,
+    { name }: ProductsRepositorySearchRequest,
+    page?: number
+  ): Promise<Product[]> {
+    let products = await filter<Product>(
+      this.items,
+      async (item) => !name || item.name.includes(name)
     );
 
-    return filtered.slice((page - 1) * 20, page * 20);
+    if (page) products = this.slice(products, page);
+
+    return products;
   }
 
   async create(product: Product): Promise<void> {
     this.items.push(product);
+  }
+
+  private slice(items: Product[], page: number, size: number = 20): Product[] {
+    const start = (page - 1) * size;
+    const end = start + size;
+    return items.slice(start, end);
   }
 }

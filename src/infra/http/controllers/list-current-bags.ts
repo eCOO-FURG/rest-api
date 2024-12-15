@@ -26,7 +26,7 @@ export const listCurrentBagsSchema = {
       statuses: z.string().optional().openapi({
         description: "Filtro de status, separados por vírgula.",
       }),
-      name: z
+      user: z
         .string()
         .optional()
         .openapi({ description: "Filtro de nome do dono da sacola." }),
@@ -44,7 +44,7 @@ export async function listCurrentBagsController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id, page, name, statuses } =
+    const { cycle_id, page, user, statuses } =
       listCurrentBagsSchema.query.parse(request.query);
 
     const listCurrentBagsUseCase = container.resolve<ListCurrentBagsUseCase>(
@@ -54,7 +54,7 @@ export async function listCurrentBagsController(
     const { bags } = await listCurrentBagsUseCase.execute({
       cycle_id,
       page,
-      name,
+      user,
       statuses: toArray<Bag["status"]>(statuses),
     });
 
