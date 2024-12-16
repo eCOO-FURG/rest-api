@@ -11,44 +11,39 @@ import { UsersRepository } from "@/core/repositories/users-repository";
 
 interface RegisterFarmUseCaseRequest {
   user_id: string;
-  caf: string;
+  tally: string;
   name: string;
 }
 
 export class RegisterFarmUseCase {
   constructor(
     private usersRepository: UsersRepository,
-    private farmRepository: FarmsRepository
+    private farmsRepository: FarmsRepository
   ) {}
 
-  async execute({ user_id, caf, name }: RegisterFarmUseCaseRequest) {
-    const user = await this.usersRepository.findById(user_id);
-
-    if (!user) {
-      throw new ResourceNotFoundError("Usuário", user_id);
-    }
-
-    const farmWithSameCaf = await this.farmRepository.search({ caf }, "entity");
-
-    if (farmWithSameCaf) {
-      throw new ResourceAlreadyExistsError("CAF", caf);
-    }
-
-    const farmWithSameAdmin = await this.farmRepository.search(
-      { admin: { id: user_id } },
-      "entity"
-    );
-
-    if (farmWithSameAdmin) {
-      throw new ResourceAlreadyExistsError("Agronegócio de", user_id);
-    }
-
-    const farm = Farm.create({
-      admin_id: user.id,
-      caf,
-      name,
+  async execute({ user_id, tally, name }: RegisterFarmUseCaseRequest) {
+    const user = await this.usersRepository.find("basic", {
+      id: user_id,
     });
 
-    await this.farmRepository.create(farm);
+    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+
+    const farmWithSameTally = await this.farmsRepository.find("basic", {
+      tally,
+    });
+
+    if (farmWithSameTally)
+      throw new ResourceAlreadyExistsError("Número do Talão", tally);
+
+    const farmWithSameAdmin = await this.farmsRepository.find("basic", {
+      admin: { id: user_id },
+    });
+
+    if (farmWithSameAdmin)
+      throw new ResourceAlreadyExistsError("Agronegócio de", user_id);
+
+    const farm = Farm.create({ admin_id: user.id, tally, name });
+
+    await this.farmsRepository.create(farm);
   }
 }

@@ -18,12 +18,9 @@ export const listBoxesSchema = {
       .uuid()
       .openapi({ description: "O ciclo de busca das caixas." }),
     page: z.coerce.number().openapi({ description: "A página de busca." }),
-    name: z
-      .string()
-      .optional()
-      .openapi({
-        description: "O filtro por nome de fazenda responsável pela caixa.",
-      }),
+    farm: z.string().optional().openapi({
+      description: "O filtro por nome de fazenda responsável pela caixa.",
+    }),
   }),
 };
 
@@ -33,7 +30,7 @@ export async function listBoxesController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id, page, name } = listBoxesSchema.query.parse(request.query);
+    const { cycle_id, page, farm } = listBoxesSchema.query.parse(request.query);
 
     const listBoxesUseCase =
       container.resolve<ListBoxesUseCase>("listBoxesUseCase");
@@ -41,7 +38,7 @@ export async function listBoxesController(
     const { boxes } = await listBoxesUseCase.execute({
       cycle_id,
       page,
-      name,
+      farm,
     });
 
     return response

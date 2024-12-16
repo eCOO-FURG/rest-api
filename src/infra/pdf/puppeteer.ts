@@ -25,11 +25,11 @@ export class PuppeteerPDFService implements PDFService {
   }
 
   async generate({ type, props }: PDFServiceGenerateRequest): Promise<Buffer> {
-    this.browser = await launch(this.config);
-
-    const html = await renderFile(__dirname + `/views/${type}.ejs`, { props });
+    if (!this.browser) this.browser = await launch(this.config);
 
     const page = await this.browser.newPage();
+
+    const html = await renderFile(__dirname + `/views/${type}.ejs`, { props });
 
     await page.setContent(html, { waitUntil: "domcontentloaded" });
 
@@ -38,7 +38,7 @@ export class PuppeteerPDFService implements PDFService {
       printBackground: true,
     });
 
-    await this.browser.close();
+    await page.close();
 
     return pdf;
   }

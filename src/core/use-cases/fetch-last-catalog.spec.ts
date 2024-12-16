@@ -24,27 +24,16 @@ let cyclesRepository: InMemoryCyclesRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
 let usersRepository: InMemoryUsersRepository;
 let farmsRepository: InMemoryFarmsRepository;
-let offersRepository: InMemoryOffersRepository;
-let productsRepository: InMemoryProductsRepository;
 
 let sut: FetchLastCatalogUseCase;
 
 describe("Fetch last catalog", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
-    farmsRepository = new InMemoryFarmsRepository(usersRepository);
-    productsRepository = new InMemoryProductsRepository();
-    offersRepository = new InMemoryOffersRepository(
-      productsRepository,
-      catalogsRepository
-    );
+    farmsRepository = new InMemoryFarmsRepository();
 
-    catalogsRepository = new InMemoryCatalogsRepository(
-      farmsRepository,
-      offersRepository
-    );
+    catalogsRepository = new InMemoryCatalogsRepository();
 
-    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
     cyclesRepository = new InMemoryCyclesRepository();
 
     sut = new FetchLastCatalogUseCase(

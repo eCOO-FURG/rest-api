@@ -1,7 +1,7 @@
 // Use-cases
 import { FetchCurrentCatalogUseCase } from "@/core/use-cases/fetch-current-catalog";
 
-// Test
+// Factories
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeCatalog } from "@/test/factories/make-catalog";
@@ -10,39 +10,22 @@ import { makeUser } from "@/test/factories/make-user";
 // Repositories
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
-import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
-import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 let cyclesRepository: InMemoryCyclesRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
-let usersRepository: InMemoryUsersRepository;
 let farmsRepository: InMemoryFarmsRepository;
-let offersRepository: InMemoryOffersRepository;
-let productsRepository: InMemoryProductsRepository;
 
 let sut: FetchCurrentCatalogUseCase;
 
 describe("Fetch current catalog", () => {
   beforeEach(() => {
-    usersRepository = new InMemoryUsersRepository();
-    farmsRepository = new InMemoryFarmsRepository(usersRepository);
-    productsRepository = new InMemoryProductsRepository();
-    offersRepository = new InMemoryOffersRepository(
-      productsRepository,
-      catalogsRepository
-    );
+    farmsRepository = new InMemoryFarmsRepository();
 
-    catalogsRepository = new InMemoryCatalogsRepository(
-      farmsRepository,
-      offersRepository
-    );
-
-    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
+    catalogsRepository = new InMemoryCatalogsRepository();
     cyclesRepository = new InMemoryCyclesRepository();
 
     sut = new FetchCurrentCatalogUseCase(
@@ -54,7 +37,6 @@ describe("Fetch current catalog", () => {
 
   it("should be able to fetch the current catalog from a farm in a cycle", async () => {
     const user = makeUser();
-    await usersRepository.create(user);
 
     const farm = makeFarm({ admin_id: user.id });
     await farmsRepository.create(farm);
@@ -79,7 +61,6 @@ describe("Fetch current catalog", () => {
 
   it("should not be able to fetch a catalog that does not exist", async () => {
     const user = makeUser();
-    await usersRepository.create(user);
 
     const farm = makeFarm({ admin_id: user.id });
     await farmsRepository.create(farm);
@@ -98,7 +79,6 @@ describe("Fetch current catalog", () => {
 
   it("should not be able to fetch a catalog in a non existent cycle", async () => {
     const user = makeUser();
-    await usersRepository.create(user);
 
     const farm = makeFarm({ admin_id: user.id });
     await farmsRepository.create(farm);

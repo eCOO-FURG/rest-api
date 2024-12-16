@@ -3,3 +3,10 @@ node_modules
 
 # Environment Variables
 .env
+
+# Temp
+src/test/storage/temp/
+
+# Packages
+pnpm-lock.yaml
+

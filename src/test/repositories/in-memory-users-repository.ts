@@ -2,49 +2,36 @@
 import { User } from "@/core/entities/user";
 
 // Repositories
-import { UsersRepository } from "@/core/repositories/users-repository";
+import {
+  UsersRepository,
+  UsersRepositorySearchRequest,
+} from "@/core/repositories/users-repository";
+
+// Types
+import { RepositoryResponse } from "@/core/types/repository-response";
+
+// Utils
+import { find } from "@/test/utils/find";
 
 export class InMemoryUsersRepository implements UsersRepository {
   items: User[] = [];
 
-  async findById(id: string): Promise<User | null> {
-    const item = this.items.find((item) => item.id.equals(id));
+  async find(
+    _: RepositoryResponse,
+    { id, email, phone, cpf }: UsersRepositorySearchRequest
+  ): Promise<User | null> {
+    const user = await find<User>(
+      this.items,
+      async (item) =>
+        (!id || item.id.equals(id)) &&
+        (!email || item.email === email) &&
+        (!phone || item.phone === phone) &&
+        (!cpf || item.cpf === cpf)
+    );
 
-    if (!item) {
-      return null;
-    }
+    if (!user) return null;
 
-    return item;
-  }
-
-  async findByEmail(email: string): Promise<User | null> {
-    const item = this.items.find((item) => item.email === email);
-
-    if (!item) {
-      return null;
-    }
-
-    return item;
-  }
-
-  async findByPhone(phone: string): Promise<User | null> {
-    const item = this.items.find((item) => item.phone === phone);
-
-    if (!item) {
-      return null;
-    }
-
-    return item;
-  }
-
-  async findByCpf(cpf: string): Promise<User | null> {
-    const item = this.items.find((item) => item.cpf === cpf);
-
-    if (!item) {
-      return null;
-    }
-
-    return item;
+    return user;
   }
 
   async create(user: User): Promise<void> {

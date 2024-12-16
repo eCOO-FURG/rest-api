@@ -8,33 +8,36 @@ import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
 // Container
 import container from "@/infra/container";
 
+// Validation
+import { notEmpty } from "@/infra/http/validation/not-empty";
+
 export const registerFarmSchema = {
-  body: z.object({
-    name: z.string(),
-    caf: z.string(),
-  }),
+  body: z
+    .object({
+      name: z.string(),
+      tally: z.string(),
+    })
+    .refine(notEmpty.validation, notEmpty.warning),
 };
 
-export async function registerFarmController(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
-  try {
-    const { name, caf } = registerFarmSchema.body.parse(request.body);
+export const registerFarmController = [
+  async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      const { name, tally } = registerFarmSchema.body.parse(request.body);
 
-    const registerFarmUseCase = container.resolve<RegisterFarmUseCase>(
-      "registerFarmUseCase"
-    );
+      const registerFarmUseCase = container.resolve<RegisterFarmUseCase>(
+        "registerFarmUseCase"
+      );
 
-    await registerFarmUseCase.execute({
-      user_id: request.user_id,
-      caf,
-      name,
-    });
+      await registerFarmUseCase.execute({
+        user_id: request.user_id,
+        tally,
+        name,
+      });
 
-    return response.sendStatus(201);
-  } catch (error) {
-    next(error);
-  }
-}
+      return response.sendStatus(201);
+    } catch (error) {
+      next(error);
+    }
+  },
+];

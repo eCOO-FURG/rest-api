@@ -36,7 +36,9 @@ export class OnUpdatePasswordRequestEvent {
   }
 
   async execute({ id }: OnUpdatePasswordRequestEventRequest) {
-    const user = await this.usersRepository.findById(id.value);
+    const user = await this.usersRepository.find("basic", {
+      id: id.value,
+    });
 
     if (!user) throw new ResourceNotFoundError("Usuário", id.value);
 

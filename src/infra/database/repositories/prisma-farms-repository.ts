@@ -4,75 +4,44 @@ import { Farm } from "@/core/entities/farm";
 // Repositories
 import {
   FarmsRepository,
-  FarmsRepositoryResponse,
-  FarmsRepositorySearchManyRequest,
   FarmsRepositorySearchRequest,
 } from "@/core/repositories/farms-repository";
-import { prisma } from "@/infra/database/prisma-service";
-import { PrismaFarmMapper } from "@/infra/database/mappers/prisma-farm-mapper";
-import { RepositoryResponse } from "@/core/types/repository-response";
-import { PrismaFarmAggregateMapper } from "@/infra/database/mappers/prisma-farm-aggregate-mapper";
 
-// Libs
-import { Prisma } from "@prisma/client";
+// Services
+import { prisma } from "@/infra/database/prisma-service";
+
+// Mappers
+import { PrismaFarmMapper } from "@/infra/database/mappers/prisma-farm-mapper";
+
+// Types
+import { RepositoryResponse } from "@/core/types/repository-response";
 
 export class PrismaFarmsRepository implements FarmsRepository {
-  async search<T extends RepositoryResponse>(
-    filters: FarmsRepositorySearchRequest,
-    type: T
-  ): Promise<FarmsRepositoryResponse<T> | null> {
-    const found = await prisma.farm.findFirst({
-      where: filters,
-      include: {
-        admin: type === "aggregate",
-      },
+  async find(
+    type: RepositoryResponse,
+    { id, name, status, tally, admin }: FarmsRepositorySearchRequest
+  ): Promise<Farm | null> {
+    const farm = await prisma.farm.findFirst({
+      where: { id, name, status, tally, admin },
+      include: { admin: type !== "basic" },
     });
 
-    if (!found) return null;
+    if (!farm) return null;
 
-    if (type === "entity")
-      return PrismaFarmMapper.toDomain(found) as FarmsRepositoryResponse<T>;
-
-    return PrismaFarmAggregateMapper.toDomain(
-      found
-    ) as FarmsRepositoryResponse<T>;
+    return PrismaFarmMapper.toDomain(farm);
   }
-
-  async searchMany<T extends RepositoryResponse>(
-    { page, name }: FarmsRepositorySearchManyRequest,
-    type: T
-  ): Promise<FarmsRepositoryResponse<T>[]> {
-    const query: Prisma.FarmFindManyArgs = {
-      where: {
-        name: {
-          contains: name,
-          mode: "insensitive",
-        },
-      },
-      skip: (page - 1) * 20,
-      take: 20,
-      orderBy: {
-        name: "asc",
-      },
-    };
-
-    if (type === "entity") {
-      const farms = await prisma.farm.findMany(query);
-      return farms.map((farm) =>
-        PrismaFarmMapper.toDomain(farm)
-      ) as FarmsRepositoryResponse<T>[];
-    }
-
+  async list(
+    type: RepositoryResponse,
+    { id, name, status, tally, admin }: FarmsRepositorySearchRequest,
+    page?: number
+  ): Promise<Farm[]> {
     const farms = await prisma.farm.findMany({
-      ...query,
-      include: {
-        admin: true,
-      },
+      where: { id, name, status, tally, admin },
+      include: { admin: type !== "basic" },
+      ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
-    return farms.map((farm) =>
-      PrismaFarmAggregateMapper.toDomain(farm)
-    ) as FarmsRepositoryResponse<T>[];
+    return farms.map(PrismaFarmMapper.toDomain);
   }
 
   async create(farm: Farm): Promise<void> {
@@ -86,22 +55,33 @@ export class PrismaFarmsRepository implements FarmsRepository {
           id: farm.admin_id.value,
         },
         data: {
-          roles: {
-            push: "PRODUCER",
-          },
+          roles: { push: "PRODUCER" },
         },
       });
     });
   }
 
   async update(farm: Farm): Promise<void> {
-    const data = PrismaFarmMapper.toPrisma(farm);
+    const { admin_id, ...data } = PrismaFarmMapper.toPrisma(farm);
 
     await prisma.farm.update({
-      where: {
-        id: farm.id.value,
+      where: { id: farm.id.value },
+      data: {
+        ...data,
+        admin: { connect: { id: admin_id } },
       },
-      data,
+    });
+  }
+
+  async count({
+    status,
+    admin,
+    id,
+    name,
+    tally,
+  }: FarmsRepositorySearchRequest): Promise<number> {
+    return await prisma.farm.count({
+      where: { id, status, admin, name, tally },
     });
   }
 }

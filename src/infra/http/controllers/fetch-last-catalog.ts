@@ -10,11 +10,10 @@ import { z } from "zod";
 
 // Presenters
 import { CatalogPresenter } from "@/infra/http/presenters/catalog-presenter";
-import { OfferPresenter } from "@/infra/http/presenters/offer-presenter";
 
 export const fetchLastCatalogSchema = {
-  route: z.object({ cycle_id: z.string().uuid() }),
   query: z.object({
+    cycle_id: z.string().uuid(),
     page: z.coerce
       .number()
       .openapi({ description: "Página das ofertas do catálogo." }),
@@ -27,11 +26,11 @@ export async function fetchLastCatalogController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id } = fetchLastCatalogSchema.route.parse(request.params);
-
     const farm_id = request.farm_id;
 
-    const { page } = fetchLastCatalogSchema.query.parse(request.query);
+    const { page, cycle_id } = fetchLastCatalogSchema.query.parse(
+      request.query
+    );
 
     const fetchLastCatalogUseCase = container.resolve<FetchLastCatalogUseCase>(
       "fetchLastCatalogUseCase"
@@ -43,10 +42,7 @@ export async function fetchLastCatalogController(
       page,
     });
 
-    return response.status(200).send({
-      ...CatalogPresenter.toHttp(catalog),
-      offers: catalog.offers.map((offer) => OfferPresenter.toHttp(offer)),
-    });
+    return response.status(200).send(CatalogPresenter.toHttp(catalog));
   } catch (error) {
     next(error);
   }

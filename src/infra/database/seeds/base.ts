@@ -1,6 +1,3 @@
-// Entities
-import { UUID } from "@/core/entities/aggregates/uuid";
-
 // Libs
 import { PRICING } from "@prisma/client";
 
@@ -16,19 +13,32 @@ import { hash } from "bcryptjs";
 // Env
 import { env } from "@/infra/env";
 
-async function seed() {
-  const cddId = new UUID();
+// Seeds
+import { seedDevelopment } from "@/infra/database/seeds/development";
 
+async function seedBase() {
   await prisma.user.create({
     data: {
-      id: cddId.value,
       first_name: "Administrador",
       last_name: "CDD",
       email: "admin@ecoo.org.br",
-      cpf: "",
-      roles: ["USER", "ADMIN"],
+      cpf: "00000000000",
+      roles: ["USER", "MANAGER"],
       password: await hash(env.ECOO_EMAIL_PASSWORD, 8),
-      phone: "",
+      phone: "55555555555",
+      verified_at: new Date(),
+    },
+  });
+
+  await prisma.user.create({
+    data: {
+      first_name: "Agente",
+      last_name: "CDD",
+      email: "agent@ecoo.org.br",
+      cpf: "11111111111",
+      roles: ["USER", "BROKER"],
+      password: await hash(env.ECOO_EMAIL_PASSWORD, 8),
+      phone: "66666666666",
       verified_at: new Date(),
     },
   });
@@ -51,63 +61,12 @@ async function seed() {
     },
   });
 
-  if (["development", "staging"].includes(env.ENV)) {
-    const everyDay = [1, 2, 3, 4, 5, 6, 7];
-    const cycleId = new UUID();
+  const homolog = ["development", "staging"].includes(env.ENV);
 
-    await prisma.cycle.create({
-      data: {
-        id: cycleId.value,
-        alias: "Livre",
-        offer: everyDay,
-        order: everyDay,
-        deliver: everyDay,
-      },
-    });
-
-    const products = await prisma.product.findMany();
-
-    await prisma.farm.create({
-      data: {
-        name: "Farm do CDD",
-        caf: "12345678",
-        tax: 20,
-        status: "ACTIVE",
-        admin_id: cddId.value,
-        catalogs: {
-          create: {
-            cycle_id: cycleId.value,
-            offers: {
-              createMany: {
-                data: products.map((product) => ({
-                  product_id: product.id,
-                  amount:
-                    product.pricing === "UNIT"
-                      ? Math.floor(Math.random() * 20 + 1)
-                      : Math.floor(Math.random() * 20 + 1) * 100,
-                  price: "10",
-                })),
-              },
-            },
-          },
-        },
-      },
-    });
-
-    await prisma.user.update({
-      where: {
-        id: cddId.value,
-      },
-      data: {
-        roles: {
-          push: "PRODUCER",
-        },
-      },
-    });
-  }
+  if (homolog) await seedDevelopment();
 }
 
-seed()
+seedBase()
   .then(async () => {
     await prisma.$disconnect();
   })

@@ -11,7 +11,8 @@ datasource db {
 enum ROLE {
   PRODUCER
   USER
-  ADMIN
+  BROKER
+  MANAGER
 }
 
 model User {
@@ -22,6 +23,7 @@ model User {
   email       String    @unique
   phone       String    @unique
   password    String?
+  photo       String?
   roles       ROLE[]    @default([USER])
   verified_at DateTime?
 
@@ -72,11 +74,12 @@ enum FARM_STATUS {
 }
 
 model Farm {
-  id     String       @id @default(uuid())
-  name   String
-  caf    String       @unique
-  status FARM_STATUS? @default(PENDING)
-  tax    Float
+  id          String      @id @default(uuid())
+  name        String
+  tally       String      @unique
+  tax         Float
+  description String?
+  status      FARM_STATUS @default(PENDING)
 
   admin_id String @unique
   admin    User   @relation(fields: [admin_id], references: [id], onDelete: Cascade)
@@ -254,8 +257,9 @@ enum BOX_STATUS {
 }
 
 model Box {
-  id     String     @id @default(uuid())
-  status BOX_STATUS
+  id       String     @id @default(uuid())
+  verified Int
+  status   BOX_STATUS
 
   catalog_id String  @unique
   catalog    Catalog @relation(fields: [catalog_id], references: [id])
@@ -272,6 +276,7 @@ enum ORDER_STATUS {
   PENDING
   CANCELLED
   RECEIVED
+  REJECTED
 }
 
 model Order {

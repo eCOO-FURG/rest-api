@@ -8,30 +8,38 @@ import { OrderProductsUseCase } from "@/core/use-cases/order-products";
 // Container
 import container from "@/infra/container";
 
+// Presenters
+import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
+
+// Validation
+import { notEmpty } from "@/infra/http/validation/not-empty";
+
 export const orderProductsSchema = {
-  body: z.object({
-    bag_id: z.string().optional(),
-    cycle_id: z.string(),
-    address: z
-      .object({
-        street: z.string(),
-        number: z.string(),
-        neighborhood: z.string(),
-        complement: z.string().optional(),
-        postal_code: z.string(),
-      })
-      .optional(),
-    orders: z
-      .array(
-        z.object({
-          offer_id: z.string(),
-          amount: z.number(),
+  body: z
+    .object({
+      bag_id: z.string().optional(),
+      cycle_id: z.string(),
+      address: z
+        .object({
+          street: z.string(),
+          number: z.string(),
+          neighborhood: z.string(),
+          complement: z.string().optional(),
+          postal_code: z.string(),
         })
-      )
-      .refine((products) => products.length, {
-        message: "Pelo menos um pedido deve ser feito.",
-      }),
-  }),
+        .optional(),
+      orders: z
+        .array(
+          z.object({
+            offer_id: z.string(),
+            amount: z.number(),
+          })
+        )
+        .refine((products) => products.length, {
+          message: "Pelo menos um pedido deve ser feito.",
+        }),
+    })
+    .refine(notEmpty.validation, notEmpty.warning),
 };
 
 export async function orderProductsController(
@@ -47,7 +55,7 @@ export async function orderProductsController(
       "orderPoductsUseCase"
     );
 
-    await orderProductsUseCase.execute({
+    const { bag } = await orderProductsUseCase.execute({
       bag_id,
       user_id: request.user_id,
       cycle_id,
@@ -55,7 +63,7 @@ export async function orderProductsController(
       request: orders,
     });
 
-    return response.sendStatus(201);
+    return response.status(200).send(BagPresenter.toHttp(bag));
   } catch (error) {
     next(error);
   }

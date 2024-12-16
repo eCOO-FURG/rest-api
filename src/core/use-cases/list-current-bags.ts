@@ -14,8 +14,8 @@ import { Bag } from "@/core/entities/bag";
 interface ListCurrentBagsUseCaseRequest {
   cycle_id: string;
   page: number;
-  status?: Bag["status"];
-  name?: string;
+  statuses?: Bag["status"][];
+  user?: string;
 }
 
 export class ListCurrentBagsUseCase {
@@ -24,23 +24,29 @@ export class ListCurrentBagsUseCase {
     private bagsRepository: BagsRepository
   ) {}
 
-  async execute({ cycle_id, ...props }: ListCurrentBagsUseCaseRequest) {
-    const cycle = await this.cyclesRepository.findById(cycle_id);
+  async execute({
+    cycle_id,
+    statuses,
+    user,
+    page,
+  }: ListCurrentBagsUseCaseRequest) {
+    const cycle = await this.cyclesRepository.find("basic", {
+      id: cycle_id,
+    });
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const bags = await this.bagsRepository.searchMany(
+    const bags = await this.bagsRepository.list(
+      "aggregate",
       {
-        ...props,
-        user: { name: props.name },
+        user: { name: user },
+        statuses,
         cycle: { id: cycle_id },
         since: mostPast(cycle.order),
       },
-      "aggregate"
+      page
     );
 
-    return {
-      bags,
-    };
+    return { bags };
   }
 }

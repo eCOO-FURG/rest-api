@@ -2,7 +2,6 @@
 import { DomainError } from "@/core/errors/domain-error";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
-import { ClosedActionError } from "@/core/errors/closed-action";
 import { EmptyPasswordError } from "@/core/errors/empty-password";
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { UserNotVerifiedError } from "@/core/errors/user-not-verified";
@@ -11,11 +10,17 @@ import { WrongCredentialsError } from "@/core/errors/wrong-credentials";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 import { UnauthorizedError } from "@/core/errors/unauthorized";
+import { SessionExpiredError } from "@/core/errors/session-expired";
+import { ResourceClosedError } from "@/core/errors/resource-closed";
 
 const mappedDomainErrors: {
   status: number;
   errors: (typeof DomainError)[];
 }[] = [
+  {
+    status: 401,
+    errors: [SessionExpiredError],
+  },
   {
     status: 400,
     errors: [WrongCredentialsError, WrongCredentialsError, InvalidWeightError],
@@ -24,9 +29,9 @@ const mappedDomainErrors: {
     status: 403,
     errors: [
       ResourceAlreadyExistsError,
-      ClosedActionError,
       EmptyPasswordError,
       FarmNotActiveError,
+      ResourceClosedError,
       UserNotVerifiedError,
       UserAlreadyVerified,
       UnauthorizedError,

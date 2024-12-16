@@ -8,15 +8,24 @@ import container from "@/infra/container";
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
 
+// Validation
+import { notEmpty } from "@/infra/http/validation/not-empty";
+
+// Utils
+import { toJSON } from "@/infra/utils/to-json";
+
 export const updateUserSchema = {
-  body: z.object({
-    first_name: z.string().optional(),
-    last_name: z.string().optional(),
-    email: z.string().email().optional(),
-    cpf: z.string().min(11).max(14).optional(),
-    phone: z.string().optional(),
-    password: z.string().min(8).optional(),
-  }),
+  body: z
+    .object({
+      first_name: z.string().optional(),
+      last_name: z.string().optional(),
+      email: z.string().email().optional(),
+      cpf: z.string().min(11).max(14).optional(),
+      phone: z.string().optional(),
+      password: z.string().min(8).optional(),
+      photo: z.any().optional(),
+    })
+    .refine(notEmpty.validation, notEmpty.warning),
 };
 
 export async function updateUserController(
@@ -25,8 +34,10 @@ export async function updateUserController(
   next: NextFunction
 ) {
   try {
+    const content = toJSON({ ...request.body, photo: request.file });
+
     const { first_name, last_name, email, cpf, phone, password } =
-      updateUserSchema.body.parse(request.body);
+      updateUserSchema.body.parse(content);
 
     const updateUserUsecase =
       container.resolve<UpdateUserUseCase>("updateUserUseCase");
@@ -39,6 +50,7 @@ export async function updateUserController(
       email,
       password,
       phone,
+      photo: request.file?.buffer,
     });
 
     return response.sendStatus(204);

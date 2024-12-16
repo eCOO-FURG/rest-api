@@ -2,47 +2,43 @@
 import { Session } from "@/core/entities/session";
 
 // Repositories
-import { SessionsRepository } from "@/core/repositories/sessions-repository";
+import {
+  SessionsRepository,
+  SessionsRepositorySearchRequest,
+} from "@/core/repositories/sessions-repository";
 
 // Services
 import { prisma } from "@/infra/database/prisma-service";
+
+// Mappers
 import { PrismaSessionMapper } from "@/infra/database/mappers/prisma-session-mapper";
 
-export interface PrismaSessionsRepositorySearchRequest {
-  user_id: string;
-  ip: string;
-  agent: string;
-  since: Date;
-}
+// Types
+import { RepositoryResponse } from "@/core/types/repository-response";
 
 export class PrismaSessionsRepository implements SessionsRepository {
-  async create(session: Session): Promise<void> {
-    const data = PrismaSessionMapper.toPrisma(session);
-
-    await prisma.session.create({
-      data,
-    });
-  }
-
-  async search({
-    user_id,
-    ip,
-    agent,
-    since,
-  }: PrismaSessionsRepositorySearchRequest) {
+  async find(
+    type: RepositoryResponse,
+    { ip, agent, user, since }: SessionsRepositorySearchRequest
+  ): Promise<Session | null> {
     const session = await prisma.session.findFirst({
       where: {
-        user_id,
         ip,
         agent,
-        created_at: {
-          gte: since,
-        },
+        user: { id: user?.id },
+        created_at: { gte: since },
       },
+      include: { user: type !== "basic" },
     });
 
     if (!session) return null;
 
     return PrismaSessionMapper.toDomain(session);
+  }
+
+  async create(session: Session): Promise<void> {
+    const data = PrismaSessionMapper.toPrisma(session);
+
+    await prisma.session.create({ data });
   }
 }

@@ -8,7 +8,12 @@ import container from "@/infra/container";
 
 // Repositories
 import { PrismaSessionsRepository } from "@/infra/database/repositories/prisma-sessions-repository";
+
+// Env
 import { env } from "@/infra/env";
+
+// Errors
+import { SessionExpiredError } from "@/core/errors/session-expired";
 
 const jwtPayloadSchema = z.object({
   user_id: z.string(),
@@ -23,11 +28,7 @@ export async function ensureAuthenticated(
   try {
     const authHeader = request.headers.authorization;
 
-    if (!authHeader) {
-      return response
-        .status(401)
-        .send({ message: "Sessão expirada.", code: "sesion-expired" });
-    }
+    if (!authHeader) throw new SessionExpiredError();
 
     const [, token] = authHeader.split(" ");
 
@@ -43,20 +44,16 @@ export async function ensureAuthenticated(
       const sessionsRepository =
         container.resolve<PrismaSessionsRepository>("sessionsRepository");
 
-      const hour = new Date(Date.now() - 60 * 60 * 1000);
+      const ONE_HOUR_AGO = new Date(Date.now() - 60 * 60 * 1000);
 
-      const session = await sessionsRepository.search({
-        user_id,
+      const session = await sessionsRepository.find("basic", {
+        user: { id: user_id },
         ip: request.ip!,
         agent: request.headers["user-agent"] ?? "not-identified",
-        since: hour,
+        since: ONE_HOUR_AGO,
       });
 
-      if (!session) {
-        return response
-          .status(401)
-          .send({ message: "Sessão expirada.", code: "session-expired" });
-      }
+      if (!session) throw new SessionExpiredError();
 
       const refresh = sign({ user_id }, env.JWT_SECRET);
 
@@ -64,10 +61,9 @@ export async function ensureAuthenticated(
     }
 
     request.user_id = user_id;
+
     next();
   } catch (error) {
-    return response
-      .status(401)
-      .send({ message: "Sessão expirada.", code: "session-expired" });
+    next(error);
   }
 }

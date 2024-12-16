@@ -8,6 +8,7 @@ const deploy = z.object({
   SERVER_URL: z.string().min(1),
   FRONT_URL: z.string().min(1),
   DATABASE_URL: z.string().min(1),
+  CACHE_MANAGER_URL: z.string().min(1),
   JWT_SECRET: z.string().min(1),
   SMTP_HOST: z.string().min(1),
   SMTP_FALLBACK_HOST: z.string().min(1),
@@ -19,6 +20,7 @@ const deploy = z.object({
   SENTRY_DSN: z.string().min(1),
   PIX_PROVIDER_API_KEY: z.string().min(1),
   INTEGRATIONS_AUTHORIZATION: z.string().min(1),
+  STORAGE_URL: z.string().min(1),
 });
 
 const development = deploy.omit({
@@ -39,9 +41,7 @@ const test = development.omit({
 
 const environment = process.env.ENV;
 
-if (!environment) {
-  throw new Error("❌ Ambiente não especificado.");
-}
+if (!environment) throw new Error("❌ Ambiente não especificado.");
 
 const schema =
   environment === "staging" || environment === "production"
@@ -58,8 +58,7 @@ if (_env.success === false) {
     message: issue.message,
   }));
 
-  console.error("\n ❌ Variáveis ambiente incorretas: \n", issues);
-  throw new Error();
+  throw new Error(`❌ Variáveis ambiente incorretas: \n${issues}`);
 }
 
 export const env = _env.data as z.infer<typeof deploy>;

@@ -27,23 +27,20 @@ export class FetchCurrentCatalogUseCase {
     farm_id,
     page,
   }: FetchCurrentCatalogUseCaseRequest) {
-    const cycle = await this.cyclesRepository.findById(cycle_id);
+    const cycle = await this.cyclesRepository.find("basic", { id: cycle_id });
+
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const farm = await this.farmsRepository.search({ id: farm_id }, "entity");
+    const farm = await this.farmsRepository.find("basic", { id: farm_id });
+
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
-    const catalog = await this.catalogsRepository.search(
-      {
-        cycle: { id: cycle_id },
-        farm: { id: farm_id },
-        since: mostPast(cycle.offer),
-        offer: {
-          page,
-        },
-      },
-      "merged"
-    );
+    const catalog = await this.catalogsRepository.find("merge", {
+      cycle: { id: cycle_id },
+      farm: { id: farm_id },
+      offers: { page },
+      since: mostPast(cycle.offer),
+    });
 
     if (!catalog)
       throw new ResourceNotFoundError("Catálogo no ciclo", cycle_id);

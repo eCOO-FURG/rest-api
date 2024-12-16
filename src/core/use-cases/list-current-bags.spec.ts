@@ -1,19 +1,15 @@
+// Entities
+import { Bag } from "@/core/entities/bag";
+
 // Use-cases
 import { ListCurrentBagsUseCase } from "@/core/use-cases/list-current-bags";
 
 // Repositories
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
-import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
-import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
-
-// Entities
-import { BagMerge } from "@/core/entities/merged/bag-merge";
 
 // Factories
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
@@ -24,82 +20,42 @@ import { makeUser } from "@/test/factories/make-user";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
-let usersRepository: InMemoryUsersRepository;
-let productsRepository: InMemoryProductsRepository;
-let offersRepository: InMemoryOffersRepository;
-let ordersRepository: InMemoryOrdersRepository;
-let catalogsRepository: InMemoryCatalogsRepository;
-let farmsRepository: InMemoryFarmsRepository;
-let addressesRepository: InMemoryAddressesRepository;
+let cyclesRepository: InMemoryCyclesRepository;
 let bagsRepository: InMemoryBagsRepository;
-let paymentsRepository: InMemoryPaymentsRepository;
-let repositories: {
-  cycles: InMemoryCyclesRepository;
-  bags: InMemoryBagsRepository;
-};
 
 let sut: ListCurrentBagsUseCase;
 
 describe("list bags", () => {
   beforeEach(() => {
-    usersRepository = new InMemoryUsersRepository();
-    productsRepository = new InMemoryProductsRepository();
-    offersRepository = new InMemoryOffersRepository(
-      productsRepository,
-      catalogsRepository
-    );
+    cyclesRepository = new InMemoryCyclesRepository();
+    bagsRepository = new InMemoryBagsRepository();
 
-    catalogsRepository = new InMemoryCatalogsRepository(
-      farmsRepository,
-      offersRepository
-    );
-
-    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
-    ordersRepository = new InMemoryOrdersRepository(offersRepository);
-    addressesRepository = new InMemoryAddressesRepository();
-    paymentsRepository = new InMemoryPaymentsRepository();
-    bagsRepository = new InMemoryBagsRepository(
-      usersRepository,
-      ordersRepository,
-      addressesRepository,
-      paymentsRepository
-    );
-
-    paymentsRepository.setBagsRepository(bagsRepository);
-
-    repositories = {
-      cycles: new InMemoryCyclesRepository(),
-      bags: bagsRepository,
-    };
-
-    sut = new ListCurrentBagsUseCase(repositories.cycles, repositories.bags);
+    sut = new ListCurrentBagsUseCase(cyclesRepository, bagsRepository);
   });
 
   it("should be list bags from a cycle", async () => {
     const cycle = makeCycle();
-    repositories.cycles.items.push(cycle);
+    cyclesRepository.items.push(cycle);
 
     const user = makeUser({ first_name: "José" });
-    usersRepository.create(user);
 
-    const bag = makeBag({ cycle_id: cycle.id, user_id: user.id });
-    await repositories.bags.create(bag);
+    const bag = makeBag({ cycle_id: cycle.id, user_id: user.id, user });
+    bagsRepository.items.push(bag);
 
     const result = await sut.execute({
       cycle_id: cycle.id.value,
-      name: user.first_name,
+      name: "José",
       page: 1,
     });
 
-    expect(result.bags[0]).toBeInstanceOf(BagMerge);
+    expect(result.bags[0]).toBeInstanceOf(Bag);
   });
 
   it("should not be able to list bags from a cycle that does not exists", async () => {
     const user = makeUser();
-    usersRepository.create(user);
 
     const bag = makeBag({ user_id: user.id });
-    await repositories.bags.create(bag);
+    bagsRepository.items.push(bag);
 
     await expect(() =>
       sut.execute({
