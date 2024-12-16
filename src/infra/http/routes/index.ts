@@ -26,7 +26,7 @@ import { listOwnBagsController } from "@/infra/http/controllers/list-own-bags";
 import { createOfferController } from "@/infra/http/controllers/create-offer";
 import { openPaymentController } from "@/infra/http/controllers/open-payment";
 import { orderProductsController } from "@/infra/http/controllers/order-products";
-import { printDeliveriesReportController } from "@/infra/http/controllers/print-deliveries-report";
+import { printBagsReportController } from "@/infra/http/controllers/print-bags-report";
 import { registerController } from "@/infra/http/controllers/register";
 import { registerFarmController } from "@/infra/http/controllers/register-farm";
 import { registerPaymentController } from "@/infra/http/controllers/register-payment";
@@ -165,7 +165,7 @@ router.get(
   "/reports",
   ensureAuthenticated,
   ensureRole(["BROKER", "MANAGER"]),
-  printDeliveriesReportController
+  printBagsReportController
 );
 router.get(
   "/bags",

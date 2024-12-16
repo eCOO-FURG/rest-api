@@ -1,10 +1,10 @@
 // Entities
-import { BagMerge } from "@/core/entities/merged/bag-merge";
+import { Bag } from "@/core/entities/bag";
 
 export type PDFServiceGenerateRequest = {
   type: "bags-report";
   props: {
-    bags: BagMerge[];
+    bags: Bag[];
     withdraw: boolean;
   };
 };

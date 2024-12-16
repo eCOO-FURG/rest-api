@@ -8,7 +8,7 @@ import { makeBag } from "@/test/factories/make-bag";
 import { makeCycle } from "@/test/factories/make-cycle";
 
 // Use-cases
-import { PrintDeliveryReportUseCase } from "@/core/use-cases/print-bags-report";
+import { PrintBagsReportUseCase } from "@/core/use-cases/print-bags-report";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -18,7 +18,7 @@ let cyclesRepository: InMemoryCyclesRepository;
 
 let pdfService: MockedPDFService;
 
-let sut: PrintDeliveryReportUseCase;
+let sut: PrintBagsReportUseCase;
 
 describe("print bags report", () => {
   beforeEach(() => {
@@ -27,7 +27,7 @@ describe("print bags report", () => {
 
     pdfService = new MockedPDFService();
 
-    sut = new PrintDeliveryReportUseCase(
+    sut = new PrintBagsReportUseCase(
       cyclesRepository,
       bagsRepository,
       pdfService

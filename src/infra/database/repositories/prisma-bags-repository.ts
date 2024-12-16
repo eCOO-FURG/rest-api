@@ -50,7 +50,7 @@ export class PrismaBagsRepository implements BagsRepository {
             ],
           }),
         },
-        ...(withdraw && { address_id: null }),
+        ...(withdraw && { address_id: { not: null } }),
         created_at: { lte: before, gte: since },
       },
       include: {

@@ -9,18 +9,9 @@ import { PrintBagsReportUseCase } from "@/core/use-cases/print-bags-report";
 import container from "@/infra/container";
 
 export const printBagsReportSchema = {
-  route: z.object({
-    cycle_id: z.string().uuid().openapi({
-      description: "ID do ciclo que deseja imprimir o relatório de entregas.",
-    }),
-  }),
   query: z.object({
-    withdraw: z
-      .preprocess((val) => val === "true", z.boolean())
-      .openapi({
-        description:
-          "Se for true, vai retornar a lista de retiradas. Se não, vai retornar a lista de entregas.",
-      }),
+    cycle_id: z.string().uuid(),
+    withdraw: z.enum(["true", "false"]).optional(),
   }),
 };
 
@@ -30,25 +21,22 @@ export async function printBagsReportController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id } = printBagsReportSchema.route.parse(request.params);
+    const { cycle_id, withdraw } = printBagsReportSchema.query.parse(
+      request.query
+    );
 
-    const { withdraw } = printBagsReportSchema.query.parse(request.query);
-
-    const printBagsReportUseCase =
-      container.resolve<PrintBagsReportUseCase>("printBagsReport");
-
-    await printBagsReportUseCase.execute({ cycle_id, withdraw });
+    const printBagsReportUseCase = container.resolve<PrintBagsReportUseCase>(
+      "printBagsReportUseCase"
+    );
 
     const { pdf } = await printBagsReportUseCase.execute({
       cycle_id,
-      withdraw,
+      withdraw: withdraw === "true",
     });
-
-    const filename = withdraw ? "retiradas.pdf" : "entregas.pdf";
 
     response.set({
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="${filename}"`,
+      "Content-Disposition": 'attachment; filename="sacolas.pdf"',
       "Content-Length": pdf.length,
     });
 
