@@ -9,7 +9,7 @@ import { ProductsRepository } from "@/core/repositories/products-repository";
 import { Storage } from "@/core/storage/storage";
 
 // Errors
-import { ResourceNotFoundError } from "../errors/resource-not-found";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 
 interface RegisterProductUseCaseRequest {
