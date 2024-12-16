@@ -4,20 +4,27 @@ import { Optional } from "@/core/types/optional";
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
 import { UUID } from "@/core/entities/aggregates/uuid";
+import { User } from "@/core/entities/user";
 
 // Events
 import { DomainEvents } from "@/core/events/domain-events";
 import { OnOtpRequestEvent } from "@/core/events/on-otp-requested";
 
 export interface OtpProps extends EntityRequest {
-  user_id: UUID;
   value: string;
   used: boolean;
+
+  user_id: UUID;
+  user?: User;
 }
 
 export class Otp extends Entity<OtpProps> {
   get user_id() {
     return this.props.user_id;
+  }
+
+  get user() {
+    return this.props.user;
   }
 
   get value(): string {

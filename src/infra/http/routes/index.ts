@@ -3,7 +3,6 @@ import { Router } from "express";
 
 // Controllers
 import { authenticateController } from "@/infra/http/controllers/authenticate";
-import { deleteOfferController } from "@/infra/http/controllers/delete-offer";
 import { fetchBagController } from "@/infra/http/controllers/fetch-bag";
 import { fetchBoxController } from "@/infra/http/controllers/fetch-box";
 import { fetchCatalogController } from "@/infra/http/controllers/fetch-catalog";
@@ -15,15 +14,16 @@ import { fetchPendingsController } from "@/infra/http/controllers/fetch-pendings
 import { fetchProfileController } from "@/infra/http/controllers/fetch-profile";
 import { fetchUserFarmController } from "@/infra/http/controllers/fetch-user-farm";
 import { handleBagController } from "@/infra/http/controllers/handle-bag";
-import { handleBoxStatusController } from "@/infra/http/controllers/handle-box-status";
-import { handleFarmStatusController } from "@/infra/http/controllers/handle-farm-status";
+import { handleBoxController } from "@/infra/http/controllers/handle-box";
+import { handleFarmController } from "@/infra/http/controllers/handle-farm";
 import { listBoxesController } from "@/infra/http/controllers/list-boxes";
 import { listCurrentBagsController } from "@/infra/http/controllers/list-current-bags";
 import { listCyclesController } from "@/infra/http/controllers/list-cycles";
 import { listFarmsController } from "@/infra/http/controllers/list-farms";
 import { listProductsController } from "@/infra/http/controllers/list-products";
-import { listUserBagsController } from "@/infra/http/controllers/list-user-bags";
-import { offerProductsController } from "@/infra/http/controllers/offer-products";
+import { listBagsController } from "@/infra/http/controllers/list-bags";
+import { listOwnBagsController } from "@/infra/http/controllers/list-own-bags";
+import { createOfferController } from "@/infra/http/controllers/create-offer";
 import { openPaymentController } from "@/infra/http/controllers/open-payment";
 import { orderProductsController } from "@/infra/http/controllers/order-products";
 import { printDeliveriesReportController } from "@/infra/http/controllers/print-deliveries-report";
@@ -32,12 +32,12 @@ import { registerFarmController } from "@/infra/http/controllers/register-farm";
 import { registerPaymentController } from "@/infra/http/controllers/register-payment";
 import { requestOtpController } from "@/infra/http/controllers/request-otp";
 import { requestPasswordUpdateController } from "@/infra/http/controllers/request-password-update";
-import { searchCatalogsController } from "@/infra/http/controllers/search-catalogs";
+import { listCatalogsController } from "@/infra/http/controllers/list-catalogs";
 import { updateFarmController } from "@/infra/http/controllers/update-farm";
-import { updateOfferController } from "@/infra/http/controllers/update-offer";
-import { updatePaymentController } from "@/infra/http/controllers/update-payment";
 import { updateUserController } from "@/infra/http/controllers/update-user";
 import { verifyUserController } from "@/infra/http/controllers/verify-user";
+import { updateCatalogController } from "@/infra/http/controllers/update-catalog";
+import { updateBagController } from "@/infra/http/controllers/update-bag";
 
 // Webhooks
 import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
@@ -67,6 +67,7 @@ router.post("/help", ensureAuthenticated, ensureRole(['PRODUCER']), requestHelpC
 // Autenticação
 router.post("/auth", authenticateController);
 router.post("/auth/otp", requestOtpController);
+router.post("/auth/password", requestPasswordUpdateController);
 
 // Fazendas
 router.get(
@@ -84,20 +85,20 @@ router.get(
   listFarmsController
 );
 router.patch(
-  "/farms/:farm_id",
+  "/farms/:farm_id/handle",
   ensureAuthenticated,
   ensureRole(["MANAGER"]),
-  handleFarmStatusController
+  handleFarmController
 );
 router.patch(
-  "/farms",
+  "/farms/own",
   ensureAuthenticated,
   ensureRole(["PRODUCER"]),
   updateFarmController
 );
 
 // Pedidos
-router.post("/orders", ensureAuthenticated, orderProductsController);
+router.post("/bags", ensureAuthenticated, orderProductsController);
 
 // Caixas
 router.get(
@@ -113,10 +114,10 @@ router.get(
   fetchBoxController
 );
 router.patch(
-  "/boxes/:box_id",
+  "/boxes/:box_id/handle",
   ensureAuthenticated,
   ensureRole(["BROKER"]),
-  handleBoxStatusController
+  handleBoxController
 );
 router.get(
   "/boxes",
@@ -127,22 +128,10 @@ router.get(
 
 // Ofertas
 router.post(
-  "/offers",
+  "/catalogs",
   ensureAuthenticated,
   ensureRole(["PRODUCER"]),
-  offerProductsController
-);
-router.patch(
-  "/offers/:offer_id",
-  ensureAuthenticated,
-  ensureRole(["PRODUCER"]),
-  updateOfferController
-);
-router.delete(
-  "/offers/:offer_id",
-  ensureAuthenticated,
-  ensureRole(["PRODUCER", "BROKER"]),
-  deleteOfferController
+  createOfferController
 );
 
 // Catalogos
@@ -158,8 +147,15 @@ router.get(
   ensureRole(["PRODUCER"]),
   fetchLastCatalogController
 );
-router.get("/catalogs", searchCatalogsController);
+router.get("/catalogs", listCatalogsController);
 router.get("/catalogs/:catalog_id", fetchCatalogController);
+
+router.patch(
+  "/catalogs/:catalog_id",
+  ensureAuthenticated,
+  ensureRole(["PRODUCER"]),
+  updateCatalogController
+);
 
 // Sacolas
 router.get(
@@ -169,38 +165,48 @@ router.get(
   listCurrentBagsController
 );
 router.get(
-  "/bags/report",
+  "/reports",
   ensureAuthenticated,
   ensureRole(["BROKER", "MANAGER"]),
   printDeliveriesReportController
 );
-router.get("/bags/own", ensureAuthenticated, listUserBagsController);
+router.get(
+  "/bags",
+  ensureAuthenticated,
+  ensureRole(["BROKER"]),
+  listBagsController
+);
+router.get("/bags/own", ensureAuthenticated, listOwnBagsController);
 router.patch(
-  "/bags/:bag_id",
+  "/bags/:bag_id/handle",
   ensureAuthenticated,
   ensureRole(["BROKER"]),
   handleBagController
 );
 router.get("/bags/:bag_id", ensureAuthenticated, fetchBagController);
+router.post("/bags/:bag_id/open", ensureAuthenticated, openPaymentController);
+router.post(
+  "/bags/:bag_id/pay",
+  ensureAuthenticated,
+  registerPaymentController
+);
+router.patch(
+  "/bags/:bag_id/handle",
+  ensureAuthenticated,
+  ensureRole(["BROKER"]),
+  handleBagController
+);
+router.patch("/bags/:bag_id", ensureAuthenticated, updateBagController);
 
 // Ciclos
-router.get("/cycles", ensureAuthenticated, listCyclesController);
+router.get("/cycles", listCyclesController);
 
 // Produtos
 router.get("/products", ensureAuthenticated, listProductsController);
 
-// Pagamentos
-router.post("/payments", ensureAuthenticated, registerPaymentController);
-router.post("/payments/open", ensureAuthenticated, openPaymentController);
-router.patch(
-  "/payments/:payment_id",
-  ensureAuthenticated,
-  updatePaymentController
-);
-
 // Pendências
 router.get(
-  "/pendings/:cycle_id",
+  "/pendings",
   ensureAuthenticated,
   ensureRole(["BROKER"]),
   fetchPendingsController

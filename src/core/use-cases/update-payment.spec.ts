@@ -1,28 +1,36 @@
-// Repositories
-import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
-
 // Use-cases
 import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
 import { makePayment } from "@/test/factories/make-payment";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
-let paymentsRepository: InMemoryPaymentsRepository;
+// Repositories
+import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
+
+// Factories
+import { makeBag } from "@/test/factories/make-bag";
+
+let bagsRepository: InMemoryBagsRepository;
+
 let sut: UpdatePaymentUseCase;
 
 describe("Update payment", () => {
   beforeEach(() => {
-    paymentsRepository = new InMemoryPaymentsRepository();
-
-    sut = new UpdatePaymentUseCase(paymentsRepository);
+    bagsRepository = new InMemoryBagsRepository();
+    sut = new UpdatePaymentUseCase(bagsRepository);
   });
 
   it("should be able to update a payment", async () => {
+    const bag = makeBag();
+
     const payment = makePayment();
-    await paymentsRepository.create(payment);
+
+    bag.payments.set(payment.id.value, payment);
+
+    await bagsRepository.create(bag);
 
     await sut.execute({ payment_id: payment.id.value, status: "DONE" });
 
-    expect(paymentsRepository.items[0].status).toBe("DONE");
+    expect(bag.payments.get(payment.id.value)?.status).toBe("DONE");
   });
 
   it("should not be able to update a non-existent payment", async () => {

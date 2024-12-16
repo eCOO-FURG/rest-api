@@ -33,15 +33,11 @@ export class VerifyUserUsecase {
       throw new WrongCredentialsError();
     }
 
-    const user = await this.usersRepository.findById(user_id);
+    const user = await this.usersRepository.find("basic", { id: user_id });
 
-    if (!user) {
-      throw new ResourceNotFoundError("Usuário", user_id);
-    }
+    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
-    if (user.verified_at) {
-      throw new UserAlreadyVerified(user_id);
-    }
+    if (user.verified_at) throw new UserAlreadyVerified(user_id);
 
     user.verify();
 
@@ -59,7 +55,7 @@ export class VerifyUserUsecase {
 
     return {
       roles: user.roles,
-      refresh: token
-    }
+      refresh: token,
+    };
   }
 }

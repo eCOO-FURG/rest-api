@@ -4,15 +4,16 @@ import { Optional } from "@/core/types/optional";
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
 import { UUID } from "@/core/entities/aggregates/uuid";
-
+import { User } from "@/core/entities/user";
 export interface FarmProps extends EntityRequest {
   name: string;
   tally: string;
   status: "ACTIVE" | "INACTIVE" | "PENDING";
-  admin_id: UUID;
   tax: number;
   description: string | null;
-  image: string | null;
+
+  admin_id: UUID;
+  admin?: User;
 }
 
 export class Farm extends Entity<FarmProps> {
@@ -32,12 +33,12 @@ export class Farm extends Entity<FarmProps> {
     return this.props.admin_id;
   }
 
-  get description(): string | null {
-    return this.props.description;
+  get admin() {
+    return this.props.admin;
   }
 
-  get image(): string | null {
-    return this.props.image;
+  get description(): string | null {
+    return this.props.description;
   }
 
   set description(value: string) {
@@ -56,23 +57,16 @@ export class Farm extends Entity<FarmProps> {
     this.props.status = status;
   }
 
-  set image(value: string) {
-    this.props.image = value;
-  }
-
   get tax() {
     return this.props.tax;
   }
 
-  static create(
-    props: Optional<FarmProps, "status" | "tax" | "description" | "image">
-  ) {
+  static create(props: Optional<FarmProps, "status" | "tax" | "description">) {
     const farm = new Farm({
       ...props,
       status: props.status ?? "PENDING",
       tax: props.tax ?? 20,
       description: props.description ?? null,
-      image: props.image ?? null,
     });
     return farm;
   }

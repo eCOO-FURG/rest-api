@@ -2,18 +2,27 @@
 import { Product } from "@/core/entities/product";
 
 // Repositories
-import { ProductsRepository } from "@/core/repositories/products-repository";
+import {
+  ProductsRepository,
+  ProductsRepositorySearchRequest,
+} from "@/core/repositories/products-repository";
 
 // Services
 import { prisma } from "@/infra/database/prisma-service";
+
+// Mappers
 import { PrismaProductMapper } from "@/infra/database/mappers/prisma-product-mapper";
 
+// Types
+import { RepositoryResponse } from "@/core/types/repository-response";
+
 export class PrismaProductRepository implements ProductsRepository {
-  async findById(id: string): Promise<Product | null> {
+  async find(
+    _: RepositoryResponse,
+    { id, name }: ProductsRepositorySearchRequest
+  ): Promise<Product | null> {
     const product = await prisma.product.findUnique({
-      where: {
-        id,
-      },
+      where: { id, name: { contains: name, mode: "insensitive" } },
     });
 
     if (!product) return null;
@@ -21,21 +30,14 @@ export class PrismaProductRepository implements ProductsRepository {
     return PrismaProductMapper.toDomain(product);
   }
 
-  async findMany(page: number, name?: string): Promise<Product[]> {
-    const skip = (page - 1) * 20;
-
+  async list(
+    _: RepositoryResponse,
+    { name, id }: ProductsRepositorySearchRequest,
+    page?: number
+  ): Promise<Product[]> {
     const products = await prisma.product.findMany({
-      where: {
-        name: {
-          contains: name,
-          mode: "insensitive",
-        },
-      },
-      orderBy: {
-        name: "asc",
-      },
-      skip,
-      take: 20,
+      where: { id, name: { contains: name, mode: "insensitive" } },
+      ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
     return products.map((product) => PrismaProductMapper.toDomain(product));
@@ -44,8 +46,6 @@ export class PrismaProductRepository implements ProductsRepository {
   async create(product: Product): Promise<void> {
     const data = PrismaProductMapper.toPrisma(product);
 
-    await prisma.product.create({
-      data,
-    });
+    await prisma.product.create({ data });
   }
 }

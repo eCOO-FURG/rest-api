@@ -8,11 +8,16 @@ import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
 // Container
 import container from "@/infra/container";
 
+// Validation
+import { notEmpty } from "@/infra/http/validation/not-empty";
+
 export const registerFarmSchema = {
-  body: z.object({
-    name: z.string(),
-    tally: z.string(),
-  }),
+  body: z
+    .object({
+      name: z.string(),
+      tally: z.string(),
+    })
+    .refine(notEmpty.validation, notEmpty.warning),
 };
 
 export const registerFarmController = [

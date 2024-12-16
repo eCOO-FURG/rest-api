@@ -8,8 +8,13 @@ import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
 // Container
 import container from "@/infra/container";
 
+// Validation
+import { notEmpty } from "@/infra/http/validation/not-empty";
+
 export const requestOtpSchema = {
-  body: z.object({ email: z.string() }),
+  body: z
+    .object({ email: z.string() })
+    .refine(notEmpty.validation, notEmpty.warning),
 };
 
 export async function requestOtpController(

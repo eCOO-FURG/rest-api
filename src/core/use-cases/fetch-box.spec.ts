@@ -10,78 +10,41 @@ import { makeUser } from "@/test/factories/make-user";
 import { makeCatalog } from "@/test/factories/make-catalog";
 
 // Repositories
-import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
-import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
-import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
-import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 import { InMemoryBoxesRepository } from "@/test/repositories/in-memory-boxes-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 let usersRepository: InMemoryUsersRepository;
-let productsRepository: InMemoryProductsRepository;
-let offersRepository: InMemoryOffersRepository;
-let ordersRepository: InMemoryOrdersRepository;
-let farmsRepository: InMemoryFarmsRepository;
-let catalogsRepository: InMemoryCatalogsRepository;
-
-let repositories: {
-  boxes: InMemoryBoxesRepository;
-};
+let boxesRepository: InMemoryBoxesRepository;
 
 let sut: FetchBoxUseCase;
 
 describe("list farm sales", () => {
   beforeEach(() => {
-    productsRepository = new InMemoryProductsRepository();
-
     usersRepository = new InMemoryUsersRepository();
-    farmsRepository = new InMemoryFarmsRepository(usersRepository);
-    offersRepository = new InMemoryOffersRepository(
-      productsRepository,
-      catalogsRepository
-    );
+    boxesRepository = new InMemoryBoxesRepository();
 
-    catalogsRepository = new InMemoryCatalogsRepository(
-      farmsRepository,
-      offersRepository
-    );
-
-    offersRepository.inMemoryCatalogsRepository = catalogsRepository;
-    ordersRepository = new InMemoryOrdersRepository(offersRepository);
-
-    repositories = {
-      boxes: new InMemoryBoxesRepository(catalogsRepository, ordersRepository),
-    };
-
-    sut = new FetchBoxUseCase(repositories.boxes);
+    sut = new FetchBoxUseCase(usersRepository, boxesRepository);
   });
 
   it("should be able to fetch a box", async () => {
     const user = makeUser();
     await usersRepository.create(user);
 
-    const farm = makeFarm({ admin_id: user.id });
-    await farmsRepository.create(farm);
+    const farm = makeFarm({ admin_id: user.id, admin: user });
 
     const product = makeProduct();
-    await productsRepository.create(product);
 
-    const catalog = makeCatalog({ farm_id: farm.id });
-    await catalogsRepository.create(catalog);
+    const catalog = makeCatalog({ farm_id: farm.id, farm });
 
     const offer = makeOffer({
       catalog_id: catalog.id,
       product_id: product.id,
     });
 
-    await offersRepository.create(offer);
-
-    const box = makeBox({ catalog_id: catalog.id });
-    await repositories.boxes.create(box);
+    const box = makeBox({ catalog_id: catalog.id, catalog });
 
     const order = makeOrder({
       offer_id: offer.id,
@@ -89,17 +52,25 @@ describe("list farm sales", () => {
       box_id: box.id,
     });
 
-    await ordersRepository.createMany([order]);
+    box.orders.set(offer.id.value, order);
+    await boxesRepository.create(box);
 
-    const result = await sut.execute({ box_id: box.id.value });
+    const result = await sut.execute({
+      box_id: box.id.value,
+      user_id: user.id.value,
+    });
 
-    expect(result.box.orders.length).toBeGreaterThan(0);
+    expect(result.box.orders.size).toBeGreaterThan(0);
   });
 
   it("should not be able to fetch a box that does not exist", async () => {
+    const user = makeUser();
+    await usersRepository.create(user);
+
     await expect(() =>
       sut.execute({
         box_id: "",
+        user_id: user.id.value,
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });

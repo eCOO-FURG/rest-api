@@ -11,12 +11,17 @@ import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
 // Presenters
 import { UserPresenter } from "@/infra/http/presenters/user-presenter";
 
+// Validation
+import { notEmpty } from "@/infra/http/validation/not-empty";
+
 export const authenticateSchema = {
-  body: z.object({
-    email: z.string().email(),
-    password: z.string().min(6),
-    type: z.enum(["BASIC", "OTP"]).openapi({ type: "string" }),
-  }),
+  body: z
+    .object({
+      email: z.string().email(),
+      password: z.string().min(6),
+      type: z.enum(["BASIC", "OTP"]).openapi({ type: "string" }),
+    })
+    .refine(notEmpty.validation, notEmpty.warning),
 };
 
 export async function authenticateController(

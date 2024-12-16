@@ -5,7 +5,6 @@ import { asClass, AwilixContainer } from "awilix";
 import { PrismaCyclesRepository } from "@/infra/database/repositories/prisma-cycles-repository";
 import { PrismaFarmsRepository } from "@/infra/database/repositories/prisma-farms-repository";
 import { PrismaOffersRepository } from "@/infra/database/repositories/prisma-offers-repository";
-import { PrismaOrdersRepository } from "@/infra/database/repositories/prisma-orders-repository";
 import { PrismaOtpsRepository } from "@/infra/database/repositories/prisma-otps-repository";
 import { PrismaProductRepository } from "@/infra/database/repositories/prisma-products-repository";
 import { PrismaSessionsRepository } from "@/infra/database/repositories/prisma-sessions-repository";
@@ -14,7 +13,6 @@ import { PrismaBagsRepository } from "@/infra/database/repositories/prisma-bags-
 import { PrismaCatalogsRepository } from "@/infra/database/repositories/prisma-catalogs-repository";
 import { PrismaBoxesRepository } from "@/infra/database/repositories/prisma-boxes-repository";
 import { PrismaAddressesRepository } from "@/infra/database/repositories/prisma-addresses-repository";
-import { PrismaPaymentsRepository } from "@/infra/database/repositories/prisma-payments-repository";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -24,12 +22,10 @@ export default (container: AwilixContainer) => {
     cyclesRepository: asClass(PrismaCyclesRepository).singleton(),
     productsRepository: asClass(PrismaProductRepository).singleton(),
     offersRepository: asClass(PrismaOffersRepository).singleton(),
-    ordersRepository: asClass(PrismaOrdersRepository).singleton(),
     farmsRepository: asClass(PrismaFarmsRepository).singleton(),
     bagsRepository: asClass(PrismaBagsRepository).singleton(),
     catalogsRepository: asClass(PrismaCatalogsRepository).singleton(),
     boxesRepository: asClass(PrismaBoxesRepository).singleton(),
     addressesRepository: asClass(PrismaAddressesRepository).singleton(),
-    paymentsRepository: asClass(PrismaPaymentsRepository).singleton(),
   });
 };

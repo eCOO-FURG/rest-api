@@ -9,7 +9,7 @@ import { FetchPendingsUseCase } from "@/core/use-cases/fetch-pendings";
 import container from "@/infra/container";
 
 export const fetchPendingsSchema = {
-  route: z.object({
+  query: z.object({
     cycle_id: z.string().uuid(),
   }),
 };
@@ -20,7 +20,7 @@ export async function fetchPendingsController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id } = fetchPendingsSchema.route.parse(request.params);
+    const { cycle_id } = fetchPendingsSchema.query.parse(request.query);
 
     const fetchPendingsUseCase = container.resolve<FetchPendingsUseCase>(
       "fetchPendingsUseCase"
