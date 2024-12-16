@@ -98,10 +98,11 @@ enum PRICING {
 }
 
 model Product {
-  id      String  @id @default(uuid())
-  name    String  @unique
-  image   String
-  pricing PRICING
+  id       String  @id @default(uuid())
+  name     String
+  image    String
+  pricing  PRICING
+  archived Boolean @default(false)
 
   created_at DateTime  @default(now())
   updated_at DateTime?

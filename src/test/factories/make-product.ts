@@ -10,5 +10,6 @@ export function makeProduct(props: Partial<Product> = {}) {
     name: props.name ?? faker.animal.fish(),
     image: props.image ?? faker.internet.emoji(),
     pricing: props.pricing ?? "UNIT",
+    archived: props.archived ?? false,
   });
 }

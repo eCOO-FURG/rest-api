@@ -8,42 +8,28 @@ import {
 } from "@/core/repositories/products-repository";
 import { RepositoryResponse } from "@/core/types/repository-response";
 
-// Utils
-import { find } from "@/test/utils/find";
-import { filter } from "@/test/utils/filter";
-
 export class InMemoryProductsRepository implements ProductsRepository {
   items: Product[] = [];
 
   async find(
     _: RepositoryResponse,
-    { id, name }: ProductsRepositorySearchRequest
+    { name, pricing }: ProductsRepositorySearchRequest
   ): Promise<Product | null> {
-    const product = await find<Product>(
-      this.items,
-      async (item) =>
-        (!id || item.id.equals(id)) && (!name || item.name === name)
-    );
-
-    if (!product) return null;
-
-    return product;
+    return this.items.find(
+      (item) =>
+        (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
+        (!pricing || item.pricing === pricing)
+    ) || null;
   }
 
   async list(
     _: RepositoryResponse,
-    { name }: ProductsRepositorySearchRequest,
-    page?: number
+    { name }: ProductsRepositorySearchRequest
   ): Promise<Product[]> {
-    let products = await filter<Product>(
-      this.items,
-      async (item) => !name || item.name.includes(name)
+    return this.items.filter(
+      (item) => !name || item.name.toLowerCase().includes(name.toLowerCase())
     );
-
-    if (page) products = this.slice(products, page);
-
-    return products;
-  }
+  }  
 
   async create(product: Product): Promise<void> {
     this.items.push(product);
@@ -53,5 +39,13 @@ export class InMemoryProductsRepository implements ProductsRepository {
     const start = (page - 1) * size;
     const end = start + size;
     return items.slice(start, end);
+  }
+
+  async update(product: Product): Promise<void> {
+    const index = this.items.findIndex((item) => item.id === product.id);
+
+    if (index !== -1) {
+      this.items[index] = product;
+    }
   }
 }

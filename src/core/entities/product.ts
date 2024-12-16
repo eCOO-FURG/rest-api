@@ -7,6 +7,7 @@ export interface ProductProps extends EntityRequest {
   name: string;
   image: string;
   pricing: pricings;
+  archived: boolean
 }
 
 export class Product extends Entity<ProductProps> {
@@ -20,6 +21,30 @@ export class Product extends Entity<ProductProps> {
 
   get pricing() {
     return this.props.pricing;
+  }
+
+  get archived() {
+    return this.props.archived;
+  }
+
+  set name(value: string) {
+    this.props.name = value;
+  }
+
+  set image(value: string) {
+    this.props.image = value;
+  }
+
+  set pricing(value: pricings) {
+    this.props.pricing = value;
+  }
+
+  set archived(value: boolean) {
+    this.props.archived = value;
+  }
+
+  unarchive() {
+    this.props.archived = false;
   }
 
   static create(props: ProductProps) {
