@@ -38,7 +38,7 @@ import { updateUserController } from "@/infra/http/controllers/update-user";
 import { verifyUserController } from "@/infra/http/controllers/verify-user";
 import { updateCatalogController } from "@/infra/http/controllers/update-catalog";
 import { updateBagController } from "@/infra/http/controllers/update-bag";
-import { registerProductController } from "../controllers/register-product";
+import { registerProductController } from "@/infra/http/controllers/register-product";
 
 // Webhooks
 import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";

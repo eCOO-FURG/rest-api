@@ -8,7 +8,6 @@ import { RegisterProductUseCase } from "@/core/use-cases/register-product";
 // Container
 import container from "@/infra/container";
 
-// Validation
 export const registerProductSchema = {
   body: z.object({
     name: z.string(),

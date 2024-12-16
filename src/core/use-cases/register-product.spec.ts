@@ -51,29 +51,28 @@ describe("register product", () => {
 
     await sut.execute({
       user_id: user.id.value,
-      name: "Product A",
+      name: "Produto show",
       image,
       pricing: "UNIT",
     });
 
     const product = repositories.products.items[0];
 
-    expect(product.name).toEqual("Product A");
-    expect(product.image).toContain("temp/products");
+    expect(product.name).toEqual("Produto show");
     expect(product.pricing).toEqual("UNIT");
     expect(product.archived).toBeFalsy();
   });
 
   it("should find a product by name and pricing", async () => {
     const product = makeProduct({
-      name: "Test Product",
+      name: "Teste produto",
       pricing: "UNIT",
     });
   
     await repositories.products.create(product);
   
     const foundProduct = await repositories.products.find("basic", {
-      name: "Test Product",
+      name: "Teste produto",
       pricing: "UNIT",
     });
   
@@ -83,8 +82,8 @@ describe("register product", () => {
   it("should throw an error if the user does not exist", async () => {
     await expect(() =>
       sut.execute({
-        user_id: "nonexistent_user",
-        name: "Product A",
+        user_id: "123",
+        name: "Produto legal",
         image: Buffer.from("image"),
         pricing: "UNIT",
       })
@@ -96,7 +95,7 @@ describe("register product", () => {
     await repositories.users.create(user);
   
     const product = makeProduct({
-      name: "Existing Product",
+      name: "Produto novo",
       pricing: "UNIT",
       archived: false,
     });
@@ -106,7 +105,7 @@ describe("register product", () => {
     await expect(
       sut.execute({
         user_id: user.id.value,
-        name: "Existing Product",
+        name: "Produto novo",
         image: Buffer.from("image"),
         pricing: "UNIT",
       })
@@ -118,7 +117,7 @@ describe("register product", () => {
     await repositories.users.create(user);
   
     const product = makeProduct({
-      name: "Archived Product",
+      name: "Produto arquivado",
       pricing: "UNIT",
       archived: true,
     });
@@ -127,18 +126,18 @@ describe("register product", () => {
   
     await sut.execute({
       user_id: user.id.value,
-      name: "Archived Product",
+      name: "Produto arquivado",
       image: Buffer.from("image"),
       pricing: "UNIT",
     });
   
     const updatedProduct = await repositories.products.find("basic", {
-      name: "Archived Product",
+      name: "Produto arquivado",
       pricing: "UNIT",
     });
   
     expect(updatedProduct?.archived).toBe(false);
-    expect(updatedProduct?.name).toBe("Archived Product");
+    expect(updatedProduct?.name).toBe("Produto arquivado");
   });
 
   it("should upload the product image", async () => {
@@ -149,7 +148,7 @@ describe("register product", () => {
 
     await sut.execute({
       user_id: user.id.value,
-      name: "Product A",
+      name: "Produto",
       image,
       pricing: "UNIT",
     });

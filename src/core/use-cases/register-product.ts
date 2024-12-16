@@ -1,11 +1,15 @@
+// Entities
 import { pricings, Product } from "@/core/entities/product"
-import { ProductsRepository } from "../repositories/products-repository";
-import { UsersRepository } from "../repositories/users-repository";
-import { ResourceNotFoundError } from "../errors/resource-not-found";
 
+// Repositories
+import { UsersRepository } from "@/core/repositories/users-repository";
+import { ProductsRepository } from "@/core/repositories/products-repository";
+
+// Services
 import { Storage } from "@/core/storage/storage";
 
 // Errors
+import { ResourceNotFoundError } from "../errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 
 interface RegisterProductUseCaseRequest {
