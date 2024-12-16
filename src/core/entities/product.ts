@@ -47,6 +47,10 @@ export class Product extends Entity<ProductProps> {
     this.props.archived = false;
   }
 
+  public touch() {
+    this.props.updated_at = new Date();
+  }
+
   static create(props: ProductProps) {
     const product = new Product(props);
     return product;

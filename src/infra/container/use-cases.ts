@@ -36,6 +36,7 @@ import { ListCatalogsUseCase } from "@/core/use-cases/list-catalogs";
 import { UpdateBagUseCase } from "@/core/use-cases/update-bag";
 import { UpdateCatalogUseCase } from "@/core/use-cases/update-catalog";
 import { RegisterProductUseCase } from "@/core/use-cases/register-product";
+import { UpdateProductUseCase } from "@/core/use-cases/update-product";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -224,6 +225,14 @@ export default (container: AwilixContainer) => {
     registerProductUseCase: asFunction(
       ({ usersRepository, productsRepository, storage }) => 
         new RegisterProductUseCase(
+          usersRepository,
+          productsRepository,
+          storage
+        )
+    ),
+    updateProductUseCase: asFunction(
+      ({ usersRepository, productsRepository, storage }) => 
+        new UpdateProductUseCase(
           usersRepository,
           productsRepository,
           storage
