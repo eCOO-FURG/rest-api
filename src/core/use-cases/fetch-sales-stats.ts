@@ -27,7 +27,7 @@ export class FetchSalesStatsUseCase {
       const date = new Date(bag.created_at);
 
       const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDay()).padStart(2, "0");
+      const day = String(date.getDay() + 1).padStart(2, "0");
 
       if (!monthly[month]) monthly[month] = 0;
 

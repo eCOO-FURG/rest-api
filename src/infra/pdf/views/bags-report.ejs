@@ -281,12 +281,8 @@
               de <%= order.offer.product.name %> <% } else { %> <%= order.amount
               %>g de <%= order.offer.product.name %> <% } %> <% } %>
               <br />
-              R$<% if (order.offer.product.pricing==='UNIT' ) { %> <%=
-              (order.offer.price * order.amount).toLocaleString("pt-BR", {
-              minimumFractionDigits: 2 }) %> <% } else if
-              (order.offer.product.pricing==='WEIGHT' ) { %> <%=
-              (order.offer.price * order.amount / 1000).toLocaleString("pt-BR",
-              { minimumFractionDigits: 2 }) %> <% } %>
+              R$<%= order.price.toLocaleString("pt-BR", { minimumFractionDigits:
+              2 }) %>
               <br />
               <br />
               <% }); %>

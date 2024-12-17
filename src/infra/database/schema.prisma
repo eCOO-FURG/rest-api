@@ -148,8 +148,8 @@ model Catalog {
 
 model Offer {
   id          String  @id @default(uuid())
+  amount      Int
   price       Decimal @db.Decimal(10, 2)
-  amount      Decimal @db.Decimal(10, 2)
   description String? @db.VarChar(240)
 
   catalog_id String
@@ -282,7 +282,8 @@ enum ORDER_STATUS {
 
 model Order {
   id     String       @id @default(uuid())
-  amount Decimal      @db.Decimal(10, 2)
+  amount Int
+  price  Decimal      @db.Decimal(10, 2)
   status ORDER_STATUS
 
   offer_id String

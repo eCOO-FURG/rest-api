@@ -77,7 +77,7 @@ export async function seedDevelopment() {
     },
   });
 
-  const offers = await prisma.offer.findMany();
+  const offers = await prisma.offer.findMany({ include: { product: true } });
 
   await prisma.user.create({
     data: {
@@ -100,6 +100,10 @@ export async function seedDevelopment() {
                 box_id: boxId.value,
                 offer_id: offer.id,
                 amount: offer.amount,
+                price:
+                  offer.product.pricing === "UNIT"
+                    ? Number(offer.price) * offer.amount
+                    : (Number(offer.price) / 1000) * offer.amount,
                 status: "PENDING",
               })),
             },
