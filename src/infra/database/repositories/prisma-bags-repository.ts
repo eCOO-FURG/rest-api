@@ -50,7 +50,8 @@ export class PrismaBagsRepository implements BagsRepository {
             ],
           }),
         },
-        ...(withdraw && { address_id: { not: null } }),
+        ...(typeof withdraw === "boolean" &&
+          (withdraw ? { address_id: null } : { address_id: { not: null } })),
         created_at: { lte: before, gte: since },
       },
       include: {
@@ -119,7 +120,8 @@ export class PrismaBagsRepository implements BagsRepository {
             ],
           }),
         },
-        ...(withdraw && { address_id: null }),
+        ...(typeof withdraw === "boolean" &&
+          (withdraw ? { address_id: null } : { address_id: { not: null } })),
         created_at: { lte: before, gte: since },
       },
       include: {

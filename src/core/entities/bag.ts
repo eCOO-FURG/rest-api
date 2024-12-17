@@ -92,12 +92,19 @@ export class Bag extends Entity<BagProps> {
   price() {
     const orders = this.props.orders;
 
-    let price = 0;
+    let total = 0;
 
-    for (const order of orders.values())
-      price += order.amount * (order?.offer?.price ?? 0);
+    for (const order of orders.values()) {
+      const price = order?.offer?.price;
 
-    return price;
+      if (!price) continue;
+
+      order.offer?.product?.pricing === "WEIGHT"
+        ? (total += (order.amount / 1000) * price)
+        : (total += order.amount * price);
+    }
+
+    return total;
   }
 
   paid() {
