@@ -25,7 +25,7 @@ describe("Fetch sales stats", () => {
       price: 10,
     });
 
-    const order = makeOrder({ offer });
+    const order = makeOrder({ offer, amount: 10 });
 
     const today = new Date();
     const currentYear = today.getFullYear();
