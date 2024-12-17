@@ -218,12 +218,8 @@ export default (container: AwilixContainer) => {
         )
     ),
     registerProductUseCase: asFunction(
-      ({ usersRepository, productsRepository, storage }) => 
-        new RegisterProductUseCase(
-          usersRepository,
-          productsRepository,
-          storage
-        )
-    )
+      ({ productsRepository, storage }) =>
+        new RegisterProductUseCase(productsRepository, storage)
+    ),
   });
 };

@@ -15,7 +15,7 @@ export const registerProductSchema = {
   body: z.object({
     name: z.string(),
     pricing: z.enum(["UNIT", "WEIGHT"]),
-    image: z.any(),
+    image: z.any().refine((value) => !!value),
   }),
 };
 
@@ -27,7 +27,7 @@ export async function registerProductController(
   try {
     const content = toJSON({ ...request.body, image: request.file });
 
-    const { name, pricing, image } = registerProductSchema.body.parse(content);
+    const { name, pricing } = registerProductSchema.body.parse(content);
 
     const registerProductUseCase = container.resolve<RegisterProductUseCase>(
       "registerProductUseCase"
@@ -36,7 +36,7 @@ export async function registerProductController(
     await registerProductUseCase.execute({
       name,
       pricing,
-      image,
+      image: request.file!.buffer,
     });
 
     return response.sendStatus(201);

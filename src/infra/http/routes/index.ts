@@ -201,7 +201,13 @@ router.get("/cycles", listCyclesController);
 
 // Produtos
 router.get("/products", ensureAuthenticated, listProductsController);
-router.post("/products", ensureAuthenticated, ensureRole(["MANAGER"]), registerProductController)
+router.post(
+  "/products",
+  ensureAuthenticated,
+  ensureRole(["MANAGER"]),
+  processFile("image", { allowed: ["image/jpeg", "image/png"], size: 1 }),
+  registerProductController
+);
 
 // Pendências
 router.get(
