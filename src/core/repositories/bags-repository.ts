@@ -12,6 +12,7 @@ export interface BagsRepositorySearchRequest {
   address?: { id?: string } | null;
   orders?: { id?: string; page?: number };
   payments?: { id?: string; page?: number };
+  withdraw?: boolean;
   since?: Date;
   before?: Date;
 }

@@ -6,7 +6,3 @@ node_modules
 
 # Temp
 src/test/storage/temp/
-
-# Packages
-pnpm-lock.yaml
-
