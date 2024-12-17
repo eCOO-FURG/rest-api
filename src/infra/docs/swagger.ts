@@ -50,6 +50,7 @@ const tags = {
   products: "Produtos",
   payments: "Pagamentos",
   pendings: "Pendências",
+  stats: "Estatísticas",
 };
 
 const docs = createDocument({
@@ -532,6 +533,15 @@ const docs = createDocument({
         },
         description: "Busca as pendências de um ciclo.",
         ...SwaggerMapper.toDocs(fetchPendingsSchema),
+      },
+    },
+
+    // Estatísticas
+    "/stats": {
+      get: {
+        tags: [tags.stats],
+        responses: { "200": { description: "200 OK" } },
+        description: "Busca as estatísticas de vendas.",
       },
     },
   },
