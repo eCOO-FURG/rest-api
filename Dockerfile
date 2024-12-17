@@ -10,6 +10,8 @@ RUN pnpm install
 
 RUN apk add chromium
 
+RUN apk add openssl
+
 COPY . ./
 
 RUN npx prisma generate
