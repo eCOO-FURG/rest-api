@@ -426,7 +426,7 @@ const docs = createDocument({
         ...SwaggerMapper.toDocs(handleBagSchema),
       },
     },
-    "/bags/report": {
+    "/reports": {
       get: {
         tags: [tags.bags],
         responses: {
