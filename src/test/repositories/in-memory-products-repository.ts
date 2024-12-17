@@ -17,13 +17,14 @@ export class InMemoryProductsRepository implements ProductsRepository {
 
   async find(
     _: RepositoryResponse,
-    { name, pricing, id }: ProductsRepositorySearchRequest
+    { id, name, pricing, archived }: ProductsRepositorySearchRequest
   ): Promise<Product | null> {
     const product = await find<Product>(this.items, async (item) => {
       return (
         (!id || item.id.equals(id)) &&
         (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
-        (!pricing || item.pricing === pricing)
+        (!pricing || item.pricing === pricing) &&
+        (!archived || item.archived === archived)
       );
     });
 
@@ -34,14 +35,15 @@ export class InMemoryProductsRepository implements ProductsRepository {
 
   async list(
     _: RepositoryResponse,
-    { id, name, pricing }: ProductsRepositorySearchRequest,
+    { id, name, pricing, archived }: ProductsRepositorySearchRequest,
     page: number
   ): Promise<Product[]> {
     let products = await filter<Product>(this.items, async (item) => {
       return (
         (!id || item.id.equals(id)) &&
         (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
-        (!pricing || item.pricing === pricing)
+        (!pricing || item.pricing === pricing) &&
+        (!archived || item.archived === archived)
       );
     });
 

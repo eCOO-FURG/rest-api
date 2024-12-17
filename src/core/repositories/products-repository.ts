@@ -8,6 +8,7 @@ export interface ProductsRepositorySearchRequest {
   id?: string;
   name?: string;
   pricing?: Product["pricing"];
+  archived?: boolean;
 }
 
 export interface ProductsRepository {

@@ -19,13 +19,14 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 export class PrismaProductRepository implements ProductsRepository {
   async find(
     _: RepositoryResponse,
-    { id, name, pricing }: ProductsRepositorySearchRequest
+    { id, name, pricing, archived }: ProductsRepositorySearchRequest
   ): Promise<Product | null> {
     const product = await prisma.product.findFirst({
       where: {
         id,
-        name: name ? { contains: name, mode: "insensitive" } : undefined,
-        pricing: pricing || undefined,
+        pricing,
+        archived,
+        ...(name && { name: { contains: name, mode: "insensitive" } }),
       },
     });
 
@@ -36,11 +37,16 @@ export class PrismaProductRepository implements ProductsRepository {
 
   async list(
     _: RepositoryResponse,
-    { name, id }: ProductsRepositorySearchRequest,
+    { name, id, archived, pricing }: ProductsRepositorySearchRequest,
     page?: number
   ): Promise<Product[]> {
     const products = await prisma.product.findMany({
-      where: { id, name: { contains: name, mode: "insensitive" } },
+      where: {
+        id,
+        pricing,
+        archived,
+        ...(name && { name: { contains: name, mode: "insensitive" } }),
+      },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 

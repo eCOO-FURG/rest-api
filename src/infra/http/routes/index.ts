@@ -39,6 +39,7 @@ import { verifyUserController } from "@/infra/http/controllers/verify-user";
 import { updateCatalogController } from "@/infra/http/controllers/update-catalog";
 import { updateBagController } from "@/infra/http/controllers/update-bag";
 import { registerProductController } from "@/infra/http/controllers/register-product";
+import { fetchSalesStatsController } from "@/infra/http/controllers/fetch-sales-stats";
 
 // Webhooks
 import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
@@ -163,12 +164,6 @@ router.get(
   listCurrentBagsController
 );
 router.get(
-  "/reports",
-  ensureAuthenticated,
-  ensureRole(["BROKER", "MANAGER"]),
-  printBagsReportController
-);
-router.get(
   "/bags",
   ensureAuthenticated,
   ensureRole(["BROKER"]),
@@ -215,6 +210,22 @@ router.get(
   ensureAuthenticated,
   ensureRole(["BROKER"]),
   fetchPendingsController
+);
+
+// Estatísticas
+router.get(
+  "/stats",
+  ensureAuthenticated,
+  ensureRole(["MANAGER"]),
+  fetchSalesStatsController
+);
+
+// Relatórios
+router.get(
+  "/reports",
+  ensureAuthenticated,
+  ensureRole(["BROKER", "MANAGER"]),
+  printBagsReportController
 );
 
 // Webhooks
