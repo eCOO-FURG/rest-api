@@ -12,7 +12,7 @@ export class ListProductsUsecase {
   async execute({ page, name }: ListProductsUseCaseRequest) {
     const products = await this.productsRepository.list(
       "basic",
-      { name },
+      { name, archived: false },
       page
     );
 
