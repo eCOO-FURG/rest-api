@@ -14,9 +14,9 @@ export class PrismaProductMapper {
       name: raw.name,
       image: raw.image,
       pricing: raw.pricing,
+      archived: raw.archived,
       created_at: raw.created_at,
       updated_at: raw.updated_at,
-      archived: raw.archived
     });
   }
 
@@ -26,9 +26,9 @@ export class PrismaProductMapper {
       name: product.name,
       image: product.image,
       pricing: product.pricing,
+      archived: product.archived,
       created_at: product.created_at,
       updated_at: product.updated_at,
-      archived: product.archived
     };
   }
 }
