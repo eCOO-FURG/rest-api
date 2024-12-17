@@ -138,6 +138,7 @@ export class OrderProductsUseCase {
         offer,
       });
 
+      bag.price += price;
       bag.orders.set(offer.id.value, order);
     }
 

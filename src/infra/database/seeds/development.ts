@@ -79,6 +79,15 @@ export async function seedDevelopment() {
 
   const offers = await prisma.offer.findMany({ include: { product: true } });
 
+  const price = offers.reduce((acc, offer) => {
+    return (
+      acc +
+      (offer.product.pricing === "UNIT"
+        ? Number(offer.price)
+        : Number(offer.price) / 1000)
+    );
+  }, 0);
+
   await prisma.user.create({
     data: {
       first_name: "Usuário",
@@ -92,6 +101,7 @@ export async function seedDevelopment() {
       bags: {
         create: {
           code: "123-456",
+          price: price,
           status: "PENDING",
           cycle_id: cycleId.value,
           orders: {

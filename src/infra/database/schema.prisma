@@ -195,6 +195,7 @@ enum BAG_STATUS {
 model Bag {
   id     String     @id @default(uuid())
   code   String
+  price  Decimal    @db.Decimal(10, 2)
   status BAG_STATUS
 
   user_id  String

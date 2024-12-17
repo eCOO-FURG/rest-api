@@ -25,7 +25,7 @@ export class OpenPix implements PixProvider {
 
     const { charge } = await this.client.charge.create({
       correlationID: payment.id.value,
-      value: payment.bag!.price(),
+      value: payment.bag!.price,
       expiresIn: 60 * 15, // 15 minutes
       customer: {
         name,

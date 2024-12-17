@@ -21,6 +21,7 @@ export const BAG_STATUSES = [
 
 export interface BagProps extends EntityRequest {
   code: string;
+  price: number;
   status: (typeof BAG_STATUSES)[number];
 
   user_id: UUID;
@@ -61,6 +62,14 @@ export class Bag extends Entity<BagProps> {
     return this.props.code;
   }
 
+  get price() {
+    return this.props.price;
+  }
+
+  set price(value: number) {
+    this.props.price = value;
+  }
+
   get orders() {
     return this.props.orders;
   }
@@ -89,24 +98,6 @@ export class Bag extends Entity<BagProps> {
     return this.props.cycle_id;
   }
 
-  price() {
-    const orders = this.props.orders;
-
-    let total = 0;
-
-    for (const order of orders.values()) {
-      const price = order?.offer?.price;
-
-      if (!price) continue;
-
-      order.offer?.product?.pricing === "WEIGHT"
-        ? (total += (order.amount / 1000) * price)
-        : (total += order.amount * price);
-    }
-
-    return total;
-  }
-
   paid() {
     const payments = Array.from(this.props.payments.values());
 
@@ -128,10 +119,14 @@ export class Bag extends Entity<BagProps> {
   }
 
   static create(
-    props: Optional<BagProps, "status" | "address" | "orders" | "payments">
+    props: Optional<
+      BagProps,
+      "price" | "status" | "address" | "orders" | "payments"
+    >
   ) {
     const bag = new Bag({
       ...props,
+      price: props.price ?? 0,
       status: props.status ?? "PENDING",
       orders: props.orders ?? new Map(),
       payments: props.payments ?? new Map(),

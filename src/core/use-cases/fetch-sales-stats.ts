@@ -31,13 +31,13 @@ export class FetchSalesStatsUseCase {
 
       if (!monthly[month]) monthly[month] = 0;
 
-      monthly[month] += bag.price();
+      monthly[month] += bag.price;
 
       if (!daily[day]) daily[day] = 0;
 
-      daily[day] += bag.price();
+      daily[day] += bag.price;
 
-      if (month === current) revenue += bag.price();
+      if (month === current) revenue += bag.price;
     }
 
     return { revenue, monthly, daily };
