@@ -21,8 +21,8 @@ export default (container: AwilixContainer) => {
         new OnUpdatePasswordRequestEvent(usersRepository, hasher, mailer)
     ),
     onRequestHelpEvent: asFunction(
-      ({ mailer }) => 
-        new OnRequestHelpEvent(mailer)
+      ({ farmsRepository, mailer }) => 
+        new OnRequestHelpEvent(farmsRepository, mailer)
     )
   });
 };

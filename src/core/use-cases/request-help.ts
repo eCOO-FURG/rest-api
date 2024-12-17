@@ -16,7 +16,7 @@ export class RequestHelpUseCase {
   constructor(private usersRepository: UsersRepository) {}
 
   async execute({ user_id, content }: RequestHelpUseCaseRequest) {
-    const user = await this.usersRepository.findById(user_id);
+    const user = await this.usersRepository.find("basic", { id: user_id });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 

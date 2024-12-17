@@ -24,13 +24,18 @@ export class DomainEvents {
     );
   
     if (eventIndex < 0) return;
-
+  
     const event = this.events[eventIndex];
     const handler = this.handlers[event.name];
   
     if (!handler) return;
-  
-    handler({ entity: event.entity, content: event.payload });
+
+    if (event.payload) {
+      handler(event.payload);
+      return;
+    }
+
+    handler(this.events[eventIndex].entity);
   
     this.events.splice(eventIndex, 1);
   }

@@ -24,30 +24,31 @@ export class OnRequestHelpEvent {
   }
 
   setup() {
-    DomainEvents.register(OnRequestHelpEvent.name, this.execute.bind(this));
+    DomainEvents.register(
+      OnRequestHelpEvent.name,
+      this.execute.bind(this)
+    );
   }
 
-  async execute({ id, content }: OnRequestHelpEventRequest) {
-    const farm = await this.farmsRepository.search({
-      admin: { id: id.value }
-    }, 'aggregate')
-
-    if (!farm) throw new ResourceNotFoundError("Fazenda do usuário", id.value)
-
+  async execute({ id, content }: OnRequestHelpEventRequest) {  
+    const farm = await this.farmsRepository.find("aggregate", { admin: { id: id.value } });
+  
+    if (!farm) throw new ResourceNotFoundError("Fazenda do usuário", id.value);
+  
     const view = await this.mailer.load({
       view: "request-help",
       props: { content, farm },
     });
-
+  
     if (!process.env.ECOO_EMAIL) 
       throw new Error("A variável de ambiente ECOO_EMAIL não está definida.");
-
+  
     const supportEmail = Email.create({
       to: process.env.ECOO_EMAIL,
       subject: "Solicitação de Ajuda | Plataforma - e-Coo",
       content: view,
     });
-
+  
     await this.mailer.send(supportEmail);
   }
 }

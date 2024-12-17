@@ -1,6 +1,6 @@
 // Entities
 import { Email } from "@/core/entities/email";
-import { FarmAggregate } from "@/core/entities/aggregates/farm-aggregate";
+import { Farm } from "@/core/entities/farm";
 
 export type MailerLoadRequest =
   | {
@@ -27,7 +27,7 @@ export type MailerLoadRequest =
     view: "request-help";
     props: {
       content: string
-      farm: FarmAggregate
+      farm: Farm
     };
   };
 
