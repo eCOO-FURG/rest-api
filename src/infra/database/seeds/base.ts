@@ -48,7 +48,6 @@ async function seedBase() {
       data: products.map((product) => ({
         ...product,
         pricing: product.pricing as PRICING,
-        archived: false
       })),
     });
   }
