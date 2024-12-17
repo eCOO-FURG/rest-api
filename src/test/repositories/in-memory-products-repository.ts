@@ -8,37 +8,50 @@ import {
 } from "@/core/repositories/products-repository";
 import { RepositoryResponse } from "@/core/types/repository-response";
 
+// Utils
+import { filter } from "@/test/utils/filter";
+import { find } from "@/test/utils/find";
+
 export class InMemoryProductsRepository implements ProductsRepository {
   items: Product[] = [];
 
   async find(
     _: RepositoryResponse,
-    { name, pricing }: ProductsRepositorySearchRequest
+    { name, pricing, id }: ProductsRepositorySearchRequest
   ): Promise<Product | null> {
-    return this.items.find(
-      (item) =>
+    const product = await find<Product>(this.items, async (item) => {
+      return (
+        (!id || item.id.equals(id)) &&
         (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
         (!pricing || item.pricing === pricing)
-    ) || null;
+      );
+    });
+
+    if (!product) return null;
+
+    return product;
   }
 
   async list(
     _: RepositoryResponse,
-    { name }: ProductsRepositorySearchRequest
+    { id, name, pricing }: ProductsRepositorySearchRequest,
+    page: number
   ): Promise<Product[]> {
-    return this.items.filter(
-      (item) => !name || item.name.toLowerCase().includes(name.toLowerCase())
-    );
-  }  
+    let products = await filter<Product>(this.items, async (item) => {
+      return (
+        (!id || item.id.equals(id)) &&
+        (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
+        (!pricing || item.pricing === pricing)
+      );
+    });
+
+    if (page) products = this.slice(products, page);
+
+    return products;
+  }
 
   async create(product: Product): Promise<void> {
     this.items.push(product);
-  }
-
-  private slice(items: Product[], page: number, size: number = 20): Product[] {
-    const start = (page - 1) * size;
-    const end = start + size;
-    return items.slice(start, end);
   }
 
   async update(product: Product): Promise<void> {
@@ -47,5 +60,11 @@ export class InMemoryProductsRepository implements ProductsRepository {
     if (index !== -1) {
       this.items[index] = product;
     }
+  }
+
+  private slice(items: Product[], page: number, size: number = 20): Product[] {
+    const start = (page - 1) * size;
+    const end = start + size;
+    return items.slice(start, end);
   }
 }

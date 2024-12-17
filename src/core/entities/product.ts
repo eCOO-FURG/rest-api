@@ -1,6 +1,9 @@
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
+// Types
+import { Optional } from "@/core/types/optional";
+
 export const PRODUCT_PRICINGS = ["UNIT", "WEIGHT"] as const;
 
 export interface ProductProps extends EntityRequest {
@@ -47,8 +50,11 @@ export class Product extends Entity<ProductProps> {
     this.props.archived = false;
   }
 
-  static create(props: ProductProps) {
-    const product = new Product(props);
+  static create(props: Optional<ProductProps, "archived">) {
+    const product = new Product({
+      ...props,
+      archived: props.archived ?? false,
+    });
     return product;
   }
 }
