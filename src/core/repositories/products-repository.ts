@@ -7,6 +7,7 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 export interface ProductsRepositorySearchRequest {
   id?: string;
   name?: string;
+  pricing?: Product["pricing"];
 }
 
 export interface ProductsRepository {
@@ -20,4 +21,5 @@ export interface ProductsRepository {
     page?: number
   ): Promise<Product[]>;
   create(product: Product): Promise<void>;
+  update(product: Product): Promise<void>;
 }

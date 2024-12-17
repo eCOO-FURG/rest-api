@@ -38,6 +38,7 @@ import { updateUserController } from "@/infra/http/controllers/update-user";
 import { verifyUserController } from "@/infra/http/controllers/verify-user";
 import { updateCatalogController } from "@/infra/http/controllers/update-catalog";
 import { updateBagController } from "@/infra/http/controllers/update-bag";
+import { registerProductController } from "@/infra/http/controllers/register-product";
 
 // Webhooks
 import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
@@ -200,6 +201,7 @@ router.get("/cycles", listCyclesController);
 
 // Produtos
 router.get("/products", ensureAuthenticated, listProductsController);
+router.post("/products", ensureAuthenticated, ensureRole(["MANAGER"]), registerProductController)
 
 // Pendências
 router.get(
