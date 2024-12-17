@@ -1,60 +1,51 @@
 // Entities
-import { pricings, Product } from "@/core/entities/product"
+import { Product } from "@/core/entities/product";
 
 // Repositories
-import { UsersRepository } from "@/core/repositories/users-repository";
 import { ProductsRepository } from "@/core/repositories/products-repository";
 
 // Services
 import { Storage } from "@/core/storage/storage";
 
 // Errors
-import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 
 interface RegisterProductUseCaseRequest {
-  user_id: string;
   name: string;
+  pricing: Product["pricing"];
   image: Buffer;
-  pricing: pricings;
 }
 
 export class RegisterProductUseCase {
   constructor(
-    private usersRepository: UsersRepository,
     private productsRepository: ProductsRepository,
-    private storage: Storage,
-  ){}
+    private storage: Storage
+  ) {}
 
-  async execute({ user_id, name, image, pricing }: RegisterProductUseCaseRequest) {
-    const user = await this.usersRepository.find("basic", { id: user_id });
-
-    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
-
-    const existingProduct = await this.productsRepository.find("basic", { name, pricing });
-
-    if (existingProduct) {
-      if (existingProduct.archived === true) {
-        existingProduct.unarchive();
-    
-        await this.productsRepository.update(existingProduct);
-
-        return;
-      }
-    
-      throw new ResourceAlreadyExistsError('Produto', existingProduct.id.value);  
-    }
-    
-
-    const urls = await this.storage.upload([image], "products");
-
-    const product = Product.create({
+  async execute({ name, image, pricing }: RegisterProductUseCaseRequest) {
+    const exists = await this.productsRepository.find("basic", {
       name,
-      image: urls[0],
       pricing,
-      archived: false,
-    })
+    });
 
-    await this.productsRepository.create(product);
+    if (!exists) {
+      const urls = await this.storage.upload([image], "products");
+
+      const product = Product.create({
+        name,
+        pricing,
+        image: urls[0],
+        archived: false,
+      });
+
+      return await this.productsRepository.create(product);
+    }
+
+    if (!exists.archived)
+      throw new ResourceAlreadyExistsError("Produto", exists.id.value);
+
+    exists.unarchive();
+
+    return await this.productsRepository.update(exists);
   }
 }
