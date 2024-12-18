@@ -225,8 +225,8 @@ export default (container: AwilixContainer) => {
         new RegisterProductUseCase(productsRepository, storage)
     ),
     updateProductUseCase: asFunction(
-      ({ usersRepository, productsRepository, storage }) =>
-        new UpdateProductUseCase(usersRepository, productsRepository, storage)
+      ({ productsRepository, storage }) =>
+        new UpdateProductUseCase(productsRepository, storage)
     ),
     fetchSalesStatsUseCase: asFunction(
       ({ bagsRepository }) => new FetchSalesStatsUseCase(bagsRepository)

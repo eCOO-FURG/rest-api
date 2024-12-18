@@ -23,12 +23,12 @@ export class RegisterProductUseCase {
   ) {}
 
   async execute({ name, image, pricing }: RegisterProductUseCaseRequest) {
-    const exists = await this.productsRepository.find("basic", {
+    const equal = await this.productsRepository.find("basic", {
       name,
       pricing,
     });
 
-    if (!exists) {
+    if (!equal) {
       const urls = await this.storage.upload([image], "products");
 
       const product = Product.create({
@@ -41,11 +41,11 @@ export class RegisterProductUseCase {
       return await this.productsRepository.create(product);
     }
 
-    if (!exists.archived)
-      throw new ResourceAlreadyExistsError("Produto", exists.id.value);
+    if (!equal.archived)
+      throw new ResourceAlreadyExistsError("Produto", equal.id.value);
 
-    exists.unarchive();
+    equal.unarchive();
 
-    return await this.productsRepository.update(exists);
+    return await this.productsRepository.update(equal);
   }
 }

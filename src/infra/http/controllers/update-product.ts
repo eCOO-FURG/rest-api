@@ -12,15 +12,17 @@ import container from "@/infra/container";
 import { notEmpty } from "@/infra/http/validation/not-empty";
 
 export const updateProductSchema = {
-  body: z.object({
-    name: z.string().optional(),
-    image: z.any().optional(),
-    pricing: z.enum(["UNIT", "WEIGHT"]).optional(),
-    archived: z.boolean().optional(),
-  }).refine(notEmpty.validation, notEmpty.warning),
   params: z.object({
-    product_id: z.string(),
+    product_id: z.string().uuid(),
   }),
+  body: z
+    .object({
+      name: z.string().optional(),
+      image: z.any().optional(),
+      pricing: z.enum(["UNIT", "WEIGHT"]).optional(),
+      archived: z.boolean().optional(),
+    })
+    .refine(notEmpty.validation, notEmpty.warning),
 };
 
 export async function updateProductController(
@@ -29,17 +31,17 @@ export async function updateProductController(
   next: NextFunction
 ) {
   try {
+    const { product_id } = updateProductSchema.params.parse(request.params);
+
     const { name, image, pricing, archived } = updateProductSchema.body.parse(
       request.body
     );
 
-    const { product_id } = updateProductSchema.params.parse(request.params);
-
-    const updateProductUseCase =
-      container.resolve<UpdateProductUseCase>("updateProductUseCase");
+    const updateProductUseCase = container.resolve<UpdateProductUseCase>(
+      "updateProductUseCase"
+    );
 
     await updateProductUseCase.execute({
-      user_id: request.user_id,
       product_id,
       name,
       image,
