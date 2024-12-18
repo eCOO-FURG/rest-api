@@ -124,22 +124,15 @@ export class OrderProductsUseCase {
 
       const box = await this.useBox(catalog.id);
 
-      const price =
-        offer.product?.pricing === "WEIGHT"
-          ? (offer.price / 1000) * item.amount
-          : offer.price * item.amount;
-
       const order = Order.create({
         amount: item.amount,
-        price,
         bag_id: bag.id,
         box_id: box.id,
         offer_id: offer.id,
         offer,
       });
 
-      bag.price += price;
-      bag.orders.set(offer.id.value, order);
+      bag.add(order);
     }
 
     if (existed) {

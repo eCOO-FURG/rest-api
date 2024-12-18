@@ -5,6 +5,7 @@ import { asFunction, AwilixContainer } from "awilix";
 import { OnRegisteredEvent } from "@/core/events/on-registered";
 import { OnOtpRequestEvent } from "@/core/events/on-otp-requested";
 import { OnUpdatePasswordRequestEvent } from "@/core/events/on-password-update-requested";
+import { OnRequestHelpEvent } from "@/core/events/on-request-help";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -19,5 +20,9 @@ export default (container: AwilixContainer) => {
       ({ usersRepository, hasher, mailer }) =>
         new OnUpdatePasswordRequestEvent(usersRepository, hasher, mailer)
     ),
+    onRequestHelpEvent: asFunction(
+      ({ farmsRepository, mailer }) => 
+        new OnRequestHelpEvent(farmsRepository, mailer)
+    )
   });
 };

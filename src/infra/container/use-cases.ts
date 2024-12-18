@@ -30,6 +30,7 @@ import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
 import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
 import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
 import { FetchPendingsUseCase } from "@/core/use-cases/fetch-pendings";
+import { RequestHelpUseCase } from "@/core/use-cases/request-help";
 import { UpdateBoxUseCase } from "@/core/use-cases/update-box";
 import { CreateOfferUseCase } from "@/core/use-cases/create-offer";
 import { ListCatalogsUseCase } from "@/core/use-cases/list-catalogs";
@@ -227,7 +228,11 @@ export default (container: AwilixContainer) => {
       ({ bagsRepository }) => new FetchSalesStatsUseCase(bagsRepository)
     ),
     reportBagsUseCase: asFunction(
-      ({ bagsRepository, excelService }) => new ReportBagsUseCase(bagsRepository, excelService)
-    )
+      ({ bagsRepository, excelService }) =>
+        new ReportBagsUseCase(bagsRepository, excelService)
+    ),
+    requestHelpUseCase: asFunction(
+      ({ usersRepository }) => new RequestHelpUseCase(usersRepository)
+    ),
   });
 };
