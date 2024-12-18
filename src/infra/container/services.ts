@@ -11,6 +11,7 @@ import { PuppeteerPDFService } from "@/infra/pdf/puppeteer";
 import { OpenPix } from "@/infra/payment/open-pix";
 import { RedisCacheManager } from "@/infra/cache/redis-cache-manager";
 import { Cloudinary } from "@/infra/storage/cloudinary";
+import { ExcelService } from "@/infra/services/excel-service";
 
 // Mocks
 import { MockedPixProvider } from "@/test/payment/mocked-pix-provider";
@@ -64,5 +65,6 @@ export default (container: AwilixContainer) => {
       if (deploy) return new Cloudinary();
       return new MockedStorage();
     }).singleton(),
+    excelService: asClass(ExcelService).singleton(),
   });
 };

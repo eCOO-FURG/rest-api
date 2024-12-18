@@ -122,7 +122,8 @@ export class PrismaBagsRepository implements BagsRepository {
         },
         ...(typeof withdraw === "boolean" &&
           (withdraw ? { address_id: null } : { address_id: { not: null } })),
-        created_at: { lte: before, gte: since },
+        ...(since && { created_at: { gte: since } }),
+        ...(before && { created_at: { lte: before } }),
       },
       include: {
         ...(type !== "basic" && {
@@ -154,9 +155,9 @@ export class PrismaBagsRepository implements BagsRepository {
       },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
-
+  
     return bags.map(PrismaBagMapper.toDomain);
-  }
+  }  
 
   async create(bag: Bag): Promise<void> {
     const data = PrismaBagMapper.toPrisma(bag);
