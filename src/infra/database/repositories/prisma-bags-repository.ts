@@ -270,7 +270,7 @@ export class PrismaBagsRepository implements BagsRepository {
       if (bag.status === "CANCELLED") {
         for (const order of bag.orders.values()) {
           await ctx.order.update({
-            where: { id: order.offer_id.value },
+            where: { id: order.id.value },
             data: {
               status: "CANCELLED",
               offer: { update: { amount: { increment: order.amount } } },
