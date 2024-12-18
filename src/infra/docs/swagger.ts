@@ -35,7 +35,9 @@ import { registerPaymentSchema } from "@/infra/http/controllers/register-payment
 import { openPaymentSchema } from "@/infra/http/controllers/open-payment";
 import { updateFarmSchema } from "@/infra/http/controllers/update-farm";
 import { fetchPendingsSchema } from "@/infra/http/controllers/fetch-pendings";
-import { updateCatalogSchema } from "../http/controllers/update-catalog";
+import { updateCatalogSchema } from "@/infra/http/controllers/update-catalog";
+import { registerProductSchema } from "@/infra/http/controllers/register-product";
+import { updateProductSchema } from "@/infra/http/controllers/update-product";
 
 const tags = {
   users: "Usuários",
@@ -503,6 +505,21 @@ const docs = createDocument({
         },
         description: "Lista produtos.",
         ...SwaggerMapper.toDocs(listProductSchema),
+      },
+      post: {
+        tags: [tags.products],
+        responses: { "201": { description: "201 OK" } },
+        description: "Registra um produto.",
+        ...SwaggerMapper.toDocs(registerProductSchema),
+      },
+    },
+
+    "/products/{product_id}": {
+      patch: {
+        tags: [tags.products],
+        responses: { "204": { description: "204 OK" } },
+        description: "Atualiza um produto.",
+        ...SwaggerMapper.toDocs(updateProductSchema),
       },
     },
 

@@ -48,6 +48,7 @@ export class Product extends Entity<ProductProps> {
 
   unarchive() {
     this.props.archived = false;
+    this.touch();
   }
 
   static create(props: Optional<ProductProps, "archived">) {

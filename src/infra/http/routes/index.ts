@@ -39,6 +39,7 @@ import { verifyUserController } from "@/infra/http/controllers/verify-user";
 import { updateCatalogController } from "@/infra/http/controllers/update-catalog";
 import { updateBagController } from "@/infra/http/controllers/update-bag";
 import { registerProductController } from "@/infra/http/controllers/register-product";
+import { updateProductController } from "@/infra/http/controllers/update-product";
 import { fetchSalesStatsController } from "@/infra/http/controllers/fetch-sales-stats";
 import { reportBagsController } from "@/infra/http/controllers/report-bags";
 
@@ -210,6 +211,13 @@ router.post(
   ensureRole(["MANAGER"]),
   processFile("image", { allowed: ["image/jpeg", "image/png"], size: 1 }),
   registerProductController
+);
+router.patch(
+  "/products/:product_id",
+  ensureAuthenticated,
+  ensureRole(["MANAGER"]),
+  processFile("image", { allowed: ["image/jpeg", "image/png"], size: 1 }),
+  updateProductController
 );
 
 // Pendências
