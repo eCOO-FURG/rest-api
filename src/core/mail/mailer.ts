@@ -24,12 +24,12 @@ export type MailerLoadRequest =
       };
     }
   | {
-    view: "request-help";
-    props: {
-      content: string
-      farm: Farm
+      view: "request-help";
+      props: {
+        message: string;
+        farm: Farm;
+      };
     };
-  };
 
 export interface Mailer {
   send(email: Email): Promise<void>;

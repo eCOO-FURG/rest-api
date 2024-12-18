@@ -10,45 +10,44 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 // Repositories
 import { FarmsRepository } from "../repositories/farms-repository";
 
+// Env
+import { env } from "@/infra/env";
+
 interface OnRequestHelpEventRequest {
   id: UUID;
-  content: string;
+  message: string;
 }
 
 export class OnRequestHelpEvent {
   constructor(
     private farmsRepository: FarmsRepository,
-    private mailer: Mailer,
+    private mailer: Mailer
   ) {
     this.setup();
   }
 
   setup() {
-    DomainEvents.register(
-      OnRequestHelpEvent.name,
-      this.execute.bind(this)
-    );
+    DomainEvents.register(OnRequestHelpEvent.name, this.execute.bind(this));
   }
 
-  async execute({ id, content }: OnRequestHelpEventRequest) {  
-    const farm = await this.farmsRepository.find("aggregate", { admin: { id: id.value } });
-  
+  async execute({ id, message }: OnRequestHelpEventRequest) {
+    const farm = await this.farmsRepository.find("aggregate", {
+      admin: { id: id.value },
+    });
+
     if (!farm) throw new ResourceNotFoundError("Fazenda do usuário", id.value);
-  
+
     const view = await this.mailer.load({
       view: "request-help",
-      props: { content, farm },
+      props: { message, farm },
     });
-  
-    if (!process.env.ECOO_EMAIL) 
-      throw new Error("A variável de ambiente ECOO_EMAIL não está definida.");
-  
-    const supportEmail = Email.create({
-      to: process.env.ECOO_EMAIL,
-      subject: "Solicitação de Ajuda | Plataforma - e-Coo",
+
+    const email = Email.create({
+      to: env.ECOO_EMAIL,
+      subject: "Solicitação de ajuda | eCOO",
       content: view,
     });
-  
-    await this.mailer.send(supportEmail);
+
+    await this.mailer.send(email);
   }
 }

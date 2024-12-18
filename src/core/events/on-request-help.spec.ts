@@ -32,9 +32,9 @@ let spy: MockInstance;
 
 describe("on request help event", () => {
   beforeEach(() => {
-    usersRepository = new InMemoryUsersRepository(),
-    farmsRepository = new InMemoryFarmsRepository
-  
+    (usersRepository = new InMemoryUsersRepository()),
+      (farmsRepository = new InMemoryFarmsRepository());
+
     mocks = {
       mailer: new MockedMailer(),
     };
@@ -49,14 +49,12 @@ describe("on request help event", () => {
     const user = makeUser();
     await usersRepository.create(user);
 
-    const farm = makeFarm({
-      admin_id: user.id
-    });
-    await farmsRepository.create(farm)
+    const farm = makeFarm({ admin_id: user.id });
+    await farmsRepository.create(farm);
 
     await sut.execute({
       user_id: user.id.value,
-      content: "AJUDAAA",
+      message: "AJUDA",
     });
 
     await waitFor(() => {

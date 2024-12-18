@@ -9,7 +9,7 @@ import container from "@/infra/container";
 import { RequestHelpUseCase } from "@/core/use-cases/request-help";
 
 export const requestHelpSchema = {
-  body: z.object({ content: z.string().max(500) }),
+  body: z.object({ message: z.string().max(500) }),
 };
 
 export async function requestHelpController(
@@ -18,20 +18,18 @@ export async function requestHelpController(
   next: NextFunction
 ) {
   try {
-    const { content } = requestHelpSchema.body.parse(request.body);
+    const { message } = requestHelpSchema.body.parse(request.body);
 
     const user_id = request.user_id;
 
     container.resolve("onRequestHelpEvent");
 
     const requestHelpUseCase =
-      container.resolve<RequestHelpUseCase>(
-        "requestHelpUseCase"
-      );
+      container.resolve<RequestHelpUseCase>("requestHelpUseCase");
 
     await requestHelpUseCase.execute({
-      content,
-      user_id
+      message,
+      user_id,
     });
 
     return response.sendStatus(200);

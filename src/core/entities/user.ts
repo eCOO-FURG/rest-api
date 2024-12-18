@@ -107,14 +107,11 @@ export class User extends Entity<UserProps> {
     );
   }
 
-  help(content: string) {
+  help(message: string) {
     DomainEvents.events.push({
       entity: this,
       name: OnRequestHelpEvent.name,
-      payload: {
-        id: this.id.value,
-        content,
-      },
+      payload: { message },
     });
   }
 
