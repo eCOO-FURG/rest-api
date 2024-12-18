@@ -60,9 +60,13 @@ router.patch(
   processFile("photo", { allowed: ["image/jpeg", "image/png"], size: 1 }),
   updateUserController
 );
-router.get("/me/verify", verifyUserController);
-router.post("/me/password", requestPasswordUpdateController);
-router.post("/help", ensureAuthenticated, ensureRole(['PRODUCER']), requestHelpController)
+router.get("/verify", verifyUserController);
+router.post(
+  "/help",
+  ensureAuthenticated,
+  ensureRole(["PRODUCER"]),
+  requestHelpController
+);
 
 // Autenticação
 router.post("/auth", authenticateController);
