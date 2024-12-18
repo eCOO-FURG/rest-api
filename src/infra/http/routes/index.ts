@@ -215,6 +215,7 @@ router.patch(
   "/products/:product_id",
   ensureAuthenticated,
   ensureRole(["MANAGER"]),
+  processFile("image", { allowed: ["image/jpeg", "image/png"], size: 1 }),
   updateProductController
 );
 
