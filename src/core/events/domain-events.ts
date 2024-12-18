@@ -19,24 +19,18 @@ export class DomainEvents {
   }
 
   static dispatch(entity: Entity<unknown>) {
-    const eventIndex = this.events.findIndex(
-      (event) => event.entity.id.equals(entity.id)
+    const event = this.events.findIndex((event) =>
+      event.entity.id.equals(entity.id)
     );
-  
-    if (eventIndex < 0) return;
-  
-    const event = this.events[eventIndex];
-    const handler = this.handlers[event.name];
-  
+
+    if (event < 0) return;
+
+    const handler = this.handlers[this.events[event].name];
+
     if (!handler) return;
 
-    if (event.payload) {
-      handler(event.payload);
-      return;
-    }
+    handler({ ...this.events[event] });
 
-    handler(this.events[eventIndex].entity);
-  
-    this.events.splice(eventIndex, 1);
+    this.events.splice(event, 1);
   }
 }
