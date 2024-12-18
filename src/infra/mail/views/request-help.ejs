@@ -78,7 +78,7 @@
       }
       .content {
         padding: 2em 2.5em;
-        text-align: center;
+        text-align: left;
         font-size: 18px;
         color: #333;
       }
@@ -104,12 +104,13 @@
   </head>
   <body
     width="100%"
-    style="margin: 0; padding: 0 !important; background-color: #f1f1f1;"
+    style="margin: 0; padding: 0 !important; background-color: #f1f1f1"
   >
-    <center style="width: 100%; background-color: #f1f1f1;">
+    <center style="width: 100%; background-color: #f1f1f1">
       <div class="email-container">
         <!-- Header -->
         <table
+          align="center"
           role="presentation"
           cellspacing="0"
           cellpadding="0"
@@ -117,8 +118,24 @@
           width="100%"
         >
           <tr>
-            <td style="padding: 20px 0; text-align: center;">
-              <h1 class="logo">e-COO</h1>
+            <td
+              valign="top"
+              class="bg_white"
+              style="padding: 1em 2.5em 0 2.5em"
+            >
+              <table
+                role="presentation"
+                border="0"
+                cellpadding="0"
+                cellspacing="0"
+                width="100%"
+              >
+                <tr>
+                  <td class="logo" style="text-align: center">
+                    <h1 style="margin-top: 0.4rem"><a href="#">e-COO</a></h1>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
         </table>
@@ -133,25 +150,20 @@
         >
           <tr>
             <td class="content">
-              <h2>Solicitação de Suporte</h2>
-              <p>
-                <strong>Nome do Produtor:</strong>
-                <%= props.farm.admin?.first_name || "Não informado" %>
-                <%= props.farm.admin?.last_name || "" %>
+              <h2 style="text-align: center; font-weight: bold">
+                Solicitação de Suporte
+              </h2>
+              <strong>Fazendeiro eCOO</strong>
+              <p><%= props.message %></p>
+              <p style="font-size: 16px">
+                <strong>Email:</strong> <%= props.farm.admin?.email %>
+                <strong>Telefone:</strong> <%= props.farm.admin?.phone %>
               </p>
-              <p>
-                <strong>Email do Produtor:</strong>
-                <%= props.farm.admin?.email || "Não informado" %>
+              <p style="text-align: center">
+                <a href="mailto:support@ecoo.org" class="btn"
+                  >RESPONDER SOLICITAÇÃO</a
+                >
               </p>
-              <p>
-                <strong>Celular/Contato Telegram:</strong>
-                <%= props.farm.admin?.phone || "Não informado" %>
-              </p>
-              <p>
-                <strong>Mensagem:</strong>
-                <%= props.content || "Nenhuma mensagem enviada." %>
-              </p>
-              <a href="mailto:support@ecoo.org" class="btn">RESPONDER SOLICITAÇÃO</a>
             </td>
           </tr>
         </table>
@@ -174,7 +186,7 @@
                 construção de futuro!
               </p>
               <p>Caso já tenha verificado, ignore.</p>
-              <p style="text-align: center; font-size: 12px;">
+              <p style="text-align: center; font-size: 12px">
                 Plataforma e-Coo &copy; <%= new Date().getFullYear() %>
               </p>
             </td>
