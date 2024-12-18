@@ -13,7 +13,7 @@ import { ListCyclesUseCase } from "@/core/use-cases/list-cycles";
 import { ListProductsUsecase } from "@/core/use-cases/list-products";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 import { ListCurrentBagsUseCase } from "@/core/use-cases/list-current-bags";
-import { PrintDeliveriesReportUseCase } from "@/core/use-cases/print-deliveries-report";
+import { PrintBagsReportUseCase } from "@/core/use-cases/print-bags-report";
 import { FetchProfileUseCase } from "@/core/use-cases/fetch-profile";
 import { ListBoxesUseCase } from "@/core/use-cases/list-boxes";
 import { FetchBoxUseCase } from "@/core/use-cases/fetch-box";
@@ -30,6 +30,7 @@ import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
 import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
 import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
 import { FetchPendingsUseCase } from "@/core/use-cases/fetch-pendings";
+import { RequestHelpUseCase } from "@/core/use-cases/request-help";
 import { UpdateBoxUseCase } from "@/core/use-cases/update-box";
 import { CreateOfferUseCase } from "@/core/use-cases/create-offer";
 import { ListCatalogsUseCase } from "@/core/use-cases/list-catalogs";
@@ -37,6 +38,7 @@ import { UpdateBagUseCase } from "@/core/use-cases/update-bag";
 import { UpdateCatalogUseCase } from "@/core/use-cases/update-catalog";
 import { RegisterProductUseCase } from "@/core/use-cases/register-product";
 import { UpdateProductUseCase } from "@/core/use-cases/update-product";
+import { FetchSalesStatsUseCase } from "@/core/use-cases/fetch-sales-stats";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -153,13 +155,9 @@ export default (container: AwilixContainer) => {
     listProductsUseCase: asFunction(
       ({ productsRepository }) => new ListProductsUsecase(productsRepository)
     ),
-    printDeliveriesReport: asFunction(
+    printBagsReportUseCase: asFunction(
       ({ cyclesRepository, bagsRepository, pdfService }) =>
-        new PrintDeliveriesReportUseCase(
-          cyclesRepository,
-          bagsRepository,
-          pdfService
-        )
+        new PrintBagsReportUseCase(cyclesRepository, bagsRepository, pdfService)
     ),
     updateBagUseCase: asFunction(
       ({ bagsRepository, usersRepository, cyclesRepository }) =>
@@ -223,20 +221,18 @@ export default (container: AwilixContainer) => {
         )
     ),
     registerProductUseCase: asFunction(
-      ({ usersRepository, productsRepository, storage }) => 
-        new RegisterProductUseCase(
-          usersRepository,
-          productsRepository,
-          storage
-        )
+      ({ productsRepository, storage }) =>
+        new RegisterProductUseCase(productsRepository, storage)
     ),
     updateProductUseCase: asFunction(
-      ({ usersRepository, productsRepository, storage }) => 
-        new UpdateProductUseCase(
-          usersRepository,
-          productsRepository,
-          storage
-        )
-    )
+      ({ usersRepository, productsRepository, storage }) =>
+        new UpdateProductUseCase(usersRepository, productsRepository, storage)
+    ),
+    fetchSalesStatsUseCase: asFunction(
+      ({ bagsRepository }) => new FetchSalesStatsUseCase(bagsRepository)
+    ),
+    requestHelpUseCase: asFunction(
+      ({ usersRepository }) => new RequestHelpUseCase(usersRepository)
+    ),
   });
 };

@@ -8,12 +8,14 @@ import { RegisterProductUseCase } from "@/core/use-cases/register-product";
 // Container
 import container from "@/infra/container";
 
-// Validation
+// Utils
+import { toJSON } from "@/infra/utils/to-json";
+
 export const registerProductSchema = {
   body: z.object({
     name: z.string(),
-    image: z.any(),
     pricing: z.enum(["UNIT", "WEIGHT"]),
+    image: z.any().refine((value) => !!value),
   }),
 };
 
@@ -23,18 +25,18 @@ export async function registerProductController(
   next: NextFunction
 ) {
   try {
-    const { name, image, pricing } = registerProductSchema.body.parse(
-      request.body
+    const content = toJSON({ ...request.body, image: request.file });
+
+    const { name, pricing } = registerProductSchema.body.parse(content);
+
+    const registerProductUseCase = container.resolve<RegisterProductUseCase>(
+      "registerProductUseCase"
     );
 
-    const registerProductUseCase =
-      container.resolve<RegisterProductUseCase>("registerProductUseCase");
-
     await registerProductUseCase.execute({
-      user_id: request.user_id,
       name,
-      image,
       pricing,
+      image: request.file!.buffer,
     });
 
     return response.sendStatus(201);

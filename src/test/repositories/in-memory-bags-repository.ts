@@ -28,6 +28,7 @@ export class InMemoryBagsRepository implements BagsRepository {
       orders,
       payments,
       statuses,
+      withdraw,
       since,
       before,
     }: BagsRepositorySearchRequest
@@ -37,6 +38,9 @@ export class InMemoryBagsRepository implements BagsRepository {
       async (item) =>
         (!id || item.id.equals(id)) &&
         (!user?.id || item.user_id.equals(user.id)) &&
+        (typeof withdraw !== "boolean" ||
+          (withdraw && item.address_id) ||
+          (!withdraw && !item.address_id)) &&
         Boolean(
           !user?.name ||
             item.user?.first_name.includes(user.name!) ||
@@ -73,6 +77,7 @@ export class InMemoryBagsRepository implements BagsRepository {
       statuses,
       orders,
       payments,
+      withdraw,
       since,
       before,
     }: BagsRepositorySearchRequest,
@@ -83,6 +88,9 @@ export class InMemoryBagsRepository implements BagsRepository {
       async (item) =>
         (!id || item.id.equals(id)) &&
         (!user?.id || item.user_id.equals(user.id)) &&
+        (typeof withdraw !== "boolean" ||
+          (withdraw && item.address_id) ||
+          (!withdraw && !item.address_id)) &&
         Boolean(
           !user?.name ||
             item.user?.first_name.includes(user.name!) ||

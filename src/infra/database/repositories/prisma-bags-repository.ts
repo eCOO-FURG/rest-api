@@ -30,6 +30,7 @@ export class PrismaBagsRepository implements BagsRepository {
       address,
       orders,
       payments,
+      withdraw,
       before,
       since,
     }: BagsRepositorySearchRequest
@@ -39,6 +40,7 @@ export class PrismaBagsRepository implements BagsRepository {
         id,
         status: { in: statuses },
         cycle,
+        address,
         customer: {
           id: user?.id,
           ...(user?.name && {
@@ -48,7 +50,8 @@ export class PrismaBagsRepository implements BagsRepository {
             ],
           }),
         },
-        address,
+        ...(typeof withdraw === "boolean" &&
+          (withdraw ? { address_id: null } : { address_id: { not: null } })),
         created_at: { lte: before, gte: since },
       },
       include: {
@@ -94,6 +97,7 @@ export class PrismaBagsRepository implements BagsRepository {
       cycle,
       user,
       statuses,
+      withdraw,
       orders,
       payments,
       since,
@@ -106,6 +110,7 @@ export class PrismaBagsRepository implements BagsRepository {
         id,
         status: { in: statuses },
         cycle,
+        address,
         customer: {
           id: user?.id,
           ...(user?.name && {
@@ -115,7 +120,8 @@ export class PrismaBagsRepository implements BagsRepository {
             ],
           }),
         },
-        address,
+        ...(typeof withdraw === "boolean" &&
+          (withdraw ? { address_id: null } : { address_id: { not: null } })),
         created_at: { lte: before, gte: since },
       },
       include: {
@@ -264,7 +270,7 @@ export class PrismaBagsRepository implements BagsRepository {
       if (bag.status === "CANCELLED") {
         for (const order of bag.orders.values()) {
           await ctx.order.update({
-            where: { id: order.offer_id.value },
+            where: { id: order.id.value },
             data: {
               status: "CANCELLED",
               offer: { update: { amount: { increment: order.amount } } },

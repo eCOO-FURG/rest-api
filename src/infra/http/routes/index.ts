@@ -26,7 +26,7 @@ import { listOwnBagsController } from "@/infra/http/controllers/list-own-bags";
 import { createOfferController } from "@/infra/http/controllers/create-offer";
 import { openPaymentController } from "@/infra/http/controllers/open-payment";
 import { orderProductsController } from "@/infra/http/controllers/order-products";
-import { printDeliveriesReportController } from "@/infra/http/controllers/print-deliveries-report";
+import { printBagsReportController } from "@/infra/http/controllers/print-bags-report";
 import { registerController } from "@/infra/http/controllers/register";
 import { registerFarmController } from "@/infra/http/controllers/register-farm";
 import { registerPaymentController } from "@/infra/http/controllers/register-payment";
@@ -40,6 +40,7 @@ import { updateCatalogController } from "@/infra/http/controllers/update-catalog
 import { updateBagController } from "@/infra/http/controllers/update-bag";
 import { registerProductController } from "@/infra/http/controllers/register-product";
 import { updateProductController } from "@/infra/http/controllers/update-product";
+import { fetchSalesStatsController } from "@/infra/http/controllers/fetch-sales-stats";
 
 // Webhooks
 import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
@@ -49,6 +50,7 @@ import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticat
 import { ensureIntegration } from "@/infra/http/middlewares/ensure-integration";
 import { ensureRole } from "@/infra/http/middlewares/ensure-role";
 import { processFile } from "@/infra/http/middlewares/process-files";
+import { requestHelpController } from "../controllers/request-help";
 
 export const router = Router();
 
@@ -61,12 +63,18 @@ router.patch(
   processFile("photo", { allowed: ["image/jpeg", "image/png"], size: 1 }),
   updateUserController
 );
-router.get("/me/verify", verifyUserController);
+router.post(
+  "/help",
+  ensureAuthenticated,
+  ensureRole(["PRODUCER"]),
+  requestHelpController
+);
 
 // Autenticação
 router.post("/auth", authenticateController);
 router.post("/auth/otp", requestOtpController);
 router.post("/auth/password", requestPasswordUpdateController);
+router.get("/verify", verifyUserController);
 
 // Fazendas
 router.get(
@@ -164,15 +172,9 @@ router.get(
   listCurrentBagsController
 );
 router.get(
-  "/reports",
-  ensureAuthenticated,
-  ensureRole(["BROKER", "MANAGER"]),
-  printDeliveriesReportController
-);
-router.get(
   "/bags",
   ensureAuthenticated,
-  ensureRole(["BROKER"]),
+  ensureRole(["BROKER", "MANAGER"]),
   listBagsController
 );
 router.get("/bags/own", ensureAuthenticated, listOwnBagsController);
@@ -202,8 +204,19 @@ router.get("/cycles", listCyclesController);
 
 // Produtos
 router.get("/products", ensureAuthenticated, listProductsController);
-router.post("/products", ensureAuthenticated, ensureRole(["MANAGER"]), registerProductController);
-router.patch("/products/:product_id", ensureAuthenticated, ensureRole(["MANAGER"]), updateProductController);
+router.post(
+  "/products",
+  ensureAuthenticated,
+  ensureRole(["MANAGER"]),
+  processFile("image", { allowed: ["image/jpeg", "image/png"], size: 1 }),
+  registerProductController
+);
+router.patch(
+  "/products/:product_id",
+  ensureAuthenticated,
+  ensureRole(["MANAGER"]),
+  updateProductController
+);
 
 // Pendências
 router.get(
@@ -211,6 +224,22 @@ router.get(
   ensureAuthenticated,
   ensureRole(["BROKER"]),
   fetchPendingsController
+);
+
+// Estatísticas
+router.get(
+  "/stats",
+  ensureAuthenticated,
+  ensureRole(["MANAGER"]),
+  fetchSalesStatsController
+);
+
+// Relatórios
+router.get(
+  "/reports",
+  ensureAuthenticated,
+  ensureRole(["BROKER", "MANAGER"]),
+  printBagsReportController
 );
 
 // Webhooks

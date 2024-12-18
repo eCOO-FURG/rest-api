@@ -1,5 +1,5 @@
 // Entities
-import { pricings, Product } from "@/core/entities/product";
+import { Product } from "@/core/entities/product";
 
 // Types
 import { RepositoryResponse } from "@/core/types/repository-response";
@@ -7,7 +7,8 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 export interface ProductsRepositorySearchRequest {
   id?: string;
   name?: string;
-  pricing?: pricings
+  pricing?: Product["pricing"];
+  archived?: boolean;
 }
 
 export interface ProductsRepository {

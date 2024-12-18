@@ -77,7 +77,16 @@ export async function seedDevelopment() {
     },
   });
 
-  const offers = await prisma.offer.findMany();
+  const offers = await prisma.offer.findMany({ include: { product: true } });
+
+  const price = offers.reduce((acc, offer) => {
+    return (
+      acc +
+      (offer.product.pricing === "UNIT"
+        ? Number(offer.price)
+        : Number(offer.price) / 1000)
+    );
+  }, 0);
 
   await prisma.user.create({
     data: {
@@ -92,6 +101,7 @@ export async function seedDevelopment() {
       bags: {
         create: {
           code: "123-456",
+          price: price,
           status: "PENDING",
           cycle_id: cycleId.value,
           orders: {
@@ -100,6 +110,10 @@ export async function seedDevelopment() {
                 box_id: boxId.value,
                 offer_id: offer.id,
                 amount: offer.amount,
+                price:
+                  offer.product.pricing === "UNIT"
+                    ? Number(offer.price) * offer.amount
+                    : (Number(offer.price) / 1000) * offer.amount,
                 status: "PENDING",
               })),
             },

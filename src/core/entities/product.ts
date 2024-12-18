@@ -1,13 +1,16 @@
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
-export type pricings = "UNIT" | "WEIGHT"
+// Types
+import { Optional } from "@/core/types/optional";
+
+export const PRODUCT_PRICINGS = ["UNIT", "WEIGHT"] as const;
 
 export interface ProductProps extends EntityRequest {
   name: string;
   image: string;
-  pricing: pricings;
-  archived: boolean
+  archived: boolean;
+  pricing: (typeof PRODUCT_PRICINGS)[number];
 }
 
 export class Product extends Entity<ProductProps> {
@@ -35,7 +38,7 @@ export class Product extends Entity<ProductProps> {
     this.props.image = value;
   }
 
-  set pricing(value: pricings) {
+  set pricing(value: ProductProps["pricing"]) {
     this.props.pricing = value;
   }
 
@@ -47,12 +50,11 @@ export class Product extends Entity<ProductProps> {
     this.props.archived = false;
   }
 
-  public touch() {
-    this.props.updated_at = new Date();
-  }
-
-  static create(props: ProductProps) {
-    const product = new Product(props);
+  static create(props: Optional<ProductProps, "archived">) {
+    const product = new Product({
+      ...props,
+      archived: props.archived ?? false,
+    });
     return product;
   }
 }

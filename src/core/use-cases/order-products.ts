@@ -132,7 +132,7 @@ export class OrderProductsUseCase {
         offer,
       });
 
-      bag.orders.set(offer.id.value, order);
+      bag.add(order);
     }
 
     if (existed) {

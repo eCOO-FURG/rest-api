@@ -23,7 +23,7 @@ import { fetchCatalogsSchema } from "@/infra/http/controllers/fetch-catalog";
 import { fetchLastCatalogSchema } from "@/infra/http/controllers/fetch-last-catalog";
 import { fetchBagSchema } from "@/infra/http/controllers/fetch-bag";
 import { handleBagSchema } from "@/infra/http/controllers/handle-bag";
-import { printDeliveriesReportSchema } from "@/infra/http/controllers/print-deliveries-report";
+import { printBagsReportSchema } from "@/infra/http/controllers/print-bags-report";
 import { listProductSchema } from "@/infra/http/controllers/list-products";
 import { fetchCurrentBoxSchema } from "@/infra/http/controllers/fetch-current-box";
 import { requestPasswordUpdateSchema } from "@/infra/http/controllers/request-password-update";
@@ -50,6 +50,7 @@ const tags = {
   products: "Produtos",
   payments: "Pagamentos",
   pendings: "Pendências",
+  stats: "Estatísticas",
 };
 
 const docs = createDocument({
@@ -426,7 +427,7 @@ const docs = createDocument({
         ...SwaggerMapper.toDocs(handleBagSchema),
       },
     },
-    "/bags/report": {
+    "/reports": {
       get: {
         tags: [tags.bags],
         responses: {
@@ -435,8 +436,8 @@ const docs = createDocument({
           },
           "404": { description: "Ciclo não encontrado: cycle-not-found" },
         },
-        description: "Gera o relatório de entrega de sacolas.",
-        ...SwaggerMapper.toDocs(printDeliveriesReportSchema),
+        description: "Gera o relatório de sacolas.",
+        ...SwaggerMapper.toDocs(printBagsReportSchema),
       },
     },
     "/bags/own": {
@@ -532,6 +533,15 @@ const docs = createDocument({
         },
         description: "Busca as pendências de um ciclo.",
         ...SwaggerMapper.toDocs(fetchPendingsSchema),
+      },
+    },
+
+    // Estatísticas
+    "/stats": {
+      get: {
+        tags: [tags.stats],
+        responses: { "200": { description: "200 OK" } },
+        description: "Busca as estatísticas de vendas.",
       },
     },
   },

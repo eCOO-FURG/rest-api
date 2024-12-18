@@ -10,6 +10,7 @@ import { Offer } from "@/core/entities/offer";
 
 export interface OrderProps extends EntityRequest {
   amount: number;
+  price: number;
   status: "PENDING" | "CANCELLED" | "RECEIVED" | "REJECTED";
 
   offer_id: UUID;
@@ -51,6 +52,14 @@ export class Order extends Entity<OrderProps> {
     return this.props.amount;
   }
 
+  get price() {
+    return this.props.price;
+  }
+
+  set price(value: number) {
+    this.props.price = value;
+  }
+
   set amount(value: number) {
     this.props.amount = value;
   }
@@ -63,8 +72,19 @@ export class Order extends Entity<OrderProps> {
     this.props.status = value;
   }
 
-  static create(props: Optional<OrderProps, "status">) {
-    const order = new Order({ ...props, status: props.status ?? "PENDING" });
+  static create(props: Optional<OrderProps, "status" | "price">) {
+    const cost = props.offer?.price ?? 1;
+
+    const price =
+      props.price ?? props.offer?.product?.pricing === "WEIGHT"
+        ? (cost / 1000) * props.amount
+        : cost * props.amount;
+
+    const order = new Order({
+      ...props,
+      price,
+      status: props.status ?? "PENDING",
+    });
     return order;
   }
 }

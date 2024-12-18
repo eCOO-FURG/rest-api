@@ -18,7 +18,7 @@ export class PrismaOfferMapper {
   static toDomain(raw: PrismaOffer): Offer {
     return Offer.create({
       id: new UUID(raw.id),
-      amount: raw.amount.toNumber(),
+      amount: raw.amount,
       price: raw.price.toNumber(),
       catalog_id: new UUID(raw.catalog_id),
       ...(raw.catalog && {
