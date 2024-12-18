@@ -62,7 +62,6 @@ router.patch(
   processFile("photo", { allowed: ["image/jpeg", "image/png"], size: 1 }),
   updateUserController
 );
-router.get("/verify", verifyUserController);
 router.post(
   "/help",
   ensureAuthenticated,
@@ -74,6 +73,7 @@ router.post(
 router.post("/auth", authenticateController);
 router.post("/auth/otp", requestOtpController);
 router.post("/auth/password", requestPasswordUpdateController);
+router.get("/verify", verifyUserController);
 
 // Fazendas
 router.get(
