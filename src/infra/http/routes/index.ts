@@ -49,6 +49,7 @@ import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticat
 import { ensureIntegration } from "@/infra/http/middlewares/ensure-integration";
 import { ensureRole } from "@/infra/http/middlewares/ensure-role";
 import { processFile } from "@/infra/http/middlewares/process-files";
+import { requestHelpController } from "../controllers/request-help";
 
 export const router = Router();
 
@@ -61,12 +62,18 @@ router.patch(
   processFile("photo", { allowed: ["image/jpeg", "image/png"], size: 1 }),
   updateUserController
 );
-router.get("/me/verify", verifyUserController);
+router.post(
+  "/help",
+  ensureAuthenticated,
+  ensureRole(["PRODUCER"]),
+  requestHelpController
+);
 
 // Autenticação
 router.post("/auth", authenticateController);
 router.post("/auth/otp", requestOtpController);
 router.post("/auth/password", requestPasswordUpdateController);
+router.get("/verify", verifyUserController);
 
 // Fazendas
 router.get(

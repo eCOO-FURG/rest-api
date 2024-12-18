@@ -118,6 +118,12 @@ export class Bag extends Entity<BagProps> {
     return pending;
   }
 
+  add(order: Order) {
+    this.props.orders.set(order.id.value, order);
+    this.props.price += order.price;
+    this.touch();
+  }
+
   static create(
     props: Optional<
       BagProps,

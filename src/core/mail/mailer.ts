@@ -1,5 +1,6 @@
 // Entities
 import { Email } from "@/core/entities/email";
+import { Farm } from "@/core/entities/farm";
 
 export type MailerLoadRequest =
   | {
@@ -20,6 +21,13 @@ export type MailerLoadRequest =
       view: "otp-request";
       props: {
         otp: string;
+      };
+    }
+  | {
+      view: "request-help";
+      props: {
+        message: string;
+        farm: Farm;
       };
     };
 

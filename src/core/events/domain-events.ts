@@ -29,7 +29,12 @@ export class DomainEvents {
 
     if (!handler) return;
 
-    handler(this.events[event].entity);
+    const props = {
+      ...this.events[event].entity.props,
+      ...this.events[event].payload,
+    };
+
+    handler(props);
 
     this.events.splice(event, 1);
   }
