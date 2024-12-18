@@ -7,6 +7,7 @@ import { Optional } from "@/core/types/optional";
 
 // Events
 import { DomainEvents } from "@/core/events/domain-events";
+import { OnRequestHelpEvent } from "@/core/events/on-request-help";
 import { OnUpdatePasswordRequestEvent } from "@/core/events/on-password-update-requested";
 
 export type Role = "USER" | "PRODUCER" | "MANAGER" | "BROKER";
@@ -104,6 +105,14 @@ export class User extends Entity<UserProps> {
     return !!this.props.roles.find(
       (role) => role === "MANAGER" || role === "BROKER"
     );
+  }
+
+  help(message: string) {
+    DomainEvents.events.push({
+      entity: this,
+      name: OnRequestHelpEvent.name,
+      payload: { message },
+    });
   }
 
   static create(
