@@ -9,21 +9,24 @@ import {
 import { RepositoryResponse } from "@/core/types/repository-response";
 
 // Utils
-import { find } from "@/test/utils/find";
 import { filter } from "@/test/utils/filter";
+import { find } from "@/test/utils/find";
 
 export class InMemoryProductsRepository implements ProductsRepository {
   items: Product[] = [];
 
   async find(
     _: RepositoryResponse,
-    { id, name }: ProductsRepositorySearchRequest
+    { id, name, pricing, archived }: ProductsRepositorySearchRequest
   ): Promise<Product | null> {
-    const product = await find<Product>(
-      this.items,
-      async (item) =>
-        (!id || item.id.equals(id)) && (!name || item.name === name)
-    );
+    const product = await find<Product>(this.items, async (item) => {
+      return (
+        (!id || item.id.equals(id)) &&
+        (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
+        (!pricing || item.pricing === pricing) &&
+        (!archived || item.archived === archived)
+      );
+    });
 
     if (!product) return null;
 
@@ -32,13 +35,17 @@ export class InMemoryProductsRepository implements ProductsRepository {
 
   async list(
     _: RepositoryResponse,
-    { name }: ProductsRepositorySearchRequest,
-    page?: number
+    { id, name, pricing, archived }: ProductsRepositorySearchRequest,
+    page: number
   ): Promise<Product[]> {
-    let products = await filter<Product>(
-      this.items,
-      async (item) => !name || item.name.includes(name)
-    );
+    let products = await filter<Product>(this.items, async (item) => {
+      return (
+        (!id || item.id.equals(id)) &&
+        (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
+        (!pricing || item.pricing === pricing) &&
+        (!archived || item.archived === archived)
+      );
+    });
 
     if (page) products = this.slice(products, page);
 
@@ -47,6 +54,14 @@ export class InMemoryProductsRepository implements ProductsRepository {
 
   async create(product: Product): Promise<void> {
     this.items.push(product);
+  }
+
+  async update(product: Product): Promise<void> {
+    const index = this.items.findIndex((item) => item.id === product.id);
+
+    if (index !== -1) {
+      this.items[index] = product;
+    }
   }
 
   private slice(items: Product[], page: number, size: number = 20): Product[] {

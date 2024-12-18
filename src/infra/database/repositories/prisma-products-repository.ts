@@ -19,10 +19,15 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 export class PrismaProductRepository implements ProductsRepository {
   async find(
     _: RepositoryResponse,
-    { id, name }: ProductsRepositorySearchRequest
+    { id, name, pricing, archived }: ProductsRepositorySearchRequest
   ): Promise<Product | null> {
-    const product = await prisma.product.findUnique({
-      where: { id, name: { contains: name, mode: "insensitive" } },
+    const product = await prisma.product.findFirst({
+      where: {
+        id,
+        pricing,
+        archived,
+        ...(name && { name: { contains: name, mode: "insensitive" } }),
+      },
     });
 
     if (!product) return null;
@@ -32,11 +37,16 @@ export class PrismaProductRepository implements ProductsRepository {
 
   async list(
     _: RepositoryResponse,
-    { name, id }: ProductsRepositorySearchRequest,
+    { name, id, archived, pricing }: ProductsRepositorySearchRequest,
     page?: number
   ): Promise<Product[]> {
     const products = await prisma.product.findMany({
-      where: { id, name: { contains: name, mode: "insensitive" } },
+      where: {
+        id,
+        pricing,
+        archived,
+        ...(name && { name: { contains: name, mode: "insensitive" } }),
+      },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
@@ -47,5 +57,11 @@ export class PrismaProductRepository implements ProductsRepository {
     const data = PrismaProductMapper.toPrisma(product);
 
     await prisma.product.create({ data });
+  }
+
+  async update(product: Product): Promise<void> {
+    const data = PrismaProductMapper.toPrisma(product);
+
+    await prisma.product.update({ where: { id: data.id }, data });
   }
 }

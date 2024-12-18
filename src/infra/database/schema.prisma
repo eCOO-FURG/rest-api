@@ -98,10 +98,11 @@ enum PRICING {
 }
 
 model Product {
-  id      String  @id @default(uuid())
-  name    String
-  image   String
-  pricing PRICING
+  id       String  @id @default(uuid())
+  name     String
+  image    String
+  pricing  PRICING
+  archived Boolean @default(false)
 
   created_at DateTime  @default(now())
   updated_at DateTime?
@@ -147,8 +148,8 @@ model Catalog {
 
 model Offer {
   id          String  @id @default(uuid())
+  amount      Int
   price       Decimal @db.Decimal(10, 2)
-  amount      Decimal @db.Decimal(10, 2)
   description String? @db.VarChar(240)
 
   catalog_id String
@@ -194,6 +195,7 @@ enum BAG_STATUS {
 model Bag {
   id     String     @id @default(uuid())
   code   String
+  price  Decimal    @db.Decimal(10, 2)
   status BAG_STATUS
 
   user_id  String
@@ -281,7 +283,8 @@ enum ORDER_STATUS {
 
 model Order {
   id     String       @id @default(uuid())
-  amount Decimal      @db.Decimal(10, 2)
+  amount Int
+  price  Decimal      @db.Decimal(10, 2)
   status ORDER_STATUS
 
   offer_id String

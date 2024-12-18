@@ -24,6 +24,7 @@ export class PrismaBagMapper {
       id: new UUID(raw.id),
       code: raw.code,
       status: raw.status,
+      price: raw.price.toNumber(),
       cycle_id: new UUID(raw.cycle_id),
       user_id: new UUID(raw.user_id),
       ...(raw.customer && {
@@ -60,6 +61,7 @@ export class PrismaBagMapper {
       user_id: bag.user_id.value,
       cycle_id: bag.cycle_id.value,
       address_id: bag.address_id ? bag.address_id.value : null,
+      price: bag.price,
       code: bag.code,
       status: bag.status,
       created_at: bag.created_at,

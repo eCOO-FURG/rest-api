@@ -26,7 +26,7 @@ import { listOwnBagsController } from "@/infra/http/controllers/list-own-bags";
 import { createOfferController } from "@/infra/http/controllers/create-offer";
 import { openPaymentController } from "@/infra/http/controllers/open-payment";
 import { orderProductsController } from "@/infra/http/controllers/order-products";
-import { printDeliveriesReportController } from "@/infra/http/controllers/print-deliveries-report";
+import { printBagsReportController } from "@/infra/http/controllers/print-bags-report";
 import { registerController } from "@/infra/http/controllers/register";
 import { registerFarmController } from "@/infra/http/controllers/register-farm";
 import { registerPaymentController } from "@/infra/http/controllers/register-payment";
@@ -38,6 +38,8 @@ import { updateUserController } from "@/infra/http/controllers/update-user";
 import { verifyUserController } from "@/infra/http/controllers/verify-user";
 import { updateCatalogController } from "@/infra/http/controllers/update-catalog";
 import { updateBagController } from "@/infra/http/controllers/update-bag";
+import { registerProductController } from "@/infra/http/controllers/register-product";
+import { fetchSalesStatsController } from "@/infra/http/controllers/fetch-sales-stats";
 
 // Webhooks
 import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
@@ -169,12 +171,6 @@ router.get(
   listCurrentBagsController
 );
 router.get(
-  "/reports",
-  ensureAuthenticated,
-  ensureRole(["BROKER", "MANAGER"]),
-  printDeliveriesReportController
-);
-router.get(
   "/bags",
   ensureAuthenticated,
   ensureRole(["BROKER"]),
@@ -207,6 +203,13 @@ router.get("/cycles", listCyclesController);
 
 // Produtos
 router.get("/products", ensureAuthenticated, listProductsController);
+router.post(
+  "/products",
+  ensureAuthenticated,
+  ensureRole(["MANAGER"]),
+  processFile("image", { allowed: ["image/jpeg", "image/png"], size: 1 }),
+  registerProductController
+);
 
 // Pendências
 router.get(
@@ -214,6 +217,22 @@ router.get(
   ensureAuthenticated,
   ensureRole(["BROKER"]),
   fetchPendingsController
+);
+
+// Estatísticas
+router.get(
+  "/stats",
+  ensureAuthenticated,
+  ensureRole(["MANAGER"]),
+  fetchSalesStatsController
+);
+
+// Relatórios
+router.get(
+  "/reports",
+  ensureAuthenticated,
+  ensureRole(["BROKER", "MANAGER"]),
+  printBagsReportController
 );
 
 // Webhooks

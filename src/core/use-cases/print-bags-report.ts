@@ -11,18 +11,19 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 // Utils
 import { mostPast } from "@/core/utils/most-past";
 
-interface PrintDeliveriesReportUseCaseRequest {
+interface PrintBagsReportUseCaseRequest {
   cycle_id: string;
+  withdraw: boolean;
 }
 
-export class PrintDeliveriesReportUseCase {
+export class PrintBagsReportUseCase {
   constructor(
     private cyclesRepository: CyclesRepository,
     private bagsRepository: BagsRepository,
     private pdfService: PDFService
   ) {}
 
-  async execute({ cycle_id }: PrintDeliveriesReportUseCaseRequest) {
+  async execute({ cycle_id, withdraw }: PrintBagsReportUseCaseRequest) {
     const cycle = await this.cyclesRepository.find("basic", {
       id: cycle_id,
     });
@@ -31,12 +32,13 @@ export class PrintDeliveriesReportUseCase {
 
     const bags = await this.bagsRepository.list("merge", {
       cycle: { id: cycle_id },
+      withdraw,
       since: mostPast(cycle.order),
     });
 
     const pdf = await this.pdfService.generate({
-      type: "delivery-report",
-      props: { bags },
+      type: "bags-report",
+      props: { bags, withdraw },
     });
 
     return { pdf };

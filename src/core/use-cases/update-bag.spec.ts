@@ -12,6 +12,9 @@ import { makeBag } from "@/test/factories/make-bag";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 
+// Factories
+import { makeCycle } from "@/test/factories/make-cycle";
+
 let usersRepository: InMemoryUsersRepository;
 let bagsRepository: InMemoryBagsRepository;
 let cyclesRepository: InMemoryCyclesRepository;
@@ -31,8 +34,12 @@ describe("update bag", () => {
     );
   });
 
-  it("should be able to handle a bag", async () => {
-    const bag = makeBag({ status: "PENDING" });
+  it("should be able to update a bag", async () => {
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
+    const bag = makeBag({ status: "PENDING", cycle_id: cycle.id });
+
     await bagsRepository.create(bag);
 
     await sut.execute({

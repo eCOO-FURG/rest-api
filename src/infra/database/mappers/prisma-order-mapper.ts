@@ -16,7 +16,8 @@ export class PrismaOrderMapper {
   static toDomain(raw: PrismaOrder): Order {
     return Order.create({
       id: new UUID(raw.id),
-      amount: raw.amount.toNumber(),
+      amount: raw.amount,
+      price: raw.price.toNumber(),
       status: raw.status,
       box_id: new UUID(raw.box_id),
       bag_id: new UUID(raw.bag_id),
@@ -31,6 +32,7 @@ export class PrismaOrderMapper {
     return {
       id: order.id.value,
       amount: order.amount,
+      price: order.price,
       status: order.status,
       bag_id: order.bag_id.value,
       offer_id: order.offer_id.value,

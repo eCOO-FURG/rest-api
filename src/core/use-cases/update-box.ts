@@ -30,8 +30,6 @@ export class UpdateBoxUseCase {
 
     if (box.verified === box.orders.size) box.status = "VERIFIED";
 
-    console.log(box);
-
     await this.boxesRepository.update(box);
   }
 }

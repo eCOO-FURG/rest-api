@@ -19,7 +19,7 @@ export class BagPresenter {
         status: bag.status,
         paid: bag.paid(),
         open: !!bag.open(),
-        price: bag.price(),
+        price: bag.price,
         code: bag.code,
         cycle_id: bag.cycle_id.value,
         cycle: CyclePresenter.toHttp(bag.cycle),
