@@ -166,7 +166,7 @@ router.get(
 router.get(
   "/bags",
   ensureAuthenticated,
-  ensureRole(["BROKER"]),
+  ensureRole(["BROKER", "MANAGER"]),
   listBagsController
 );
 router.get("/bags/own", ensureAuthenticated, listOwnBagsController);
