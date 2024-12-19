@@ -3,39 +3,58 @@ import { Bag } from "@/core/entities/bag";
 
 // Utils
 import { formatPrice } from "@/core/utils/format-price";
+import { formatDate } from "../utils/format-date";
+
+interface BagReportRow {
+  sacola: string | number;
+  consumidor: string;
+  preco: string;
+  produto: string;
+  produtor: string;
+  quantidade: number;
+  valorOferta: string;
+  precificacao: string;
+  data: string;
+  pagamento: string;
+  bandeira: string;
+  entrega: string;
+}
 
 export class BagReportMapper {
-  static toExcelData(bags: Bag[]) {
-    return bags.map(bag => ({
-      sacola: bag.code,
-      consumidor: bag.user
-        ? `${bag.user.first_name} ${bag.user.last_name}`
-        : "---",
-      preco: formatPrice(bag.price) || 0,
-      produto: Array.from(bag.orders.values())
-        .map(order => order.offer?.product?.name || "N/A")
-        .join(", "),
-      produtor: Array.from(bag.orders.values())
-        .map(order => order.offer?.catalog?.farm?.admin?.first_name || "N/A")
-        .join(", "),
-      quantidade: Array.from(bag.orders.values()).reduce(
-        (sum, order) => sum + order.amount,
-        0
-      ),
-      valorOferta: formatPrice(Array.from(bag.orders.values()).reduce(
-        (sum, order) => sum + order.amount * (order.offer?.price || 0),
-        0
-      )),
-      data: bag.created_at?.toISOString() || "---",
-      pagamento: Array.from(bag.payments.values())
-        .map(payment => payment.method)
-        .join(", "),
-      bandeira: Array.from(bag.payments.values())
-        .map(payment => payment.flag || "---")
-        .join(", "),
-      entrega: bag.address
-        ? `${bag.address.street}, ${bag.address.number}, ${bag.address.neighborhood}`
-        : "Retirada",
-    }));
+  static toExcelData(bags: Bag[]): BagReportRow[] {
+    const data: BagReportRow[] = [];
+
+    bags.forEach(bag => {
+      Array.from(bag.orders.values()).forEach(order => {
+        const pricingType = order.offer?.product?.pricing || "N/A";
+        const unitPrice = order.offer?.price ? Number(order.offer.price) : 0;
+        const totalPrice = Number(order.amount) * unitPrice;
+
+        data.push({
+          sacola: bag.code,
+          consumidor: bag.user
+            ? `${bag.user.first_name} ${bag.user.last_name}`
+            : "---",
+          preco: formatPrice(totalPrice),
+          produto: order.offer?.product?.name || "N/A",
+          produtor: order.offer?.catalog?.farm?.admin?.first_name || "N/A",
+          quantidade: order.amount,
+          valorOferta: formatPrice(unitPrice),
+          precificacao: pricingType === "UNIT" ? "Unidade" : pricingType === "WEIGHT" ? "Peso" : "N/A",
+          data: bag.created_at ? formatDate(new Date(bag.created_at)) : "---",
+          pagamento: Array.from(bag.payments.values())
+            .map(payment => payment.method)
+            .join(", "),
+          bandeira: Array.from(bag.payments.values())
+            .map(payment => payment.flag || "---")
+            .join(", "),
+          entrega: bag.address
+            ? `${bag.address.street}, ${bag.address.number}, ${bag.address.neighborhood}`
+            : "Retirada",
+        });
+      });
+    });
+
+    return data;
   }
 }

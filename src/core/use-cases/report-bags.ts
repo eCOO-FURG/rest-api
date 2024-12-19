@@ -29,11 +29,12 @@ export class ReportBagsUseCase {
       { header: "PRODUTOR", key: "produtor", width: 25 },
       { header: "QUANTIDADE", key: "quantidade", width: 15 },
       { header: "VALOR DA OFERTA", key: "valorOferta", width: 20 },
+      { header: "PRECIFICAÇÃO", key: "precificacao", width: 15 },
       { header: "DATA", key: "data", width: 25 },
       { header: "PAGAMENTO", key: "pagamento", width: 15 },
       { header: "BANDEIRA", key: "bandeira", width: 15 },
       { header: "ENTREGA", key: "entrega", width: 15 },
-    ];
+    ];    
 
     const data = BagReportMapper.toExcelData(bags);
 
