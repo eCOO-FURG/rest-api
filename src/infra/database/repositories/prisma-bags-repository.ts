@@ -54,8 +54,8 @@ export class PrismaBagsRepository implements BagsRepository {
           (withdraw ? { address_id: null } : { address_id: { not: null } })),
         ...(since && before && { 
           created_at: {
-            gte: new Date(since), 
-            lte: new Date(before) 
+            gte: since, 
+            lte: before 
           } 
         }),
       },
