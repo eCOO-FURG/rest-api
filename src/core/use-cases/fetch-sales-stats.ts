@@ -13,17 +13,18 @@ export class FetchSalesStatsUseCase {
       1
     );
 
-    const bags = await this.bagsRepository.list("merge", {
+    const bags = await this.bagsRepository.list("basic", {
       since: FIVE_MONTHS_AGO,
     });
 
     let revenue = 0;
-    const current = String(today.getMonth() + 1).padStart(2, "0");
 
     const monthly = {} as Record<string, number>;
     const daily = {} as Record<string, number>;
 
     for (const bag of bags) {
+      console.log(bag.orders);
+
       const date = new Date(bag.created_at);
 
       const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -36,6 +37,8 @@ export class FetchSalesStatsUseCase {
       if (!daily[day]) daily[day] = 0;
 
       daily[day] += bag.price;
+
+      const current = String(today.getMonth() + 1).padStart(2, "0");
 
       if (month === current) revenue += bag.price;
     }
