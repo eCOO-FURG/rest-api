@@ -11,7 +11,8 @@ export interface FarmProps extends EntityRequest {
   status: "ACTIVE" | "INACTIVE" | "PENDING";
   tax: number;
   description: string | null;
-
+  photo: string | null;
+  images: Map<string, string>;
   admin_id: UUID;
   admin?: User;
 }
@@ -41,6 +42,18 @@ export class Farm extends Entity<FarmProps> {
     return this.props.description;
   }
 
+  get tax() {
+    return this.props.tax;
+  }
+
+  get photo(): string | null {
+    return this.props.photo;
+  }
+
+  get images() {
+    return this.props.images;
+  }
+
   set description(value: string) {
     this.props.description = value;
   }
@@ -57,16 +70,27 @@ export class Farm extends Entity<FarmProps> {
     this.props.status = status;
   }
 
-  get tax() {
-    return this.props.tax;
+  set photo(value: string) {
+    this.props.photo = value;
   }
 
-  static create(props: Optional<FarmProps, "status" | "tax" | "description">) {
+  set images(value: Map<string, string>) {
+    this.props.images = value;
+  }
+
+  static create(
+    props: Optional<
+      FarmProps,
+      "status" | "tax" | "description" | "photo" | "images"
+    >
+  ) {
     const farm = new Farm({
       ...props,
       status: props.status ?? "PENDING",
       tax: props.tax ?? 20,
       description: props.description ?? null,
+      photo: props.photo ?? null,
+      images: props.images ?? new Map(),
     });
     return farm;
   }
