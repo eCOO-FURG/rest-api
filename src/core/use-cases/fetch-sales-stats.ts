@@ -23,8 +23,6 @@ export class FetchSalesStatsUseCase {
     const daily = {} as Record<string, number>;
 
     for (const bag of bags) {
-      console.log(bag.orders);
-
       const date = new Date(bag.created_at);
 
       const month = String(date.getMonth() + 1).padStart(2, "0");
