@@ -1,4 +1,6 @@
 // Entities
+import { Phone } from "@/core/entities/phone";
+import { Document } from "@/core/entities/document";
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
 // Types
@@ -16,8 +18,8 @@ export interface UserProps extends EntityRequest {
   first_name: string;
   last_name: string;
   email: string;
-  cpf: string;
-  phone: string;
+  cpf: Document;
+  phone: Phone;
   password: string | null;
   roles: Role[];
   verified_at: Date | null;
@@ -37,12 +39,12 @@ export class User extends Entity<UserProps> {
     return this.props.email;
   }
 
-  get cpf() {
-    return this.props.cpf;
+  get cpf(): string {
+    return this.props.cpf.value;
   }
 
-  get phone() {
-    return this.props.phone;
+  get phone(): string {
+    return this.props.phone.value;
   }
 
   get password(): string | null {
@@ -74,11 +76,11 @@ export class User extends Entity<UserProps> {
   }
 
   set cpf(value: string) {
-    this.props.cpf = value;
+    this.props.cpf = new Document(value);
   }
 
   set phone(value: string) {
-    this.props.phone = value;
+    this.props.phone = new Phone(value);
   }
 
   set photo(value: string | null) {
@@ -116,21 +118,23 @@ export class User extends Entity<UserProps> {
   }
 
   static create(
-    props: Optional<UserProps, "password" | "verified_at" | "photo">
+    props: Optional<Omit<UserProps, "cpf" | "phone"> & { cpf: string; phone: string }, "password" | "verified_at" | "photo">
   ) {
     const user = new User({
       ...props,
       password: props.password ?? null,
       verified_at: props.verified_at ?? null,
       photo: props.photo ?? null,
+      cpf: new Document(props.cpf),
+      phone: new Phone(props.phone),
     });
-
+  
     const fresh = !props.id;
-
+  
     if (fresh) {
       DomainEvents.events.push({ entity: user, name: OnRegisteredEvent.name });
     }
-
+  
     return user;
   }
 }
