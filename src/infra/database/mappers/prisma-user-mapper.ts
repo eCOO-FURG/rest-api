@@ -25,7 +25,7 @@ export class PrismaUserMapper {
     });
   }
 
-  static toPrisma(user: User): Prisma.UserUncheckedCreateInput {  
+  static toPrisma(user: User): Prisma.UserUncheckedCreateInput {
     return {
       id: user.id.value,
       first_name: user.first_name,

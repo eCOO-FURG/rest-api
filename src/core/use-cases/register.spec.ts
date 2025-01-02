@@ -99,7 +99,7 @@ describe("register", () => {
         password: "123456",
         first_name: "Rodrigo",
         last_name: "Goes",
-        cpf: "523.065.281-02",
+        cpf: "523.065.281-01",
         role: "USER"
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);

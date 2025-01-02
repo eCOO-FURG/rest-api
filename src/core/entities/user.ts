@@ -39,11 +39,11 @@ export class User extends Entity<UserProps> {
     return this.props.email;
   }
 
-  get cpf(): string {
+  get cpf() {
     return this.props.cpf.value;
   }
 
-  get phone(): string {
+  get phone() {
     return this.props.phone.value;
   }
 
