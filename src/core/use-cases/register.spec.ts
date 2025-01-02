@@ -134,7 +134,7 @@ describe("register", () => {
       password,
       first_name: "John",
       last_name: "Doe",
-      cpf: "523.065.281-02",
+      cpf: "523.065.281-01",
       role: "USER"
     });
 
