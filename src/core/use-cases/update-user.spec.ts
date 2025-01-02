@@ -54,7 +54,7 @@ describe("update user", () => {
   });
 
   it("should be able to update more than one user field", async () => {
-    const cpf = "12345678910";
+    const cpf = "123.456.789-10";
 
     const user = makeUser({ cpf });
     await repositories.users.create(user);

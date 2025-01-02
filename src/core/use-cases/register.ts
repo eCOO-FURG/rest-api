@@ -13,6 +13,10 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 // Events
 import { DomainEvents } from "@/core/events/domain-events";
 
+// Entities
+import { Document } from "@/core/entities/document";
+import { Phone } from "../entities/phone";
+
 interface RegisterUseCaseRequest {
   first_name: string;
   last_name: string;
@@ -44,15 +48,19 @@ export class RegisterUseCase {
 
     if (userWithSameEmail) throw new ResourceAlreadyExistsError("Email", email);
 
+    const formattedPhone = Phone.format(phone);
+
     const userWithSamePhone = await this.usersRepository.find("basic", {
-      phone,
+      phone: formattedPhone,
     });
 
     if (userWithSamePhone)
       throw new ResourceAlreadyExistsError("Telefone", phone);
 
+    const formattedCPF = Document.format(cpf);
+
     const userWithSameCpf = await this.usersRepository.find("basic", {
-      cpf,
+      cpf: formattedCPF,
     });
 
     if (userWithSameCpf) throw new ResourceAlreadyExistsError("CPF", cpf);

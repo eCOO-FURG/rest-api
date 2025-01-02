@@ -118,7 +118,10 @@ export class User extends Entity<UserProps> {
   }
 
   static create(
-    props: Optional<Omit<UserProps, "cpf" | "phone"> & { cpf: string; phone: string }, "password" | "verified_at" | "photo">
+    props: Optional<
+      Omit<UserProps, "cpf" | "phone"> & { cpf: string; phone: string },
+      "password" | "verified_at" | "photo"
+    >
   ) {
     const user = new User({
       ...props,

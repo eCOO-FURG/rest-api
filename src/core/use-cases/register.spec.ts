@@ -79,7 +79,7 @@ describe("register", () => {
         password: "123456",
         first_name: "Rodrigo",
         last_name: "Goes",
-        cpf: "31514881020",
+        cpf: "523.065.281-02",
         role: "USER"
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
@@ -99,14 +99,14 @@ describe("register", () => {
         password: "123456",
         first_name: "Rodrigo",
         last_name: "Goes",
-        cpf: "31514881020",
+        cpf: "523.065.281-02",
         role: "USER"
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 
   it("should not be able to register with the same CPF twice", async () => {
-    const cpf = "31514881020";
+    const cpf = "523.065.281-02";
 
     const user = makeUser({ cpf });
 
