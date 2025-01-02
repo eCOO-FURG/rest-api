@@ -14,8 +14,8 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 import { DomainEvents } from "@/core/events/domain-events";
 
 // Entities
+import { Phone } from "@/core/entities/phone";
 import { Document } from "@/core/entities/document";
-import { Phone } from "../entities/phone";
 
 interface RegisterUseCaseRequest {
   first_name: string;
