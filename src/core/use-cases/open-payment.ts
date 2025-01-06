@@ -39,9 +39,11 @@ export class OpenPaymentUseCase {
 
     bag.payments.set(payment.id.value, payment);
 
-    await this.bagsRepository.update(bag);
-
     const charge = await this.pixProvider.charge(payment);
+
+    payment.providerTransactionId = charge.providerTransactionId;
+
+    await this.bagsRepository.update(bag);
 
     return { payment, charge };
   }

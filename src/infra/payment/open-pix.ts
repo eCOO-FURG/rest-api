@@ -39,6 +39,26 @@ export class OpenPix implements PixProvider {
       ],
     });
 
-    return { qrcode: charge.qrCodeImage!, code: charge.brCode! };
+    if (!charge.transactionID) {
+      throw new Error("Transaction ID is missing in the provider response");
+    }
+
+    return { 
+      qrcode: charge.qrCodeImage!, 
+      code: charge.brCode!, 
+      providerTransactionId: charge.transactionID,
+    };
+  }
+
+  async refund(payment: Payment) {
+    const { id, bag, providerTransactionId } = payment;
+
+    const response = await this.client.refund.create({
+      correlationID: id.value,
+      value: Number(bag?.price),
+      transactionEndToEndId: String(providerTransactionId)
+    });
+
+    return response;
   }
 }
