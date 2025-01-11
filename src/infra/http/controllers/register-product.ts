@@ -8,9 +8,6 @@ import { RegisterProductUseCase } from "@/core/use-cases/register-product";
 // Container
 import container from "@/infra/container";
 
-// Utils
-import { toJSON } from "@/infra/utils/to-json";
-
 export const registerProductSchema = {
   body: z.object({
     name: z.string(),
@@ -25,9 +22,11 @@ export async function registerProductController(
   next: NextFunction
 ) {
   try {
-    const content = toJSON({ ...request.body, image: request.file });
+    const files = request.files as Record<string, Express.Multer.File[]>;
 
-    const { name, pricing } = registerProductSchema.body.parse(content);
+    const content = { ...request.body, image: files?.image?.at(0)?.buffer };
+
+    const { name, pricing, image } = registerProductSchema.body.parse(content);
 
     const registerProductUseCase = container.resolve<RegisterProductUseCase>(
       "registerProductUseCase"
@@ -36,7 +35,7 @@ export async function registerProductController(
     await registerProductUseCase.execute({
       name,
       pricing,
-      image: request.file!.buffer,
+      image,
     });
 
     return response.sendStatus(201);

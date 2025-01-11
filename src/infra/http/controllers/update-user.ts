@@ -11,9 +11,6 @@ import { z } from "zod";
 // Validation
 import { notEmpty } from "@/infra/http/validation/not-empty";
 
-// Utils
-import { toJSON } from "@/infra/utils/to-json";
-
 export const updateUserSchema = {
   body: z
     .object({

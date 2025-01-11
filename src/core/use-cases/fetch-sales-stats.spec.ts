@@ -5,9 +5,6 @@ import { FetchSalesStatsUseCase } from "@/core/use-cases/fetch-sales-stats";
 
 // Factories
 import { makeBag } from "@/test/factories/make-bag";
-import { makeProduct } from "@/test/factories/make-product";
-import { makeOrder } from "@/test/factories/make-order";
-import { makeOffer } from "@/test/factories/make-offer";
 
 let bagsRepository: InMemoryBagsRepository;
 let sut: FetchSalesStatsUseCase;
