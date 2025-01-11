@@ -10,29 +10,40 @@ interface ProcessFileOptions {
   max?: number;
 }
 
-function config(
-  { size, allowed, max }: ProcessFileOptions,
-  field: string
-): multer.Options {
-  const fileSize = toMb(size ?? 5);
+interface FieldConfig {
+  name: string;
+  options: ProcessFileOptions;
+}
 
+function config(fields: FieldConfig[]): multer.Options {
   return {
     storage: multer.memoryStorage(),
-    limits: { fileSize, files: max ?? 5 },
     fileFilter: (_, file, callback) => {
-      const ok = !allowed || allowed.includes(file.mimetype);
+      const config = fields.find((f) => f.name === file.fieldname);
+
+      if (!config) return callback(new MulterError("LIMIT_UNEXPECTED_FILE"));
+
+      const ok =
+        !config.options.allowed ||
+        config.options.allowed.includes(file.mimetype);
 
       if (ok) return callback(null, true);
 
-      callback(new MulterError("LIMIT_UNEXPECTED_FILE", field));
+      callback(new MulterError("LIMIT_UNEXPECTED_FILE", file.fieldname));
+    },
+    limits: {
+      fileSize: toMb(Math.max(...fields.map((f) => f.options.size ?? 5))),
     },
   };
 }
 
-export function processFile(field: string, options: ProcessFileOptions) {
-  return multer(config(options, field)).single(field);
-}
+export function processFiles(fields: FieldConfig[]) {
+  const upload = multer(config(fields));
 
-export function processFiles(field: string, options: ProcessFileOptions) {
-  return multer(config(options, field)).array(field, options.max);
+  return upload.fields(
+    fields.map(({ name, options }) => ({
+      name,
+      maxCount: options.max ?? 1,
+    }))
+  );
 }

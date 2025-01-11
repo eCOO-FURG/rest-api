@@ -2,6 +2,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
 import { MulterError } from "multer";
+import { JsonWebTokenError } from "jsonwebtoken";
 
 // Errors
 import { DomainError } from "@/core/errors/domain-error";
@@ -45,6 +46,13 @@ export const handler = (
           message: error.message,
         },
       ],
+    });
+  }
+
+  if (error instanceof JsonWebTokenError) {
+    return response.status(401).send({
+      message: "Assinatura inválida.",
+      code: "invalid-signature",
     });
   }
 

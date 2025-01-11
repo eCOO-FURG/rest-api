@@ -11,9 +11,6 @@ import container from "@/infra/container";
 // Validation
 import { notEmpty } from "@/infra/http/validation/not-empty";
 
-// Utils
-import { toJSON } from "@/infra/utils/to-json";
-
 export const updateProductSchema = {
   params: z.object({
     product_id: z.string().uuid(),
@@ -21,7 +18,7 @@ export const updateProductSchema = {
   body: z
     .object({
       name: z.string().optional(),
-      image: z.any().optional(),
+      image: z.custom<Buffer>().optional(),
       pricing: z.enum(["UNIT", "WEIGHT"]).optional(),
       archived: z
         .union([
@@ -39,11 +36,14 @@ export async function updateProductController(
   next: NextFunction
 ) {
   try {
+    const files = request.files as Record<string, Express.Multer.File[]>;
+
     const { product_id } = updateProductSchema.params.parse(request.params);
 
-    const content = toJSON({ ...request.body, image: request.file });
+    const content = { ...request.body, image: files?.image?.at(0)?.buffer };
 
-    const { name, pricing, archived } = updateProductSchema.body.parse(content);
+    const { name, pricing, archived, image } =
+      updateProductSchema.body.parse(content);
 
     const updateProductUseCase = container.resolve<UpdateProductUseCase>(
       "updateProductUseCase"
@@ -54,7 +54,7 @@ export async function updateProductController(
       name,
       pricing,
       archived,
-      image: request.file?.buffer,
+      image,
     });
 
     return response.sendStatus(200);

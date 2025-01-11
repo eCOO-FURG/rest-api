@@ -49,7 +49,7 @@ describe("Update Product UseCase", () => {
     expect(updatedProduct?.name).toBe("Produto show");
     expect(updatedProduct?.pricing).toBe("UNIT");
     expect(updatedProduct?.archived).toBe(false);
-    expect(updatedProduct?.image).toContain("users");
+    expect(updatedProduct?.image).toContain("products");
   });
 
   it("should throw an error if the product does not exist", async () => {
