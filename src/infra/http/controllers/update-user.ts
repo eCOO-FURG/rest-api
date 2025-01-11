@@ -23,7 +23,7 @@ export const updateUserSchema = {
       cpf: z.string().min(11).max(14).optional(),
       phone: z.string().optional(),
       password: z.string().min(8).optional(),
-      photo: z.any().optional(),
+      photo: z.custom<Buffer>().optional(),
     })
     .refine(notEmpty.validation, notEmpty.warning),
 };
@@ -34,9 +34,11 @@ export async function updateUserController(
   next: NextFunction
 ) {
   try {
-    const content = toJSON({ ...request.body, photo: request.file });
+    const files = request.files as Record<string, Express.Multer.File[]>;
 
-    const { first_name, last_name, email, cpf, phone, password } =
+    const content = { ...request.body, photo: files?.photo?.at(0)?.buffer };
+
+    const { first_name, last_name, email, cpf, phone, password, photo } =
       updateUserSchema.body.parse(content);
 
     const updateUserUsecase =
@@ -50,7 +52,7 @@ export async function updateUserController(
       email,
       password,
       phone,
-      photo: request.file?.buffer,
+      photo,
     });
 
     return response.sendStatus(204);

@@ -74,7 +74,8 @@ export default (container: AwilixContainer) => {
         new RegisterFarmUseCase(usersRepository, farmsRepository)
     ),
     updateFarmUseCase: asFunction(
-      ({ farmsRepository }) => new UpdateFarmUseCase(farmsRepository)
+      ({ farmsRepository, storage }) =>
+        new UpdateFarmUseCase(farmsRepository, storage)
     ),
     createOfferUseCase: asFunction(
       ({
