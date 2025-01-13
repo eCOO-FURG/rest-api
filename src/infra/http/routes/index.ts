@@ -50,7 +50,8 @@ import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticat
 import { ensureIntegration } from "@/infra/http/middlewares/ensure-integration";
 import { ensureRole } from "@/infra/http/middlewares/ensure-role";
 import { processFiles } from "@/infra/http/middlewares/process-files";
-import { requestHelpController } from "../controllers/request-help";
+import { requestHelpController } from "@/infra/http/controllers/request-help";
+import { sendNotificationController } from "@/infra/http/controllers/send-notification";
 
 export const router = Router();
 
@@ -266,6 +267,14 @@ router.get(
   ensureAuthenticated,
   ensureRole(["BROKER", "MANAGER"]),
   printBagsReportController
+);
+
+// Notificações
+router.post(
+  "/notifications",
+  ensureAuthenticated,
+  ensureRole(["MANAGER"]),
+  sendNotificationController
 );
 
 // Webhooks
