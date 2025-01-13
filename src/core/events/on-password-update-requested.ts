@@ -55,6 +55,6 @@ export class OnUpdatePasswordRequestEvent {
       content: view,
     });
 
-    await this.mailer.send(mail);
+    await this.mailer.send([mail]);
   }
 }

@@ -48,6 +48,6 @@ export class OnRequestHelpEvent {
       content: view,
     });
 
-    await this.mailer.send(email);
+    await this.mailer.send([email]);
   }
 }

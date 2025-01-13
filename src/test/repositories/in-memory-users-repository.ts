@@ -12,13 +12,15 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 
 // Utils
 import { find } from "@/test/utils/find";
+import { filter } from "@/test/utils/filter";
+import { paginate } from "@/test/utils/paginate";
 
 export class InMemoryUsersRepository implements UsersRepository {
   items: User[] = [];
 
   async find(
     _: RepositoryResponse,
-    { id, email, phone, cpf }: UsersRepositorySearchRequest
+    { id, email, phone, cpf, role }: UsersRepositorySearchRequest
   ): Promise<User | null> {
     const user = await find<User>(
       this.items,
@@ -26,12 +28,33 @@ export class InMemoryUsersRepository implements UsersRepository {
         (!id || item.id.equals(id)) &&
         (!email || item.email === email) &&
         (!phone || item.phone === phone) &&
-        (!cpf || item.cpf === cpf)
+        (!cpf || item.cpf === cpf) &&
+        (!role || item.roles.includes(role))
     );
 
     if (!user) return null;
 
     return user;
+  }
+
+  async list(
+    _: RepositoryResponse,
+    { id, email, phone, cpf, role }: UsersRepositorySearchRequest,
+    page?: number
+  ): Promise<User[]> {
+    let users = await filter<User>(
+      this.items,
+      async (item) =>
+        (!id || item.id.equals(id)) &&
+        (!email || item.email === email) &&
+        (!phone || item.phone === phone) &&
+        (!cpf || item.cpf === cpf) &&
+        (!role || item.roles.includes(role))
+    );
+
+    if (page) users = paginate(users, page);
+
+    return users;
   }
 
   async create(user: User): Promise<void> {
