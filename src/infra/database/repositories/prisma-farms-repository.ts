@@ -36,11 +36,16 @@ export class PrismaFarmsRepository implements FarmsRepository {
     page?: number
   ): Promise<Farm[]> {
     const farms = await prisma.farm.findMany({
-      where: { id, name, status, tally, admin },
+      where: {
+        id,
+        ...(name && { name: { contains: name, mode: "insensitive" } }),
+        status,
+        tally,
+        admin,
+      },
       include: { admin: type !== "basic" },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
-
     return farms.map(PrismaFarmMapper.toDomain);
   }
 
