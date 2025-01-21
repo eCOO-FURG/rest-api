@@ -1,18 +1,11 @@
 // Services
-import { ExcelService, ExcelColumn } from "@/infra/services/excel-service";
+import {
+  SpreadsheetService,
+  SpreadsheetServiceGenerateRequest,
+} from "@/core/report/spreadsheet-service";
 
-export class MockedExcelService implements ExcelService {
-  async generateReport<T>(
-    data: T[],
-    columns: ExcelColumn[],
-    sheetName: string = "Relatório"
-  ): Promise<Buffer> {
-    const mockContent = JSON.stringify({
-      sheetName,
-      columns,
-      data,
-    });
-
-    return Buffer.from(mockContent);
+export class MockedSpreadsheetService implements SpreadsheetService {
+  async generate({ type, props }: SpreadsheetServiceGenerateRequest) {
+    return Buffer.from(JSON.stringify({ type, props }));
   }
 }
