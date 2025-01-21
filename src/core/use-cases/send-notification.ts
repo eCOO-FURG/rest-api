@@ -23,7 +23,7 @@ export class SendNotificationUseCase {
     const users = await this.usersRepository.list("basic", { role });
 
     const view = await this.mailer.load({
-      view: "notification",
+      view: "send-notification",
       props: { title, message },
     });
 

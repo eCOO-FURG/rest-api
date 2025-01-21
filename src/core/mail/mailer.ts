@@ -31,7 +31,7 @@ export type MailerLoadRequest =
       };
     }
   | {
-      view: "notification";
+      view: "send-notification";
       props: {
         title: string;
         message: string;
