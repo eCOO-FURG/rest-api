@@ -2,7 +2,7 @@
 import { ReportBagsUseCase } from "@/core/use-cases/report-bags";
 
 // Services
-import { MockedExcelService } from "@/test/service/mocked-excel";
+import { MockedSpreadsheetService } from "@/test/service/mocked-excel";
 
 // Repositories
 import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
@@ -13,13 +13,9 @@ import { makeBag } from "@/test/factories/make-bag";
 // Utils
 import { waitFor } from "@/test/utils/wait-for";
 
-let repositories: {
-  bags: InMemoryBagsRepository;
-};
+let repositories: { bags: InMemoryBagsRepository };
 
-let mocks: {
-  excelService: MockedExcelService;
-};
+let mocks: { spreadsheetService: MockedSpreadsheetService };
 
 let sut: ReportBagsUseCase;
 
@@ -30,12 +26,12 @@ describe("Report Bags UseCase", () => {
     };
 
     mocks = {
-      excelService: new MockedExcelService(),
+      spreadsheetService: new MockedSpreadsheetService(),
     };
 
-    sut = new ReportBagsUseCase(repositories.bags, mocks.excelService);
+    sut = new ReportBagsUseCase(repositories.bags, mocks.spreadsheetService);
 
-    vi.spyOn(mocks.excelService, "generateReport");
+    vi.spyOn(mocks.spreadsheetService, "generate");
   });
 
   it("should generate a bags report", async () => {
@@ -59,11 +55,10 @@ describe("Report Bags UseCase", () => {
     });
 
     await waitFor(() => {
-      expect(mocks.excelService.generateReport).toHaveBeenCalledWith(
-        expect.any(Array),
-        expect.any(Array),
-        "Relatório de Sacolas"
-      );
+      expect(mocks.spreadsheetService.generate).toHaveBeenCalledWith({
+        type: "bags-report",
+        props: { bags: [bag1, bag2] },
+      });
     });
   });
 
@@ -74,11 +69,10 @@ describe("Report Bags UseCase", () => {
     });
 
     await waitFor(() => {
-      expect(mocks.excelService.generateReport).toHaveBeenCalledWith(
-        [],
-        expect.any(Array),
-        "Relatório de Sacolas"
-      );
+      expect(mocks.spreadsheetService.generate).toHaveBeenCalledWith({
+        type: "bags-report",
+        props: { bags: [] },
+      });
     });
   });
 });

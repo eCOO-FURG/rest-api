@@ -3,9 +3,12 @@ import { Browser, launch, PuppeteerLaunchOptions } from "puppeteer";
 import { renderFile } from "ejs";
 
 // Services
-import { PDFService, PDFServiceGenerateRequest } from "@/core/pdf/pdf-service";
+import {
+  PDFService,
+  PDFServiceGenerateRequest,
+} from "@/core/report/pdf-service";
 
-export class PuppeteerPDFService implements PDFService {
+export class Puppeteer implements PDFService {
   private browser: Browser | null = null;
 
   private config: PuppeteerLaunchOptions = {
