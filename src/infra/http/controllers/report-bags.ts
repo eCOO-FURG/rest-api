@@ -9,11 +9,29 @@ import { ReportBagsUseCase } from "@/core/use-cases/report-bags";
 import container from "@/infra/container";
 
 // Validation
+import { realPeriod } from "@/infra/http/validation/real-period";
+
+// Utils
+import { toDate } from "@/infra/utils/to-date";
+
 export const reportBagsControllerSchema = {
-  query: z.object({
-    since: z.string().optional(),
-    before: z.string().optional(),
-  }),
+  query: z
+    .object({
+      since: z
+        .string()
+        .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
+        .optional()
+        .openapi({ description: "Bags criadas a partir dessa data." }),
+      before: z
+        .string()
+        .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
+        .optional()
+        .openapi({ description: "Bags criadas antes dessa data." }),
+    })
+    .refine(
+      (data) => realPeriod.validation(toDate(data.since), toDate(data.before)),
+      realPeriod.warning
+    ),
 };
 
 export async function reportBagsController(
@@ -22,30 +40,29 @@ export async function reportBagsController(
   next: NextFunction
 ) {
   try {
-    const { since, before } = reportBagsControllerSchema.query.parse(request.query);
-
-    const sinceDate = since ? new Date(since) : undefined;
-    const beforeDate = before ? new Date(before) : undefined;
-
-    const generateBagsReportUseCase = container.resolve<ReportBagsUseCase>(
-      "reportBagsUseCase"
+    const { since, before } = reportBagsControllerSchema.query.parse(
+      request.query
     );
 
-    const buffer = await generateBagsReportUseCase.execute({
-      since: sinceDate,
-      before: beforeDate,
+    const reportBagsUseCase =
+      container.resolve<ReportBagsUseCase>("reportBagsUseCase");
+
+    const spreadsheet = await reportBagsUseCase.execute({
+      since: toDate(since),
+      before: toDate(before),
     });
 
     response.setHeader(
       "Content-Type",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     );
+
     response.setHeader(
       "Content-Disposition",
       `attachment; filename="relatorio-sacolas.xlsx"`
     );
 
-    return response.status(200).send(buffer);
+    response.send(spreadsheet);
   } catch (error) {
     next(error);
   }

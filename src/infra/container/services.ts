@@ -7,11 +7,11 @@ import { Nodemailer } from "@/infra/mail/nodemailer";
 import { Jwt } from "@/infra/cryptography/jwt";
 import { BcrypterHasher } from "@/infra/cryptography/bcrypt";
 import { OtpGenerator } from "@/infra/cryptography/otp-generator";
-import { PuppeteerPDFService } from "@/infra/pdf/puppeteer";
+import { Puppeteer } from "@/infra/report/pdf/puppeteer";
 import { OpenPix } from "@/infra/payment/open-pix";
 import { RedisCacheManager } from "@/infra/cache/redis-cache-manager";
 import { Cloudinary } from "@/infra/storage/cloudinary";
-import { ExcelService } from "@/infra/services/excel-service";
+import { ExcelService } from "@/infra/report/spreadsheet/excel";
 
 // Mocks
 import { MockedPixProvider } from "@/test/payment/mocked-pix-provider";
@@ -55,7 +55,7 @@ export default (container: AwilixContainer) => {
 
       return new Nodemailer(transporter);
     }),
-    pdfService: asClass(PuppeteerPDFService).singleton(),
+    pdfService: asClass(Puppeteer).singleton(),
     pixProvider: asFunction(() => {
       if (deploy) return new OpenPix();
       return new MockedPixProvider();

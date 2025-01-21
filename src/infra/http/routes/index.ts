@@ -238,15 +238,15 @@ router.get(
 
 // Relatórios
 router.get(
-  "/reports",
+  "/reports/bags",
   ensureAuthenticated,
   ensureRole(["BROKER", "MANAGER"]),
   printBagsReportController
 );
 router.get(
-  "/reports/bags", 
-  ensureAuthenticated, 
-  ensureRole(["MANAGER"]), 
+  "/reports/sales",
+  ensureAuthenticated,
+  ensureRole(["MANAGER"]),
   reportBagsController
 );
 
