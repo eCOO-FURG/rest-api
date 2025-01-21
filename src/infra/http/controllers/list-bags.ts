@@ -13,18 +13,14 @@ import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 
 // Utils
 import { toDate } from "@/infra/utils/to-date";
+import { toArray } from "@/infra/utils/to-array";
 
 // Validation
 import { realPeriod } from "@/infra/http/validation/real-period";
-
-// Utils
-import { toArray } from "@/infra/utils/to-array";
+import { optionList } from "@/infra/http/validation/option-list";
 
 // Entities
 import { Bag, BAG_STATUSES } from "@/core/entities/bag";
-
-// Validation
-import { optionList } from "@/infra/http/validation/option-list";
 
 export const listBagsSchema = {
   query: z

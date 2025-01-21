@@ -38,10 +38,10 @@ export class PrismaFarmsRepository implements FarmsRepository {
     const farms = await prisma.farm.findMany({
       where: {
         id,
-        ...(name && { name: { contains: name, mode: "insensitive" } }),
         status,
         tally,
         admin,
+        ...(name && { name: { contains: name, mode: "insensitive" } }),
       },
       include: { admin: type !== "basic" },
       ...(page && { skip: (page - 1) * 20, take: 20 }),

@@ -52,7 +52,12 @@ export class PrismaBagsRepository implements BagsRepository {
         },
         ...(typeof withdraw === "boolean" &&
           (withdraw ? { address_id: null } : { address_id: { not: null } })),
-        created_at: { lte: before, gte: since },
+        ...(since && before && { 
+          created_at: {
+            gte: since, 
+            lte: before 
+          } 
+        }),
       },
       include: {
         ...(type !== "basic" && {
@@ -105,6 +110,13 @@ export class PrismaBagsRepository implements BagsRepository {
     }: BagsRepositorySearchRequest,
     page?: number
   ): Promise<Bag[]> {
+    const adjustedBefore = before ? new Date(before) : null;
+    const adjustedSince = since ? new Date(since) : null;
+
+    if (adjustedSince && adjustedBefore && adjustedSince.getTime() === adjustedBefore.getTime()) {
+      adjustedBefore.setHours(23, 59, 59, 999);
+    }
+
     const bags = await prisma.bag.findMany({
       where: {
         id,
@@ -122,7 +134,7 @@ export class PrismaBagsRepository implements BagsRepository {
         },
         ...(typeof withdraw === "boolean" &&
           (withdraw ? { address_id: null } : { address_id: { not: null } })),
-        created_at: { lte: before, gte: since },
+        ...(since && before && { created_at: { gte: adjustedSince, lte: adjustedBefore } }),
       },
       include: {
         ...(type !== "basic" && {
