@@ -40,6 +40,8 @@ import { updateCatalogController } from "@/infra/http/controllers/update-catalog
 import { updateBagController } from "@/infra/http/controllers/update-bag";
 import { registerProductController } from "@/infra/http/controllers/register-product";
 import { updateProductController } from "@/infra/http/controllers/update-product";
+import { requestHelpController } from "@/infra/http/controllers/request-help";
+import { refundPaymentController } from "@/infra/http/controllers/refund-payment";
 import { fetchSalesStatsController } from "@/infra/http/controllers/fetch-sales-stats";
 
 // Webhooks
@@ -50,7 +52,6 @@ import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticat
 import { ensureIntegration } from "@/infra/http/middlewares/ensure-integration";
 import { ensureRole } from "@/infra/http/middlewares/ensure-role";
 import { processFile } from "@/infra/http/middlewares/process-files";
-import { requestHelpController } from "../controllers/request-help";
 
 export const router = Router();
 
@@ -191,6 +192,7 @@ router.post(
   ensureAuthenticated,
   registerPaymentController
 );
+router.post("/bags/:bag_id/refund", ensureAuthenticated, refundPaymentController);
 router.patch(
   "/bags/:bag_id/handle",
   ensureAuthenticated,

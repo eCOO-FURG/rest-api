@@ -1,7 +1,8 @@
 // Entities
 import { Payment } from "@/core/entities/payment";
+
 // Payments
-import { PixProvider } from "@/core/payment/pix-provider";
+import { PixProvider, RefundRequest } from "@/core/payment/pix-provider";
 
 // Libs
 import { createClient } from "@woovi/node-sdk";
@@ -39,26 +40,19 @@ export class OpenPix implements PixProvider {
       ],
     });
 
-    if (!charge.transactionID) {
-      throw new Error("Transaction ID is missing in the provider response");
-    }
-
     return { 
       qrcode: charge.qrCodeImage!, 
       code: charge.brCode!, 
-      providerTransactionId: charge.transactionID,
     };
   }
 
-  async refund(payment: Payment) {
-    const { id, bag, providerTransactionId } = payment;
-
-    const response = await this.client.refund.create({
-      correlationID: id.value,
-      value: Number(bag?.price),
-      transactionEndToEndId: String(providerTransactionId)
+  async refund({ payment_id, bag }: RefundRequest) {
+    const { refund } = await this.client.chargeRefund.create({
+      correlationID: payment_id,
+      value: Number(bag.price),
+      comment: "Pagamento estornado com sucesso",
     });
 
-    return response;
+    return refund;
   }
 }

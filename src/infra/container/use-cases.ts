@@ -39,6 +39,7 @@ import { UpdateCatalogUseCase } from "@/core/use-cases/update-catalog";
 import { RegisterProductUseCase } from "@/core/use-cases/register-product";
 import { UpdateProductUseCase } from "@/core/use-cases/update-product";
 import { FetchSalesStatsUseCase } from "@/core/use-cases/fetch-sales-stats";
+import { RefundPaymentUseCase } from "@/core/use-cases/refund-payment";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -210,6 +211,10 @@ export default (container: AwilixContainer) => {
     ),
     updatePaymentUseCase: asFunction(
       ({ paymentsRepository }) => new UpdatePaymentUseCase(paymentsRepository)
+    ),
+    refundPaymentUseCase: asFunction(
+      ({ bagsRepository, pixProvider }) =>
+        new RefundPaymentUseCase(bagsRepository, pixProvider)
     ),
     fetchPendingsUseCase: asFunction(
       ({ cyclesRepository, farmsRepository, boxesRepository, cacheManager }) =>

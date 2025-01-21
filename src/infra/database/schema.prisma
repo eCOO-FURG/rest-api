@@ -220,6 +220,7 @@ enum PAYMENT_STATUS {
   PENDING
   DONE
   FAILED
+  REFUNDED
 }
 
 enum PAYMENT_METHOD {
@@ -241,7 +242,6 @@ model Payment {
   status PAYMENT_STATUS
   method PAYMENT_METHOD
   flag   PAYMENT_FLAG?
-  transaction_end_to_end_id String
 
   expires_at DateTime?
 

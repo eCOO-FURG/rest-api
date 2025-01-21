@@ -9,3 +9,4 @@ export function makePayment(props: Partial<Payment> = {}) {
     method: props.method ?? "CASH",
   });
 }
+

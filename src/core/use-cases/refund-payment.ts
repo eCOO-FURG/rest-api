@@ -1,6 +1,11 @@
-import { ResourceNotFoundError } from "../errors/resource-not-found";
-import { PixProvider } from "../payment/pix-provider";
-import { BagsRepository } from "../repositories/bags-repository";
+// Errors
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+
+// Services
+import { PixProvider } from "@/core/payment/pix-provider";
+
+// Repositories
+import { BagsRepository } from "@/core/repositories/bags-repository";
 
 interface RefundPaymentUseCaseRequest {
   bag_id: string
@@ -10,7 +15,7 @@ export class RefundPaymentUseCase {
   constructor(
     private bagsRepository: BagsRepository,
     private pixProvider: PixProvider
-  ){}
+  ) { }
 
   async execute({ bag_id }: RefundPaymentUseCaseRequest) {
     const bag = await this.bagsRepository.find("merge", { id: bag_id })
@@ -21,15 +26,15 @@ export class RefundPaymentUseCase {
       (payment) => payment.status === "DONE"
     );
 
-    if (!payment) throw new ResourceNotFoundError("Pagamento", bag_id);
+    if (!payment)
+      throw new ResourceNotFoundError("Nenhum pagamento concluído foi encontrado para a sacola", bag_id);
 
-    if (!payment.providerTransactionId) {
+    const refund = await this.pixProvider.refund({
+      bag,
+      payment_id: payment.id.value,
+    });
 
-    }
-
-    const refund = await this.pixProvider.refund(payment);
-
-    payment.status = "REFUNDED";
+    payment.refund();
 
     await this.bagsRepository.update(bag);
 

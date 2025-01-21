@@ -5,15 +5,13 @@ import { Optional } from "@/core/types/optional";
 import { Bag } from "@/core/entities/bag";
 
 export interface PaymentProps extends EntityRequest {
-  status: "PENDING" | "DONE" | "FAILED"| "REFUNDED";
+  status: "PENDING" | "DONE" | "FAILED" | "REFUNDED";
   method: "CREDIT" | "DEBIT" | "CASH" | "PIX";
   flag: "MASTERCARD" | "VISA" | "OTHER" | null;
   expires_at: Date | null;
-  provider_transaction_id: string;
 
   bag_id: UUID;
   bag?: Bag;
-
 }
 
 export class Payment extends Entity<PaymentProps> {
@@ -27,10 +25,6 @@ export class Payment extends Entity<PaymentProps> {
 
   get method() {
     return this.props.method;
-  }
-
-  get providerTransactionId() {
-    return this.props.provider_transaction_id ?? "";
   }
 
   set method(method: PaymentProps["method"]) {
@@ -53,10 +47,6 @@ export class Payment extends Entity<PaymentProps> {
     this.props.flag = flag;
   }
 
-  set providerTransactionId(id: string | null) {
-    this.props.provider_transaction_id = id ?? "";
-  }
-
   get expires_at() {
     return this.props.expires_at;
   }
@@ -65,8 +55,15 @@ export class Payment extends Entity<PaymentProps> {
     return this.expires_at && this.expires_at < new Date();
   }
 
+  refund() {
+    if (this.status !== "DONE") {
+      return;
+    }
+    this.status = "REFUNDED";
+  }
+
   static create(
-    props: Optional<PaymentProps, "status" | "flag" | "expires_at" | "provider_transaction_id">
+    props: Optional<PaymentProps, "status" | "flag" | "expires_at">
   ) {
     const expires_at =
       props.method === "PIX"
@@ -78,9 +75,9 @@ export class Payment extends Entity<PaymentProps> {
       status: props.status ?? "PENDING",
       flag: props.flag ?? null,
       expires_at: expires_at ?? null,
-      provider_transaction_id: props.provider_transaction_id ?? "",
     });
 
     return payment;
   }
+
 }
