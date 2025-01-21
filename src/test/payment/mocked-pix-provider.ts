@@ -18,7 +18,7 @@ export class MockedPixProvider implements PixProvider {
       value: bag.price,
       status: "CONFIRMED",
       correlationID: payment_id,
-      endToEndId: `mocked-end-to-end-id`,
+      endToEndId: ``,
       time: new Date().toISOString(),
       comment: "Pagamento estornado com sucesso",
     };

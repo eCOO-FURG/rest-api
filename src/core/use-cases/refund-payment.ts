@@ -24,7 +24,7 @@ export class RefundPaymentUseCase {
 
     const payment = Array.from(bag.payments.values()).find(
       (payment) => payment.status === "DONE"
-    );
+    );  
 
     if (!payment)
       throw new ResourceNotFoundError("Nenhum pagamento concluído foi encontrado para a sacola", bag_id);
@@ -35,6 +35,10 @@ export class RefundPaymentUseCase {
     });
 
     payment.refund();
+
+    payment.touch();
+
+    bag.payments.set(payment.id.value, payment)
 
     await this.bagsRepository.update(bag);
 

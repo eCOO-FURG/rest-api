@@ -60,7 +60,7 @@ export class Payment extends Entity<PaymentProps> {
       return;
     }
     this.status = "REFUNDED";
-  }
+  }  
 
   static create(
     props: Optional<PaymentProps, "status" | "flag" | "expires_at">
