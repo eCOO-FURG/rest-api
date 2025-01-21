@@ -29,9 +29,16 @@ export type MailerLoadRequest =
         message: string;
         farm: Farm;
       };
+    }
+  | {
+      view: "notification";
+      props: {
+        title: string;
+        message: string;
+      };
     };
 
 export interface Mailer {
-  send(email: Email): Promise<void>;
+  send(emails: Email[]): Promise<void>;
   load({ view, props }: MailerLoadRequest): Promise<string>;
 }

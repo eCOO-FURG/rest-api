@@ -5,9 +5,6 @@ import { FetchSalesStatsUseCase } from "@/core/use-cases/fetch-sales-stats";
 
 // Factories
 import { makeBag } from "@/test/factories/make-bag";
-import { makeProduct } from "@/test/factories/make-product";
-import { makeOrder } from "@/test/factories/make-order";
-import { makeOffer } from "@/test/factories/make-offer";
 
 let bagsRepository: InMemoryBagsRepository;
 let sut: FetchSalesStatsUseCase;
@@ -19,16 +16,7 @@ describe("Fetch sales stats", () => {
   });
 
   it("should be able to fetch sales stats", async () => {
-    const product = makeProduct();
-    const offer = makeOffer({
-      product,
-      price: 10,
-    });
-
-    const order = makeOrder({ offer, amount: 10 });
-
     const today = new Date();
-    const currentYear = today.getFullYear();
     const currentMonth = today.getMonth();
 
     const ONE_MONTH_AGO = new Date(2024, currentMonth, 1);
@@ -39,7 +27,7 @@ describe("Fetch sales stats", () => {
 
     for (let i = 0; i < 10; i++) {
       const bag = makeBag({
-        orders: new Map([[order.id.value, order]]),
+        price: 100,
         created_at: FIVE_MONTHS_AGO,
       });
 
@@ -48,7 +36,7 @@ describe("Fetch sales stats", () => {
 
     for (let i = 0; i < 10; i++) {
       const bag = makeBag({
-        orders: new Map([[order.id.value, order]]),
+        price: 100,
         created_at: FOUR_MONTHS_AGO,
       });
       await bagsRepository.create(bag);
@@ -56,7 +44,7 @@ describe("Fetch sales stats", () => {
 
     for (let i = 0; i < 10; i++) {
       const bag = makeBag({
-        orders: new Map([[order.id.value, order]]),
+        price: 100,
         created_at: THREE_MONTHS_AGO,
       });
       await bagsRepository.create(bag);
@@ -64,7 +52,7 @@ describe("Fetch sales stats", () => {
 
     for (let i = 0; i < 10; i++) {
       const bag = makeBag({
-        orders: new Map([[order.id.value, order]]),
+        price: 100,
         created_at: TWO_MONTHS_AGO,
       });
       await bagsRepository.create(bag);
@@ -72,7 +60,7 @@ describe("Fetch sales stats", () => {
 
     for (let i = 0; i < 10; i++) {
       const bag = makeBag({
-        orders: new Map([[order.id.value, order]]),
+        price: 100,
         created_at: ONE_MONTH_AGO,
       });
       await bagsRepository.create(bag);

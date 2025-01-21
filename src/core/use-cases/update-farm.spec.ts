@@ -7,37 +7,42 @@ import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-rep
 
 // Services
 import { makeFarm } from "@/test/factories/make-farm";
+import { MockedStorage } from "@/test/storage/mocked-storage";
 
-let repositories: {
-  farms: InMemoryFarmsRepository;
-};
+let farmsRepository: InMemoryFarmsRepository;
+let usersRepository: InMemoryUsersRepository;
+let storage: MockedStorage;
 
 let sut: UpdateFarmUseCase;
 
 describe("update user", () => {
   beforeEach(() => {
-    const users = new InMemoryUsersRepository();
-    repositories = {
-      farms: new InMemoryFarmsRepository(users),
-    };
+    farmsRepository = new InMemoryFarmsRepository();
+    storage = new MockedStorage();
 
-    sut = new UpdateFarmUseCase(repositories.farms);
+    sut = new UpdateFarmUseCase(farmsRepository, storage);
   });
 
   it("should be able to update more than one farm field", async () => {
-    const farm = makeFarm();
+    const farm = makeFarm({
+      images: new Map([["image1", "image1"]]),
+    });
 
-    await repositories.farms.create(farm);
+    await farmsRepository.create(farm);
 
     await sut.execute({
       farm_id: farm.id.value,
       name: "Cláudio",
       tally: "123456",
       description: "Descrição",
+      photo: Buffer.from("photo"),
+      images: ["image1", Buffer.from("image2")],
     });
 
-    expect(repositories.farms.items[0].name).toEqual("Cláudio");
-    expect(repositories.farms.items[0].tally).toEqual("123456");
-    expect(repositories.farms.items[0].description).toEqual("Descrição");
+    expect(farmsRepository.items[0].name).toEqual("Cláudio");
+    expect(farmsRepository.items[0].tally).toEqual("123456");
+    expect(farmsRepository.items[0].description).toEqual("Descrição");
+    expect(farmsRepository.items[0].photo).toBeTruthy();
+    expect(farmsRepository.items[0].images.size).toEqual(1);
   });
 });

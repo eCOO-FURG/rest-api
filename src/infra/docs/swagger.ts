@@ -38,6 +38,7 @@ import { fetchPendingsSchema } from "@/infra/http/controllers/fetch-pendings";
 import { updateCatalogSchema } from "@/infra/http/controllers/update-catalog";
 import { registerProductSchema } from "@/infra/http/controllers/register-product";
 import { updateProductSchema } from "@/infra/http/controllers/update-product";
+import { sendNotificationSchema } from "@/infra/http/controllers/send-notification";
 
 const tags = {
   users: "Usuários",
@@ -53,6 +54,7 @@ const tags = {
   payments: "Pagamentos",
   pendings: "Pendências",
   stats: "Estatísticas",
+  notifications: "Notificações",
 };
 
 const docs = createDocument({
@@ -559,6 +561,16 @@ const docs = createDocument({
         tags: [tags.stats],
         responses: { "200": { description: "200 OK" } },
         description: "Busca as estatísticas de vendas.",
+      },
+    },
+
+    // Notificações
+    "/notifications": {
+      post: {
+        tags: [tags.notifications],
+        responses: { "204": { description: "204 OK" } },
+        description: "Envia uma notificação para um usuário.",
+        ...SwaggerMapper.toDocs(sendNotificationSchema),
       },
     },
   },

@@ -11,12 +11,17 @@ import { z } from "zod";
 // Validation
 import { notEmpty } from "@/infra/http/validation/not-empty";
 
+// Utils
+import { toBuffer } from "@/infra/utils/to-buffer";
+
 export const updateFarmSchema = {
   body: z
     .object({
       name: z.string().optional(),
       tally: z.string().optional(),
       description: z.string().optional(),
+      photo: z.custom<Buffer>().optional(),
+      images: z.array(z.union([z.string(), z.custom<Buffer>()])).optional(),
     })
     .refine(notEmpty.validation, notEmpty.warning),
 };
@@ -27,9 +32,18 @@ export async function updateFarmController(
   next: NextFunction
 ) {
   try {
-    const { name, tally, description } = updateFarmSchema.body.parse(
-      request.body
-    );
+    const files = request.files as Record<string, Express.Multer.File[]>;
+
+    const content = {
+      ...request.body,
+      photo: files?.photo?.at(0)?.buffer,
+      images: toBuffer(files?.images).concat(request.body.images ?? []),
+    };
+
+    console.log(content);
+
+    const { name, tally, description, images, photo } =
+      updateFarmSchema.body.parse(content);
 
     const updateFarmUseCase =
       container.resolve<UpdateFarmUseCase>("updateFarmUseCase");
@@ -39,6 +53,8 @@ export async function updateFarmController(
       name,
       tally,
       description,
+      photo,
+      images,
     });
 
     return response.sendStatus(204);

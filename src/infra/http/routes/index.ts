@@ -50,8 +50,9 @@ import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
 import { ensureIntegration } from "@/infra/http/middlewares/ensure-integration";
 import { ensureRole } from "@/infra/http/middlewares/ensure-role";
-import { processFile } from "@/infra/http/middlewares/process-files";
-import { requestHelpController } from "../controllers/request-help";
+import { processFiles } from "@/infra/http/middlewares/process-files";
+import { requestHelpController } from "@/infra/http/controllers/request-help";
+import { sendNotificationController } from "@/infra/http/controllers/send-notification";
 
 export const router = Router();
 
@@ -61,7 +62,12 @@ router.get("/me", ensureAuthenticated, fetchProfileController);
 router.patch(
   "/me",
   ensureAuthenticated,
-  processFile("photo", { allowed: ["image/jpeg", "image/png"], size: 1 }),
+  processFiles([
+    {
+      name: "photo",
+      options: { allowed: ["image/jpeg", "image/png"], size: 1 },
+    },
+  ]),
   updateUserController
 );
 router.post(
@@ -102,6 +108,16 @@ router.patch(
   "/farms/own",
   ensureAuthenticated,
   ensureRole(["PRODUCER"]),
+  processFiles([
+    {
+      name: "photo",
+      options: { allowed: ["image/jpeg", "image/png"], size: 1 },
+    },
+    {
+      name: "images",
+      options: { allowed: ["image/jpeg", "image/png"], size: 1, max: 4 },
+    },
+  ]),
   updateFarmController
 );
 
@@ -209,14 +225,24 @@ router.post(
   "/products",
   ensureAuthenticated,
   ensureRole(["MANAGER"]),
-  processFile("image", { allowed: ["image/jpeg", "image/png"], size: 1 }),
+  processFiles([
+    {
+      name: "images",
+      options: { allowed: ["image/jpeg", "image/png"], size: 1 },
+    },
+  ]),
   registerProductController
 );
 router.patch(
   "/products/:product_id",
   ensureAuthenticated,
   ensureRole(["MANAGER"]),
-  processFile("image", { allowed: ["image/jpeg", "image/png"], size: 1 }),
+  processFiles([
+    {
+      name: "image",
+      options: { allowed: ["image/jpeg", "image/png"], size: 1 },
+    },
+  ]),
   updateProductController
 );
 
@@ -248,6 +274,14 @@ router.get(
   ensureAuthenticated,
   ensureRole(["MANAGER"]),
   reportBagsController
+);
+
+// Notificações
+router.post(
+  "/notifications",
+  ensureAuthenticated,
+  ensureRole(["MANAGER"]),
+  sendNotificationController
 );
 
 // Webhooks

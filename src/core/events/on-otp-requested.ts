@@ -53,6 +53,6 @@ export class OnOtpRequestEvent {
       content: view,
     });
 
-    await this.mailer.send(mail);
+    await this.mailer.send([mail]);
   }
 }
