@@ -41,7 +41,7 @@ export class OnOtpRequestEvent {
     if (!user) throw new ResourceNotFoundError("Usuário", user_id.value);
 
     const view = await this.mailer.load({
-      view: "otp-request",
+      view: "otp",
       props: {
         otp: value,
       },

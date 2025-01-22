@@ -11,20 +11,20 @@ export type MailerLoadRequest =
       };
     }
   | {
-      view: "request-password-update";
+      view: "password-update";
       props: {
         first_name: string;
         token: string;
       };
     }
   | {
-      view: "otp-request";
+      view: "otp";
       props: {
         otp: string;
       };
     }
   | {
-      view: "request-help";
+      view: "help";
       props: {
         message: string;
         farm: Farm;
