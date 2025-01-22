@@ -45,7 +45,7 @@ export class OnUpdatePasswordRequestEvent {
     const token = await this.hasher.hash({ user_id: user.id.value });
 
     const view = await this.mailer.load({
-      view: "request-password-update",
+      view: "password-update",
       props: { token, first_name: user.first_name },
     });
 
