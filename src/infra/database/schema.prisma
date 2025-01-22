@@ -104,12 +104,27 @@ model Product {
   pricing  PRICING
   archived Boolean @default(false)
 
+  category_id String?
+  category    Category? @relation(fields: [category_id], references: [id], onDelete: SetNull)
+
   created_at DateTime  @default(now())
   updated_at DateTime?
 
   offers Offer[]
 
   @@map("products")
+}
+
+model Category {
+  id   String @id @default(uuid())
+  name String
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  products Product[]
+
+  @@map("categories")
 }
 
 model Cycle {
