@@ -2,6 +2,11 @@
 import { asClass, AwilixContainer } from "awilix";
 
 // Repositories
+import { PrismaAddressesRepository } from "@/infra/database/repositories/prisma-addresses-repository";
+import { PrismaBagsRepository } from "@/infra/database/repositories/prisma-bags-repository";
+import { PrismaBoxesRepository } from "@/infra/database/repositories/prisma-boxes-repository";
+import { PrismaCatalogsRepository } from "@/infra/database/repositories/prisma-catalogs-repository";
+import { PrismaCategoriesRepository } from "@/infra/database/repositories/prisma-categories-repository";
 import { PrismaCyclesRepository } from "@/infra/database/repositories/prisma-cycles-repository";
 import { PrismaFarmsRepository } from "@/infra/database/repositories/prisma-farms-repository";
 import { PrismaOffersRepository } from "@/infra/database/repositories/prisma-offers-repository";
@@ -9,10 +14,6 @@ import { PrismaOtpsRepository } from "@/infra/database/repositories/prisma-otps-
 import { PrismaProductRepository } from "@/infra/database/repositories/prisma-products-repository";
 import { PrismaSessionsRepository } from "@/infra/database/repositories/prisma-sessions-repository";
 import { PrismaUsersRepository } from "@/infra/database/repositories/prisma-users-repository";
-import { PrismaBagsRepository } from "@/infra/database/repositories/prisma-bags-repository";
-import { PrismaCatalogsRepository } from "@/infra/database/repositories/prisma-catalogs-repository";
-import { PrismaBoxesRepository } from "@/infra/database/repositories/prisma-boxes-repository";
-import { PrismaAddressesRepository } from "@/infra/database/repositories/prisma-addresses-repository";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -27,5 +28,6 @@ export default (container: AwilixContainer) => {
     catalogsRepository: asClass(PrismaCatalogsRepository).singleton(),
     boxesRepository: asClass(PrismaBoxesRepository).singleton(),
     addressesRepository: asClass(PrismaAddressesRepository).singleton(),
+    categoriesRepository: asClass(PrismaCategoriesRepository).singleton(),
   });
 };
