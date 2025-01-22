@@ -2,17 +2,19 @@
 import { RegisterProductUseCase } from "@/core/use-cases/register-product";
 
 // Repositories
+import { InMemoryCategoriesRepository } from "@/test/repositories/in-memory-categories-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 
 // Errors
-import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 
 // Services
+import { makeCategory } from "@/test/factories/make-category";
 import { makeProduct } from "@/test/factories/make-product";
 import { MockedStorage } from "@/test/storage/mocked-storage";
 
 let productsRepository: InMemoryProductsRepository;
+let categoriesRepository: InMemoryCategoriesRepository;
 
 let storage: MockedStorage;
 
@@ -21,18 +23,26 @@ let sut: RegisterProductUseCase;
 describe("register product", () => {
   beforeEach(() => {
     productsRepository = new InMemoryProductsRepository();
+    categoriesRepository = new InMemoryCategoriesRepository();
     storage = new MockedStorage();
 
-    sut = new RegisterProductUseCase(productsRepository, storage);
+    sut = new RegisterProductUseCase(
+      productsRepository,
+      categoriesRepository,
+      storage
+    );
   });
 
   it("should be able to register a new product", async () => {
     const image = Buffer.from("image");
 
+    const category = makeCategory();
+
     await sut.execute({
       name: "Produto show",
       image,
       pricing: "UNIT",
+      category_id: category.id.value,
     });
 
     const product = productsRepository.items[0];
@@ -40,6 +50,7 @@ describe("register product", () => {
     expect(product.name).toEqual("Produto show");
     expect(product.pricing).toEqual("UNIT");
     expect(product.archived).toBeFalsy();
+    expect(product.category).toBe(category);
   });
 
   it("should find a product by name and pricing", async () => {
@@ -72,6 +83,7 @@ describe("register product", () => {
         name: "Produto novo",
         image: Buffer.from("image"),
         pricing: "UNIT",
+        category_id: "123",
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
@@ -89,6 +101,7 @@ describe("register product", () => {
       name: "Produto arquivado",
       image: Buffer.from("image"),
       pricing: "UNIT",
+      category_id: "123",
     });
 
     const updatedProduct = await productsRepository.find("basic", {
@@ -107,6 +120,7 @@ describe("register product", () => {
       name: "Produto",
       image,
       pricing: "UNIT",
+      category_id: "123",
     });
 
     const uploadedImage = productsRepository.items[0].image;
