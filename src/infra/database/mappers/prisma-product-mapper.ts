@@ -2,10 +2,13 @@
 import { Prisma } from "@prisma/client";
 
 // Entities
-import { Product } from "@/core/entities/product";
 import { UUID } from "@/core/entities/aggregates/uuid";
+import { Product } from "@/core/entities/product";
+import { PrismaCategoryMapper } from "./prisma-category-mapper";
 
-type PrismaProduct = Prisma.ProductGetPayload<{}>;
+type PrismaProduct = Prisma.ProductGetPayload<{}> & {
+  category?: Prisma.CategoryGetPayload<{}>;
+};
 
 export class PrismaProductMapper {
   static toDomain(raw: PrismaProduct): Product {
@@ -15,6 +18,10 @@ export class PrismaProductMapper {
       image: raw.image,
       pricing: raw.pricing,
       archived: raw.archived,
+      category_id: raw.category_id ? new UUID(raw.category_id) : undefined,
+      ...(raw.category && {
+        category: PrismaCategoryMapper.toDomain(raw.category),
+      }),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
     });
@@ -27,6 +34,7 @@ export class PrismaProductMapper {
       image: product.image,
       pricing: product.pricing,
       archived: product.archived,
+      category_id: product.category_id?.value,
       created_at: product.created_at,
       updated_at: product.updated_at,
     };

@@ -17,14 +17,16 @@ export class InMemoryProductsRepository implements ProductsRepository {
 
   async find(
     _: RepositoryResponse,
-    { id, name, pricing, archived }: ProductsRepositorySearchRequest
+    { id, name, pricing, archived, category }: ProductsRepositorySearchRequest
   ): Promise<Product | null> {
     const product = await find<Product>(this.items, async (item) => {
-      return (
+      return Boolean(
         (!id || item.id.equals(id)) &&
-        (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
-        (!pricing || item.pricing === pricing) &&
-        (!archived || item.archived === archived)
+          (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
+          (!pricing || item.pricing === pricing) &&
+          (!archived || item.archived === archived) &&
+          (!category?.id || item.category_id?.equals(category.id)) &&
+          (!category?.name || item.category?.name === category.name)
       );
     });
 
@@ -35,15 +37,17 @@ export class InMemoryProductsRepository implements ProductsRepository {
 
   async list(
     _: RepositoryResponse,
-    { id, name, pricing, archived }: ProductsRepositorySearchRequest,
+    { id, name, pricing, archived, category }: ProductsRepositorySearchRequest,
     page: number
   ): Promise<Product[]> {
     let products = await filter<Product>(this.items, async (item) => {
-      return (
+      return Boolean(
         (!id || item.id.equals(id)) &&
-        (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
-        (!pricing || item.pricing === pricing) &&
-        (!archived || item.archived === archived)
+          (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
+          (!pricing || item.pricing === pricing) &&
+          (!archived || item.archived === archived) &&
+          (!category?.id || item.category_id?.equals(category.id)) &&
+          (!category?.name || item.category?.name === category.name)
       );
     });
 

@@ -9,6 +9,7 @@ export interface ProductsRepositorySearchRequest {
   name?: string;
   pricing?: Product["pricing"];
   archived?: boolean;
+  category?: { id?: string; name?: string };
 }
 
 export interface ProductsRepository {
