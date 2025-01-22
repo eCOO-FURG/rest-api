@@ -13,6 +13,7 @@ export const registerProductSchema = {
     name: z.string(),
     pricing: z.enum(["UNIT", "WEIGHT"]),
     image: z.any().refine((value) => !!value),
+    category_id: z.string().optional(),
   }),
 };
 
@@ -26,7 +27,8 @@ export async function registerProductController(
 
     const content = { ...request.body, image: files?.image?.at(0)?.buffer };
 
-    const { name, pricing, image } = registerProductSchema.body.parse(content);
+    const { name, pricing, image, category_id } =
+      registerProductSchema.body.parse(content);
 
     const registerProductUseCase = container.resolve<RegisterProductUseCase>(
       "registerProductUseCase"
@@ -36,6 +38,7 @@ export async function registerProductController(
       name,
       pricing,
       image,
+      category_id,
     });
 
     return response.sendStatus(201);
