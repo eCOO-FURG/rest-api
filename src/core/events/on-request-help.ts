@@ -38,7 +38,7 @@ export class OnRequestHelpEvent {
     if (!farm) throw new ResourceNotFoundError("Fazenda do usuário", id.value);
 
     const view = await this.mailer.load({
-      view: "request-help",
+      view: "help",
       props: { message, farm },
     });
 
@@ -48,6 +48,6 @@ export class OnRequestHelpEvent {
       content: view,
     });
 
-    await this.mailer.send(email);
+    await this.mailer.send([email]);
   }
 }

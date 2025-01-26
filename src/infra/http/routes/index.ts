@@ -41,6 +41,7 @@ import { updateBagController } from "@/infra/http/controllers/update-bag";
 import { registerProductController } from "@/infra/http/controllers/register-product";
 import { updateProductController } from "@/infra/http/controllers/update-product";
 import { fetchSalesStatsController } from "@/infra/http/controllers/fetch-sales-stats";
+import { reportBagsController } from "@/infra/http/controllers/report-bags";
 
 // Webhooks
 import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
@@ -51,7 +52,8 @@ import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticat
 import { ensureIntegration } from "@/infra/http/middlewares/ensure-integration";
 import { ensureRole } from "@/infra/http/middlewares/ensure-role";
 import { processFiles } from "@/infra/http/middlewares/process-files";
-import { requestHelpController } from "../controllers/request-help";
+import { requestHelpController } from "@/infra/http/controllers/request-help";
+import { sendNotificationController } from "@/infra/http/controllers/send-notification";
 
 export const router = Router();
 
@@ -265,10 +267,24 @@ router.get(
 
 // Relatórios
 router.get(
-  "/reports",
+  "/reports/bags",
   ensureAuthenticated,
   ensureRole(["BROKER", "MANAGER"]),
   printBagsReportController
+);
+router.get(
+  "/reports/sales",
+  ensureAuthenticated,
+  ensureRole(["MANAGER"]),
+  reportBagsController
+);
+
+// Notificações
+router.post(
+  "/notifications",
+  ensureAuthenticated,
+  ensureRole(["MANAGER"]),
+  sendNotificationController
 );
 
 // Webhooks

@@ -39,6 +39,8 @@ import { UpdateCatalogUseCase } from "@/core/use-cases/update-catalog";
 import { RegisterProductUseCase } from "@/core/use-cases/register-product";
 import { UpdateProductUseCase } from "@/core/use-cases/update-product";
 import { FetchSalesStatsUseCase } from "@/core/use-cases/fetch-sales-stats";
+import { ReportBagsUseCase } from "@/core/use-cases/report-bags";
+import { SendNotificationUseCase } from "@/core/use-cases/send-notification";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -232,8 +234,16 @@ export default (container: AwilixContainer) => {
     fetchSalesStatsUseCase: asFunction(
       ({ bagsRepository }) => new FetchSalesStatsUseCase(bagsRepository)
     ),
+    reportBagsUseCase: asFunction(
+      ({ bagsRepository, excelService }) =>
+        new ReportBagsUseCase(bagsRepository, excelService)
+    ),
     requestHelpUseCase: asFunction(
       ({ usersRepository }) => new RequestHelpUseCase(usersRepository)
+    ),
+    sendNotificationUseCase: asFunction(
+      ({ usersRepository, mailer }) =>
+        new SendNotificationUseCase(usersRepository, mailer)
     ),
   });
 };

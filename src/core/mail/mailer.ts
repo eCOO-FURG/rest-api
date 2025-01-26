@@ -11,27 +11,34 @@ export type MailerLoadRequest =
       };
     }
   | {
-      view: "request-password-update";
+      view: "password-update";
       props: {
         first_name: string;
         token: string;
       };
     }
   | {
-      view: "otp-request";
+      view: "otp";
       props: {
         otp: string;
       };
     }
   | {
-      view: "request-help";
+      view: "help";
       props: {
         message: string;
         farm: Farm;
       };
+    }
+  | {
+      view: "notification";
+      props: {
+        title: string;
+        message: string;
+      };
     };
 
 export interface Mailer {
-  send(email: Email): Promise<void>;
+  send(emails: Email[]): Promise<void>;
   load({ view, props }: MailerLoadRequest): Promise<string>;
 }

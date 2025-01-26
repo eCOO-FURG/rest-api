@@ -3,7 +3,7 @@ import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repos
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 
 // Services
-import { MockedPDFService } from "@/test/pdf/mocked-pdf-service";
+import { MockedPDFService } from "@/test/report/mocked-pdf-service";
 import { makeBag } from "@/test/factories/make-bag";
 import { makeCycle } from "@/test/factories/make-cycle";
 

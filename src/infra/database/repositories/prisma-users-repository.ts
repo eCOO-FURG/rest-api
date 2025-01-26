@@ -19,15 +19,28 @@ import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
 export class PrismaUsersRepository implements UsersRepository {
   async find(
     _: RepositoryResponse,
-    { id, email, cpf, phone }: UsersRepositorySearchRequest
+    { id, email, cpf, phone, role }: UsersRepositorySearchRequest
   ): Promise<User | null> {
     const user = await prisma.user.findFirst({
-      where: { id, email, cpf, phone },
+      where: { id, email, cpf, phone, ...(role && { roles: { has: role } })},
     });
 
     if (!user) return null;
 
     return PrismaUserMapper.toDomain(user);
+  }
+
+  async list(
+    _: RepositoryResponse,
+    { id, email, cpf, phone, role }: UsersRepositorySearchRequest,
+    page?: number
+  ): Promise<User[]> {
+    const users = await prisma.user.findMany({
+      where: { id, email, cpf, phone, roles: { has: role } },
+      ...(page && { skip: (page - 1) * 20, take: 20 }),
+    });
+
+    return users.map(PrismaUserMapper.toDomain);
   }
 
   async create(user: User): Promise<void> {

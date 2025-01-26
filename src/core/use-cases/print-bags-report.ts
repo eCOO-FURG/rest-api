@@ -3,7 +3,7 @@ import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { BagsRepository } from "@/core/repositories/bags-repository";
 
 // Services
-import { PDFService } from "@/core/pdf/pdf-service";
+import { PDFService } from "@/core/report/pdf-service";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
