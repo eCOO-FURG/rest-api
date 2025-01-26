@@ -46,6 +46,7 @@ import { fetchSalesStatsController } from "@/infra/http/controllers/fetch-sales-
 import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
 
 // Middlewares
+import { loggingMiddleware } from "@/infra/http/middlewares/logging";
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
 import { ensureIntegration } from "@/infra/http/middlewares/ensure-integration";
 import { ensureRole } from "@/infra/http/middlewares/ensure-role";
@@ -53,6 +54,8 @@ import { processFiles } from "@/infra/http/middlewares/process-files";
 import { requestHelpController } from "../controllers/request-help";
 
 export const router = Router();
+
+router.use(loggingMiddleware);
 
 // Usuários
 router.post("/users", registerController);
