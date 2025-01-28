@@ -198,7 +198,7 @@ router.get("/bags/own", ensureAuthenticated, listOwnBagsController);
 router.patch(
   "/bags/:bag_id/handle",
   ensureAuthenticated,
-  ensureRole(["BROKER"]),
+  ensureRole(["BROKER", "MANAGER"]),
   handleBagController
 );
 router.get("/bags/:bag_id", ensureAuthenticated, fetchBagController);
@@ -207,12 +207,6 @@ router.post(
   "/bags/:bag_id/pay",
   ensureAuthenticated,
   registerPaymentController
-);
-router.patch(
-  "/bags/:bag_id/handle",
-  ensureAuthenticated,
-  ensureRole(["BROKER"]),
-  handleBagController
 );
 router.patch("/bags/:bag_id", ensureAuthenticated, updateBagController);
 
