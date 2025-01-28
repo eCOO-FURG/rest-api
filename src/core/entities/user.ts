@@ -1,4 +1,6 @@
 // Entities
+import { Phone } from "@/core/entities/phone";
+import { CPF } from "@/core/entities/cpf";
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
 // Types
@@ -16,8 +18,8 @@ export interface UserProps extends EntityRequest {
   first_name: string;
   last_name: string;
   email: string;
-  cpf: string;
-  phone: string;
+  cpf: CPF;
+  phone: Phone;
   password: string | null;
   roles: Role[];
   verified_at: Date | null;
@@ -73,11 +75,11 @@ export class User extends Entity<UserProps> {
     this.props.email = value;
   }
 
-  set cpf(value: string) {
+  set cpf(value: CPF) {
     this.props.cpf = value;
   }
 
-  set phone(value: string) {
+  set phone(value: Phone) {
     this.props.phone = value;
   }
 
@@ -116,13 +118,18 @@ export class User extends Entity<UserProps> {
   }
 
   static create(
-    props: Optional<UserProps, "password" | "verified_at" | "photo">
+    props: Optional<
+      Omit<UserProps, "cpf" | "phone"> & { cpf: CPF; phone: Phone },
+      "password" | "verified_at" | "photo"
+    >
   ) {
     const user = new User({
       ...props,
       password: props.password ?? null,
       verified_at: props.verified_at ?? null,
       photo: props.photo ?? null,
+      cpf: props.cpf,
+      phone: props.phone,
     });
 
     const fresh = !props.id;
