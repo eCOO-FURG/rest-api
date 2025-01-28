@@ -1,6 +1,7 @@
 // Entities
 import { CPF } from "@/core/entities/cpf";
 import { User } from "@/core/entities/user";
+import { Phone } from "@/core/entities/phone";
 
 // Use-cases
 import { RegisterUseCase } from "@/core/use-cases/register";
@@ -14,7 +15,6 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 // Services
 import { MockedEncrypter } from "@/test/cryptography/mocked-encrypter";
 import { makeUser } from "@/test/factories/make-user";
-import { Phone } from "../entities/phone";
 
 let repositories: {
   users: InMemoryUsersRepository;
@@ -47,7 +47,7 @@ describe("register", () => {
       first_name: "John",
       last_name: "Doe",
       cpf: "52306528101",
-      role: "USER"
+      role: "USER",
     });
 
     expect(repositories.users.items[0]).toBeInstanceOf(User);
@@ -60,7 +60,7 @@ describe("register", () => {
       first_name: "John",
       last_name: "Doe",
       cpf: "52306528101",
-      role: "USER"
+      role: "USER",
     });
 
     expect(repositories.users.items[0]).toBeInstanceOf(User);
@@ -82,7 +82,7 @@ describe("register", () => {
         first_name: "Rodrigo",
         last_name: "Goes",
         cpf: "523.065.281-02",
-        role: "USER"
+        role: "USER",
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
@@ -102,7 +102,7 @@ describe("register", () => {
         first_name: "Rodrigo",
         last_name: "Goes",
         cpf: "523.065.281-02",
-        role: "USER"
+        role: "USER",
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
@@ -122,7 +122,7 @@ describe("register", () => {
         first_name: "Rodrigo",
         last_name: "Goes",
         cpf: cpf.value,
-        role: "USER"
+        role: "USER",
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
@@ -137,7 +137,7 @@ describe("register", () => {
       first_name: "John",
       last_name: "Doe",
       cpf: "52306528101",
-      role: "USER"
+      role: "USER",
     });
 
     expect(repositories.users.items[0].password === password).toBeFalsy;
