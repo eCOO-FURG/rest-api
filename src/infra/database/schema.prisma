@@ -104,8 +104,8 @@ model Product {
   pricing  PRICING
   archived Boolean @default(false)
 
-  category_id String?
-  category    Category? @relation(fields: [category_id], references: [id], onDelete: SetNull)
+  category_id String
+  category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
 
   created_at DateTime  @default(now())
   updated_at DateTime?

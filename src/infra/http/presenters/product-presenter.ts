@@ -15,7 +15,7 @@ export class ProductPresenter {
         name: product.name,
         image: product.image,
         pricing: product.pricing,
-        category_id: product.category_id?.value,
+        category_id: product.category_id.value,
         category: CategoryPresenter.toHttp(product.category),
         created_at: product.created_at,
         updated_at: product.updated_at,

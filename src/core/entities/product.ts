@@ -1,9 +1,9 @@
 // Entities
+import { UUID } from "@/core/entities/aggregates/uuid";
+import { Category } from "@/core/entities/category";
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
 // Types
-import { UUID } from "@/core/entities/aggregates/uuid";
-import { Category } from "@/core/entities/category";
 import { Optional } from "@/core/types/optional";
 
 export const PRODUCT_PRICINGS = ["UNIT", "WEIGHT"] as const;
@@ -14,7 +14,7 @@ export interface ProductProps extends EntityRequest {
   archived: boolean;
   pricing: (typeof PRODUCT_PRICINGS)[number];
 
-  category_id?: UUID;
+  category_id: UUID;
   category?: Category;
 }
 

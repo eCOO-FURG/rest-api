@@ -16,7 +16,7 @@ interface RegisterProductUseCaseRequest {
   name: string;
   pricing: Product["pricing"];
   image: Buffer;
-  category_id?: string;
+  category_id: string;
 }
 
 export class RegisterProductUseCase {
@@ -40,21 +40,18 @@ export class RegisterProductUseCase {
     if (!equal) {
       const urls = await this.storage.upload([image], "products");
 
-      const category =
-        category_id &&
-        (await this.categoriesRepository.find("basic", {
-          id: category_id,
-        }));
+      const category = await this.categoriesRepository.find("basic", {
+        id: category_id,
+      });
 
-      if (category_id && !category)
-        throw new ResourceNotFoundError("Categoria", category_id);
+      if (!category) throw new ResourceNotFoundError("Categoria", category_id);
 
       const product = Product.create({
         name,
         pricing,
         image: urls[0],
         archived: false,
-        category_id: category ? category.id : undefined,
+        category_id: category.id,
       });
 
       return await this.productsRepository.create(product);

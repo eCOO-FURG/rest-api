@@ -28,7 +28,9 @@ export class PrismaProductRepository implements ProductsRepository {
         archived,
         category: {
           id: category?.id,
-          name: { contains: category?.name, mode: "insensitive" },
+          ...(category?.name && {
+            name: { contains: category.name, mode: "insensitive" },
+          }),
         },
         ...(name && { name: { contains: name, mode: "insensitive" } }),
       },
@@ -51,7 +53,9 @@ export class PrismaProductRepository implements ProductsRepository {
         archived,
         category: {
           id: category?.id,
-          name: { contains: category?.name, mode: "insensitive" },
+          ...(category?.name && {
+            name: { contains: category.name, mode: "insensitive" },
+          }),
         },
         ...(name && { name: { contains: name, mode: "insensitive" } }),
       },

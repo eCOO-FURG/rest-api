@@ -46,9 +46,7 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
-    return categories.map((category) =>
-      PrismaCategoryMapper.toDomain(category)
-    );
+    return categories.map(PrismaCategoryMapper.toDomain);
   }
 
   async create(category: Category): Promise<void> {

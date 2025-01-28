@@ -18,7 +18,7 @@ export class PrismaProductMapper {
       image: raw.image,
       pricing: raw.pricing,
       archived: raw.archived,
-      category_id: raw.category_id ? new UUID(raw.category_id) : undefined,
+      category_id: new UUID(raw.category_id),
       ...(raw.category && {
         category: PrismaCategoryMapper.toDomain(raw.category),
       }),

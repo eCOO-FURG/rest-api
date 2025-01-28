@@ -13,7 +13,7 @@ export const registerProductSchema = {
     name: z.string(),
     pricing: z.enum(["UNIT", "WEIGHT"]),
     image: z.any().refine((value) => !!value),
-    category_id: z.string().optional(),
+    category_id: z.string(),
   }),
 };
 
