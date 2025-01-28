@@ -43,12 +43,17 @@ async function seedBase() {
     },
   });
 
-  for (const { products } of categories) {
-    await prisma.product.createMany({
-      data: products.map((product) => ({
-        ...product,
-        pricing: product.pricing as PRICING,
-      })),
+  for (const { name, products } of categories) {
+    await prisma.category.create({
+      data: {
+        name,
+        products: {
+          create: products.map((product) => ({
+            ...product,
+            pricing: product.pricing as PRICING,
+          })),
+        },
+      },
     });
   }
 
