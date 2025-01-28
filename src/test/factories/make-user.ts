@@ -1,26 +1,32 @@
 // Entities
+import { CPF } from "@/core/entities/cpf";
 import { User } from "@/core/entities/user";
+import { Phone } from "@/core/entities/phone";
 
 // Libs
 import { faker } from "@faker-js/faker";
 
+
 export function makeUser(props: Partial<User> = {}) {
   const cpf =
     props.cpf ??
-    faker.number
-      .bigInt({
-        min: 11,
-        max: 11,
-      })
-      .toString();
+    new CPF(
+      faker.number
+        .bigInt({ min: 11, max: 11 })
+        .toString()
+    );
+
+  const phone =
+    props.phone ??
+    new Phone(faker.phone.number());
 
   return User.create({
     ...props,
     first_name: props.first_name ?? faker.person.firstName(),
     last_name: props.last_name ?? faker.person.lastName(),
     email: props.email ?? faker.internet.email(),
-    cpf: props.cpf ? cpf : faker.internet.email(),
-    phone: props.phone ?? faker.phone.number(),
+    cpf,
+    phone,
     roles: props.roles ?? ["USER"],
     verified_at: props.verified_at,
   });

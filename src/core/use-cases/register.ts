@@ -15,7 +15,7 @@ import { DomainEvents } from "@/core/events/domain-events";
 
 // Entities
 import { Phone } from "@/core/entities/phone";
-import { Document } from "@/core/entities/document";
+import { CPF } from "@/core/entities/cpf";
 
 interface RegisterUseCaseRequest {
   first_name: string;
@@ -31,7 +31,7 @@ export class RegisterUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private encrypter: Encrypter
-  ) {}
+  ) { }
 
   async execute({
     first_name,
@@ -48,19 +48,15 @@ export class RegisterUseCase {
 
     if (userWithSameEmail) throw new ResourceAlreadyExistsError("Email", email);
 
-    const formattedPhone = Phone.format(phone);
-
     const userWithSamePhone = await this.usersRepository.find("basic", {
-      phone: formattedPhone,
+      phone,
     });
 
     if (userWithSamePhone)
       throw new ResourceAlreadyExistsError("Telefone", phone);
 
-    const formattedCPF = Document.format(cpf);
-
     const userWithSameCpf = await this.usersRepository.find("basic", {
-      cpf: formattedCPF,
+      cpf,
     });
 
     if (userWithSameCpf) throw new ResourceAlreadyExistsError("CPF", cpf);
@@ -70,9 +66,9 @@ export class RegisterUseCase {
     const user = User.create({
       first_name,
       last_name,
-      cpf,
+      cpf: new CPF(cpf),
       email,
-      phone,
+      phone: new Phone(phone),
       roles,
     });
 

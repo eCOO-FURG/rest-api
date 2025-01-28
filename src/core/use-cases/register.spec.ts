@@ -1,4 +1,5 @@
 // Entities
+import { CPF } from "@/core/entities/cpf";
 import { User } from "@/core/entities/user";
 
 // Use-cases
@@ -13,6 +14,7 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 // Services
 import { MockedEncrypter } from "@/test/cryptography/mocked-encrypter";
 import { makeUser } from "@/test/factories/make-user";
+import { Phone } from "../entities/phone";
 
 let repositories: {
   users: InMemoryUsersRepository;
@@ -44,7 +46,7 @@ describe("register", () => {
       password: "123456",
       first_name: "John",
       last_name: "Doe",
-      cpf: "523.065.281-01",
+      cpf: "52306528101",
       role: "USER"
     });
 
@@ -57,7 +59,7 @@ describe("register", () => {
       phone: "51987654321",
       first_name: "John",
       last_name: "Doe",
-      cpf: "523.065.281-01",
+      cpf: "52306528101",
       role: "USER"
     });
 
@@ -86,7 +88,7 @@ describe("register", () => {
   });
 
   it("should not be able to register with the same cellphone twice", async () => {
-    const phone = "51987654321";
+    const phone = new Phone("51987654321");
 
     const user = makeUser({ phone });
 
@@ -106,7 +108,7 @@ describe("register", () => {
   });
 
   it("should not be able to register with the same CPF twice", async () => {
-    const cpf = "523.065.281-01";
+    const cpf = new CPF("52306528101");
 
     const user = makeUser({ cpf });
 
@@ -115,11 +117,11 @@ describe("register", () => {
     await expect(() =>
       sut.execute({
         email: "rodrigogoes@example.com",
-        phone: "51cellphone987654321",
+        phone: "51987654321",
         password: "123456",
         first_name: "Rodrigo",
         last_name: "Goes",
-        cpf,
+        cpf: cpf.value,
         role: "USER"
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
@@ -134,7 +136,7 @@ describe("register", () => {
       password,
       first_name: "John",
       last_name: "Doe",
-      cpf: "523.065.281-01",
+      cpf: "52306528101",
       role: "USER"
     });
 

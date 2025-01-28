@@ -1,6 +1,6 @@
 // Entities
 import { Phone } from "@/core/entities/phone";
-import { Document } from "@/core/entities/document";
+import { CPF } from "@/core/entities/cpf";
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
 // Types
@@ -18,7 +18,7 @@ export interface UserProps extends EntityRequest {
   first_name: string;
   last_name: string;
   email: string;
-  cpf: Document;
+  cpf: CPF;
   phone: Phone;
   password: string | null;
   roles: Role[];
@@ -40,11 +40,11 @@ export class User extends Entity<UserProps> {
   }
 
   get cpf() {
-    return this.props.cpf.value;
+    return this.props.cpf;
   }
 
   get phone() {
-    return this.props.phone.value;
+    return this.props.phone;
   }
 
   get password(): string | null {
@@ -75,12 +75,12 @@ export class User extends Entity<UserProps> {
     this.props.email = value;
   }
 
-  set cpf(value: string) {
-    this.props.cpf = new Document(value);
+  set cpf(value: CPF) {
+    this.props.cpf = value;
   }
 
-  set phone(value: string) {
-    this.props.phone = new Phone(value);
+  set phone(value: Phone) {
+    this.props.phone = value;
   }
 
   set photo(value: string | null) {
@@ -119,7 +119,7 @@ export class User extends Entity<UserProps> {
 
   static create(
     props: Optional<
-      Omit<UserProps, "cpf" | "phone"> & { cpf: string; phone: string },
+      Omit<UserProps, "cpf" | "phone"> & { cpf: CPF; phone: Phone },
       "password" | "verified_at" | "photo"
     >
   ) {
@@ -128,16 +128,16 @@ export class User extends Entity<UserProps> {
       password: props.password ?? null,
       verified_at: props.verified_at ?? null,
       photo: props.photo ?? null,
-      cpf: new Document(props.cpf),
-      phone: new Phone(props.phone),
+      cpf: props.cpf,
+      phone: props.phone,
     });
-  
+
     const fresh = !props.id;
-  
+
     if (fresh) {
       DomainEvents.events.push({ entity: user, name: OnRegisteredEvent.name });
     }
-  
+
     return user;
   }
 }
