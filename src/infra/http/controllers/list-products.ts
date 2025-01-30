@@ -18,6 +18,10 @@ export const listProductSchema = {
       .string()
       .optional()
       .openapi({ description: "Filtro do nome do produto." }),
+    category_id: z
+      .string()
+      .optional()
+      .openapi({ description: "Filtro do id da categoria." }),
   }),
 };
 
@@ -27,7 +31,9 @@ export async function listProductsController(
   next: NextFunction
 ) {
   try {
-    const { page, name } = listProductSchema.query.parse(request.query);
+    const { page, name, category_id } = listProductSchema.query.parse(
+      request.query
+    );
 
     const listProductsUseCase = container.resolve<ListProductsUsecase>(
       "listProductsUseCase"
@@ -36,6 +42,7 @@ export async function listProductsController(
     const { products } = await listProductsUseCase.execute({
       name,
       page,
+      category_id,
     });
 
     return response
