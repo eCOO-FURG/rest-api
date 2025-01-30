@@ -60,6 +60,10 @@ export class Product extends Entity<ProductProps> {
     return this.props.category_id;
   }
 
+  set category_id(value: UUID) {
+    this.props.category_id = value;
+  }
+
   get category() {
     return this.props.category;
   }
