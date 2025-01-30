@@ -1,6 +1,6 @@
 // Libs
-import { z } from "zod";
 import { NextFunction, Request, Response } from "express";
+import { z } from "zod";
 
 // Use-cases
 import { UpdateProductUseCase } from "@/core/use-cases/update-product";
@@ -20,6 +20,7 @@ export const updateProductSchema = {
       name: z.string().optional(),
       image: z.custom<Buffer>().optional(),
       pricing: z.enum(["UNIT", "WEIGHT"]).optional(),
+      category_id: z.string().uuid().optional(),
       archived: z
         .union([
           z.boolean(),
@@ -42,7 +43,7 @@ export async function updateProductController(
 
     const content = { ...request.body, image: files?.image?.at(0)?.buffer };
 
-    const { name, pricing, archived, image } =
+    const { name, pricing, category_id, archived, image } =
       updateProductSchema.body.parse(content);
 
     const updateProductUseCase = container.resolve<UpdateProductUseCase>(
@@ -53,6 +54,7 @@ export async function updateProductController(
       product_id,
       name,
       pricing,
+      category_id,
       archived,
       image,
     });
