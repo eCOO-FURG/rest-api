@@ -6,6 +6,7 @@ import { logging } from "@/infra/http/middlewares/logging";
 
 // Controllers
 import { authenticateController } from "@/infra/http/controllers/authenticate";
+import { createOfferController } from "@/infra/http/controllers/create-offer";
 import { fetchBagController } from "@/infra/http/controllers/fetch-bag";
 import { fetchBoxController } from "@/infra/http/controllers/fetch-box";
 import { fetchCatalogController } from "@/infra/http/controllers/fetch-catalog";
@@ -15,36 +16,38 @@ import { fetchFarmController } from "@/infra/http/controllers/fetch-farm";
 import { fetchLastCatalogController } from "@/infra/http/controllers/fetch-last-catalog";
 import { fetchPendingsController } from "@/infra/http/controllers/fetch-pendings";
 import { fetchProfileController } from "@/infra/http/controllers/fetch-profile";
+import { fetchSalesStatsController } from "@/infra/http/controllers/fetch-sales-stats";
 import { fetchUserFarmController } from "@/infra/http/controllers/fetch-user-farm";
 import { handleBagController } from "@/infra/http/controllers/handle-bag";
 import { handleBoxController } from "@/infra/http/controllers/handle-box";
 import { handleFarmController } from "@/infra/http/controllers/handle-farm";
+import { listBagsController } from "@/infra/http/controllers/list-bags";
 import { listBoxesController } from "@/infra/http/controllers/list-boxes";
+import { listCatalogsController } from "@/infra/http/controllers/list-catalogs";
+import { listCategoriesController } from "@/infra/http/controllers/list-categories";
 import { listCurrentBagsController } from "@/infra/http/controllers/list-current-bags";
 import { listCyclesController } from "@/infra/http/controllers/list-cycles";
 import { listFarmsController } from "@/infra/http/controllers/list-farms";
-import { listProductsController } from "@/infra/http/controllers/list-products";
-import { listBagsController } from "@/infra/http/controllers/list-bags";
 import { listOwnBagsController } from "@/infra/http/controllers/list-own-bags";
-import { createOfferController } from "@/infra/http/controllers/create-offer";
+import { listProductsController } from "@/infra/http/controllers/list-products";
 import { openPaymentController } from "@/infra/http/controllers/open-payment";
 import { orderProductsController } from "@/infra/http/controllers/order-products";
 import { printBagsReportController } from "@/infra/http/controllers/print-bags-report";
 import { registerController } from "@/infra/http/controllers/register";
 import { registerFarmController } from "@/infra/http/controllers/register-farm";
 import { registerPaymentController } from "@/infra/http/controllers/register-payment";
+import { registerProductController } from "@/infra/http/controllers/register-product";
+import { reportBagsController } from "@/infra/http/controllers/report-bags";
+import { requestHelpController } from "@/infra/http/controllers/request-help";
 import { requestOtpController } from "@/infra/http/controllers/request-otp";
 import { requestPasswordUpdateController } from "@/infra/http/controllers/request-password-update";
-import { listCatalogsController } from "@/infra/http/controllers/list-catalogs";
+import { sendNotificationController } from "@/infra/http/controllers/send-notification";
+import { updateBagController } from "@/infra/http/controllers/update-bag";
+import { updateCatalogController } from "@/infra/http/controllers/update-catalog";
 import { updateFarmController } from "@/infra/http/controllers/update-farm";
+import { updateProductController } from "@/infra/http/controllers/update-product";
 import { updateUserController } from "@/infra/http/controllers/update-user";
 import { verifyUserController } from "@/infra/http/controllers/verify-user";
-import { updateCatalogController } from "@/infra/http/controllers/update-catalog";
-import { updateBagController } from "@/infra/http/controllers/update-bag";
-import { registerProductController } from "@/infra/http/controllers/register-product";
-import { updateProductController } from "@/infra/http/controllers/update-product";
-import { fetchSalesStatsController } from "@/infra/http/controllers/fetch-sales-stats";
-import { reportBagsController } from "@/infra/http/controllers/report-bags";
 
 // Webhooks
 import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
@@ -54,8 +57,6 @@ import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticat
 import { ensureIntegration } from "@/infra/http/middlewares/ensure-integration";
 import { ensureRole } from "@/infra/http/middlewares/ensure-role";
 import { processFiles } from "@/infra/http/middlewares/process-files";
-import { requestHelpController } from "@/infra/http/controllers/request-help";
-import { sendNotificationController } from "@/infra/http/controllers/send-notification";
 
 export const router = Router();
 
@@ -244,6 +245,9 @@ router.patch(
   ]),
   updateProductController
 );
+
+// Categorias
+router.get("/categories", ensureAuthenticated, listCategoriesController);
 
 // Pendências
 router.get(
