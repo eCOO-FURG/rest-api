@@ -1,12 +1,13 @@
 // Repositories
+import { CategoriesRepository } from "@/core/repositories/categories-repository";
 import { ProductsRepository } from "@/core/repositories/products-repository";
 
 // Services
 import { Storage } from "@/core/storage/storage";
 
 // Errors
-import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Entities
 import { Product } from "@/core/entities/product";
@@ -16,12 +17,14 @@ interface UpdateProductUseCaseRequest {
   name?: string;
   image?: Buffer;
   pricing?: Product["pricing"];
+  category_id?: string;
   archived?: boolean;
 }
 
 export class UpdateProductUseCase {
   constructor(
     private productsRepository: ProductsRepository,
+    private categoriesRepository: CategoriesRepository,
     private storage: Storage
   ) {}
 
@@ -30,6 +33,7 @@ export class UpdateProductUseCase {
     name,
     image,
     pricing,
+    category_id,
     archived,
   }: UpdateProductUseCaseRequest) {
     const product = await this.productsRepository.find("basic", {
@@ -38,8 +42,17 @@ export class UpdateProductUseCase {
 
     if (!product) throw new ResourceNotFoundError("Produto", product_id);
 
+    const category = await this.categoriesRepository.find("basic", {
+      id: category_id,
+    });
+
+    if (category_id && !category) {
+      throw new ResourceNotFoundError("Categoria", category_id);
+    }
+
     const equal = await this.productsRepository.find("basic", {
       name,
+      category: { id: category_id },
       pricing,
     });
 
@@ -49,6 +62,7 @@ export class UpdateProductUseCase {
 
     product.name = name ?? product.name;
     product.pricing = pricing ?? product.pricing;
+    product.category_id = category?.id ?? product.category_id;
     product.archived = archived ?? product.archived;
 
     if (image) {
