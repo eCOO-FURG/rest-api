@@ -37,6 +37,7 @@ describe("register product", () => {
     const image = Buffer.from("image");
 
     const category = makeCategory();
+    await categoriesRepository.create(category);
 
     await sut.execute({
       name: "Produto show",
@@ -50,7 +51,7 @@ describe("register product", () => {
     expect(product.name).toEqual("Produto show");
     expect(product.pricing).toEqual("UNIT");
     expect(product.archived).toBeFalsy();
-    expect(product.category).toBe(category);
+    expect(product.category_id).toEqual(category.id);
   });
 
   it("should find a product by name and pricing", async () => {
