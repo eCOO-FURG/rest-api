@@ -1,6 +1,9 @@
 // Libs
 import { Router } from "express";
 
+// Middlewares
+import { logging } from "@/infra/http/middlewares/logging";
+
 // Controllers
 import { authenticateController } from "@/infra/http/controllers/authenticate";
 import { fetchBagController } from "@/infra/http/controllers/fetch-bag";
@@ -55,6 +58,8 @@ import { requestHelpController } from "@/infra/http/controllers/request-help";
 import { sendNotificationController } from "@/infra/http/controllers/send-notification";
 
 export const router = Router();
+
+router.use(logging());
 
 // Usuários
 router.post("/users", registerController);

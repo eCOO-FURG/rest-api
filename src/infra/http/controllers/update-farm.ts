@@ -40,8 +40,6 @@ export async function updateFarmController(
       images: toBuffer(files?.images).concat(request.body.images ?? []),
     };
 
-    console.log(content);
-
     const { name, tally, description, images, photo } =
       updateFarmSchema.body.parse(content);
 
