@@ -20,6 +20,7 @@ export const listProductSchema = {
       .openapi({ description: "Filtro do nome do produto." }),
     category_id: z
       .string()
+      .uuid()
       .optional()
       .openapi({ description: "Filtro do id da categoria." }),
   }),
