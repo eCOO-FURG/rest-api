@@ -27,6 +27,11 @@ export class Nodemailer implements Mailer {
           to: email.to,
           subject: email.subject,
           html: email.content,
+          attachments: email.attachments?.map((attachment) => ({
+            filename: attachment.filename,
+            content: attachment.content,
+            contentType: attachment.contentType
+          }))
         });
       } catch (error) {
         Logger.log(error);
@@ -54,7 +59,7 @@ export class Nodemailer implements Mailer {
       });
     }
 
-    if (view == "request-password-update") {
+    if (view == "password-update") {
       Object.assign(props, {
         url: `${env.FRONT_URL}/alterar-cadastro?token=${props.token}`,
       });

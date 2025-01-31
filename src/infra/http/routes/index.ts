@@ -281,7 +281,23 @@ router.post(
   "/notifications",
   ensureAuthenticated,
   ensureRole(["MANAGER"]),
-  sendNotificationController
+  processFiles([
+    {
+      name: "attachments",
+      options: {
+        allowed: [
+          "application/pdf", 
+          "image/jpeg", 
+          "image/png", 
+          "application/zip", 
+          "image/gif"
+        ],
+        size: 5,
+        max: 5,
+      }
+    }
+  ]),
+  sendNotificationController,
 );
 
 // Webhooks

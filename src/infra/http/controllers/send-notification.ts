@@ -22,6 +22,12 @@ export const sendNotificationSchema = {
         enum: ["USER", "PRODUCER"],
       })
       .refine(notEmpty.validation, notEmpty.warning),
+    attachments: z.array(
+        z.object({
+          filename: z.string().optional(),
+          content: z.custom<Buffer>(),
+        })
+      ).optional(),
   }),
 };
 
@@ -31,15 +37,24 @@ export async function sendNotificationController(
   next: NextFunction
 ) {
   try {
-    const { title, message, role } = sendNotificationSchema.body.parse(
-      request.body
+    const files = request.files as Record<string, Express.Multer.File[]>;
+
+    const content = {
+      ...request.body,
+      attachments: files?.attachments?.map((file) => ({
+        content: file.buffer,
+      })),
+    };
+
+    const { title, message, role, attachments } = sendNotificationSchema.body.parse(
+      content
     );
 
     const sendNotificationUseCase = container.resolve<SendNotificationUseCase>(
       "sendNotificationUseCase"
     );
 
-    await sendNotificationUseCase.execute({ title, message, role });
+    await sendNotificationUseCase.execute({ title, message, role, attachments });
 
     return response.status(204).send();
   } catch (error) {

@@ -5,6 +5,11 @@ interface EmailProps extends EntityRequest {
   to: string;
   subject: string;
   content: string;
+  attachments?: {
+    filename: string;
+    content: Buffer;
+    contentType: string
+  }[];
 }
 
 export class Email extends Entity<EmailProps> {
@@ -18,6 +23,10 @@ export class Email extends Entity<EmailProps> {
 
   get content() {
     return this.props.content;
+  }
+
+  get attachments() {
+    return this.props.attachments;
   }
 
   static create(props: EmailProps) {

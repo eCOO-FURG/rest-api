@@ -35,6 +35,7 @@ export type MailerLoadRequest =
       props: {
         title: string;
         message: string;
+        attachments?: { filename?: string, content: Buffer }[]
       };
     };
 
