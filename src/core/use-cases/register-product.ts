@@ -10,10 +10,13 @@ import { Storage } from "@/core/storage/storage";
 // Errors
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 
+// Types
+import { File } from "@/core/types/file";
+
 interface RegisterProductUseCaseRequest {
   name: string;
   pricing: Product["pricing"];
-  image: Buffer;
+  image: File;
 }
 
 export class RegisterProductUseCase {

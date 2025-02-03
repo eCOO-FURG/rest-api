@@ -37,7 +37,7 @@ export class PrintBagsReportUseCase {
     });
 
     const pdf = await this.pdfService.generate({
-      type: "bags-report",
+      type: "lista-de-sacolas",
       props: { bags, withdraw },
     });
 

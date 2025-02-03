@@ -2,7 +2,7 @@
 import { Bag } from "@/core/entities/bag";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
-// Libs
+// Libraries
 import { Prisma } from "@prisma/client";
 
 // Mappers

@@ -2,7 +2,7 @@
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { Payment } from "@/core/entities/payment";
 
-// Libs
+// Libraries
 import { Prisma } from "@prisma/client";
 
 type PrismaPayment = Prisma.PaymentGetPayload<{}>;

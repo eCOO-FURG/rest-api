@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { Browser, launch, PuppeteerLaunchOptions } from "puppeteer";
 import { renderFile } from "ejs";
 
@@ -7,6 +7,9 @@ import {
   PDFService,
   PDFServiceGenerateRequest,
 } from "@/core/report/pdf-service";
+
+// Types
+import { File } from "@/core/types/file";
 
 export class Puppeteer implements PDFService {
   private browser: Browser | null = null;
@@ -27,7 +30,7 @@ export class Puppeteer implements PDFService {
     this.browser = await launch(this.config);
   }
 
-  async generate({ type, props }: PDFServiceGenerateRequest): Promise<Buffer> {
+  async generate({ type, props }: PDFServiceGenerateRequest): Promise<File> {
     if (!this.browser) this.browser = await launch(this.config);
 
     const page = await this.browser.newPage();
@@ -43,6 +46,11 @@ export class Puppeteer implements PDFService {
 
     await page.close();
 
-    return pdf;
+    return {
+      name: `${type}.pdf`,
+      mimetype: "application/pdf",
+      size: pdf.length,
+      content: pdf,
+    };
   }
 }

@@ -2,7 +2,7 @@
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { Address } from "@/core/entities/address";
 
-// Libs
+// Libraries
 import { faker } from "@faker-js/faker";
 
 export function makeAddress(props: Partial<Address> = {}) {

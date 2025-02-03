@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { createDocument } from "zod-openapi";
 
 // Mappers

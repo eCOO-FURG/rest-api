@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { PRICING } from "@prisma/client";
 
 // Services
@@ -7,7 +7,7 @@ import { prisma } from "@/infra/database/prisma-service";
 // Data
 import categories from "@/infra/database/seeds/data/categories.json";
 
-// Libs
+// Libraries
 import { hash } from "bcryptjs";
 
 // Env

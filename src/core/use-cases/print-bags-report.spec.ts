@@ -13,6 +13,9 @@ import { PrintBagsReportUseCase } from "@/core/use-cases/print-bags-report";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
+// Types
+import { File as CustomFile } from "@/core/types/file";
+
 let bagsRepository: InMemoryBagsRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 
@@ -46,7 +49,8 @@ describe("print bags report", () => {
       withdraw: false,
     });
 
-    expect(pdf).toBeInstanceOf(Buffer);
+    expect(typeof pdf.name).toBe("string");
+    expect(typeof pdf.content).toBe("string");
   });
 
   it("should be able to print a report of the bags of a cycle that does not exists", async () => {

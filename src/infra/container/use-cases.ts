@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { asFunction, AwilixContainer } from "awilix";
 
 // Use-cases

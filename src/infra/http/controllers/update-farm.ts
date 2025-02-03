@@ -4,7 +4,7 @@ import { UpdateFarmUseCase } from "@/core/use-cases/update-farm";
 // Container
 import container from "@/infra/container";
 
-// Libs
+// Libraries
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
 
@@ -12,7 +12,8 @@ import { z } from "zod";
 import { notEmpty } from "@/infra/http/validation/not-empty";
 
 // Utils
-import { toBuffer } from "@/infra/utils/to-buffer";
+import { toFile } from "@/infra/utils/to-file";
+import { toArray } from "@/infra/utils/to-array";
 
 export const updateFarmSchema = {
   body: z
@@ -20,8 +21,9 @@ export const updateFarmSchema = {
       name: z.string().optional(),
       tally: z.string().optional(),
       description: z.string().optional(),
-      photo: z.custom<Buffer>().optional(),
-      images: z.array(z.union([z.string(), z.custom<Buffer>()])).optional(),
+      photo: z.custom<Express.Multer.File>().optional(),
+      add_images: z.custom<Express.Multer.File[]>().optional(),
+      remove_images: z.array(z.string()).optional().or(z.string().optional()),
     })
     .refine(notEmpty.validation, notEmpty.warning),
 };
@@ -32,18 +34,8 @@ export async function updateFarmController(
   next: NextFunction
 ) {
   try {
-    const files = request.files as Record<string, Express.Multer.File[]>;
-
-    const content = {
-      ...request.body,
-      photo: files?.photo?.at(0)?.buffer,
-      images: toBuffer(files?.images).concat(request.body.images ?? []),
-    };
-
-    console.log(content);
-
-    const { name, tally, description, images, photo } =
-      updateFarmSchema.body.parse(content);
+    const { name, tally, description, photo, add_images, remove_images } =
+      updateFarmSchema.body.parse(request.body);
 
     const updateFarmUseCase =
       container.resolve<UpdateFarmUseCase>("updateFarmUseCase");
@@ -53,8 +45,8 @@ export async function updateFarmController(
       name,
       tally,
       description,
-      photo,
-      images,
+      photo: toFile(photo),
+      images: { add: toFile(add_images), remove: toArray(remove_images) },
     });
 
     return response.sendStatus(204);

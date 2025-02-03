@@ -1,15 +1,14 @@
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
+// Types
+import { File } from "@/core/types/file";
+
 interface EmailProps extends EntityRequest {
   to: string;
   subject: string;
   content: string;
-  attachments?: {
-    filename: string;
-    content: Buffer;
-    contentType: string
-  }[];
+  files?: File[];
 }
 
 export class Email extends Entity<EmailProps> {
@@ -25,8 +24,8 @@ export class Email extends Entity<EmailProps> {
     return this.props.content;
   }
 
-  get attachments() {
-    return this.props.attachments;
+  get files() {
+    return this.props.files;
   }
 
   static create(props: EmailProps) {

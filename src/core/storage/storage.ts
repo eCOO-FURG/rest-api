@@ -1,3 +1,6 @@
+// Types
+import { File } from "@/core/types/file";
+
 export interface Storage {
-  upload(files: Buffer[], folder: string): Promise<string[]>;
+  upload(files: File[], folder: string): Promise<string[]>;
 }

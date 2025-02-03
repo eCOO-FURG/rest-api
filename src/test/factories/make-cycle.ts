@@ -1,7 +1,7 @@
 // Entities
 import { Cycle } from "@/core/entities/cycle";
 
-// Libs
+// Libraries
 import { faker } from "@faker-js/faker";
 
 export function makeCycle(props: Partial<Cycle> = {}) {

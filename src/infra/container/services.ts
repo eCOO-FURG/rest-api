@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { asClass, asFunction, AwilixContainer } from "awilix";
 import { createTransport } from "nodemailer";
 

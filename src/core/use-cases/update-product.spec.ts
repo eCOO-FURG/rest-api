@@ -14,6 +14,9 @@ import { makeProduct } from "@/test/factories/make-product";
 // Use-Cases
 import { UpdateProductUseCase } from "@/core/use-cases/update-product";
 
+// Utils
+import { makeFile } from "@/test/factories/make-file";
+
 let productsRepository: InMemoryProductsRepository;
 let storage: MockedStorage;
 let sut: UpdateProductUseCase;
@@ -31,12 +34,10 @@ describe("Update Product UseCase", () => {
 
     await productsRepository.create(product);
 
-    const updatedImage = Buffer.from("updated_image");
-
     await sut.execute({
       product_id: product.id.value,
       name: "Produto show",
-      image: updatedImage,
+      image: makeFile(),
       pricing: "UNIT",
       archived: false,
     });
@@ -57,7 +58,7 @@ describe("Update Product UseCase", () => {
       sut.execute({
         product_id: "123",
         name: "Produto do Timas",
-        image: Buffer.from("updated_image"),
+        image: makeFile(),
         pricing: "UNIT",
         archived: false,
       })
@@ -75,7 +76,7 @@ describe("Update Product UseCase", () => {
       sut.execute({
         product_id: product2.id.value,
         name: "Produto 9",
-        image: Buffer.from("updated_image"),
+        image: makeFile(),
         pricing: "UNIT",
         archived: false,
       })

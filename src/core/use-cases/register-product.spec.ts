@@ -9,8 +9,11 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 
 // Services
-import { makeProduct } from "@/test/factories/make-product";
 import { MockedStorage } from "@/test/storage/mocked-storage";
+
+// Factories
+import { makeProduct } from "@/test/factories/make-product";
+import { makeFile } from "@/test/factories/make-file";
 
 let productsRepository: InMemoryProductsRepository;
 
@@ -27,11 +30,9 @@ describe("register product", () => {
   });
 
   it("should be able to register a new product", async () => {
-    const image = Buffer.from("image");
-
     await sut.execute({
       name: "Produto show",
-      image,
+      image: makeFile(),
       pricing: "UNIT",
     });
 
@@ -70,7 +71,7 @@ describe("register product", () => {
     await expect(
       sut.execute({
         name: "Produto novo",
-        image: Buffer.from("image"),
+        image: makeFile(),
         pricing: "UNIT",
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
@@ -87,7 +88,7 @@ describe("register product", () => {
 
     await sut.execute({
       name: "Produto arquivado",
-      image: Buffer.from("image"),
+      image: makeFile(),
       pricing: "UNIT",
     });
 
@@ -101,16 +102,12 @@ describe("register product", () => {
   });
 
   it("should upload the product image", async () => {
-    const image = Buffer.from("image");
-
     await sut.execute({
       name: "Produto",
-      image,
+      image: makeFile(),
       pricing: "UNIT",
     });
 
-    const uploadedImage = productsRepository.items[0].image;
-
-    expect(uploadedImage).toContain("temp/products");
+    expect(productsRepository.items[0].image).toContain("temp/products");
   });
 });

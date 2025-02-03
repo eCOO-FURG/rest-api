@@ -3,14 +3,13 @@ import { UpdateFarmUseCase } from "./update-farm";
 
 // Repositories
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
-import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
 // Services
 import { makeFarm } from "@/test/factories/make-farm";
 import { MockedStorage } from "@/test/storage/mocked-storage";
+import { makeFile } from "@/test/factories/make-file";
 
 let farmsRepository: InMemoryFarmsRepository;
-let usersRepository: InMemoryUsersRepository;
 let storage: MockedStorage;
 
 let sut: UpdateFarmUseCase;
@@ -35,8 +34,8 @@ describe("update user", () => {
       name: "Cláudio",
       tally: "123456",
       description: "Descrição",
-      photo: Buffer.from("photo"),
-      images: ["image1", Buffer.from("image2")],
+      photo: makeFile(),
+      images: { add: [makeFile()] },
     });
 
     expect(farmsRepository.items[0].name).toEqual("Cláudio");

@@ -1,6 +1,9 @@
 // Entities
 import { Bag } from "@/core/entities/bag";
 
+// Types
+import { File } from "@/core/types/file";
+
 export interface SpreadsheetColumn {
   header: string;
   key: string;
@@ -8,10 +11,10 @@ export interface SpreadsheetColumn {
 }
 
 export type SpreadsheetServiceGenerateRequest = {
-  type: "bags-report";
+  type: "relatorio-de-vendas";
   props: { bags: Bag[] };
 };
 
 export interface SpreadsheetService {
-  generate({ type, props }: SpreadsheetServiceGenerateRequest): Promise<Buffer>;
+  generate({ type, props }: SpreadsheetServiceGenerateRequest): Promise<File>;
 }

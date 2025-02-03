@@ -4,7 +4,7 @@ import { Email } from "@/core/entities/email";
 // Services
 import { Mailer, MailerLoadRequest } from "@/core/mail/mailer";
 
-// Libs
+// Libraries
 import { renderFile } from "ejs";
 import { Transporter } from "nodemailer";
 
@@ -22,16 +22,18 @@ export class Nodemailer implements Mailer {
 
   async send(emails: Email[]): Promise<void> {
     const promises = emails.map(async (email) => {
+      const files = email.files?.map((file) => ({
+        filename: file.name,
+        content: file.content,
+        contentType: file.mimetype,
+      }));
+
       try {
         await this.transporter.sendMail({
           to: email.to,
           subject: email.subject,
           html: email.content,
-          attachments: email.attachments?.map((attachment) => ({
-            filename: attachment.filename,
-            content: attachment.content,
-            contentType: attachment.contentType
-          }))
+          attachments: files,
         });
       } catch (error) {
         Logger.log(error);
@@ -41,6 +43,7 @@ export class Nodemailer implements Mailer {
               to: email.to,
               subject: email.subject,
               html: email.content,
+              attachments: files,
             });
           } catch (error) {
             Logger.log(error);

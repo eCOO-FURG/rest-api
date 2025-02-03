@@ -2,6 +2,9 @@
 import { Email } from "@/core/entities/email";
 import { Farm } from "@/core/entities/farm";
 
+// Types
+import { File } from "@/core/types/file";
+
 export type MailerLoadRequest =
   | {
       view: "welcome";
@@ -35,7 +38,7 @@ export type MailerLoadRequest =
       props: {
         title: string;
         message: string;
-        attachments?: { filename?: string, content: Buffer }[]
+        files?: File[];
       };
     };
 

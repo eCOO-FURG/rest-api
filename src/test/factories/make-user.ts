@@ -1,7 +1,7 @@
 // Entities
 import { User } from "@/core/entities/user";
 
-// Libs
+// Libraries
 import { faker } from "@faker-js/faker";
 
 export function makeUser(props: Partial<User> = {}) {

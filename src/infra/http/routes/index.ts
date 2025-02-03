@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { Router } from "express";
 
 // Controllers
@@ -114,7 +114,7 @@ router.patch(
       options: { allowed: ["image/jpeg", "image/png"], size: 1 },
     },
     {
-      name: "images",
+      name: "add_images",
       options: { allowed: ["image/jpeg", "image/png"], size: 1, max: 4 },
     },
   ]),
@@ -227,7 +227,7 @@ router.post(
   ensureRole(["MANAGER"]),
   processFiles([
     {
-      name: "images",
+      name: "image",
       options: { allowed: ["image/jpeg", "image/png"], size: 1 },
     },
   ]),
@@ -283,21 +283,15 @@ router.post(
   ensureRole(["MANAGER"]),
   processFiles([
     {
-      name: "attachments",
+      name: "files",
       options: {
-        allowed: [
-          "application/pdf", 
-          "image/jpeg", 
-          "image/png", 
-          "application/zip", 
-          "image/gif"
-        ],
+        allowed: ["application/pdf", "image/jpeg", "image/png"],
         size: 5,
         max: 5,
-      }
-    }
+      },
+    },
   ]),
-  sendNotificationController,
+  sendNotificationController
 );
 
 // Webhooks

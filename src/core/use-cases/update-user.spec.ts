@@ -8,9 +8,12 @@ import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-rep
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Services
-import { makeUser } from "@/test/factories/make-user";
 import { MockedEncrypter } from "@/test/cryptography/mocked-encrypter";
 import { MockedStorage } from "@/test/storage/mocked-storage";
+
+// Factories
+import { makeFile } from "@/test/factories/make-file";
+import { makeUser } from "@/test/factories/make-user";
 
 let repositories: {
   users: InMemoryUsersRepository;
@@ -103,9 +106,7 @@ describe("update user", () => {
     const user = makeUser();
     await repositories.users.create(user);
 
-    const photo = Buffer.from("photo");
-
-    await sut.execute({ user_id: user.id.value, photo });
+    await sut.execute({ user_id: user.id.value, photo: makeFile() });
 
     const updatedUser = repositories.users.items[0];
 
