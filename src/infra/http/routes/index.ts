@@ -1,6 +1,9 @@
 // Libraries
 import { Router } from "express";
 
+// Middlewares
+import { logging } from "@/infra/http/middlewares/logging";
+
 // Controllers
 import { authenticateController } from "@/infra/http/controllers/authenticate";
 import { fetchBagController } from "@/infra/http/controllers/fetch-bag";
@@ -54,6 +57,8 @@ import { requestHelpController } from "@/infra/http/controllers/request-help";
 import { sendNotificationController } from "@/infra/http/controllers/send-notification";
 
 export const router = Router();
+
+router.use(logging());
 
 // Usuários
 router.post("/users", registerController);
@@ -197,7 +202,7 @@ router.get("/bags/own", ensureAuthenticated, listOwnBagsController);
 router.patch(
   "/bags/:bag_id/handle",
   ensureAuthenticated,
-  ensureRole(["BROKER"]),
+  ensureRole(["BROKER", "MANAGER"]),
   handleBagController
 );
 router.get("/bags/:bag_id", ensureAuthenticated, fetchBagController);
@@ -206,12 +211,6 @@ router.post(
   "/bags/:bag_id/pay",
   ensureAuthenticated,
   registerPaymentController
-);
-router.patch(
-  "/bags/:bag_id/handle",
-  ensureAuthenticated,
-  ensureRole(["BROKER"]),
-  handleBagController
 );
 router.patch("/bags/:bag_id", ensureAuthenticated, updateBagController);
 

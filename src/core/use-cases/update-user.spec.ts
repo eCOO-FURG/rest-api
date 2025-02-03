@@ -15,6 +15,9 @@ import { MockedStorage } from "@/test/storage/mocked-storage";
 import { makeFile } from "@/test/factories/make-file";
 import { makeUser } from "@/test/factories/make-user";
 
+// Entities
+import { CPF } from "@/core/entities/cpf";
+
 let repositories: {
   users: InMemoryUsersRepository;
 };
@@ -57,7 +60,7 @@ describe("update user", () => {
   });
 
   it("should be able to update more than one user field", async () => {
-    const cpf = "12345678910";
+    const cpf = new CPF("123.456.789-10");
 
     const user = makeUser({ cpf });
     await repositories.users.create(user);

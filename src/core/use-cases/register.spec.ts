@@ -1,5 +1,7 @@
 // Entities
+import { CPF } from "@/core/entities/cpf";
 import { User } from "@/core/entities/user";
+import { Phone } from "@/core/entities/phone";
 
 // Use-cases
 import { RegisterUseCase } from "@/core/use-cases/register";
@@ -44,8 +46,8 @@ describe("register", () => {
       password: "123456",
       first_name: "John",
       last_name: "Doe",
-      cpf: "523.065.281-01",
-      role: "USER"
+      cpf: "52306528101",
+      role: "USER",
     });
 
     expect(repositories.users.items[0]).toBeInstanceOf(User);
@@ -57,8 +59,8 @@ describe("register", () => {
       phone: "51987654321",
       first_name: "John",
       last_name: "Doe",
-      cpf: "523.065.281-01",
-      role: "USER"
+      cpf: "52306528101",
+      role: "USER",
     });
 
     expect(repositories.users.items[0]).toBeInstanceOf(User);
@@ -80,13 +82,13 @@ describe("register", () => {
         first_name: "Rodrigo",
         last_name: "Goes",
         cpf: "523.065.281-02",
-        role: "USER"
+        role: "USER",
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 
   it("should not be able to register with the same cellphone twice", async () => {
-    const phone = "51987654321";
+    const phone = new Phone("51987654321");
 
     const user = makeUser({ phone });
 
@@ -100,13 +102,13 @@ describe("register", () => {
         first_name: "Rodrigo",
         last_name: "Goes",
         cpf: "523.065.281-02",
-        role: "USER"
+        role: "USER",
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 
   it("should not be able to register with the same CPF twice", async () => {
-    const cpf = "523.065.281-01";
+    const cpf = new CPF("52306528101");
 
     const user = makeUser({ cpf });
 
@@ -115,12 +117,12 @@ describe("register", () => {
     await expect(() =>
       sut.execute({
         email: "rodrigogoes@example.com",
-        phone: "51cellphone987654321",
+        phone: "51987654321",
         password: "123456",
         first_name: "Rodrigo",
         last_name: "Goes",
-        cpf,
-        role: "USER"
+        cpf: cpf.value,
+        role: "USER",
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
@@ -134,8 +136,8 @@ describe("register", () => {
       password,
       first_name: "John",
       last_name: "Doe",
-      cpf: "523.065.281-01",
-      role: "USER"
+      cpf: "52306528101",
+      role: "USER",
     });
 
     expect(repositories.users.items[0].password === password).toBeFalsy;

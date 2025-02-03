@@ -1,4 +1,6 @@
 // Entities
+import { UUID } from "@/core/entities/aggregates/uuid";
+import { Category } from "@/core/entities/category";
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
 // Types
@@ -11,6 +13,9 @@ export interface ProductProps extends EntityRequest {
   image: string;
   archived: boolean;
   pricing: (typeof PRODUCT_PRICINGS)[number];
+
+  category_id: UUID;
+  category?: Category;
 }
 
 export class Product extends Entity<ProductProps> {
@@ -49,6 +54,14 @@ export class Product extends Entity<ProductProps> {
   unarchive() {
     this.props.archived = false;
     this.touch();
+  }
+
+  get category_id() {
+    return this.props.category_id;
+  }
+
+  get category() {
+    return this.props.category;
   }
 
   static create(props: Optional<ProductProps, "archived">) {

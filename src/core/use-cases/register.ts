@@ -13,6 +13,10 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 // Events
 import { DomainEvents } from "@/core/events/domain-events";
 
+// Entities
+import { Phone } from "@/core/entities/phone";
+import { CPF } from "@/core/entities/cpf";
+
 interface RegisterUseCaseRequest {
   first_name: string;
   last_name: string;
@@ -27,7 +31,7 @@ export class RegisterUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private encrypter: Encrypter
-  ) {}
+  ) { }
 
   async execute({
     first_name,
@@ -62,9 +66,9 @@ export class RegisterUseCase {
     const user = User.create({
       first_name,
       last_name,
-      cpf,
+      cpf: new CPF(cpf),
       email,
-      phone,
+      phone: new Phone(phone),
       roles,
     });
 
