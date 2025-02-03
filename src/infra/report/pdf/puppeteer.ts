@@ -47,7 +47,7 @@ export class Puppeteer implements PDFService {
     await page.close();
 
     return {
-      name: `${type}.pdf`,
+      name: type,
       mimetype: "application/pdf",
       size: pdf.length,
       content: pdf,

@@ -8,7 +8,7 @@ import container from "@/infra/container";
 // Use-cases
 import { UpdateBoxUseCase } from "@/core/use-cases/update-box";
 
-// Validations
+// Validation
 import { notEmpty } from "@/infra/http/validation/not-empty";
 
 export const handleBoxSchema = {

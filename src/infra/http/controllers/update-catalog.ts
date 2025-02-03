@@ -8,7 +8,7 @@ import container from "@/infra/container";
 // Use-cases
 import { UpdateCatalogUseCase } from "@/core/use-cases/update-catalog";
 
-// Validations
+// Validation
 import { notEmpty } from "@/infra/http/validation/not-empty";
 
 export const updateCatalogSchema = {

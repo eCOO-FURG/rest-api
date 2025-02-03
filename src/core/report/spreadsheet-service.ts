@@ -11,7 +11,7 @@ export interface SpreadsheetColumn {
 }
 
 export type SpreadsheetServiceGenerateRequest = {
-  type: "relatorio-de-vendas";
+  type: "sales-report";
   props: { bags: Bag[] };
 };
 

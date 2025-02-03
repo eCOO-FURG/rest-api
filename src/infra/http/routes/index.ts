@@ -26,7 +26,7 @@ import { listOwnBagsController } from "@/infra/http/controllers/list-own-bags";
 import { createOfferController } from "@/infra/http/controllers/create-offer";
 import { openPaymentController } from "@/infra/http/controllers/open-payment";
 import { orderProductsController } from "@/infra/http/controllers/order-products";
-import { printBagsReportController } from "@/infra/http/controllers/print-bags-report";
+import { fetchSalesReportController } from "@/infra/http/controllers/fetch-sales-report";
 import { registerController } from "@/infra/http/controllers/register";
 import { registerFarmController } from "@/infra/http/controllers/register-farm";
 import { registerPaymentController } from "@/infra/http/controllers/register-payment";
@@ -41,7 +41,6 @@ import { updateBagController } from "@/infra/http/controllers/update-bag";
 import { registerProductController } from "@/infra/http/controllers/register-product";
 import { updateProductController } from "@/infra/http/controllers/update-product";
 import { fetchSalesStatsController } from "@/infra/http/controllers/fetch-sales-stats";
-import { reportBagsController } from "@/infra/http/controllers/report-bags";
 
 // Webhooks
 import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
@@ -264,16 +263,10 @@ router.get(
 
 // Relatórios
 router.get(
-  "/reports/bags",
-  ensureAuthenticated,
-  ensureRole(["BROKER", "MANAGER"]),
-  printBagsReportController
-);
-router.get(
   "/reports/sales",
-  ensureAuthenticated,
-  ensureRole(["MANAGER"]),
-  reportBagsController
+  // ensureAuthenticated,
+  // ensureRole(["BROKER", "MANAGER"]),
+  fetchSalesReportController
 );
 
 // Notificações

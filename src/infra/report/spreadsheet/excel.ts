@@ -21,7 +21,7 @@ export const SPREADSHEETS: Record<
     rows: Record<string, unknown>[];
   }>
 > = {
-  "relatorio-de-vendas": SALES_REPORT_VIEW,
+  "sales-report": SALES_REPORT_VIEW,
 };
 
 export class ExcelService implements SpreadsheetService {

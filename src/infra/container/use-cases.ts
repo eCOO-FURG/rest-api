@@ -13,7 +13,7 @@ import { ListCyclesUseCase } from "@/core/use-cases/list-cycles";
 import { ListProductsUsecase } from "@/core/use-cases/list-products";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 import { ListCurrentBagsUseCase } from "@/core/use-cases/list-current-bags";
-import { PrintBagsReportUseCase } from "@/core/use-cases/print-bags-report";
+import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
 import { FetchProfileUseCase } from "@/core/use-cases/fetch-profile";
 import { ListBoxesUseCase } from "@/core/use-cases/list-boxes";
 import { FetchBoxUseCase } from "@/core/use-cases/fetch-box";
@@ -39,7 +39,6 @@ import { UpdateCatalogUseCase } from "@/core/use-cases/update-catalog";
 import { RegisterProductUseCase } from "@/core/use-cases/register-product";
 import { UpdateProductUseCase } from "@/core/use-cases/update-product";
 import { FetchSalesStatsUseCase } from "@/core/use-cases/fetch-sales-stats";
-import { ReportBagsUseCase } from "@/core/use-cases/report-bags";
 import { SendNotificationUseCase } from "@/core/use-cases/send-notification";
 
 export default (container: AwilixContainer) => {
@@ -158,9 +157,14 @@ export default (container: AwilixContainer) => {
     listProductsUseCase: asFunction(
       ({ productsRepository }) => new ListProductsUsecase(productsRepository)
     ),
-    printBagsReportUseCase: asFunction(
-      ({ cyclesRepository, bagsRepository, pdfService }) =>
-        new PrintBagsReportUseCase(cyclesRepository, bagsRepository, pdfService)
+    fetchSalesReportUseCase: asFunction(
+      ({ cyclesRepository, bagsRepository, pdfService, spreadsheetService }) =>
+        new FetchSalesReportUseCase(
+          cyclesRepository,
+          bagsRepository,
+          pdfService,
+          spreadsheetService
+        )
     ),
     updateBagUseCase: asFunction(
       ({ bagsRepository, usersRepository, cyclesRepository }) =>
@@ -233,10 +237,6 @@ export default (container: AwilixContainer) => {
     ),
     fetchSalesStatsUseCase: asFunction(
       ({ bagsRepository }) => new FetchSalesStatsUseCase(bagsRepository)
-    ),
-    reportBagsUseCase: asFunction(
-      ({ bagsRepository, excelService }) =>
-        new ReportBagsUseCase(bagsRepository, excelService)
     ),
     requestHelpUseCase: asFunction(
       ({ usersRepository }) => new RequestHelpUseCase(usersRepository)

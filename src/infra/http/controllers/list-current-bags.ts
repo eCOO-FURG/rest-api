@@ -11,8 +11,8 @@ import { ListCurrentBagsUseCase } from "@/core/use-cases/list-current-bags";
 // Presenters
 import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 
-// Validations
-import { optionList } from "@/infra/http/validation/option-list";
+// Validation
+import { options } from "@/infra/http/validation/options";
 import { toArray } from "@/infra/utils/to-array";
 
 // Entities
@@ -33,8 +33,8 @@ export const listCurrentBagsSchema = {
     })
     .refine(
       (data) =>
-        !data.statuses || optionList.validation(data.statuses, BAG_STATUSES),
-      optionList.warning
+        !data.statuses || options.validation(data.statuses, BAG_STATUSES),
+      options.warning
     ),
 };
 

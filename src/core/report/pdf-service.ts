@@ -5,10 +5,10 @@ import { Bag } from "@/core/entities/bag";
 import { File } from "@/core/types/file";
 
 export type PDFServiceGenerateRequest = {
-  type: "lista-de-sacolas";
+  type: "sales-report";
   props: {
     bags: Bag[];
-    withdraw: boolean;
+    withdraw?: boolean;
   };
 };
 

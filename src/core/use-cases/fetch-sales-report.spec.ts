@@ -8,20 +8,17 @@ import { makeBag } from "@/test/factories/make-bag";
 import { makeCycle } from "@/test/factories/make-cycle";
 
 // Use-cases
-import { PrintBagsReportUseCase } from "@/core/use-cases/print-bags-report";
+import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-
-// Types
-import { File as CustomFile } from "@/core/types/file";
 
 let bagsRepository: InMemoryBagsRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 
 let pdfService: MockedPDFService;
 
-let sut: PrintBagsReportUseCase;
+let sut: FetchSalesReportUseCase;
 
 describe("print bags report", () => {
   beforeEach(() => {
@@ -30,7 +27,7 @@ describe("print bags report", () => {
 
     pdfService = new MockedPDFService();
 
-    sut = new PrintBagsReportUseCase(
+    sut = new FetchSalesReportUseCase(
       cyclesRepository,
       bagsRepository,
       pdfService
