@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
 import { MulterError } from "multer";

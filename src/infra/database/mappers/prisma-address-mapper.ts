@@ -2,7 +2,7 @@
 import { Address } from "@/core/entities/address";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
-// Libs
+// Libraries
 import { Prisma } from "@prisma/client";
 
 type PrismaAddress = Prisma.AddressGetPayload<{}>;

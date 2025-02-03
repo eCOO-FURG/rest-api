@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { SpreadsheetColumn } from "@/core/report/spreadsheet-service";
 
 // Entities
@@ -26,7 +26,7 @@ interface BagsReportViewProps {
   bags: Bag[];
 }
 
-export const BAGS_REPORT_VIEW = async ({ bags }: BagsReportViewProps) => {
+export const SALES_REPORT_VIEW = async ({ bags }: BagsReportViewProps) => {
   const rows: Record<string, unknown>[] = [];
 
   for (const bag of bags) {

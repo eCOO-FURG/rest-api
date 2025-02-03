@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { asClass, AwilixContainer } from "awilix";
 
 // Repositories

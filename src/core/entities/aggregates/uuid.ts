@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { randomUUID } from "crypto";
 
 export class UUID {

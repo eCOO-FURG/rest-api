@@ -8,6 +8,9 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { Encrypter } from "@/core/cryptography/encrypter";
 import { Storage } from "@/core/storage/storage";
 
+// Types
+import { File } from "@/core/types/file";
+
 interface UpdateUserUseCaseRequest {
   user_id: string;
   first_name?: string;
@@ -16,7 +19,7 @@ interface UpdateUserUseCaseRequest {
   cpf?: string;
   phone?: string;
   password?: string;
-  photo?: Buffer;
+  photo?: File;
 }
 
 export class UpdateUserUseCase {

@@ -3,7 +3,7 @@ import { CPF } from "@/core/entities/cpf";
 import { User } from "@/core/entities/user";
 import { Phone } from "@/core/entities/phone";
 
-// Libs
+// Libraries
 import { faker } from "@faker-js/faker";
 
 export function makeUser(props: Partial<User> = {}) {

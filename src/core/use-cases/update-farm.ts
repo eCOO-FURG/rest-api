@@ -11,14 +11,20 @@ import { ResourceReachedLimitError } from "@/core/errors/resource-reached-limit"
 // Services
 import { Storage } from "@/core/storage/storage";
 
+// Types
+import { File } from "@/core/types/file";
+
 interface UpdateFarmUseCaseRequest {
   farm_id: string;
   name?: string;
   tally?: string;
   description?: string;
   status?: Farm["status"];
-  photo?: Buffer;
-  images?: (string | Buffer)[];
+  photo?: File;
+  images?: {
+    add?: File[];
+    remove?: string[];
+  };
 }
 
 export class UpdateFarmUseCase {
@@ -34,7 +40,7 @@ export class UpdateFarmUseCase {
     description,
     status,
     photo,
-    images = [],
+    images,
   }: UpdateFarmUseCaseRequest) {
     const farm = await this.farmsRepository.find("basic", { id: farm_id });
 
@@ -46,29 +52,28 @@ export class UpdateFarmUseCase {
 
     if (description) farm.description = description;
 
-    const fresh = [];
-
-    for (const image of images) {
-      const remove = typeof image === "string";
-
-      if (!remove) {
-        fresh.push(image);
-        continue;
+    if (images?.remove) {
+      for (const image of images.remove) {
+        if (!farm.images.has(image))
+          throw new ResourceNotFoundError("Imagem", image);
       }
 
-      if (!farm.images.has(image))
-        throw new ResourceNotFoundError("Imagem", image);
-
-      farm.images.delete(image);
+      for (const image of images.remove) {
+        farm.images.delete(image);
+      }
     }
 
-    if (farm.images.size + fresh.length > 4)
-      throw new ResourceReachedLimitError("Fazenda", farm.id.value, "imagens");
+    if (images?.add) {
+      if (farm.images.size + images.add.length > 4)
+        throw new ResourceReachedLimitError(
+          "Fazenda",
+          farm.id.value,
+          "imagens"
+        );
 
-    const urls = await this.storage.upload(fresh, "farms");
+      const urls = await this.storage.upload(images.add, "farms");
 
-    for (const url of urls) {
-      farm.images.set(url, url);
+      for (const url of urls) farm.images.set(url, url);
     }
 
     if (photo) {

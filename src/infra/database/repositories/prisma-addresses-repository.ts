@@ -13,7 +13,7 @@ import { prisma } from "@/infra/database/prisma-service";
 // Mappers
 import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";
 
-// Libs
+// Libraries
 import { RepositoryResponse } from "@/core/types/repository-response";
 
 export class PrismaAddressesRepository implements AddressesRepository {

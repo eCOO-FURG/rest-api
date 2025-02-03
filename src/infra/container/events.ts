@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { asFunction, AwilixContainer } from "awilix";
 
 // Events
@@ -21,8 +21,8 @@ export default (container: AwilixContainer) => {
         new OnUpdatePasswordRequestEvent(usersRepository, hasher, mailer)
     ),
     onRequestHelpEvent: asFunction(
-      ({ farmsRepository, mailer }) => 
+      ({ farmsRepository, mailer }) =>
         new OnRequestHelpEvent(farmsRepository, mailer)
-    )
+    ),
   });
 };

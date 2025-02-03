@@ -4,7 +4,7 @@ import { ListBoxesUseCase } from "@/core/use-cases/list-boxes";
 // Container
 import container from "@/infra/container";
 
-// Libs
+// Libraries
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
 

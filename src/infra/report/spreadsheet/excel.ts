@@ -6,10 +6,13 @@ import {
 } from "@/core/report/spreadsheet-service";
 
 // Views
-import { BAGS_REPORT_VIEW } from "@/infra/report/spreadsheet/views/bags-report";
+import { SALES_REPORT_VIEW } from "@/infra/report/spreadsheet/views/sales-report";
 
-// Libs
+// Libraries
 import { Workbook } from "exceljs";
+
+// Types
+import { File } from "@/core/types/file";
 
 export const SPREADSHEETS: Record<
   SpreadsheetServiceGenerateRequest["type"],
@@ -18,14 +21,14 @@ export const SPREADSHEETS: Record<
     rows: Record<string, unknown>[];
   }>
 > = {
-  "bags-report": BAGS_REPORT_VIEW,
+  "sales-report": SALES_REPORT_VIEW,
 };
 
 export class ExcelService implements SpreadsheetService {
   async generate({
     type,
     props,
-  }: SpreadsheetServiceGenerateRequest): Promise<Buffer> {
+  }: SpreadsheetServiceGenerateRequest): Promise<File> {
     const { columns, rows } = await SPREADSHEETS[type]({ ...props });
 
     const workbook = new Workbook();
@@ -37,8 +40,14 @@ export class ExcelService implements SpreadsheetService {
       worksheet.addRow(row);
     }
 
-    const uint8Array = await workbook.xlsx.writeBuffer();
+    const buffer = await workbook.xlsx.writeBuffer();
 
-    return Buffer.from(uint8Array);
+    return {
+      name: `${type}.xlsx`,
+      mimetype:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      size: buffer.byteLength,
+      content: Buffer.from(buffer),
+    };
   }
 }

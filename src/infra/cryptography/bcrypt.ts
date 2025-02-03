@@ -1,7 +1,7 @@
 // Services
 import { Encrypter } from "@/core/cryptography/encrypter";
 
-// Libs
+// Libraries
 import { hash, compare } from "bcryptjs";
 
 export class BcrypterHasher implements Encrypter {

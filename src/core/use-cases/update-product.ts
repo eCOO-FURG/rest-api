@@ -11,10 +11,13 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 // Entities
 import { Product } from "@/core/entities/product";
 
+// Types
+import { File } from "@/core/types/file";
+
 interface UpdateProductUseCaseRequest {
   product_id: string;
   name?: string;
-  image?: Buffer;
+  image?: File;
   pricing?: Product["pricing"];
   archived?: boolean;
 }

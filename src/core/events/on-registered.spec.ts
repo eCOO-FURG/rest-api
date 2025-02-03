@@ -16,7 +16,7 @@ import { OnRegisteredEvent } from "@/core/events/on-registered";
 // Test
 import { waitFor } from "@/test/utils/wait-for";
 
-// Libs
+// Libraries
 import { MockInstance } from "vitest";
 
 let repositories: {
