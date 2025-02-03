@@ -37,7 +37,7 @@ export async function printBagsReportController(
     response.set({
       "Content-Type": "application/pdf",
       "Content-Disposition": 'attachment; filename="sacolas.pdf"',
-      "Content-Length": pdf.length,
+      "Content-Length": pdf.size.toString(),
     });
 
     response.send(pdf);

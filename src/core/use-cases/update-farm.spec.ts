@@ -1,5 +1,5 @@
 // Use-cases
-import { UpdateFarmUseCase } from "./update-farm";
+import { UpdateFarmUseCase } from "@/core/use-cases/update-farm";
 
 // Repositories
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
@@ -14,7 +14,7 @@ let storage: MockedStorage;
 
 let sut: UpdateFarmUseCase;
 
-describe("update user", () => {
+describe("update farm", () => {
   beforeEach(() => {
     farmsRepository = new InMemoryFarmsRepository();
     storage = new MockedStorage();
@@ -35,7 +35,7 @@ describe("update user", () => {
       tally: "123456",
       description: "Descrição",
       photo: makeFile(),
-      images: { add: [makeFile()] },
+      images: { add: [makeFile()], remove: ["image1"] },
     });
 
     expect(farmsRepository.items[0].name).toEqual("Cláudio");

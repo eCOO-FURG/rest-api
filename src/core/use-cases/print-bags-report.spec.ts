@@ -50,7 +50,8 @@ describe("print bags report", () => {
     });
 
     expect(typeof pdf.name).toBe("string");
-    expect(typeof pdf.content).toBe("string");
+    expect(pdf.content instanceof Buffer).toBe(true);
+    expect(Buffer.isBuffer(pdf.content)).toBe(true);
   });
 
   it("should be able to print a report of the bags of a cycle that does not exists", async () => {

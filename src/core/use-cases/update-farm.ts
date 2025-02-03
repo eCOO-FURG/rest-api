@@ -57,14 +57,14 @@ export class UpdateFarmUseCase {
         if (!farm.images.has(image))
           throw new ResourceNotFoundError("Imagem", image);
       }
+
+      for (const image of images.remove) {
+        farm.images.delete(image);
+      }
     }
 
     if (images?.add) {
-      for (const image of images.add) {
-        farm.images.set(image.name, image.name);
-      }
-
-      if (farm.images.size > 4)
+      if (farm.images.size + images.add.length > 4)
         throw new ResourceReachedLimitError(
           "Fazenda",
           farm.id.value,
