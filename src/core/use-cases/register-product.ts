@@ -35,6 +35,12 @@ export class RegisterProductUseCase {
     pricing,
     category_id,
   }: RegisterProductUseCaseRequest) {
+    const category = await this.categoriesRepository.find("basic", {
+      id: category_id,
+    });
+
+    if (!category) throw new ResourceNotFoundError("Categoria", category_id);
+
     const equal = await this.productsRepository.find("basic", {
       name,
       pricing,
@@ -42,12 +48,6 @@ export class RegisterProductUseCase {
 
     if (!equal) {
       const urls = await this.storage.upload([image], "products");
-
-      const category = await this.categoriesRepository.find("basic", {
-        id: category_id,
-      });
-
-      if (!category) throw new ResourceNotFoundError("Categoria", category_id);
 
       const product = Product.create({
         name,

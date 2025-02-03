@@ -1,7 +1,7 @@
 export class Phone {
   private _value: string;
 
-  constructor(value: string){
+  constructor(value: string) {
     this._value = value;
   }
 
@@ -11,5 +11,11 @@ export class Phone {
 
   get value() {
     return this._value;
+  }
+
+  public equals(phone: Phone | string) {
+    if (typeof phone === "string") {
+      return this.value === phone;
+    }
   }
 }

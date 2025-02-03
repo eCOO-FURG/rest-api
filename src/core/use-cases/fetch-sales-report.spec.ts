@@ -12,11 +12,13 @@ import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { MockedSpreadsheetService } from "@/test/service/mocked-excel";
 
 let bagsRepository: InMemoryBagsRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 
 let pdfService: MockedPDFService;
+let spreadsheetService: MockedSpreadsheetService;
 
 let sut: FetchSalesReportUseCase;
 
@@ -26,11 +28,13 @@ describe("print bags report", () => {
     bagsRepository = new InMemoryBagsRepository();
 
     pdfService = new MockedPDFService();
+    spreadsheetService = new MockedSpreadsheetService();
 
     sut = new FetchSalesReportUseCase(
       cyclesRepository,
       bagsRepository,
-      pdfService
+      pdfService,
+      spreadsheetService
     );
   });
 
@@ -41,14 +45,15 @@ describe("print bags report", () => {
     const bag = makeBag({ cycle_id: cycle.id });
     bagsRepository.items.push(bag);
 
-    const { pdf } = await sut.execute({
+    const { file } = await sut.execute({
       cycle_id: cycle.id.value,
       withdraw: false,
+      type: "pdf",
     });
 
-    expect(typeof pdf.name).toBe("string");
-    expect(pdf.content instanceof Buffer).toBe(true);
-    expect(Buffer.isBuffer(pdf.content)).toBe(true);
+    expect(typeof file.name).toBe("string");
+    expect(file.content instanceof Buffer).toBe(true);
+    expect(Buffer.isBuffer(file.content)).toBe(true);
   });
 
   it("should be able to print a report of the bags of a cycle that does not exists", async () => {
@@ -56,6 +61,7 @@ describe("print bags report", () => {
       sut.execute({
         cycle_id: "none",
         withdraw: false,
+        type: "pdf",
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
