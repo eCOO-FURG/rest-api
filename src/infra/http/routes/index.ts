@@ -264,8 +264,8 @@ router.get(
 // Relatórios
 router.get(
   "/reports/sales",
-  // ensureAuthenticated,
-  // ensureRole(["BROKER", "MANAGER"]),
+  ensureAuthenticated,
+  ensureRole(["BROKER", "MANAGER"]),
   fetchSalesReportController
 );
 
