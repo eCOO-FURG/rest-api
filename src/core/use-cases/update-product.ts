@@ -42,9 +42,11 @@ export class UpdateProductUseCase {
 
     if (!product) throw new ResourceNotFoundError("Produto", product_id);
 
-    const category = await this.categoriesRepository.find("basic", {
-      id: category_id,
-    });
+    const category =
+      category_id &&
+      (await this.categoriesRepository.find("basic", {
+        id: category_id,
+      }));
 
     if (category_id && !category) {
       throw new ResourceNotFoundError("Categoria", category_id);
@@ -52,7 +54,6 @@ export class UpdateProductUseCase {
 
     const equal = await this.productsRepository.find("basic", {
       name,
-      category: { id: category_id },
       pricing,
     });
 
@@ -62,7 +63,7 @@ export class UpdateProductUseCase {
 
     product.name = name ?? product.name;
     product.pricing = pricing ?? product.pricing;
-    product.category_id = category?.id ?? product.category_id;
+    category && (product.category_id = category.id);
     product.archived = archived ?? product.archived;
 
     if (image) {

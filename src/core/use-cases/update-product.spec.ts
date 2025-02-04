@@ -10,11 +10,11 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { MockedStorage } from "@/test/storage/mocked-storage";
 
 // Factories
+import { makeCategory } from "@/test/factories/make-category";
 import { makeProduct } from "@/test/factories/make-product";
 
 // Use-Cases
 import { UpdateProductUseCase } from "@/core/use-cases/update-product";
-import { makeCategory } from "@/test/factories/make-category";
 
 let productsRepository: InMemoryProductsRepository;
 let categoriesRepository: InMemoryCategoriesRepository;
