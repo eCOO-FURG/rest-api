@@ -39,7 +39,6 @@ describe("Update Product UseCase", () => {
 
   it("should update a product successfully", async () => {
     const product = makeProduct();
-
     const category = makeCategory();
 
     await categoriesRepository.create(category);
@@ -61,7 +60,7 @@ describe("Update Product UseCase", () => {
     expect(updatedProduct).toBeDefined();
     expect(updatedProduct?.name).toBe("Produto show");
     expect(updatedProduct?.pricing).toBe("UNIT");
-    expect(updatedProduct?.category_id).toBe(category.id);
+    expect(updatedProduct?.category_id.value).toBe(category.id.value);
     expect(updatedProduct?.archived).toBe(false);
     expect(updatedProduct?.image).toContain("products");
   });
