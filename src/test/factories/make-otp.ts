@@ -2,7 +2,7 @@
 import { Otp } from "@/core/entities/otp";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
-// Libs
+// Libraries
 import { faker } from "@faker-js/faker";
 
 export function makeOtp(props: Partial<Otp> = {}) {

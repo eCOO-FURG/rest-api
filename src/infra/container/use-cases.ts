@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { asFunction, AwilixContainer } from "awilix";
 
 // Use-cases
@@ -24,12 +24,10 @@ import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
 import { ListProductsUsecase } from "@/core/use-cases/list-products";
 import { OpenPaymentUseCase } from "@/core/use-cases/open-payment";
 import { OrderProductsUseCase } from "@/core/use-cases/order-products";
-import { PrintBagsReportUseCase } from "@/core/use-cases/print-bags-report";
 import { RegisterUseCase } from "@/core/use-cases/register";
 import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
 import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
 import { RegisterProductUseCase } from "@/core/use-cases/register-product";
-import { ReportBagsUseCase } from "@/core/use-cases/report-bags";
 import { RequestHelpUseCase } from "@/core/use-cases/request-help";
 import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
 import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
@@ -42,6 +40,7 @@ import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
 import { UpdateProductUseCase } from "@/core/use-cases/update-product";
 import { UpdateUserUseCase } from "@/core/use-cases/update-user";
 import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
+import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -159,9 +158,14 @@ export default (container: AwilixContainer) => {
     listProductsUseCase: asFunction(
       ({ productsRepository }) => new ListProductsUsecase(productsRepository)
     ),
-    printBagsReportUseCase: asFunction(
-      ({ cyclesRepository, bagsRepository, pdfService }) =>
-        new PrintBagsReportUseCase(cyclesRepository, bagsRepository, pdfService)
+    fetchSalesReportUseCase: asFunction(
+      ({ cyclesRepository, bagsRepository, pdfService, spreadsheetService }) =>
+        new FetchSalesReportUseCase(
+          cyclesRepository,
+          bagsRepository,
+          pdfService,
+          spreadsheetService
+        )
     ),
     updateBagUseCase: asFunction(
       ({ bagsRepository, usersRepository, cyclesRepository }) =>
@@ -233,15 +237,15 @@ export default (container: AwilixContainer) => {
         )
     ),
     updateProductUseCase: asFunction(
-      ({ productsRepository, storage }) =>
-        new UpdateProductUseCase(productsRepository, storage)
+      ({ productsRepository, categoriesRepository, storage }) =>
+        new UpdateProductUseCase(
+          productsRepository,
+          categoriesRepository,
+          storage
+        )
     ),
     fetchSalesStatsUseCase: asFunction(
       ({ bagsRepository }) => new FetchSalesStatsUseCase(bagsRepository)
-    ),
-    reportBagsUseCase: asFunction(
-      ({ bagsRepository, excelService }) =>
-        new ReportBagsUseCase(bagsRepository, excelService)
     ),
     requestHelpUseCase: asFunction(
       ({ usersRepository }) => new RequestHelpUseCase(usersRepository)

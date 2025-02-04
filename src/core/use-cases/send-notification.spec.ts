@@ -9,6 +9,7 @@ import { MockedMailer } from "@/test/mail/mocked-mailer";
 
 // Factories
 import { makeUser } from "@/test/factories/make-user";
+import { makeFile } from "@/test/factories/make-file";
 
 let usersRepository: InMemoryUsersRepository;
 let mailer: MockedMailer;
@@ -51,5 +52,22 @@ describe("send notification", () => {
 
     expect(mailer.emails).toHaveLength(1);
     expect(mailer.emails[0].to).toBe("john@producer.com");
+  });
+
+  it("should be able to send notifications with attachments", async () => {
+    const user1 = makeUser({ roles: ["USER"] });
+    const user2 = makeUser({ roles: ["USER"] });
+
+    await usersRepository.create(user1);
+    await usersRepository.create(user2);
+
+    await sut.execute({
+      role: "USER",
+      title: "Test notification with attachment",
+      message: "This is a test message with attachment",
+      files: [makeFile()],
+    });
+
+    expect(mailer.emails).toHaveLength(2);
   });
 });

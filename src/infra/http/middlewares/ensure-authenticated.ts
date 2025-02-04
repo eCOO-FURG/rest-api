@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 import { sign, verify } from "jsonwebtoken";

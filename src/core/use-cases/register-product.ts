@@ -12,10 +12,13 @@ import { Storage } from "@/core/storage/storage";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
+// Types
+import { File } from "@/core/types/file";
+
 interface RegisterProductUseCaseRequest {
   name: string;
   pricing: Product["pricing"];
-  image: Buffer;
+  image: File;
   category_id: string;
 }
 
@@ -32,6 +35,12 @@ export class RegisterProductUseCase {
     pricing,
     category_id,
   }: RegisterProductUseCaseRequest) {
+    const category = await this.categoriesRepository.find("basic", {
+      id: category_id,
+    });
+
+    if (!category) throw new ResourceNotFoundError("Categoria", category_id);
+
     const equal = await this.productsRepository.find("basic", {
       name,
       pricing,
@@ -39,12 +48,6 @@ export class RegisterProductUseCase {
 
     if (!equal) {
       const urls = await this.storage.upload([image], "products");
-
-      const category = await this.categoriesRepository.find("basic", {
-        id: category_id,
-      });
-
-      if (!category) throw new ResourceNotFoundError("Categoria", category_id);
 
       const product = Product.create({
         name,

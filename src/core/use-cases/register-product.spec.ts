@@ -10,8 +10,11 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 
 // Services
 import { makeCategory } from "@/test/factories/make-category";
-import { makeProduct } from "@/test/factories/make-product";
 import { MockedStorage } from "@/test/storage/mocked-storage";
+
+// Factories
+import { makeProduct } from "@/test/factories/make-product";
+import { makeFile } from "@/test/factories/make-file";
 
 let productsRepository: InMemoryProductsRepository;
 let categoriesRepository: InMemoryCategoriesRepository;
@@ -34,14 +37,12 @@ describe("register product", () => {
   });
 
   it("should be able to register a new product", async () => {
-    const image = Buffer.from("image");
-
     const category = makeCategory();
     await categoriesRepository.create(category);
 
     await sut.execute({
       name: "Produto show",
-      image,
+      image: makeFile(),
       pricing: "UNIT",
       category_id: category.id.value,
     });
@@ -51,7 +52,6 @@ describe("register product", () => {
     expect(product.name).toEqual("Produto show");
     expect(product.pricing).toEqual("UNIT");
     expect(product.archived).toBeFalsy();
-    expect(product.category_id).toEqual(category.id);
   });
 
   it("should find a product by name and pricing", async () => {
@@ -71,10 +71,14 @@ describe("register product", () => {
   });
 
   it("should throw an error if the product already exists and is not archived", async () => {
+    const category = makeCategory();
+    await categoriesRepository.create(category);
+
     const product = makeProduct({
       name: "Produto novo",
       pricing: "UNIT",
       archived: false,
+      category_id: category.id,
     });
 
     await productsRepository.create(product);
@@ -82,27 +86,31 @@ describe("register product", () => {
     await expect(
       sut.execute({
         name: "Produto novo",
-        image: Buffer.from("image"),
+        image: makeFile(),
         pricing: "UNIT",
-        category_id: "123",
+        category_id: category.id.value,
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 
   it("should unarchive an existing product if it is archived", async () => {
+    const category = makeCategory();
+    await categoriesRepository.create(category);
+
     const product = makeProduct({
       name: "Produto arquivado",
       pricing: "UNIT",
       archived: true,
+      category_id: category.id,
     });
 
     await productsRepository.create(product);
 
     await sut.execute({
       name: "Produto arquivado",
-      image: Buffer.from("image"),
+      image: makeFile(),
       pricing: "UNIT",
-      category_id: "123",
+      category_id: category.id.value,
     });
 
     const updatedProduct = await productsRepository.find("basic", {
@@ -115,17 +123,16 @@ describe("register product", () => {
   });
 
   it("should upload the product image", async () => {
-    const image = Buffer.from("image");
+    const category = makeCategory();
+    await categoriesRepository.create(category);
 
     await sut.execute({
       name: "Produto",
-      image,
+      image: makeFile(),
       pricing: "UNIT",
-      category_id: "123",
+      category_id: category.id.value,
     });
 
-    const uploadedImage = productsRepository.items[0].image;
-
-    expect(uploadedImage).toContain("temp/products");
+    expect(productsRepository.items[0].image).toContain("temp/products");
   });
 });

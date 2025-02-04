@@ -1,7 +1,7 @@
 // Use-cases
 import { RequestHelpUseCase } from "@/core/use-cases/request-help";
 
-// Libs
+// Libraries
 import { MockInstance } from "vitest";
 
 // Repositories

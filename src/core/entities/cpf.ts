@@ -1,5 +1,5 @@
 export class CPF {
-  private _value: string
+  private _value: string;
 
   constructor(value: string) {
     this._value = value;
@@ -11,5 +11,13 @@ export class CPF {
 
   get value(): string {
     return this._value;
+  }
+
+  public equals(cpf: CPF | string) {
+    if (typeof cpf === "string") {
+      return this.value === cpf;
+    }
+
+    return this.value === cpf.value;
   }
 }

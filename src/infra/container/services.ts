@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { asClass, asFunction, AwilixContainer } from "awilix";
 import { createTransport } from "nodemailer";
 
@@ -65,6 +65,6 @@ export default (container: AwilixContainer) => {
       if (deploy) return new Cloudinary();
       return new MockedStorage();
     }).singleton(),
-    excelService: asClass(ExcelService).singleton(),
+    spreadsheetService: asClass(ExcelService).singleton(),
   });
 };

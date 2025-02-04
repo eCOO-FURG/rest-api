@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import * as jwtService from "jsonwebtoken";
 
 // Services

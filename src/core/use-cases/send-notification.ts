@@ -7,10 +7,14 @@ import { UsersRepository } from "@/core/repositories/users-repository";
 // Services
 import { Mailer } from "@/core/mail/mailer";
 
+// Types
+import { File } from "@/core/types/file";
+
 interface SendNotificationUseCaseRequest {
   role: "USER" | "PRODUCER";
   title: string;
   message: string;
+  files?: File[];
 }
 
 export class SendNotificationUseCase {
@@ -19,12 +23,17 @@ export class SendNotificationUseCase {
     private mailer: Mailer
   ) {}
 
-  async execute({ role, title, message }: SendNotificationUseCaseRequest) {
+  async execute({
+    role,
+    title,
+    message,
+    files,
+  }: SendNotificationUseCaseRequest) {
     const users = await this.usersRepository.list("basic", { role });
 
     const view = await this.mailer.load({
       view: "notification",
-      props: { title, message },
+      props: { title, message, files },
     });
 
     const emails: Email[] = [];
@@ -34,6 +43,7 @@ export class SendNotificationUseCase {
         to: user.email,
         subject: title,
         content: view,
+        files,
       });
 
       emails.push(mail);

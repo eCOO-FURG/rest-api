@@ -13,6 +13,9 @@ import { Logger } from "@/infra/logs/sentry";
 // Env
 import { env } from "@/infra/env";
 
+// Types
+import { File } from "@/core/types/file";
+
 export class Cloudinary implements Storage {
   client: typeof cloudinary;
 
@@ -33,7 +36,7 @@ export class Cloudinary implements Storage {
     this.client = cloudinary;
   }
 
-  async upload(files: Buffer[], folder: string): Promise<string[]> {
+  async upload(files: File[], folder: string): Promise<string[]> {
     const promises = files.map((file) => this.save(file, folder));
 
     try {
@@ -44,14 +47,14 @@ export class Cloudinary implements Storage {
     }
   }
 
-  private async save(file: Buffer, folder: string): Promise<string> {
+  private async save(file: File, folder: string): Promise<string> {
     const url = await new Promise<string>((resolve, reject) => {
       this.client.uploader
         .upload_stream({ folder, resource_type: "image" }, (error, result) => {
           if (error) reject(error);
           if (result) resolve(result.secure_url);
         })
-        .end(file);
+        .end(file.content);
     });
 
     return url;

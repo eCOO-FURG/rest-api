@@ -4,7 +4,7 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 // Services
 import { prisma } from "@/infra/database/prisma-service";
 
-// Libs
+// Libraries
 import { hash } from "bcryptjs";
 
 // Env

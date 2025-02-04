@@ -1,4 +1,4 @@
-export const optionList = {
+export const options = {
   validation: (value: string, options: readonly unknown[]) => {
     const values = value.split(",");
 

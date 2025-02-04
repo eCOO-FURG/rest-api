@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { Router } from "express";
 
 // Middlewares
@@ -32,12 +32,11 @@ import { listOwnBagsController } from "@/infra/http/controllers/list-own-bags";
 import { listProductsController } from "@/infra/http/controllers/list-products";
 import { openPaymentController } from "@/infra/http/controllers/open-payment";
 import { orderProductsController } from "@/infra/http/controllers/order-products";
-import { printBagsReportController } from "@/infra/http/controllers/print-bags-report";
+import { fetchSalesReportController } from "@/infra/http/controllers/fetch-sales-report";
 import { registerController } from "@/infra/http/controllers/register";
 import { registerFarmController } from "@/infra/http/controllers/register-farm";
 import { registerPaymentController } from "@/infra/http/controllers/register-payment";
 import { registerProductController } from "@/infra/http/controllers/register-product";
-import { reportBagsController } from "@/infra/http/controllers/report-bags";
 import { requestHelpController } from "@/infra/http/controllers/request-help";
 import { requestOtpController } from "@/infra/http/controllers/request-otp";
 import { requestPasswordUpdateController } from "@/infra/http/controllers/request-password-update";
@@ -120,7 +119,7 @@ router.patch(
       options: { allowed: ["image/jpeg", "image/png"], size: 1 },
     },
     {
-      name: "images",
+      name: "add_images",
       options: { allowed: ["image/jpeg", "image/png"], size: 1, max: 4 },
     },
   ]),
@@ -227,7 +226,7 @@ router.post(
   ensureRole(["MANAGER"]),
   processFiles([
     {
-      name: "images",
+      name: "image",
       options: { allowed: ["image/jpeg", "image/png"], size: 1 },
     },
   ]),
@@ -267,16 +266,10 @@ router.get(
 
 // Relatórios
 router.get(
-  "/reports/bags",
-  ensureAuthenticated,
-  ensureRole(["BROKER", "MANAGER"]),
-  printBagsReportController
-);
-router.get(
   "/reports/sales",
   ensureAuthenticated,
-  ensureRole(["MANAGER"]),
-  reportBagsController
+  ensureRole(["BROKER", "MANAGER"]),
+  fetchSalesReportController
 );
 
 // Notificações
@@ -284,6 +277,16 @@ router.post(
   "/notifications",
   ensureAuthenticated,
   ensureRole(["MANAGER"]),
+  processFiles([
+    {
+      name: "files",
+      options: {
+        allowed: ["application/pdf", "image/jpeg", "image/png"],
+        size: 5,
+        max: 5,
+      },
+    },
+  ]),
   sendNotificationController
 );
 

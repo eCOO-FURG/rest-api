@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
@@ -8,11 +8,14 @@ import { RegisterProductUseCase } from "@/core/use-cases/register-product";
 // Container
 import container from "@/infra/container";
 
+// Utils
+import { toFile } from "@/infra/utils/to-file";
+
 export const registerProductSchema = {
   body: z.object({
     name: z.string(),
     pricing: z.enum(["UNIT", "WEIGHT"]),
-    image: z.any().refine((value) => !!value),
+    image: z.custom<Express.Multer.File>(),
     category_id: z.string(),
   }),
 };
@@ -23,12 +26,8 @@ export async function registerProductController(
   next: NextFunction
 ) {
   try {
-    const files = request.files as Record<string, Express.Multer.File[]>;
-
-    const content = { ...request.body, image: files?.image?.at(0)?.buffer };
-
     const { name, pricing, image, category_id } =
-      registerProductSchema.body.parse(content);
+      registerProductSchema.body.parse(request.body);
 
     const registerProductUseCase = container.resolve<RegisterProductUseCase>(
       "registerProductUseCase"
@@ -37,7 +36,7 @@ export async function registerProductController(
     await registerProductUseCase.execute({
       name,
       pricing,
-      image,
+      image: toFile(image),
       category_id,
     });
 

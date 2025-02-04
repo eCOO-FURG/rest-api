@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { createDocument } from "zod-openapi";
 
 // Mappers
@@ -27,7 +27,6 @@ import { listOwnBagsSchema } from "@/infra/http/controllers/list-own-bags";
 import { listProductSchema } from "@/infra/http/controllers/list-products";
 import { openPaymentSchema } from "@/infra/http/controllers/open-payment";
 import { orderProductsSchema } from "@/infra/http/controllers/order-products";
-import { printBagsReportSchema } from "@/infra/http/controllers/print-bags-report";
 import { registerSchema } from "@/infra/http/controllers/register";
 import { registerFarmSchema } from "@/infra/http/controllers/register-farm";
 import { registerPaymentSchema } from "@/infra/http/controllers/register-payment";
@@ -40,6 +39,7 @@ import { updateFarmSchema } from "@/infra/http/controllers/update-farm";
 import { updateProductSchema } from "@/infra/http/controllers/update-product";
 import { updateUserSchema } from "@/infra/http/controllers/update-user";
 import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
+import { fetchSalesReportSchema } from "@/infra/http/controllers/fetch-sales-report";
 
 const tags = {
   users: "Usuários",
@@ -453,7 +453,7 @@ const docs = createDocument({
           "404": { description: "Ciclo não encontrado: cycle-not-found" },
         },
         description: "Gera o relatório de sacolas.",
-        ...SwaggerMapper.toDocs(printBagsReportSchema),
+        ...SwaggerMapper.toDocs(fetchSalesReportSchema),
       },
     },
     "/bags/own": {

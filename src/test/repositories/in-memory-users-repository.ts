@@ -22,14 +22,14 @@ export class InMemoryUsersRepository implements UsersRepository {
     _: RepositoryResponse,
     { id, email, phone, cpf, role }: UsersRepositorySearchRequest
   ): Promise<User | null> {
-    const user = await find<User>(
-      this.items,
-      async (item) =>
+    const user = await find<User>(this.items, async (item) =>
+      Boolean(
         (!id || item.id.equals(id)) &&
-        (!email || item.email === email) &&
-        (!phone || item.phone === phone) &&
-        (!cpf || item.cpf === cpf) &&
-        (!role || item.roles.includes(role))
+          (!email || item.email === email) &&
+          (!phone || item.phone.equals(phone)) &&
+          (!cpf || item.cpf.equals(cpf)) &&
+          (!role || item.roles.includes(role))
+      )
     );
 
     if (!user) return null;
@@ -42,14 +42,14 @@ export class InMemoryUsersRepository implements UsersRepository {
     { id, email, phone, cpf, role }: UsersRepositorySearchRequest,
     page?: number
   ): Promise<User[]> {
-    let users = await filter<User>(
-      this.items,
-      async (item) =>
+    let users = await filter<User>(this.items, async (item) =>
+      Boolean(
         (!id || item.id.equals(id)) &&
-        (!email || item.email === email) &&
-        (!phone || item.phone === phone) &&
-        (!cpf || item.cpf === cpf) &&
-        (!role || item.roles.includes(role))
+          (!email || item.email === email) &&
+          (!phone || item.phone.equals(phone)) &&
+          (!cpf || item.cpf.equals(cpf)) &&
+          (!role || item.roles.includes(role))
+      )
     );
 
     if (page) users = paginate(users, page);

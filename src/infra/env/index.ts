@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import "dotenv/config";
 import { z } from "zod";
 
