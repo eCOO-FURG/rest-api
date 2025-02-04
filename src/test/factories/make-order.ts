@@ -2,7 +2,7 @@
 import { Order } from "@/core/entities/order";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
-// Libs
+// Libraries
 import { faker } from "@faker-js/faker";
 
 export function makeOrder(props: Partial<Order> = {}) {

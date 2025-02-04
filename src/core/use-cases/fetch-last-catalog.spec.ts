@@ -11,8 +11,6 @@ import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-r
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
-import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";

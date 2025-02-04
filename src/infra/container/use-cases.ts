@@ -1,10 +1,14 @@
-// Libs
+// Libraries
 import { asFunction, AwilixContainer } from "awilix";
 
 // Use-cases
 import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
 import { CreateOfferUseCase } from "@/core/use-cases/create-offer";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
+import { ListCurrentBagsUseCase } from "@/core/use-cases/list-current-bags";
+import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
+import { FetchProfileUseCase } from "@/core/use-cases/fetch-profile";
+import { ListBoxesUseCase } from "@/core/use-cases/list-boxes";
 import { FetchBoxUseCase } from "@/core/use-cases/fetch-box";
 import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
 import { FetchCurrentBoxUseCase } from "@/core/use-cases/fetch-current-box";
@@ -12,26 +16,7 @@ import { FetchCurrentCatalogUseCase } from "@/core/use-cases/fetch-current-catal
 import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
 import { FetchLastCatalogUseCase } from "@/core/use-cases/fetch-last-catalog";
 import { FetchPendingsUseCase } from "@/core/use-cases/fetch-pendings";
-import { FetchProfileUseCase } from "@/core/use-cases/fetch-profile";
 import { FetchSalesStatsUseCase } from "@/core/use-cases/fetch-sales-stats";
-import { ListBagsUseCase } from "@/core/use-cases/list-bags";
-import { ListBoxesUseCase } from "@/core/use-cases/list-boxes";
-import { ListCatalogsUseCase } from "@/core/use-cases/list-catalogs";
-import { ListCurrentBagsUseCase } from "@/core/use-cases/list-current-bags";
-import { ListCyclesUseCase } from "@/core/use-cases/list-cycles";
-import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
-import { ListProductsUsecase } from "@/core/use-cases/list-products";
-import { OpenPaymentUseCase } from "@/core/use-cases/open-payment";
-import { OrderProductsUseCase } from "@/core/use-cases/order-products";
-import { PrintBagsReportUseCase } from "@/core/use-cases/print-bags-report";
-import { RegisterUseCase } from "@/core/use-cases/register";
-import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
-import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
-import { RegisterProductUseCase } from "@/core/use-cases/register-product";
-import { ReportBagsUseCase } from "@/core/use-cases/report-bags";
-import { RequestHelpUseCase } from "@/core/use-cases/request-help";
-import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
-import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
 import { SendNotificationUseCase } from "@/core/use-cases/send-notification";
 import { UpdateBagUseCase } from "@/core/use-cases/update-bag";
 import { UpdateBoxUseCase } from "@/core/use-cases/update-box";
@@ -41,6 +26,20 @@ import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
 import { UpdateProductUseCase } from "@/core/use-cases/update-product";
 import { UpdateUserUseCase } from "@/core/use-cases/update-user";
 import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
+import { RegisterUseCase } from "@/core/use-cases/register";
+import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
+import { OrderProductsUseCase } from "@/core/use-cases/order-products";
+import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
+import { ListCyclesUseCase } from "@/core/use-cases/list-cycles";
+import { ListCatalogsUseCase } from "@/core/use-cases/list-catalogs";
+import { ListProductsUsecase } from "@/core/use-cases/list-products";
+import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
+import { ListBagsUseCase } from "@/core/use-cases/list-bags";
+import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
+import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
+import { OpenPaymentUseCase } from "@/core/use-cases/open-payment";
+import { RegisterProductUseCase } from "@/core/use-cases/register-product";
+import { RequestHelpUseCase } from "@/core/use-cases/request-help";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -158,9 +157,14 @@ export default (container: AwilixContainer) => {
     listProductsUseCase: asFunction(
       ({ productsRepository }) => new ListProductsUsecase(productsRepository)
     ),
-    printBagsReportUseCase: asFunction(
-      ({ cyclesRepository, bagsRepository, pdfService }) =>
-        new PrintBagsReportUseCase(cyclesRepository, bagsRepository, pdfService)
+    fetchSalesReportUseCase: asFunction(
+      ({ cyclesRepository, bagsRepository, pdfService, spreadsheetService }) =>
+        new FetchSalesReportUseCase(
+          cyclesRepository,
+          bagsRepository,
+          pdfService,
+          spreadsheetService
+        )
     ),
     updateBagUseCase: asFunction(
       ({ bagsRepository, usersRepository, cyclesRepository }) =>
@@ -224,8 +228,12 @@ export default (container: AwilixContainer) => {
         )
     ),
     registerProductUseCase: asFunction(
-      ({ productsRepository, storage }) =>
-        new RegisterProductUseCase(productsRepository, storage)
+      ({ productsRepository, categoriesRepository, storage }) =>
+        new RegisterProductUseCase(
+          productsRepository,
+          categoriesRepository,
+          storage
+        )
     ),
     updateProductUseCase: asFunction(
       ({ productsRepository, categoriesRepository, storage }) =>
@@ -237,10 +245,6 @@ export default (container: AwilixContainer) => {
     ),
     fetchSalesStatsUseCase: asFunction(
       ({ bagsRepository }) => new FetchSalesStatsUseCase(bagsRepository)
-    ),
-    reportBagsUseCase: asFunction(
-      ({ bagsRepository, excelService }) =>
-        new ReportBagsUseCase(bagsRepository, excelService)
     ),
     requestHelpUseCase: asFunction(
       ({ usersRepository }) => new RequestHelpUseCase(usersRepository)

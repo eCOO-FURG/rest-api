@@ -1,7 +1,7 @@
 // Use-cases
 import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
 
-// Libs
+// Libraries
 import { MockInstance } from "vitest";
 
 // Repositories

@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { createContainer } from "awilix";
 
 // Container

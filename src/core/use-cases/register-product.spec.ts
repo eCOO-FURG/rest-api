@@ -10,8 +10,11 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 
 // Services
 import { makeCategory } from "@/test/factories/make-category";
-import { makeProduct } from "@/test/factories/make-product";
 import { MockedStorage } from "@/test/storage/mocked-storage";
+
+// Factories
+import { makeProduct } from "@/test/factories/make-product";
+import { makeFile } from "@/test/factories/make-file";
 
 let productsRepository: InMemoryProductsRepository;
 let categoriesRepository: InMemoryCategoriesRepository;
@@ -34,13 +37,11 @@ describe("register product", () => {
   });
 
   it("should be able to register a new product", async () => {
-    const image = Buffer.from("image");
-
     const category = makeCategory();
 
     await sut.execute({
       name: "Produto show",
-      image,
+      image: makeFile(),
       pricing: "UNIT",
       category_id: category.id.value,
     });
@@ -81,7 +82,7 @@ describe("register product", () => {
     await expect(
       sut.execute({
         name: "Produto novo",
-        image: Buffer.from("image"),
+        image: makeFile(),
         pricing: "UNIT",
         category_id: "123",
       })
@@ -99,7 +100,7 @@ describe("register product", () => {
 
     await sut.execute({
       name: "Produto arquivado",
-      image: Buffer.from("image"),
+      image: makeFile(),
       pricing: "UNIT",
       category_id: "123",
     });
@@ -114,17 +115,13 @@ describe("register product", () => {
   });
 
   it("should upload the product image", async () => {
-    const image = Buffer.from("image");
-
     await sut.execute({
       name: "Produto",
-      image,
+      image: makeFile(),
       pricing: "UNIT",
       category_id: "123",
     });
 
-    const uploadedImage = productsRepository.items[0].image;
-
-    expect(uploadedImage).toContain("temp/products");
+    expect(productsRepository.items[0].image).toContain("temp/products");
   });
 });

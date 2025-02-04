@@ -1,5 +1,6 @@
 // Libraries
 import multer, { MulterError } from "multer";
+import { Request, Response, NextFunction } from "express";
 
 // Utils
 import { toMb } from "@/infra/utils/to-mb";
@@ -40,10 +41,26 @@ function config(fields: FieldConfig[]): multer.Options {
 export function processFiles(fields: FieldConfig[]) {
   const upload = multer(config(fields));
 
-  return upload.fields(
-    fields.map(({ name, options }) => ({
-      name,
-      maxCount: options.max ?? 1,
-    }))
-  );
+  return [
+    upload.fields(
+      fields.map(({ name, options }) => ({
+        name,
+        maxCount: options.max ?? 1,
+      }))
+    ),
+    (req: Request, _: Response, next: NextFunction) => {
+      if (req.files) {
+        for (const [name, files] of Object.entries(req.files)) {
+          const config = fields.find((field) => field.name === name);
+
+          if (!config) continue;
+
+          const max = config.options.max ?? 1;
+
+          req.body[name] = max > 1 ? files : files[0];
+        }
+      }
+      next();
+    },
+  ];
 }

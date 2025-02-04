@@ -16,6 +16,9 @@ import { makeProduct } from "@/test/factories/make-product";
 // Use-Cases
 import { UpdateProductUseCase } from "@/core/use-cases/update-product";
 
+// Utils
+import { makeFile } from "@/test/factories/make-file";
+
 let productsRepository: InMemoryProductsRepository;
 let categoriesRepository: InMemoryCategoriesRepository;
 let storage: MockedStorage;
@@ -37,18 +40,15 @@ describe("Update Product UseCase", () => {
   it("should update a product successfully", async () => {
     const product = makeProduct();
 
-    await productsRepository.create(product);
-
-    const updatedImage = Buffer.from("updated_image");
-
     const category = makeCategory();
 
     await categoriesRepository.create(category);
+    await productsRepository.create(product);
 
     await sut.execute({
       product_id: product.id.value,
       name: "Produto show",
-      image: updatedImage,
+      image: makeFile(),
       pricing: "UNIT",
       category_id: category.id.value,
       archived: false,
@@ -71,7 +71,7 @@ describe("Update Product UseCase", () => {
       sut.execute({
         product_id: "123",
         name: "Produto do Timas",
-        image: Buffer.from("updated_image"),
+        image: makeFile(),
         pricing: "UNIT",
         archived: false,
       })
@@ -89,7 +89,7 @@ describe("Update Product UseCase", () => {
       sut.execute({
         product_id: product2.id.value,
         name: "Produto 9",
-        image: Buffer.from("updated_image"),
+        image: makeFile(),
         pricing: "UNIT",
         archived: false,
       })

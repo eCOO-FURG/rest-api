@@ -1,7 +1,7 @@
 // Services
 import { OtpProvider } from "@/core/cryptography/otp-provider";
 
-// Libs
+// Libraries
 import { generate } from "otp-generator";
 
 export class OtpGenerator implements OtpProvider {

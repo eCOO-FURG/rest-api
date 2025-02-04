@@ -13,10 +13,13 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { Product } from "@/core/entities/product";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
+// Types
+import { File } from "@/core/types/file";
+
 interface UpdateProductUseCaseRequest {
   product_id: string;
   name?: string;
-  image?: Buffer;
+  image?: File;
   pricing?: Product["pricing"];
   category_id?: string;
   archived?: boolean;

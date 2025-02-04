@@ -16,20 +16,20 @@ import { makeUser } from "@/test/factories/make-user";
 // Events
 import { DomainEvents } from "@/core/events/domain-events";
 
-// Libs
+// Libraries
 import { MockInstance } from "vitest";
 
 import { waitFor } from "@/test/utils/wait-for";
 
-let usersRepository: InMemoryUsersRepository
+let usersRepository: InMemoryUsersRepository;
 
-let sut: RequestHelpUseCase; 
+let sut: RequestHelpUseCase;
 
 let spy: MockInstance;
 
 describe("RequestHelpUseCase", () => {
   beforeEach(() => {
-    usersRepository = new InMemoryUsersRepository()
+    usersRepository = new InMemoryUsersRepository();
 
     sut = new RequestHelpUseCase(usersRepository);
 
@@ -42,7 +42,7 @@ describe("RequestHelpUseCase", () => {
 
     await sut.execute({
       user_id: user.id.value,
-      content: "HELP ME!",
+      message: "HELP ME!",
     });
 
     expect(usersRepository.items[0]).toBeInstanceOf(User);
@@ -54,8 +54,8 @@ describe("RequestHelpUseCase", () => {
   it("should throw a ResourceNotFoundError if the user does not exist", async () => {
     await expect(() =>
       sut.execute({
-        user_id: '232',
-        content: "HELP ME!",
+        user_id: "232",
+        message: "HELP ME!",
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });

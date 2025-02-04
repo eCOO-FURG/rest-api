@@ -4,7 +4,7 @@ import { FetchCurrentCatalogUseCase } from "@/core/use-cases/fetch-current-catal
 // Container
 import container from "@/infra/container";
 
-// Libs
+// Libraries
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
 

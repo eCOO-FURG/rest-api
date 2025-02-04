@@ -3,7 +3,7 @@ import { Payment } from "@/core/entities/payment";
 // Payments
 import { PixProvider } from "@/core/payment/pix-provider";
 
-// Libs
+// Libraries
 import { createClient } from "@woovi/node-sdk";
 
 // Env

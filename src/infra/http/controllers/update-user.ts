@@ -4,12 +4,15 @@ import { UpdateUserUseCase } from "@/core/use-cases/update-user";
 // Container
 import container from "@/infra/container";
 
-// Libs
+// Libraries
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
 
 // Validation
 import { notEmpty } from "@/infra/http/validation/not-empty";
+
+// Utils
+import { toFile } from "@/infra/utils/to-file";
 
 export const updateUserSchema = {
   body: z
@@ -20,7 +23,7 @@ export const updateUserSchema = {
       cpf: z.string().min(11).max(14).optional(),
       phone: z.string().optional(),
       password: z.string().min(8).optional(),
-      photo: z.custom<Buffer>().optional(),
+      photo: z.custom<Express.Multer.File>().optional(),
     })
     .refine(notEmpty.validation, notEmpty.warning),
 };
@@ -31,12 +34,8 @@ export async function updateUserController(
   next: NextFunction
 ) {
   try {
-    const files = request.files as Record<string, Express.Multer.File[]>;
-
-    const content = { ...request.body, photo: files?.photo?.at(0)?.buffer };
-
     const { first_name, last_name, email, cpf, phone, password, photo } =
-      updateUserSchema.body.parse(content);
+      updateUserSchema.body.parse(request.body);
 
     const updateUserUsecase =
       container.resolve<UpdateUserUseCase>("updateUserUseCase");
@@ -49,7 +48,7 @@ export async function updateUserController(
       email,
       password,
       phone,
-      photo,
+      photo: toFile(photo),
     });
 
     return response.sendStatus(204);

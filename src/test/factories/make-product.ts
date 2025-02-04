@@ -1,7 +1,7 @@
 // Entities
 import { Product } from "@/core/entities/product";
 
-// Libs
+// Libraries
 import { faker } from "@faker-js/faker";
 
 export function makeProduct(props: Partial<Product> = {}) {

@@ -1,6 +1,6 @@
-// Libs
-import { NextFunction, Request, Response } from "express";
+// Libraries
 import { z } from "zod";
+import { NextFunction, Request, Response } from "express";
 
 // Use-cases
 import { UpdateProductUseCase } from "@/core/use-cases/update-product";
@@ -11,6 +11,9 @@ import container from "@/infra/container";
 // Validation
 import { notEmpty } from "@/infra/http/validation/not-empty";
 
+// Utils
+import { toFile } from "@/infra/utils/to-file";
+
 export const updateProductSchema = {
   params: z.object({
     product_id: z.string().uuid(),
@@ -18,7 +21,7 @@ export const updateProductSchema = {
   body: z
     .object({
       name: z.string().optional(),
-      image: z.custom<Buffer>().optional(),
+      image: z.custom<Express.Multer.File>().optional(),
       pricing: z.enum(["UNIT", "WEIGHT"]).optional(),
       category_id: z.string().uuid().optional(),
       archived: z
@@ -37,14 +40,10 @@ export async function updateProductController(
   next: NextFunction
 ) {
   try {
-    const files = request.files as Record<string, Express.Multer.File[]>;
-
     const { product_id } = updateProductSchema.params.parse(request.params);
 
-    const content = { ...request.body, image: files?.image?.at(0)?.buffer };
-
-    const { name, pricing, category_id, archived, image } =
-      updateProductSchema.body.parse(content);
+    const { name, pricing, archived, image, category_id } =
+      updateProductSchema.body.parse(request.body);
 
     const updateProductUseCase = container.resolve<UpdateProductUseCase>(
       "updateProductUseCase"
@@ -56,7 +55,7 @@ export async function updateProductController(
       pricing,
       category_id,
       archived,
-      image,
+      image: toFile(image),
     });
 
     return response.sendStatus(200);

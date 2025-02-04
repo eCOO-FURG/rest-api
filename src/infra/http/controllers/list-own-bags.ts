@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
@@ -15,7 +15,7 @@ import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 import { toDate } from "@/infra/utils/to-date";
 
 // Validation
-import { realPeriod } from "@/infra/http/validation/real-period";
+import { period } from "@/infra/http/validation/period";
 
 // Utils
 import { toArray } from "@/infra/utils/to-array";
@@ -24,7 +24,7 @@ import { toArray } from "@/infra/utils/to-array";
 import { Bag, BAG_STATUSES } from "@/core/entities/bag";
 
 // Validation
-import { optionList } from "@/infra/http/validation/option-list";
+import { options } from "@/infra/http/validation/options";
 
 export const listOwnBagsSchema = {
   query: z
@@ -52,12 +52,12 @@ export const listOwnBagsSchema = {
     })
     .refine(
       (data) =>
-        !data.statuses || optionList.validation(data.statuses, BAG_STATUSES),
-      optionList.warning
+        !data.statuses || options.validation(data.statuses, BAG_STATUSES),
+      options.warning
     )
     .refine(
-      (data) => realPeriod.validation(toDate(data.since), toDate(data.before)),
-      realPeriod.warning
+      (data) => period.validation(toDate(data.since), toDate(data.before)),
+      period.warning
     ),
 };
 

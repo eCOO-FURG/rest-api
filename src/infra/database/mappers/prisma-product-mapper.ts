@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { Prisma } from "@prisma/client";
 
 // Entities
