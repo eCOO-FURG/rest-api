@@ -1,15 +1,17 @@
 // Repositories
+import { CategoriesRepository } from "@/core/repositories/categories-repository";
 import { ProductsRepository } from "@/core/repositories/products-repository";
 
 // Services
 import { Storage } from "@/core/storage/storage";
 
 // Errors
-import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Entities
 import { Product } from "@/core/entities/product";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Types
 import { File } from "@/core/types/file";
@@ -19,12 +21,14 @@ interface UpdateProductUseCaseRequest {
   name?: string;
   image?: File;
   pricing?: Product["pricing"];
+  category_id?: string;
   archived?: boolean;
 }
 
 export class UpdateProductUseCase {
   constructor(
     private productsRepository: ProductsRepository,
+    private categoriesRepository: CategoriesRepository,
     private storage: Storage
   ) {}
 
@@ -33,6 +37,7 @@ export class UpdateProductUseCase {
     name,
     image,
     pricing,
+    category_id,
     archived,
   }: UpdateProductUseCaseRequest) {
     const product = await this.productsRepository.find("basic", {
@@ -40,6 +45,14 @@ export class UpdateProductUseCase {
     });
 
     if (!product) throw new ResourceNotFoundError("Produto", product_id);
+
+    if (category_id) {
+      const category = await this.categoriesRepository.find("basic", {
+        id: category_id,
+      });
+
+      if (!category) throw new ResourceNotFoundError("Categoria", category_id);
+    }
 
     const equal = await this.productsRepository.find("basic", {
       name,
@@ -52,6 +65,7 @@ export class UpdateProductUseCase {
 
     product.name = name ?? product.name;
     product.pricing = pricing ?? product.pricing;
+    product.category_id = new UUID(category_id) ?? product.category_id;
     product.archived = archived ?? product.archived;
 
     if (image) {

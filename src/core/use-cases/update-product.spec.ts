@@ -1,14 +1,16 @@
 // Repositories
+import { InMemoryCategoriesRepository } from "@/test/repositories/in-memory-categories-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 
 // Errors
-import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Services
 import { MockedStorage } from "@/test/storage/mocked-storage";
 
 // Factories
+import { makeCategory } from "@/test/factories/make-category";
 import { makeProduct } from "@/test/factories/make-product";
 
 // Use-Cases
@@ -18,20 +20,29 @@ import { UpdateProductUseCase } from "@/core/use-cases/update-product";
 import { makeFile } from "@/test/factories/make-file";
 
 let productsRepository: InMemoryProductsRepository;
+let categoriesRepository: InMemoryCategoriesRepository;
 let storage: MockedStorage;
 let sut: UpdateProductUseCase;
 
 describe("Update Product UseCase", () => {
   beforeEach(() => {
     productsRepository = new InMemoryProductsRepository();
+    categoriesRepository = new InMemoryCategoriesRepository();
     storage = new MockedStorage();
 
-    sut = new UpdateProductUseCase(productsRepository, storage);
+    sut = new UpdateProductUseCase(
+      productsRepository,
+      categoriesRepository,
+      storage
+    );
   });
 
   it("should update a product successfully", async () => {
     const product = makeProduct();
 
+    const category = makeCategory();
+
+    await categoriesRepository.create(category);
     await productsRepository.create(product);
 
     await sut.execute({
@@ -39,6 +50,7 @@ describe("Update Product UseCase", () => {
       name: "Produto show",
       image: makeFile(),
       pricing: "UNIT",
+      category_id: category.id.value,
       archived: false,
     });
 
@@ -49,6 +61,7 @@ describe("Update Product UseCase", () => {
     expect(updatedProduct).toBeDefined();
     expect(updatedProduct?.name).toBe("Produto show");
     expect(updatedProduct?.pricing).toBe("UNIT");
+    expect(updatedProduct?.category_id).toBe(category.id);
     expect(updatedProduct?.archived).toBe(false);
     expect(updatedProduct?.image).toContain("products");
   });
