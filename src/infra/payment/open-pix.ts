@@ -29,7 +29,7 @@ export class OpenPix implements PixProvider {
       expiresIn: 60 * 15, // 15 minutes
       customer: {
         name,
-        phone: payment.bag!.user!.phone,
+        phone: payment.bag!.user!.phone.value,
       },
       additionalInfo: [
         {
@@ -40,5 +40,13 @@ export class OpenPix implements PixProvider {
     });
 
     return { qrcode: charge.qrCodeImage!, code: charge.brCode! };
+  }
+
+  async refund(payment: Payment) {
+    await this.client.refund.create({
+      correlationID: payment.id.value,
+      transactionEndToEndId: payment.id.value,
+      value: payment.bag!.price,
+    });
   }
 }

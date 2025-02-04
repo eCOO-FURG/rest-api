@@ -47,6 +47,7 @@ import { updateFarmController } from "@/infra/http/controllers/update-farm";
 import { updateProductController } from "@/infra/http/controllers/update-product";
 import { updateUserController } from "@/infra/http/controllers/update-user";
 import { verifyUserController } from "@/infra/http/controllers/verify-user";
+import { updatePaymentController } from "@/infra/http/controllers/update-payment";
 
 // Webhooks
 import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
@@ -208,12 +209,21 @@ router.patch(
 );
 router.get("/bags/:bag_id", ensureAuthenticated, fetchBagController);
 router.post("/bags/:bag_id/open", ensureAuthenticated, openPaymentController);
+router.patch("/bags/:bag_id", ensureAuthenticated, updateBagController);
+
+// Pagamentos
 router.post(
-  "/bags/:bag_id/pay",
+  "/payments",
   ensureAuthenticated,
+  ensureRole(["MANAGER", "BROKER"]),
   registerPaymentController
 );
-router.patch("/bags/:bag_id", ensureAuthenticated, updateBagController);
+router.patch(
+  "/payments/:payment_id",
+  ensureAuthenticated,
+  ensureRole(["MANAGER"]),
+  updatePaymentController
+);
 
 // Ciclos
 router.get("/cycles", listCyclesController);

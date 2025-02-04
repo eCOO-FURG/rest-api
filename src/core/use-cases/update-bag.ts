@@ -9,19 +9,12 @@ import { CyclesRepository } from "@/core/repositories/cycles-repository";
 
 // Entities
 import { Bag } from "@/core/entities/bag";
-import { Payment } from "@/core/entities/payment";
 import { Week } from "@/core/entities/cycle";
 
 interface UpdateBagUseCaseRequest {
   bag_id: string;
   user_id: string;
   status?: Bag["status"];
-  payments?: {
-    id: string;
-    status?: Payment["status"];
-    method?: Payment["method"];
-    flag?: Payment["flag"];
-  }[];
 }
 
 export class UpdateBagUseCase {
@@ -31,12 +24,7 @@ export class UpdateBagUseCase {
     private cyclesRepository: CyclesRepository
   ) {}
 
-  async execute({
-    bag_id,
-    user_id,
-    status,
-    payments,
-  }: UpdateBagUseCaseRequest) {
+  async execute({ bag_id, user_id, status }: UpdateBagUseCaseRequest) {
     const bag = await this.bagsRepository.find("merge", { id: bag_id });
 
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
@@ -66,20 +54,6 @@ export class UpdateBagUseCase {
       throw new ResourceClosedError("Sacola", bag_id);
 
     bag.status = status ?? bag.status;
-
-    for (const item of payments ?? []) {
-      const payment = bag.payments.get(item.id);
-
-      if (!payment) throw new ResourceNotFoundError("Pagamento", item.id);
-
-      payment.status = item.status ?? payment.status;
-      payment.method = item.method ?? payment.method;
-      payment.flag = item.flag ?? payment.flag;
-
-      payment.touch();
-    }
-
-    bag.touch();
 
     await this.bagsRepository.update(bag);
   }

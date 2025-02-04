@@ -5,7 +5,7 @@ import { Optional } from "@/core/types/optional";
 import { Bag } from "@/core/entities/bag";
 
 export interface PaymentProps extends EntityRequest {
-  status: "PENDING" | "DONE" | "FAILED";
+  status: "PENDING" | "DONE" | "FAILED" | "REFUNDED";
   method: "CREDIT" | "DEBIT" | "CASH" | "PIX";
   flag: "MASTERCARD" | "VISA" | "OTHER" | null;
   expires_at: Date | null;

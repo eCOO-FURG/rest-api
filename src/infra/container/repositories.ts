@@ -14,7 +14,7 @@ import { PrismaOtpsRepository } from "@/infra/database/repositories/prisma-otps-
 import { PrismaProductRepository } from "@/infra/database/repositories/prisma-products-repository";
 import { PrismaSessionsRepository } from "@/infra/database/repositories/prisma-sessions-repository";
 import { PrismaUsersRepository } from "@/infra/database/repositories/prisma-users-repository";
-
+import { PrismaPaymentsRepository } from "@/infra/database/repositories/prisma-payments-repository";
 export default (container: AwilixContainer) => {
   container.register({
     usersRepository: asClass(PrismaUsersRepository).singleton(),
@@ -29,5 +29,6 @@ export default (container: AwilixContainer) => {
     boxesRepository: asClass(PrismaBoxesRepository).singleton(),
     addressesRepository: asClass(PrismaAddressesRepository).singleton(),
     categoriesRepository: asClass(PrismaCategoriesRepository).singleton(),
+    paymentsRepository: asClass(PrismaPaymentsRepository).singleton(),
   });
 };

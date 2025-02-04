@@ -214,10 +214,12 @@ export default (container: AwilixContainer) => {
         new OpenPaymentUseCase(bagsRepository, pixProvider)
     ),
     registerPaymentUseCase: asFunction(
-      ({ bagsRepository }) => new RegisterPaymentUseCase(bagsRepository)
+      ({ bagsRepository, paymentsRepository }) =>
+        new RegisterPaymentUseCase(bagsRepository, paymentsRepository)
     ),
     updatePaymentUseCase: asFunction(
-      ({ paymentsRepository }) => new UpdatePaymentUseCase(paymentsRepository)
+      ({ paymentsRepository, pixProvider }) =>
+        new UpdatePaymentUseCase(paymentsRepository, pixProvider)
     ),
     fetchPendingsUseCase: asFunction(
       ({ cyclesRepository, farmsRepository, boxesRepository, cacheManager }) =>

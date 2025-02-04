@@ -1,9 +1,15 @@
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 
 // Entities
 import { Payment } from "@/core/entities/payment";
-import { BagsRepository } from "@/core/repositories/bags-repository";
+
+// Repositories
+import { PaymentsRepository } from "@/core/repositories/payments-repository";
+
+// Services
+import { PixProvider } from "@/core/payment/pix-provider";
 
 interface UpdatePaymentUseCaseRequest {
   payment_id: string;
@@ -13,7 +19,10 @@ interface UpdatePaymentUseCaseRequest {
 }
 
 export class UpdatePaymentUseCase {
-  constructor(private bagsRepository: BagsRepository) {}
+  constructor(
+    private paymentsRepository: PaymentsRepository,
+    private pixProvider: PixProvider
+  ) {}
 
   async execute({
     payment_id,
@@ -21,23 +30,23 @@ export class UpdatePaymentUseCase {
     status,
     flag,
   }: UpdatePaymentUseCaseRequest) {
-    const bag = await this.bagsRepository.find("merge", {
-      payments: { id: payment_id },
+    const payment = await this.paymentsRepository.find("basic", {
+      id: payment_id,
     });
-
-    if (!bag)
-      throw new ResourceNotFoundError("Sacola com pagamento", payment_id);
-
-    const payment = bag.payments.get(payment_id);
 
     if (!payment) throw new ResourceNotFoundError("Pagamento", payment_id);
 
+    if (payment.status === "REFUNDED")
+      throw new ResourceAlreadyExistsError("Reembolso", payment_id);
+
+    if (status === "REFUNDED") await this.pixProvider.refund(payment);
+
+    payment.method = method ?? payment.method;
     payment.method = method ?? payment.method;
     payment.status = status ?? payment.status;
     payment.flag = flag ?? payment.flag;
+    payment.touch();
 
-    bag.payments.set(payment_id, payment);
-
-    await this.bagsRepository.update(bag);
+    await this.paymentsRepository.update(payment);
   }
 }

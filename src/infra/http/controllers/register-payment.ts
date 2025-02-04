@@ -9,11 +9,9 @@ import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
 import container from "@/infra/container";
 
 export const registerPaymentSchema = {
-  route: z.object({
-    bag_id: z.string(),
-  }),
   body: z
     .object({
+      bag_id: z.string().uuid(),
       method: z
         .enum(["CREDIT", "DEBIT", "CASH", "PIX"])
         .openapi({ type: "string" }),
@@ -46,8 +44,9 @@ export async function registerPaymentController(
       "registerPaymentUseCase"
     );
 
-    const { bag_id } = registerPaymentSchema.route.parse(request.params);
-    const { method, flag } = registerPaymentSchema.body.parse(request.body);
+    const { method, flag, bag_id } = registerPaymentSchema.body.parse(
+      request.body
+    );
 
     await registerPaymentUseCase.execute({
       bag_id,

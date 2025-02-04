@@ -5,18 +5,26 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Repositories
 import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
+import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
 
 // Factories
 import { makeBag } from "@/test/factories/make-bag";
 
+// Services
+import { MockedPixProvider } from "@/test/payment/mocked-pix-provider";
+
 let bagsRepository: InMemoryBagsRepository;
+let paymentsRepository: InMemoryPaymentsRepository;
+let pixProvider: MockedPixProvider;
 
 let sut: UpdatePaymentUseCase;
 
 describe("Update payment", () => {
   beforeEach(() => {
     bagsRepository = new InMemoryBagsRepository();
-    sut = new UpdatePaymentUseCase(bagsRepository);
+    paymentsRepository = new InMemoryPaymentsRepository();
+    pixProvider = new MockedPixProvider();
+    sut = new UpdatePaymentUseCase(paymentsRepository, pixProvider);
   });
 
   it("should be able to update a payment", async () => {

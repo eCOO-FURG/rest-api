@@ -16,7 +16,6 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 // Mappers
 import { PrismaBagMapper } from "@/infra/database/mappers/prisma-bag-mapper";
 import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
-import { PrismaPaymentMapper } from "@/infra/database/mappers/prisma-payment-mapper";
 import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";
 
 export class PrismaBagsRepository implements BagsRepository {
@@ -258,32 +257,6 @@ export class PrismaBagsRepository implements BagsRepository {
 
       if (deletedIds.length)
         await ctx.order.deleteMany({ where: { id: { in: deletedIds } } });
-
-      const previousPayments = await ctx.payment.findMany({
-        where: { bag_id: bag.id.value },
-      });
-
-      const createdPayments = [];
-
-      for (const payment of bag.payments.values()) {
-        const existed = previousPayments.find((p) => payment.id.equals(p.id));
-
-        if (!existed) {
-          createdPayments.push(payment);
-          continue;
-        }
-
-        if (existed.updated_at === payment.updated_at) continue;
-
-        await ctx.payment.update({
-          where: { id: payment.id.value },
-          data: PrismaPaymentMapper.toPrisma(payment),
-        });
-      }
-
-      await ctx.payment.createMany({
-        data: createdPayments.map(PrismaPaymentMapper.toPrisma),
-      });
 
       if (bag.status === "CANCELLED") {
         for (const order of bag.orders.values()) {
