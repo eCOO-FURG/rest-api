@@ -70,7 +70,7 @@ export class UpdateCatalogUseCase {
       offer.description = item.description ?? offer.description;
 
       offer.price = item.price
-        ? item.price + (offer.price * farm.tax) / 100
+        ? item.price + (item.price * farm.tax) / 100
         : offer.price;
 
       offer.touch();
