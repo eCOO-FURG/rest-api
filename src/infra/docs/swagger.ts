@@ -40,6 +40,7 @@ import { updateProductSchema } from "@/infra/http/controllers/update-product";
 import { updateUserSchema } from "@/infra/http/controllers/update-user";
 import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
 import { fetchSalesReportSchema } from "@/infra/http/controllers/fetch-sales-report";
+import { updatePaymentSchema } from "@/infra/http/controllers/update-payment";
 
 const tags = {
   users: "Usuários",
@@ -566,6 +567,14 @@ const docs = createDocument({
       },
     },
 
+    "/payments/{payment_id}": {
+      patch: {
+        tags: [tags.payments],
+        responses: { "204": { description: "204 OK" } },
+        description: "Atualiza um pagamento.",
+        ...SwaggerMapper.toDocs(updatePaymentSchema),
+      },
+    },
     // Pendências
     "/pendings": {
       get: {
