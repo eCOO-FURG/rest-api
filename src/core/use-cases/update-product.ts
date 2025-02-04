@@ -11,6 +11,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Entities
 import { Product } from "@/core/entities/product";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 interface UpdateProductUseCaseRequest {
   product_id: string;
@@ -42,14 +43,12 @@ export class UpdateProductUseCase {
 
     if (!product) throw new ResourceNotFoundError("Produto", product_id);
 
-    const category =
-      category_id &&
-      (await this.categoriesRepository.find("basic", {
+    if (category_id) {
+      const category = await this.categoriesRepository.find("basic", {
         id: category_id,
-      }));
+      });
 
-    if (category_id && !category) {
-      throw new ResourceNotFoundError("Categoria", category_id);
+      if (!category) throw new ResourceNotFoundError("Categoria", category_id);
     }
 
     const equal = await this.productsRepository.find("basic", {
@@ -63,7 +62,7 @@ export class UpdateProductUseCase {
 
     product.name = name ?? product.name;
     product.pricing = pricing ?? product.pricing;
-    category && (product.category_id = category.id);
+    product.category_id = new UUID(category_id) ?? product.category_id;
     product.archived = archived ?? product.archived;
 
     if (image) {
