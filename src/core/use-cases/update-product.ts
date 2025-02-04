@@ -63,10 +63,10 @@ export class UpdateProductUseCase {
       throw new ResourceAlreadyExistsError("Produto", `${name}, ${pricing}`);
     }
 
-    product.name = name ?? product.name;
-    product.pricing = pricing ?? product.pricing;
-    product.category_id = new UUID(category_id) ?? product.category_id;
-    product.archived = archived ?? product.archived;
+    name && (product.name = name);
+    pricing && (product.pricing = pricing);
+    archived && (product.archived = archived);
+    category_id && (product.category_id = new UUID(category_id));
 
     if (image) {
       const urls = await this.storage.upload([image], "products");
