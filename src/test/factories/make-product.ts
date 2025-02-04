@@ -1,4 +1,5 @@
 // Entities
+import { UUID } from "@/core/entities/aggregates/uuid";
 import { Product } from "@/core/entities/product";
 
 // Libraries
@@ -10,5 +11,6 @@ export function makeProduct(props: Partial<Product> = {}) {
     name: props.name ?? faker.animal.fish(),
     image: props.image ?? faker.internet.emoji(),
     pricing: props.pricing ?? "UNIT",
+    category_id: props.category_id ?? new UUID(),
   });
 }

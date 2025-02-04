@@ -5,40 +5,41 @@ import { createDocument } from "zod-openapi";
 import { SwaggerMapper } from "@/infra/docs/swagger-mapper";
 
 // Schemas
+import { authenticateSchema } from "@/infra/http/controllers/authenticate";
+import { createOfferSchema } from "@/infra/http/controllers/create-offer";
+import { fetchBagSchema } from "@/infra/http/controllers/fetch-bag";
+import { fetchBoxSchema } from "@/infra/http/controllers/fetch-box";
+import { fetchCatalogsSchema } from "@/infra/http/controllers/fetch-catalog";
+import { fetchCurrentBoxSchema } from "@/infra/http/controllers/fetch-current-box";
+import { fetchCurrentCatalogSchema } from "@/infra/http/controllers/fetch-current-catalog";
+import { fetchLastCatalogSchema } from "@/infra/http/controllers/fetch-last-catalog";
+import { fetchPendingsSchema } from "@/infra/http/controllers/fetch-pendings";
+import { handleBagSchema } from "@/infra/http/controllers/handle-bag";
+import { handleBoxSchema } from "@/infra/http/controllers/handle-box";
+import { handleFarmSchema } from "@/infra/http/controllers/handle-farm";
+import { listBagsSchema } from "@/infra/http/controllers/list-bags";
+import { listBoxesSchema } from "@/infra/http/controllers/list-boxes";
+import { listCatalogsSchema } from "@/infra/http/controllers/list-catalogs";
+import { listCategoriesSchema } from "@/infra/http/controllers/list-categories";
+import { listCurrentBagsSchema } from "@/infra/http/controllers/list-current-bags";
+import { listFarmsSchema } from "@/infra/http/controllers/list-farms";
+import { listOwnBagsSchema } from "@/infra/http/controllers/list-own-bags";
+import { listProductSchema } from "@/infra/http/controllers/list-products";
+import { openPaymentSchema } from "@/infra/http/controllers/open-payment";
+import { orderProductsSchema } from "@/infra/http/controllers/order-products";
 import { registerSchema } from "@/infra/http/controllers/register";
+import { registerFarmSchema } from "@/infra/http/controllers/register-farm";
+import { registerPaymentSchema } from "@/infra/http/controllers/register-payment";
+import { registerProductSchema } from "@/infra/http/controllers/register-product";
+import { requestOtpSchema } from "@/infra/http/controllers/request-otp";
+import { requestPasswordUpdateSchema } from "@/infra/http/controllers/request-password-update";
+import { sendNotificationSchema } from "@/infra/http/controllers/send-notification";
+import { updateCatalogSchema } from "@/infra/http/controllers/update-catalog";
+import { updateFarmSchema } from "@/infra/http/controllers/update-farm";
+import { updateProductSchema } from "@/infra/http/controllers/update-product";
 import { updateUserSchema } from "@/infra/http/controllers/update-user";
 import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
-import { authenticateSchema } from "@/infra/http/controllers/authenticate";
-import { requestOtpSchema } from "@/infra/http/controllers/request-otp";
-import { registerFarmSchema } from "@/infra/http/controllers/register-farm";
-import { listFarmsSchema } from "@/infra/http/controllers/list-farms";
-import { handleFarmSchema } from "@/infra/http/controllers/handle-farm";
-import { orderProductsSchema } from "@/infra/http/controllers/order-products";
-import { listBoxesSchema } from "@/infra/http/controllers/list-boxes";
-import { fetchBoxSchema } from "@/infra/http/controllers/fetch-box";
-import { handleBoxSchema } from "@/infra/http/controllers/handle-box";
-import { createOfferSchema } from "@/infra/http/controllers/create-offer";
-import { listCatalogsSchema } from "@/infra/http/controllers/list-catalogs";
-import { fetchCatalogsSchema } from "@/infra/http/controllers/fetch-catalog";
-import { fetchLastCatalogSchema } from "@/infra/http/controllers/fetch-last-catalog";
-import { fetchBagSchema } from "@/infra/http/controllers/fetch-bag";
-import { handleBagSchema } from "@/infra/http/controllers/handle-bag";
 import { fetchSalesReportSchema } from "@/infra/http/controllers/fetch-sales-report";
-import { listProductSchema } from "@/infra/http/controllers/list-products";
-import { fetchCurrentBoxSchema } from "@/infra/http/controllers/fetch-current-box";
-import { requestPasswordUpdateSchema } from "@/infra/http/controllers/request-password-update";
-import { fetchCurrentCatalogSchema } from "@/infra/http/controllers/fetch-current-catalog";
-import { listCurrentBagsSchema } from "@/infra/http/controllers/list-current-bags";
-import { listBagsSchema } from "@/infra/http/controllers/list-bags";
-import { listOwnBagsSchema } from "@/infra/http/controllers/list-own-bags";
-import { registerPaymentSchema } from "@/infra/http/controllers/register-payment";
-import { openPaymentSchema } from "@/infra/http/controllers/open-payment";
-import { updateFarmSchema } from "@/infra/http/controllers/update-farm";
-import { fetchPendingsSchema } from "@/infra/http/controllers/fetch-pendings";
-import { updateCatalogSchema } from "@/infra/http/controllers/update-catalog";
-import { registerProductSchema } from "@/infra/http/controllers/register-product";
-import { updateProductSchema } from "@/infra/http/controllers/update-product";
-import { sendNotificationSchema } from "@/infra/http/controllers/send-notification";
 
 const tags = {
   users: "Usuários",
@@ -51,6 +52,7 @@ const tags = {
   bags: "Sacolas",
   cycles: "Ciclos",
   products: "Produtos",
+  categories: "Categorias",
   payments: "Pagamentos",
   pendings: "Pendências",
   stats: "Estatísticas",
@@ -65,6 +67,16 @@ const docs = createDocument({
     description: "Documentação de API - eCOO",
   },
   tags: Object.values(tags).map((tag) => ({ name: tag })),
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
   paths: {
     // Usuários
     "/users": {
@@ -522,6 +534,18 @@ const docs = createDocument({
         responses: { "204": { description: "204 OK" } },
         description: "Atualiza um produto.",
         ...SwaggerMapper.toDocs(updateProductSchema),
+      },
+    },
+
+    // Categorias
+    "/categories": {
+      get: {
+        tags: [tags.categories],
+        responses: {
+          "200": { description: "Categorias encontradas com sucesso." },
+        },
+        description: "Lista categorias.",
+        ...SwaggerMapper.toDocs(listCategoriesSchema),
       },
     },
 
