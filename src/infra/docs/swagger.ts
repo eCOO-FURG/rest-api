@@ -14,6 +14,7 @@ import { fetchCurrentBoxSchema } from "@/infra/http/controllers/fetch-current-bo
 import { fetchCurrentCatalogSchema } from "@/infra/http/controllers/fetch-current-catalog";
 import { fetchLastCatalogSchema } from "@/infra/http/controllers/fetch-last-catalog";
 import { fetchPendingsSchema } from "@/infra/http/controllers/fetch-pendings";
+import { fetchSalesReportSchema } from "@/infra/http/controllers/fetch-sales-report";
 import { handleBagSchema } from "@/infra/http/controllers/handle-bag";
 import { handleBoxSchema } from "@/infra/http/controllers/handle-box";
 import { handleFarmSchema } from "@/infra/http/controllers/handle-farm";
@@ -36,11 +37,10 @@ import { requestPasswordUpdateSchema } from "@/infra/http/controllers/request-pa
 import { sendNotificationSchema } from "@/infra/http/controllers/send-notification";
 import { updateCatalogSchema } from "@/infra/http/controllers/update-catalog";
 import { updateFarmSchema } from "@/infra/http/controllers/update-farm";
+import { updatePaymentSchema } from "@/infra/http/controllers/update-payment";
 import { updateProductSchema } from "@/infra/http/controllers/update-product";
 import { updateUserSchema } from "@/infra/http/controllers/update-user";
 import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
-import { fetchSalesReportSchema } from "@/infra/http/controllers/fetch-sales-report";
-import { updatePaymentSchema } from "@/infra/http/controllers/update-payment";
 
 const tags = {
   users: "Usuários",
@@ -205,6 +205,17 @@ const docs = createDocument({
       },
     },
     "/farms/{farm_id}": {
+      parameters: [
+        {
+          in: "path",
+          name: "farm_id",
+          required: true,
+          schema: {
+            type: "string",
+            format: "uuid",
+          },
+        },
+      ],
       get: {
         tags: [tags.farms],
         responses: {
@@ -215,6 +226,17 @@ const docs = createDocument({
       },
     },
     "/farms/{farm_id}/handle": {
+      parameters: [
+        {
+          in: "path",
+          name: "farm_id",
+          required: true,
+          schema: {
+            type: "string",
+            format: "uuid",
+          },
+        },
+      ],
       patch: {
         tags: [tags.farms],
         responses: {
@@ -257,6 +279,17 @@ const docs = createDocument({
       },
     },
     "/boxes/{box_id}": {
+      parameters: [
+        {
+          in: "path",
+          name: "box_id",
+          required: true,
+          schema: {
+            type: "string",
+            format: "uuid",
+          },
+        },
+      ],
       get: {
         tags: [tags.boxes],
         responses: {
@@ -268,6 +301,17 @@ const docs = createDocument({
       },
     },
     "/boxes/{box_id}/handle": {
+      parameters: [
+        {
+          in: "path",
+          name: "box_id",
+          required: true,
+          schema: {
+            type: "string",
+            format: "uuid",
+          },
+        },
+      ],
       patch: {
         tags: [tags.boxes],
         responses: {
@@ -326,6 +370,17 @@ const docs = createDocument({
       },
     },
     "/catalogs/{catalog_id}": {
+      parameters: [
+        {
+          in: "path",
+          name: "catalog_id",
+          required: true,
+          schema: {
+            type: "string",
+            format: "uuid",
+          },
+        },
+      ],
       get: {
         tags: [tags.catalogs],
         responses: {
@@ -425,6 +480,17 @@ const docs = createDocument({
       },
     },
     "/bags/{bag_id}": {
+      parameters: [
+        {
+          in: "path",
+          name: "bag_id",
+          required: true,
+          schema: {
+            type: "string",
+            format: "uuid",
+          },
+        },
+      ],
       get: {
         tags: [tags.bags],
         responses: {
@@ -466,6 +532,17 @@ const docs = createDocument({
       },
     },
     "/bags/{bag_id}/pay": {
+      parameters: [
+        {
+          in: "path",
+          name: "bag_id",
+          required: true,
+          schema: {
+            type: "string",
+            format: "uuid",
+          },
+        },
+      ],
       post: {
         tags: [tags.payments],
         responses: {
@@ -481,6 +558,17 @@ const docs = createDocument({
       },
     },
     "/bags/{bag_id}/handle": {
+      parameters: [
+        {
+          in: "path",
+          name: "bag_id",
+          required: true,
+          schema: {
+            type: "string",
+            format: "uuid",
+          },
+        },
+      ],
       patch: {
         tags: [tags.bags],
         responses: { "204": { description: "204 OK" } },
@@ -490,6 +578,17 @@ const docs = createDocument({
       },
     },
     "/bags/{bag_id}/open": {
+      parameters: [
+        {
+          in: "path",
+          name: "bag_id",
+          required: true,
+          schema: {
+            type: "string",
+            format: "uuid",
+          },
+        },
+      ],
       post: {
         tags: [tags.payments],
         responses: {
@@ -530,6 +629,17 @@ const docs = createDocument({
     },
 
     "/products/{product_id}": {
+      parameters: [
+        {
+          in: "path",
+          name: "product_id",
+          required: true,
+          schema: {
+            type: "string",
+            format: "uuid",
+          },
+        },
+      ],
       patch: {
         tags: [tags.products],
         responses: { "204": { description: "204 OK" } },
@@ -568,6 +678,17 @@ const docs = createDocument({
     },
 
     "/payments/{payment_id}": {
+      parameters: [
+        {
+          in: "path",
+          name: "payment_id",
+          required: true,
+          schema: {
+            type: "string",
+            format: "uuid",
+          },
+        },
+      ],
       patch: {
         tags: [tags.payments],
         responses: { "204": { description: "204 OK" } },
