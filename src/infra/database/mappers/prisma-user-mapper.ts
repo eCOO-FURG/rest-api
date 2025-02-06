@@ -4,6 +4,8 @@ import { Prisma } from "@prisma/client";
 // Entities
 import { User } from "@/core/entities/user";
 import { UUID } from "@/core/entities/aggregates/uuid";
+import { CPF } from "@/core/entities/cpf";
+import { Phone } from "@/core/entities/phone";
 
 type PrismaUser = Prisma.UserGetPayload<{}>;
 
@@ -13,9 +15,9 @@ export class PrismaUserMapper {
       id: new UUID(raw.id),
       first_name: raw.first_name,
       last_name: raw.last_name,
-      cpf: raw.cpf,
+      cpf: new CPF(raw.cpf),
       email: raw.email,
-      phone: raw.phone,
+      phone: new Phone(raw.phone),
       photo: raw.photo,
       password: raw.password,
       verified_at: raw.verified_at,
@@ -30,9 +32,9 @@ export class PrismaUserMapper {
       id: user.id.value,
       first_name: user.first_name,
       last_name: user.last_name,
-      cpf: user.cpf,
+      cpf: user.cpf.value,
       email: user.email,
-      phone: user.phone,
+      phone: user.phone.value,
       photo: user.photo,
       password: user.password,
       verified_at: user.verified_at,
