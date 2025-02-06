@@ -6,6 +6,7 @@ import { renderFile } from "ejs";
 import {
   PDFService,
   PDFServiceGenerateRequest,
+  PDFReportType,
 } from "@/core/report/pdf-service";
 
 export class Puppeteer implements PDFService {
@@ -27,7 +28,9 @@ export class Puppeteer implements PDFService {
     this.browser = await launch(this.config);
   }
 
-  async generate({ type, props }: PDFServiceGenerateRequest): Promise<Buffer> {
+  async generate<T extends PDFReportType>(
+    { type, props }: PDFServiceGenerateRequest<T>
+  ): Promise<Buffer> {
     if (!this.browser) this.browser = await launch(this.config);
 
     const page = await this.browser.newPage();

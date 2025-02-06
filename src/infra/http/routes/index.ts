@@ -45,6 +45,7 @@ import { registerProductController } from "@/infra/http/controllers/register-pro
 import { updateProductController } from "@/infra/http/controllers/update-product";
 import { fetchSalesStatsController } from "@/infra/http/controllers/fetch-sales-stats";
 import { reportBagsController } from "@/infra/http/controllers/report-bags";
+import { printBoxesReportController } from "@/infra/http/controllers/print-boxes-report";
 
 // Webhooks
 import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
@@ -274,6 +275,12 @@ router.get(
   ensureRole(["MANAGER"]),
   reportBagsController
 );
+router.get(
+  "/reports/boxes",
+  ensureAuthenticated,
+  ensureRole(["BROKER", "MANAGER"]),
+  printBoxesReportController
+)
 
 // Notificações
 router.post(

@@ -41,6 +41,7 @@ import { UpdateProductUseCase } from "@/core/use-cases/update-product";
 import { FetchSalesStatsUseCase } from "@/core/use-cases/fetch-sales-stats";
 import { ReportBagsUseCase } from "@/core/use-cases/report-bags";
 import { SendNotificationUseCase } from "@/core/use-cases/send-notification";
+import { PrintBoxesReportUseCase } from "@/core/use-cases/print-boxes-report";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -245,5 +246,9 @@ export default (container: AwilixContainer) => {
       ({ usersRepository, mailer }) =>
         new SendNotificationUseCase(usersRepository, mailer)
     ),
+    printBoxesReportUseCase: asFunction(
+      ({ cyclesRepository, boxesRepository, pdfService }) => 
+        new PrintBoxesReportUseCase(cyclesRepository, boxesRepository, pdfService)
+    )
   });
 };
