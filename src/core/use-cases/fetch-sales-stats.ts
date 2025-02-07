@@ -1,10 +1,15 @@
 // Repositories
 import { BagsRepository } from "@/core/repositories/bags-repository";
 
+interface FetchSalesReportUseCaseRequest {
+  since?: Date;
+  before?: Date;
+  method?: "CREDIT" | "DEBIT" | "CASH" | "PIX";
+}
 export class FetchSalesStatsUseCase {
   constructor(private bagsRepository: BagsRepository) {}
 
-  async execute() {
+  async execute({ since, before, method }: FetchSalesReportUseCaseRequest) {
     const today = new Date();
 
     const FIVE_MONTHS_AGO = new Date(
@@ -41,6 +46,52 @@ export class FetchSalesStatsUseCase {
       if (month === current) revenue += bag.price;
     }
 
-    return { revenue, monthly, daily };
+    const openPayments = await this.openPaymentsTotal({ since, before });
+    const revenueByMethod = await this.revenueByMethod({
+      since,
+      before,
+      method,
+    });
+
+    return {
+      revenue,
+      monthly,
+      daily,
+      openPayments,
+      revenueByMethod,
+    };
+  }
+
+  private async openPaymentsTotal({
+    since,
+    before,
+  }: FetchSalesReportUseCaseRequest) {
+    const bags = await this.bagsRepository.list("merge", {
+      since,
+      before,
+      payments: { status: "PENDING" },
+    });
+
+    return {
+      sum: bags.reduce((acc, bag) => acc + bag.price, 0),
+      count: bags.length,
+    };
+  }
+
+  private async revenueByMethod({
+    since,
+    before,
+    method,
+  }: FetchSalesReportUseCaseRequest) {
+    const bags = await this.bagsRepository.list("merge", {
+      since,
+      before,
+      payments: { method, status: "DONE" },
+    });
+
+    return {
+      sum: bags.reduce((acc, bag) => acc + bag.price, 0),
+      count: bags.length,
+    };
   }
 }
