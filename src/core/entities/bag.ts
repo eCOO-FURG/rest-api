@@ -1,11 +1,11 @@
 // Entities
-import { Entity, EntityRequest } from "@/core/entities/entity";
-import { UUID } from "@/core/entities/aggregates/uuid";
-import { User } from "@/core/entities/user";
 import { Address } from "@/core/entities/address";
+import { UUID } from "@/core/entities/aggregates/uuid";
 import { Cycle } from "@/core/entities/cycle";
+import { Entity, EntityRequest } from "@/core/entities/entity";
 import { Order } from "@/core/entities/order";
 import { Payment } from "@/core/entities/payment";
+import { User } from "@/core/entities/user";
 
 // Types
 import { Optional } from "@/core/types/optional";
@@ -139,5 +139,13 @@ export class Bag extends Entity<BagProps> {
     });
 
     return bag;
+  }
+
+  verified() {
+    const orders = Array.from(this.props.orders.values());
+
+    const verified = orders.every((order) => !(order.status === "PENDING"));
+
+    return verified;
   }
 }
