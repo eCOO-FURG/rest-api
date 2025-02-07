@@ -1,7 +1,7 @@
 // Repositories
 import { BagsRepository } from "@/core/repositories/bags-repository";
 
-interface FetchSalesReportUseCaseRequest {
+interface FetchSalesStatsUseCaseRequest {
   since?: Date;
   before?: Date;
   method?: "CREDIT" | "DEBIT" | "CASH" | "PIX";
@@ -9,7 +9,7 @@ interface FetchSalesReportUseCaseRequest {
 export class FetchSalesStatsUseCase {
   constructor(private bagsRepository: BagsRepository) {}
 
-  async execute({ since, before, method }: FetchSalesReportUseCaseRequest) {
+  async execute({ since, before, method }: FetchSalesStatsUseCaseRequest) {
     const today = new Date();
 
     const FIVE_MONTHS_AGO = new Date(
@@ -65,7 +65,7 @@ export class FetchSalesStatsUseCase {
   private async openPaymentsTotal({
     since,
     before,
-  }: FetchSalesReportUseCaseRequest) {
+  }: FetchSalesStatsUseCaseRequest) {
     const bags = await this.bagsRepository.list("merge", {
       since,
       before,
@@ -82,7 +82,7 @@ export class FetchSalesStatsUseCase {
     since,
     before,
     method,
-  }: FetchSalesReportUseCaseRequest) {
+  }: FetchSalesStatsUseCaseRequest) {
     const bags = await this.bagsRepository.list("merge", {
       since,
       before,
