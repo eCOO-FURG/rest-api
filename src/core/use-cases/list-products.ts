@@ -12,7 +12,7 @@ export class ListProductsUsecase {
 
   async execute({ page, name, category_id }: ListProductsUseCaseRequest) {
     const products = await this.productsRepository.list(
-      "basic",
+      "merge",
       { name, archived: false, category: { id: category_id } },
       page
     );

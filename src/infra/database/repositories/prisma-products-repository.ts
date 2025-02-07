@@ -42,7 +42,7 @@ export class PrismaProductRepository implements ProductsRepository {
   }
 
   async list(
-    _: RepositoryResponse,
+    type: RepositoryResponse,
     { name, id, archived, pricing, category }: ProductsRepositorySearchRequest,
     page?: number
   ): Promise<Product[]> {
@@ -58,6 +58,11 @@ export class PrismaProductRepository implements ProductsRepository {
           }),
         },
         ...(name && { name: { contains: name, mode: "insensitive" } }),
+      },
+      include: {
+        ...(type === "merge" && {
+          category: true,
+        }),
       },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
