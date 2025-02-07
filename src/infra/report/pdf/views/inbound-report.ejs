@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Lista de Caixas Pendentes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --black: #1d1d1d;
+        --dark-green: #222629;
+        --gray: #ced0cf;
+        --white: #e5e5e5;
+        --received-green: #2ecc71;
+        --alert-red: #e74c3c;
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        margin: 5mm;
+        font-family: "Poppins", sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+        color: var(--black);
+      }
+      .header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 1.8cm;
+        border: 1.8px solid var(--black);
+        border-radius: 3.7mm;
+        padding: 20px;
+        text-align: center;
+      }
+      .header h1 {
+        font-size: 1.875rem;
+        font-weight: 600;
+        color: var(--dark-green);
+        text-transform: uppercase;
+      }
+      .no-boxes-message {
+        text-align: center;
+        color: var(--alert-red);
+        font-size: 14pt;
+        font-weight: bold;
+        margin-top: 20px;
+      }
+      .delivery-box {
+        border: 1px solid var(--black);
+        border-radius: 3.7mm;
+        margin-top: 10px;
+        padding: 0;
+        overflow: hidden;
+      }
+      .box-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: var(--gray);
+        color: var(--black);
+        padding: 10px 20px;
+        font-size: 12pt;
+        border-top-left-radius: 3.7mm;
+        font-weight: bold;
+      }
+      .box-header h3 {
+        font-size: 1rem;
+        font-weight: bold;
+      }
+      .box-header span {
+        font-size: 0.875rem;
+      }
+      .box-content {
+        padding: 10px 20px;
+      }
+      .order-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 5px;
+      }
+      .order-list li {
+        font-size: 9pt;
+        padding: 5px 0;
+        border-bottom: 1px solid var(--gray);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .order-list li:last-child {
+        border-bottom: none;
+      }
+      .received-status {
+        color: var(--received-green);
+        font-weight: bold;
+      }
+      .order-number {
+        min-width: 25px;
+        text-align: right;
+        font-weight: bold;
+      }
+      .order-text {
+        flex-grow: 1;
+        padding-left: 10px;
+      }
+      .order-status {
+        min-width: 80px;
+        text-align: right;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Lista de Caixas Pendentes</h1>
+    </div>
+
+    <% if (props.boxes.length === 0) { %>
+    <p class="no-boxes-message">Nenhuma caixa pendente encontrada.</p>
+    <% } else { %> <% props.boxes.forEach(function(box) { const ordersArray =
+    Array.from(box.orders.values()); let recebidos = ordersArray.filter(order =>
+    order.status === "RECEBIDO").length; %>
+    <div class="delivery-box">
+      <div class="box-header">
+        <h3>
+          <% if (box.catalog && box.catalog.farm) { %> <%= box.catalog.farm.name
+          %> <% } else { %> Caixa Sem Identificação <% } %>
+        </h3>
+        <span
+          >Recebidos: <%= recebidos %> / Total Pedidos: <%= ordersArray.length
+          %></span
+        >
+      </div>
+      <div class="box-content">
+        <ul class="order-list">
+          <% if (ordersArray.length > 0) { %> <%
+          ordersArray.forEach(function(order, index) { %>
+          <li>
+            <span class="order-number"><%= index + 1 %>.</span>
+            <span class="order-text">
+              <%= order.amount >= 1000 ? (order.amount /
+              1000).toLocaleString("pt-BR", { minimumFractionDigits:
+              order.amount % 1000 === 0 ? 0 : 1 }) + " kg" : order.amount +
+              (order.pricing === "UNIT" ? " unid." : " g") %> - <%=
+              order.offer.product.name %>
+            </span>
+            <span
+              class="order-status <%= order.status === 'RECEBIDO' ? 'received-status' : '' %>"
+            >
+              <%= order.status %>
+            </span>
+          </li>
+          <% }); %> <% } else { %>
+          <li>Nenhum pedido registrado.</li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+    <% }); %> <% } %>
+  </body>
+</html>
