@@ -30,7 +30,7 @@ export class PrismaUserMapper {
       id: user.id.value,
       first_name: user.first_name,
       last_name: user.last_name,
-      cpf: user.cpf,
+      cpf: user.cpf.value,
       email: user.email,
       phone: user.phone.value,
       photo: user.photo,
