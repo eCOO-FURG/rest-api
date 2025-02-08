@@ -5,7 +5,7 @@ export class CPF {
     this._value = value;
   }
 
-  format(): string {
+  get format(): string {
     return this._value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
   }
 
