@@ -5,8 +5,8 @@ export class Phone {
     this._value = value;
   }
 
-  format(phone: string): string {
-    return phone.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+  format(): string {
+    return this._value.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
   }
 
   get value() {
