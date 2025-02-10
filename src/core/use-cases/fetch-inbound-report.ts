@@ -30,7 +30,7 @@ export class FetchInboundReportUseCase {
       if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
     }
 
-    const boxes = await this.boxesRepository.list("aggregate", {
+    const boxes = await this.boxesRepository.list("merge", {
       since,
       before,
       catalog: { cycle: { id: cycle_id } },
