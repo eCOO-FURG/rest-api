@@ -18,7 +18,7 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 
 export class PrismaProductRepository implements ProductsRepository {
   async find(
-    _: RepositoryResponse,
+    type: RepositoryResponse,
     { id, name, pricing, archived, category }: ProductsRepositorySearchRequest
   ): Promise<Product | null> {
     const product = await prisma.product.findFirst({
@@ -34,6 +34,11 @@ export class PrismaProductRepository implements ProductsRepository {
         },
         ...(name && { name: { contains: name, mode: "insensitive" } }),
       },
+      include: {
+        ...(type !== "basic" && {
+          category: true,
+        }),
+      },
     });
 
     if (!product) return null;
@@ -42,7 +47,7 @@ export class PrismaProductRepository implements ProductsRepository {
   }
 
   async list(
-    _: RepositoryResponse,
+    type: RepositoryResponse,
     { name, id, archived, pricing, category }: ProductsRepositorySearchRequest,
     page?: number
   ): Promise<Product[]> {
@@ -58,6 +63,11 @@ export class PrismaProductRepository implements ProductsRepository {
           }),
         },
         ...(name && { name: { contains: name, mode: "insensitive" } }),
+      },
+      include: {
+        ...(type !== "basic" && {
+          category: true,
+        }),
       },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
