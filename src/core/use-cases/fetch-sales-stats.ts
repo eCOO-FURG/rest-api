@@ -72,9 +72,33 @@ export class FetchSalesStatsUseCase {
       payments: { status: "PENDING" },
     });
 
+    const dailyStats = {} as Record<string, { sum: number; count: number }>;
+    let totalSum = 0;
+    let totalCount = 0;
+
+    bags.forEach((bag) => {
+      const date = new Date(bag.created_at);
+      const dateKey = date.toISOString().split("T")[0];
+
+      if (!dailyStats[dateKey]) {
+        dailyStats[dateKey] = { sum: 0, count: 0 };
+      }
+
+      dailyStats[dateKey].sum += bag.price;
+      dailyStats[dateKey].count += 1;
+      totalSum += bag.price;
+      totalCount += 1;
+    });
+
     return {
-      sum: bags.reduce((acc, bag) => acc + bag.price, 0),
-      count: bags.length,
+      sum: totalSum,
+      count: totalCount,
+      daily: Object.entries(dailyStats)
+        .map(([date, stats]) => ({
+          date: new Date(date),
+          ...stats,
+        }))
+        .sort((a, b) => a.date.getTime() - b.date.getTime()),
     };
   }
 
@@ -89,9 +113,33 @@ export class FetchSalesStatsUseCase {
       payments: { method, status: "DONE" },
     });
 
+    const dailyStats = {} as Record<string, { sum: number; count: number }>;
+    let totalSum = 0;
+    let totalCount = 0;
+
+    bags.forEach((bag) => {
+      const date = new Date(bag.created_at);
+      const dateKey = date.toISOString().split("T")[0];
+
+      if (!dailyStats[dateKey]) {
+        dailyStats[dateKey] = { sum: 0, count: 0 };
+      }
+
+      dailyStats[dateKey].sum += bag.price;
+      dailyStats[dateKey].count += 1;
+      totalSum += bag.price;
+      totalCount += 1;
+    });
+
     return {
-      sum: bags.reduce((acc, bag) => acc + bag.price, 0),
-      count: bags.length,
+      sum: totalSum,
+      count: totalCount,
+      daily: Object.entries(dailyStats)
+        .map(([date, stats]) => ({
+          date: new Date(date),
+          ...stats,
+        }))
+        .sort((a, b) => a.date.getTime() - b.date.getTime()),
     };
   }
 }
