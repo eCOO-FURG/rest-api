@@ -6,20 +6,15 @@ interface FetchSalesStatsUseCaseRequest {
   before?: Date;
   method?: "CREDIT" | "DEBIT" | "CASH" | "PIX";
 }
+
 export class FetchSalesStatsUseCase {
   constructor(private bagsRepository: BagsRepository) {}
 
   async execute({ since, before, method }: FetchSalesStatsUseCaseRequest) {
-    const today = new Date();
-
-    const FIVE_MONTHS_AGO = new Date(
-      today.getFullYear(),
-      today.getMonth() - 4,
-      1
-    );
+    const FIVE_MONTHS_AGO = new Date().setMonth(new Date().getMonth() - 4);
 
     const bags = await this.bagsRepository.list("basic", {
-      since: FIVE_MONTHS_AGO,
+      since: new Date(FIVE_MONTHS_AGO),
     });
 
     let revenue = 0;
@@ -41,7 +36,7 @@ export class FetchSalesStatsUseCase {
 
       daily[day] += bag.price;
 
-      const current = String(today.getMonth() + 1).padStart(2, "0");
+      const current = String(new Date().getMonth() + 1).padStart(2, "0");
 
       if (month === current) revenue += bag.price;
     }
@@ -72,33 +67,25 @@ export class FetchSalesStatsUseCase {
       payments: { status: "PENDING" },
     });
 
-    const dailyStats = {} as Record<string, { sum: number; count: number }>;
     let totalSum = 0;
     let totalCount = 0;
+    const daily = {} as Record<string, number>;
 
-    bags.forEach((bag) => {
+    for (const bag of bags) {
       const date = new Date(bag.created_at);
-      const dateKey = date.toISOString().split("T")[0];
+      const day = String(date.getDate()).padStart(2, "0");
 
-      if (!dailyStats[dateKey]) {
-        dailyStats[dateKey] = { sum: 0, count: 0 };
-      }
+      if (!daily[day]) daily[day] = 0;
+      daily[day] += bag.price;
 
-      dailyStats[dateKey].sum += bag.price;
-      dailyStats[dateKey].count += 1;
       totalSum += bag.price;
       totalCount += 1;
-    });
+    }
 
     return {
       sum: totalSum,
       count: totalCount,
-      daily: Object.entries(dailyStats)
-        .map(([date, stats]) => ({
-          date: new Date(date),
-          ...stats,
-        }))
-        .sort((a, b) => a.date.getTime() - b.date.getTime()),
+      daily,
     };
   }
 
@@ -113,33 +100,25 @@ export class FetchSalesStatsUseCase {
       payments: { method, status: "DONE" },
     });
 
-    const dailyStats = {} as Record<string, { sum: number; count: number }>;
     let totalSum = 0;
     let totalCount = 0;
+    const daily = {} as Record<string, number>;
 
-    bags.forEach((bag) => {
+    for (const bag of bags) {
       const date = new Date(bag.created_at);
-      const dateKey = date.toISOString().split("T")[0];
+      const day = String(date.getDate()).padStart(2, "0");
 
-      if (!dailyStats[dateKey]) {
-        dailyStats[dateKey] = { sum: 0, count: 0 };
-      }
+      if (!daily[day]) daily[day] = 0;
+      daily[day] += bag.price;
 
-      dailyStats[dateKey].sum += bag.price;
-      dailyStats[dateKey].count += 1;
       totalSum += bag.price;
       totalCount += 1;
-    });
+    }
 
     return {
       sum: totalSum,
       count: totalCount,
-      daily: Object.entries(dailyStats)
-        .map(([date, stats]) => ({
-          date: new Date(date),
-          ...stats,
-        }))
-        .sort((a, b) => a.date.getTime() - b.date.getTime()),
+      daily,
     };
   }
 }
