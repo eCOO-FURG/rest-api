@@ -20,7 +20,7 @@ import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper"
 export class PrismaBoxesRepository implements BoxesRepository {
   async find(
     type: RepositoryResponse,
-    { id, status, catalog, orders, since }: BoxesRepositorySearchRequest
+    { id, status, catalog, orders, since, before }: BoxesRepositorySearchRequest
   ): Promise<Box | null> {
     const box = await prisma.box.findFirst({
       where: {
@@ -32,7 +32,7 @@ export class PrismaBoxesRepository implements BoxesRepository {
             name: { contains: catalog?.farm?.name, mode: "insensitive" },
           },
         },
-        created_at: { gte: since },
+        created_at: { gte: since, lte: before },
       },
       include: {
         ...(type !== "basic" && {
@@ -58,7 +58,14 @@ export class PrismaBoxesRepository implements BoxesRepository {
 
   async list(
     type: RepositoryResponse,
-    { id, status, catalog, orders, since }: BoxesRepositorySearchRequest,
+    {
+      id,
+      status,
+      catalog,
+      orders,
+      since,
+      before,
+    }: BoxesRepositorySearchRequest,
     page?: number
   ): Promise<Box[]> {
     const boxes = await prisma.box.findMany({
@@ -71,7 +78,7 @@ export class PrismaBoxesRepository implements BoxesRepository {
             name: { contains: catalog?.farm?.name, mode: "insensitive" },
           },
         },
-        created_at: { gte: since },
+        created_at: { gte: since, lte: before },
       },
       include: {
         ...(type !== "basic" && {
