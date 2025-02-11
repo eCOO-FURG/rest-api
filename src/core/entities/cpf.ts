@@ -5,8 +5,8 @@ export class CPF {
     this._value = value;
   }
 
-  format(document: string): string {
-    return document.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+  get format(): string {
+    return this._value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
   }
 
   get value(): string {

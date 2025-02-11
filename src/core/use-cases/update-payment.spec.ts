@@ -31,9 +31,9 @@ describe("Update payment", () => {
     const bag = makeBag();
 
     const payment = makePayment();
+    await paymentsRepository.create(payment);
 
     bag.payments.set(payment.id.value, payment);
-
     await bagsRepository.create(bag);
 
     await sut.execute({ payment_id: payment.id.value, status: "DONE" });

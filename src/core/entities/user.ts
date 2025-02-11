@@ -118,18 +118,13 @@ export class User extends Entity<UserProps> {
   }
 
   static create(
-    props: Optional<
-      Omit<UserProps, "cpf" | "phone"> & { cpf: CPF; phone: Phone },
-      "password" | "verified_at" | "photo"
-    >
+    props: Optional<UserProps, "password" | "verified_at" | "photo">
   ) {
     const user = new User({
       ...props,
       password: props.password ?? null,
       verified_at: props.verified_at ?? null,
       photo: props.photo ?? null,
-      cpf: props.cpf,
-      phone: props.phone,
     });
 
     const fresh = !props.id;

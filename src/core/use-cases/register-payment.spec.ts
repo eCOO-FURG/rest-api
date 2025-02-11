@@ -1,11 +1,6 @@
 // Repositories
 import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
-import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
-import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
-import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
-import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
+import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
 
 // Use-cases
 import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
@@ -17,16 +12,19 @@ import { makeUser } from "@/test/factories/make-user";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
+import { makePayment } from "@/test/factories/make-payment";
 
 let bagsRepository: InMemoryBagsRepository;
+let paymentsRepository: InMemoryPaymentsRepository
 
 let sut: RegisterPaymentUseCase;
 
 describe("Register payment", () => {
   beforeEach(() => {
     bagsRepository = new InMemoryBagsRepository();
+    paymentsRepository = new InMemoryPaymentsRepository();
 
-    sut = new RegisterPaymentUseCase(bagsRepository);
+    sut = new RegisterPaymentUseCase(bagsRepository, paymentsRepository);
   });
 
   it("should be able to register a payment", async () => {
@@ -52,15 +50,15 @@ describe("Register payment", () => {
 
   it("should not be able to register a payment with a bag that is already paid", async () => {
     const user = makeUser();
-
+  
     const bag = makeBag({ user_id: user.id, user });
     await bagsRepository.create(bag);
-
-    await sut.execute({
-      bag_id: bag.id.value,
-      method: "CREDIT",
-    });
-
+  
+    const payment = makePayment({ bag_id: bag.id, status: "DONE" });
+    await paymentsRepository.create(payment);
+  
+    bag.payments.set(payment.id.value, payment);
+  
     await expect(() =>
       sut.execute({
         bag_id: bag.id.value,
@@ -68,4 +66,5 @@ describe("Register payment", () => {
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
+  
 });

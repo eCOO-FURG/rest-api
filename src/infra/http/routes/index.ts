@@ -48,6 +48,7 @@ import { updateProductController } from "@/infra/http/controllers/update-product
 import { updateUserController } from "@/infra/http/controllers/update-user";
 import { verifyUserController } from "@/infra/http/controllers/verify-user";
 import { updatePaymentController } from "@/infra/http/controllers/update-payment";
+import { fetchInboundReportController } from "@/infra/http/controllers/fetch-inbound-report";
 
 // Webhooks
 import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
@@ -280,6 +281,13 @@ router.get(
   ensureAuthenticated,
   ensureRole(["BROKER", "MANAGER"]),
   fetchSalesReportController
+);
+
+router.get(
+  "/reports/inbound",
+  ensureAuthenticated,
+  ensureRole(["BROKER", "MANAGER"]),
+  fetchInboundReportController
 );
 
 // Notificações
