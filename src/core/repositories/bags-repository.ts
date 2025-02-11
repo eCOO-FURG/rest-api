@@ -1,5 +1,6 @@
 // Entities
 import { Bag } from "@/core/entities/bag";
+import { Payment } from "@/core/entities/payment";
 
 // Types
 import { RepositoryResponse } from "@/core/types/repository-response";
@@ -11,7 +12,12 @@ export interface BagsRepositorySearchRequest {
   cycle?: { id?: string };
   address?: { id?: string } | null;
   orders?: { id?: string; page?: number };
-  payments?: { id?: string; page?: number };
+  payments?: {
+    id?: string;
+    status?: Payment["status"];
+    method?: Payment["method"];
+    page?: number;
+  };
   withdraw?: boolean;
   since?: Date;
   before?: Date;

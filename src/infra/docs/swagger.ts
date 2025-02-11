@@ -14,6 +14,8 @@ import { fetchCurrentBoxSchema } from "@/infra/http/controllers/fetch-current-bo
 import { fetchCurrentCatalogSchema } from "@/infra/http/controllers/fetch-current-catalog";
 import { fetchLastCatalogSchema } from "@/infra/http/controllers/fetch-last-catalog";
 import { fetchPendingsSchema } from "@/infra/http/controllers/fetch-pendings";
+import { fetchSalesReportSchema } from "@/infra/http/controllers/fetch-sales-report";
+import { fetchSalesStatsSchema } from "@/infra/http/controllers/fetch-sales-stats";
 import { handleBagSchema } from "@/infra/http/controllers/handle-bag";
 import { handleBoxSchema } from "@/infra/http/controllers/handle-box";
 import { handleFarmSchema } from "@/infra/http/controllers/handle-farm";
@@ -36,11 +38,10 @@ import { requestPasswordUpdateSchema } from "@/infra/http/controllers/request-pa
 import { sendNotificationSchema } from "@/infra/http/controllers/send-notification";
 import { updateCatalogSchema } from "@/infra/http/controllers/update-catalog";
 import { updateFarmSchema } from "@/infra/http/controllers/update-farm";
+import { updatePaymentSchema } from "@/infra/http/controllers/update-payment";
 import { updateProductSchema } from "@/infra/http/controllers/update-product";
 import { updateUserSchema } from "@/infra/http/controllers/update-user";
 import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
-import { fetchSalesReportSchema } from "@/infra/http/controllers/fetch-sales-report";
-import { updatePaymentSchema } from "@/infra/http/controllers/update-payment";
 
 const tags = {
   users: "Usuários",
@@ -594,6 +595,7 @@ const docs = createDocument({
         tags: [tags.stats],
         responses: { "200": { description: "200 OK" } },
         description: "Busca as estatísticas de vendas.",
+        ...SwaggerMapper.toDocs(fetchSalesStatsSchema),
       },
     },
 

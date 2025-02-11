@@ -14,9 +14,9 @@ import { prisma } from "@/infra/database/prisma-service";
 import { RepositoryResponse } from "@/core/types/repository-response";
 
 // Mappers
+import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";
 import { PrismaBagMapper } from "@/infra/database/mappers/prisma-bag-mapper";
 import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
-import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";
 
 export class PrismaBagsRepository implements BagsRepository {
   async find(
@@ -83,9 +83,19 @@ export class PrismaBagsRepository implements BagsRepository {
             }),
           },
           payments: {
-            ...(payments?.page && {
-              skip: (payments.page - 1) * 20,
-              take: 20,
+            ...(payments && {
+              where: {
+                status: {
+                  equals: payments.status,
+                },
+                method: {
+                  equals: payments.method,
+                },
+              },
+              ...(payments.page && {
+                skip: (payments.page - 1) * 20,
+                take: 20,
+              }),
             }),
           },
         }),
@@ -140,6 +150,14 @@ export class PrismaBagsRepository implements BagsRepository {
             lte: before,
           },
         }),
+        ...(payments && {
+          payments: {
+            some: {
+              status: payments?.status,
+              method: payments?.method,
+            },
+          },
+        }),
       },
       include: {
         ...(type !== "basic" && {
@@ -162,9 +180,19 @@ export class PrismaBagsRepository implements BagsRepository {
             }),
           },
           payments: {
-            ...(payments?.page && {
-              skip: (payments.page - 1) * 20,
-              take: 20,
+            ...(payments && {
+              where: {
+                status: {
+                  equals: payments.status,
+                },
+                method: {
+                  equals: payments.method,
+                },
+              },
+              ...(payments.page && {
+                skip: (payments.page - 1) * 20,
+                take: 20,
+              }),
             }),
           },
         }),
