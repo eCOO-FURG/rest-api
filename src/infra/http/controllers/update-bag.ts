@@ -17,7 +17,16 @@ export const updateBagSchema = {
   }),
   body: z
     .object({
-      status: z.enum(["CANCELLED"]).optional(),
+      status: z
+        .enum([
+          "PENDING",
+          "SEPARATED",
+          "DISPATCHED",
+          "RECEIVED",
+          "CANCELLED",
+          "DEFERRED",
+        ])
+        .optional(),
     })
     .refine(notEmpty.validation, notEmpty.warning),
 };

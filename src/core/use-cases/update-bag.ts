@@ -1,11 +1,12 @@
 // Errors
-import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { ResourceNotVerifiedError } from "@/core/errors/resource-not-verified";
 
 // Repositories
 import { BagsRepository } from "@/core/repositories/bags-repository";
-import { UsersRepository } from "@/core/repositories/users-repository";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
+import { UsersRepository } from "@/core/repositories/users-repository";
 
 // Entities
 import { Bag } from "@/core/entities/bag";
@@ -52,6 +53,8 @@ export class UpdateBagUseCase {
 
     if (bag.status === "CANCELLED")
       throw new ResourceClosedError("Sacola", bag_id);
+
+    if (!bag.verified()) throw new ResourceNotVerifiedError("Sacola", bag_id);
 
     bag.status = status ?? bag.status;
 
