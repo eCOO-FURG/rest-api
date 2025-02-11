@@ -101,21 +101,29 @@ export class Bag extends Entity<BagProps> {
   paid() {
     const payments = Array.from(this.props.payments.values());
 
-    const done = payments.some((payment) => payment.status === "DONE");
+    for (const payment of payments) {
+      if (payment.status === "DONE") return payment;
+    }
 
-    return done;
+    return false;
   }
 
   open() {
     const payments = Array.from(this.props.payments.values());
 
-    const pending = payments.find(
-      (payment) => payment.status === "PENDING" && !payment.expired
-    );
+    for (const payment of payments) {
+      if (payment.status === "PENDING" && !payment.expired) return payment;
+    }
 
-    if (!pending) return null;
+    return false;
+  }
 
-    return pending;
+  verified() {
+    for (const order of this.props.orders.values()) {
+      if (order.status === "PENDING") return false;
+    }
+
+    return true;
   }
 
   add(order: Order) {
@@ -139,13 +147,5 @@ export class Bag extends Entity<BagProps> {
     });
 
     return bag;
-  }
-
-  verified() {
-    const orders = Array.from(this.props.orders.values());
-
-    const verified = orders.every((order) => !(order.status === "PENDING"));
-
-    return verified;
   }
 }
