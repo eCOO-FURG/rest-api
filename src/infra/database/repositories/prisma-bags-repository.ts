@@ -83,9 +83,19 @@ export class PrismaBagsRepository implements BagsRepository {
             }),
           },
           payments: {
-            ...(payments?.page && {
-              skip: (payments.page - 1) * 20,
-              take: 20,
+            ...(payments && {
+              where: {
+                status: {
+                  equals: payments.status,
+                },
+                method: {
+                  equals: payments.method,
+                },
+              },
+              ...(payments.page && {
+                skip: (payments.page - 1) * 20,
+                take: 20,
+              }),
             }),
           },
         }),
