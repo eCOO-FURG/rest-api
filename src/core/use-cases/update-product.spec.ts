@@ -51,6 +51,7 @@ describe("Update Product UseCase", () => {
       pricing: "UNIT",
       category_id: category.id.value,
       archived: false,
+      perishable: true
     });
 
     const updatedProduct = await productsRepository.find("basic", {
@@ -63,6 +64,7 @@ describe("Update Product UseCase", () => {
     expect(updatedProduct?.category_id.value).toBe(category.id.value);
     expect(updatedProduct?.archived).toBe(false);
     expect(updatedProduct?.image).toContain("products");
+    expect(updatedProduct?.perishable).toBe(true);
   });
 
   it("should throw an error if the product does not exist", async () => {

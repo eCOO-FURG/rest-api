@@ -11,14 +11,16 @@ import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { CatalogsRepository } from "@/core//repositories/catalogs-repository";
 
 // Errors
-import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
+import { InvalidDateError } from "@/core/errors/invalid-date";
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 
 // Utils
 import { mostPast } from "@/core/utils/most-past";
+import { FieldNotProviderError } from "../errors/field-not-provider";
 
 interface CreateOfferUseCaseRequest {
   farm_id: string;
@@ -27,6 +29,7 @@ interface CreateOfferUseCaseRequest {
   amount: number;
   price: number;
   description?: string;
+  expires_at?: Date
 }
 
 export class CreateOfferUseCase {
@@ -44,7 +47,10 @@ export class CreateOfferUseCase {
     amount,
     price,
     description,
+    expires_at
   }: CreateOfferUseCaseRequest) {
+    const today = (new Date().getDay() + 1) as Week[0];
+
     const farm = await this.farmsRepository.find("basic", { id: farm_id });
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
@@ -57,11 +63,15 @@ export class CreateOfferUseCase {
 
     if (!product) throw new ResourceNotFoundError("Produto", product_id);
 
+    if (product.perishable && !expires_at) 
+      throw new FieldNotProviderError("expires_at");
+
+    if (expires_at && expires_at < new Date()) 
+      throw new InvalidDateError();
+
     const cycle = await this.cyclesRepository.find("basic", { id: cycle_id });
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
-
-    const today = (new Date().getDay() + 1) as Week[0];
 
     if (!cycle.offer.includes(today))
       throw new ResourceClosedError("Ciclo", cycle.id.value);
@@ -86,6 +96,7 @@ export class CreateOfferUseCase {
       amount,
       description,
       price: price + (price * farm.tax) / 100,
+      expires_at
     });
 
     catalog.offers.set(product_id, offer);

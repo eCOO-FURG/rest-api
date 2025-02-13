@@ -51,6 +51,7 @@ async function seedBase() {
           create: products.map((product) => ({
             ...product,
             pricing: product.pricing as PRICING,
+            perishable: product.perishable
           })),
         },
       },

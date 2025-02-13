@@ -14,11 +14,13 @@ import { InMemoryProductsRepository } from "@/test/repositories/in-memory-produc
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 
 // Errors
+import { InvalidDateError } from "@/core/errors/invalid-date";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
+import { InvalidFieldError } from "@/core/errors/field-not-provider";
 
 // Entities
 import { Offer } from "@/core/entities/offer";
@@ -232,4 +234,77 @@ describe("offer products", () => {
       })
     ).rejects.toBeInstanceOf(ResourceClosedError);
   });
+
+  it("should not be able to offer product with invalid expires_at", async () => {
+    const yesterday = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
+    const product = makeProduct();
+    await productsRepository.create(product);
+
+    const farm = makeFarm({ status: "ACTIVE" });
+    await farmsRepository.create(farm);
+
+    await expect(() =>
+      sut.execute({
+        product_id: product.id.value,
+        cycle_id: cycle.id.value,
+        farm_id: farm.id.value,
+        amount: 10,
+        price: 10,
+        description: "Novo.",
+        expires_at: yesterday
+      })
+    ).rejects.toBeInstanceOf(InvalidDateError);
+  })
+
+  it("should not be able to offer product with invalid expires_at", async () => {
+    const yesterday = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
+    const product = makeProduct();
+    await productsRepository.create(product);
+
+    const farm = makeFarm({ status: "ACTIVE" });
+    await farmsRepository.create(farm);
+
+    await expect(() =>
+      sut.execute({
+        product_id: product.id.value,
+        cycle_id: cycle.id.value,
+        farm_id: farm.id.value,
+        amount: 10,
+        price: 10,
+        description: "Novo.",
+        expires_at: yesterday
+      })
+    ).rejects.toBeInstanceOf(InvalidDateError);
+  })
+
+  it("should not be able to offer a perishable product without expires_at", async () => {
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+  
+    const product = makeProduct({ perishable: true });
+    await productsRepository.create(product);
+  
+    const farm = makeFarm({ status: "ACTIVE" });
+    await farmsRepository.create(farm);
+  
+    await expect(() =>
+      sut.execute({
+        product_id: product.id.value,
+        cycle_id: cycle.id.value,
+        farm_id: farm.id.value,
+        amount: 10,
+        price: 10,
+        description: "Novo.",
+      })
+    ).rejects.toBeInstanceOf(InvalidFieldError);
+  });
+  
 });

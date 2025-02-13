@@ -16,6 +16,7 @@ export class OfferPresenter {
         amount: offer.amount,
         price: offer.price,
         description: offer.description,
+        expires_at: offer.expires_at,
         catalog_id: offer.catalog_id.value,
         catalog: CatalogPresenter.toHttp(offer.catalog),
         product_id: offer.product_id.value,

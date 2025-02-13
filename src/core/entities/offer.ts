@@ -11,6 +11,7 @@ export interface OfferProps extends EntityRequest {
   price: number;
   amount: number;
   description: string | null;
+  expires_at: Date | null;
 
   catalog_id: UUID;
   catalog?: Catalog;
@@ -48,6 +49,10 @@ export class Offer extends Entity<OfferProps> {
     return this.props.product;
   }
 
+  get expires_at() {
+    return this.props.expires_at;
+  }
+
   set price(price: number) {
     this.props.price = price;
   }
@@ -60,10 +65,15 @@ export class Offer extends Entity<OfferProps> {
     this.props.description = description;
   }
 
-  static create(props: Optional<OfferProps, "description">) {
+  set expires_at(value: Date | null) {
+    this.props.expires_at = value;
+  }
+
+  static create(props: Optional<OfferProps, "description" | "expires_at">) {
     const offer = new Offer({
       ...props,
       description: props.description ?? null,
+      expires_at: props.expires_at ?? null
     });
 
     return offer;

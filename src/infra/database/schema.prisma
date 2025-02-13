@@ -98,11 +98,12 @@ enum PRICING {
 }
 
 model Product {
-  id       String  @id @default(uuid())
-  name     String
-  image    String
-  pricing  PRICING
-  archived Boolean @default(false)
+  id         String  @id @default(uuid())
+  name       String
+  image      String
+  pricing    PRICING
+  archived   Boolean @default(false)
+  perishable Boolean @default(false)
 
   category_id String
   category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
@@ -166,6 +167,7 @@ model Offer {
   amount      Int
   price       Decimal @db.Decimal(10, 2)
   description String? @db.VarChar(240)
+  expires_at DateTime?
 
   catalog_id String
   catalog    Catalog @relation(fields: [catalog_id], references: [id])

@@ -12,6 +12,8 @@ import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 import { UnauthorizedError } from "@/core/errors/unauthorized";
 import { SessionExpiredError } from "@/core/errors/session-expired";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
+import { InvalidDateError } from "@/core/errors/invalid-date";
+import { FieldNotProviderError } from "@/core/errors/field-not-provider";
 
 const mappedDomainErrors: {
   status: number;
@@ -23,7 +25,13 @@ const mappedDomainErrors: {
   },
   {
     status: 400,
-    errors: [WrongCredentialsError, WrongCredentialsError, InvalidWeightError],
+    errors: [
+      WrongCredentialsError, 
+      WrongCredentialsError, 
+      InvalidWeightError,
+      InvalidDateError,
+      FieldNotProviderError
+    ],
   },
   {
     status: 403,

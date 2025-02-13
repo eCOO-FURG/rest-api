@@ -16,6 +16,7 @@ export class ProductPresenter {
         image: product.image,
         pricing: product.pricing,
         category_id: product.category_id.value,
+        perishable: product.perishable,
         category: CategoryPresenter.toHttp(product.category),
         created_at: product.created_at,
         updated_at: product.updated_at,
