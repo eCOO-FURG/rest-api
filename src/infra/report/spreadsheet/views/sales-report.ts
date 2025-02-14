@@ -4,8 +4,6 @@ import { SpreadsheetColumn } from "@/core/report/spreadsheet-service";
 // Entities
 import { Bag } from "@/core/entities/bag";
 
-// Utils
-
 const columns: SpreadsheetColumn[] = [
   { header: "SACOLA", key: "bag", width: 10 },
   { header: "CONSUMIDOR", key: "user", width: 20 },
