@@ -24,6 +24,7 @@ interface RegisterUseCaseRequest {
   cpf: string;
   phone: string;
   password?: string;
+  chat?: string | null;
   role: "USER" | "PRODUCER";
 }
 
@@ -40,6 +41,7 @@ export class RegisterUseCase {
     cpf,
     phone,
     password,
+    chat,
     role,
   }: RegisterUseCaseRequest) {
     const userWithSameEmail = await this.usersRepository.find("basic", {
@@ -61,6 +63,15 @@ export class RegisterUseCase {
 
     if (userWithSameCpf) throw new ResourceAlreadyExistsError("CPF", cpf);
 
+    if (chat) {
+      const userWithSameChat = await this.usersRepository.find("basic", {
+        chat,
+      });
+
+      if (userWithSameChat) throw new ResourceAlreadyExistsError("Chat", chat);
+
+    }
+
     const roles: Role[] = role === "PRODUCER" ? ["USER", "PRODUCER"] : ["USER"];
 
     const user = User.create({
@@ -69,6 +80,7 @@ export class RegisterUseCase {
       cpf: new CPF(cpf),
       email,
       phone: new Phone(phone),
+      chat: chat ?? null,
       roles,
     });
 

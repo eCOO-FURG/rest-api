@@ -9,6 +9,7 @@ export interface UsersRepositorySearchRequest {
   email?: string;
   phone?: string;
   cpf?: string;
+  chat?: string;
   role?: Role;
 }
 

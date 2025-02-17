@@ -24,6 +24,7 @@ export interface UserProps extends EntityRequest {
   roles: Role[];
   verified_at: Date | null;
   photo: string | null;
+  chat: string | null;
 }
 
 export class User extends Entity<UserProps> {
@@ -63,6 +64,10 @@ export class User extends Entity<UserProps> {
     return this.props.photo;
   }
 
+  get chat() {
+    return this.props.chat;
+  }
+
   set first_name(value: string) {
     this.props.first_name = value;
   }
@@ -89,6 +94,10 @@ export class User extends Entity<UserProps> {
 
   set password(value: string) {
     this.props.password = value;
+  }
+
+  set chat(value: string | null) {
+    this.props.chat = value;
   }
 
   verify() {
@@ -125,6 +134,7 @@ export class User extends Entity<UserProps> {
       password: props.password ?? null,
       verified_at: props.verified_at ?? null,
       photo: props.photo ?? null,
+      chat: props.chat ?? null
     });
 
     const fresh = !props.id;
