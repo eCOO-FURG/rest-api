@@ -135,11 +135,12 @@ export class Bag extends Entity<BagProps> {
   static create(
     props: Optional<
       BagProps,
-      "price" | "status" | "address" | "orders" | "payments"
+      "price" | "status" | "address" | "orders" | "payments" | "address_id"
     >
   ) {
     const bag = new Bag({
       ...props,
+      address_id: props.address_id ?? null,
       price: props.price ?? 0,
       status: props.status ?? "PENDING",
       orders: props.orders ?? new Map(),
