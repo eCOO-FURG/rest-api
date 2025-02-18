@@ -12,7 +12,7 @@ import { Hasher } from "@/core/cryptography/hasher";
 
 // Errors
 import { WrongCredentialsError } from "@/core/errors/wrong-credentials";
-import { EmptyPasswordError } from "@/core/errors/empty-password";
+import { MissingFieldError } from "@/core/errors/missing-field";
 import { UserNotVerifiedError } from "@/core/errors/user-not-verified";
 
 interface AuthenticateUseCaseRequest {
@@ -30,7 +30,7 @@ export class AuthenticateUseCase {
     private sessionsRepository: SessionsRepository,
     private encrypter: Encrypter,
     private hasher: Hasher
-  ) {}
+  ) { }
 
   async execute({
     email,
@@ -45,7 +45,7 @@ export class AuthenticateUseCase {
 
     switch (type) {
       case "BASIC":
-        if (!user.password) throw new EmptyPasswordError();
+        if (!user.password) throw new MissingFieldError("senha");
 
         const isPasswordValid = await this.encrypter.compare(
           password,

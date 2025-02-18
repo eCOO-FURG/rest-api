@@ -23,7 +23,17 @@ export const createOfferSchema = {
       expires_at: z
         .string()
         .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
-        .optional(),
+        .optional()
+        .refine((date) => {
+          if (!date) return true;
+
+          const [day, month, year] = date.split("-").map(Number);
+          const expiresDate = new Date(year, month - 1, day);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
+          return expiresDate >= today;
+        }, "A data de expiração não pode estar no passado"),
     })
     .refine(notEmpty.validation, notEmpty.warning),
 };

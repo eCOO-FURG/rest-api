@@ -11,7 +11,6 @@ import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { CatalogsRepository } from "@/core//repositories/catalogs-repository";
 
 // Errors
-import { InvalidDateError } from "@/core/errors/invalid-date";
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
@@ -20,7 +19,7 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 
 // Utils
 import { mostPast } from "@/core/utils/most-past";
-import { FieldNotProviderError } from "../errors/field-not-provider";
+import { MissingFieldError } from "../errors/missing-field";
 
 interface CreateOfferUseCaseRequest {
   farm_id: string;
@@ -64,10 +63,7 @@ export class CreateOfferUseCase {
     if (!product) throw new ResourceNotFoundError("Produto", product_id);
 
     if (product.perishable && !expires_at) 
-      throw new FieldNotProviderError("expires_at");
-
-    if (expires_at && expires_at < new Date()) 
-      throw new InvalidDateError();
+      throw new MissingFieldError("expires_at");
 
     const cycle = await this.cyclesRepository.find("basic", { id: cycle_id });
 

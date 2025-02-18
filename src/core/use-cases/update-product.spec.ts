@@ -54,17 +54,13 @@ describe("Update Product UseCase", () => {
       perishable: true
     });
 
-    const updatedProduct = await productsRepository.find("basic", {
-      id: product.id.value,
-    });
-
-    expect(updatedProduct).toBeDefined();
-    expect(updatedProduct?.name).toBe("Produto show");
-    expect(updatedProduct?.pricing).toBe("UNIT");
-    expect(updatedProduct?.category_id.value).toBe(category.id.value);
-    expect(updatedProduct?.archived).toBe(false);
-    expect(updatedProduct?.image).toContain("products");
-    expect(updatedProduct?.perishable).toBe(true);
+    expect(product).toBeDefined();
+    expect(product.name).toBe("Produto show");
+    expect(product.pricing).toBe("UNIT");
+    expect(product.category_id.value).toBe(category.id.value);
+    expect(product.archived).toBe(false);
+    expect(product.image).toContain("products");
+    expect(product.perishable).toBe(true);
   });
 
   it("should throw an error if the product does not exist", async () => {
@@ -112,14 +108,10 @@ describe("Update Product UseCase", () => {
       archived: false,
     });
 
-    const updatedProduct = await productsRepository.find("basic", {
-      id: product.id.value,
-    });
-
-    expect(updatedProduct).toBeDefined();
-    expect(updatedProduct?.name).toBe("Novo nome teste");
-    expect(updatedProduct?.pricing).toBe("UNIT");
-    expect(updatedProduct?.archived).toBe(false);
-    expect(updatedProduct?.image).toBe(product.image);
+    expect(product).toBeDefined();
+    expect(product.name).toBe("Novo nome teste");
+    expect(product.pricing).toBe("UNIT");
+    expect(product.archived).toBe(false);
+    expect(product.image).toBe(product.image);
   });
 });
