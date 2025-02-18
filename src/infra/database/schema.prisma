@@ -301,6 +301,7 @@ model Order {
   id     String       @id @default(uuid())
   amount Int
   price  Decimal      @db.Decimal(10, 2)
+  tax    Float
   status ORDER_STATUS
 
   offer_id String
