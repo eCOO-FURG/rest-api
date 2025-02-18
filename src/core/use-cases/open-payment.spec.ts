@@ -4,6 +4,7 @@ import { OpenPaymentUseCase } from "@/core/use-cases/open-payment";
 // Providers
 // Repositories
 import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
+import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-payments-repository";
 
 // Services
 import { MockedPixProvider } from "@/test/payment/mocked-pix-provider";
@@ -18,6 +19,7 @@ import { makeBag } from "@/test/factories/make-bag";
 import { makePayment } from "@/test/factories/make-payment";
 
 let bagsRepository: InMemoryBagsRepository;
+let paymentsRepository: InMemoryPaymentsRepository;
 
 let pixProvider: MockedPixProvider;
 
@@ -27,8 +29,13 @@ describe("open payment", () => {
   beforeEach(() => {
     bagsRepository = new InMemoryBagsRepository();
     pixProvider = new MockedPixProvider();
+    paymentsRepository = new InMemoryPaymentsRepository();
 
-    sut = new OpenPaymentUseCase(bagsRepository, pixProvider);
+    sut = new OpenPaymentUseCase(
+      bagsRepository,
+      paymentsRepository,
+      pixProvider
+    );
   });
 
   it("be able to open a payment", async () => {
@@ -39,7 +46,7 @@ describe("open payment", () => {
 
     await sut.execute({ bag_id: bag.id.value });
 
-    expect(bagsRepository.items[0].open()).toBeTruthy();
+    expect(paymentsRepository.items[0].status).toBe("PENDING");
   });
 
   it("should not be able to open a payment from a non existing bag", async () => {
