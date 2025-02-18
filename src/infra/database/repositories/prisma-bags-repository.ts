@@ -204,17 +204,17 @@ export class PrismaBagsRepository implements BagsRepository {
   }
 
   async create(bag: Bag): Promise<void> {
-    const data = PrismaBagMapper.toPrisma(bag);
-
     await prisma.$transaction(async (ctx) => {
-      if (bag.address_id && bag.address) {
+      const data = PrismaBagMapper.toPrisma(bag);
+
+      if (bag.address) {
         const address = await ctx.address.findFirst({
-          where: { id: bag.address_id.value },
+          where: { id: bag.address.id.value },
         });
 
         if (!address) {
           await ctx.address.create({
-            data: { ...PrismaAddressMapper.toPrisma(bag.address) },
+            data: PrismaAddressMapper.toPrisma(bag.address),
           });
         }
       }
@@ -232,70 +232,56 @@ export class PrismaBagsRepository implements BagsRepository {
           where: { id: order.offer_id.value },
           data: { amount: { decrement: order.amount } },
         });
+
+        if (order.bag) {
+          const bag = await ctx.bag.findFirst({
+            where: { id: order.bag_id.value },
+          });
+
+          if (!bag) {
+            await ctx.bag.create({
+              data: PrismaBagMapper.toPrisma(order.bag),
+            });
+          }
+        }
+
+        await ctx.offer.update({
+          where: { id: order.offer_id.value },
+          data: { amount: { decrement: order.amount } },
+        });
       }
     });
   }
 
   async update(bag: Bag): Promise<void> {
-    const data = PrismaBagMapper.toPrisma(bag);
-
     await prisma.$transaction(async (ctx) => {
-      await ctx.bag.update({
+      await prisma.bag.update({
         where: { id: bag.id.value },
-        data,
+        data: PrismaBagMapper.toPrisma(bag),
       });
-
-      const previousOrders = await ctx.order.findMany({
-        where: { bag_id: bag.id.value },
-      });
-
-      const createdOrders = [];
 
       for (const order of bag.orders.values()) {
-        const existed = previousOrders.find((p) => order.id.equals(p.id));
-
-        if (!existed) {
-          createdOrders.push(order);
-
-          await ctx.offer.update({
-            where: { id: order.offer_id.value },
-            data: { amount: { decrement: order.amount } },
-          });
-
-          continue;
-        }
-
-        if (existed.updated_at === order.updated_at) continue;
-
-        await ctx.order.update({
-          where: { id: order.id.value },
-          data: {
-            ...PrismaOrderMapper.toPrisma(order),
-          },
+        await ctx.offer.update({
+          where: { id: order.offer_id.value },
+          data: { amount: { decrement: order.amount } },
         });
-      }
 
-      await ctx.order.createMany({
-        data: createdOrders.map(PrismaOrderMapper.toPrisma),
-      });
-
-      const deletedIds = previousOrders
-        .filter((p) => !bag.orders.has(p.id))
-        .map((order) => order.id);
-
-      if (deletedIds.length)
-        await ctx.order.deleteMany({ where: { id: { in: deletedIds } } });
-
-      if (bag.status === "CANCELLED") {
-        for (const order of bag.orders.values()) {
-          await ctx.order.update({
-            where: { id: order.id.value },
-            data: {
-              status: "CANCELLED",
-              offer: { update: { amount: { increment: order.amount } } },
-            },
+        if (order.bag) {
+          const bag = await ctx.bag.findFirst({
+            where: { id: order.bag_id.value },
           });
+
+          if (!bag) {
+            await ctx.bag.create({
+              data: PrismaBagMapper.toPrisma(order.bag),
+            });
+          }
         }
+
+        await ctx.offer.update({
+          where: { id: order.offer_id.value },
+          data: { amount: { decrement: order.amount } },
+        });
       }
     });
   }

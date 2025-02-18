@@ -68,6 +68,7 @@ describe("order product", () => {
       bagsRepository,
       boxesRepository,
       addressesRepository,
+      farmsRepository,
       otpProvider
     );
   });
