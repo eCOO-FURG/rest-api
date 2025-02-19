@@ -27,6 +27,7 @@ export class PrismaBoxesRepository implements BoxesRepository {
         id,
         status,
         catalog: {
+          id: catalog?.id,
           cycle: { id: catalog?.cycle?.id },
           farm: {
             name: { contains: catalog?.farm?.name, mode: "insensitive" },
@@ -73,6 +74,7 @@ export class PrismaBoxesRepository implements BoxesRepository {
         id,
         status,
         catalog: {
+          id: catalog?.id,
           cycle: { id: catalog?.cycle?.id },
           farm: {
             name: { contains: catalog?.farm?.name, mode: "insensitive" },

@@ -17,6 +17,7 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";
 import { PrismaBagMapper } from "@/infra/database/mappers/prisma-bag-mapper";
 import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
+import { PrismaBoxMapper } from "@/infra/database/mappers/prisma-box-mapper";
 
 export class PrismaBagsRepository implements BagsRepository {
   async find(
@@ -228,19 +229,23 @@ export class PrismaBagsRepository implements BagsRepository {
       await ctx.order.createMany({ data: orders });
 
       for (const order of bag.orders.values()) {
+        await ctx.order.create({
+          data: PrismaOrderMapper.toPrisma(order),
+        });
+
         await ctx.offer.update({
           where: { id: order.offer_id.value },
           data: { amount: { decrement: order.amount } },
         });
 
-        if (order.bag) {
-          const bag = await ctx.bag.findFirst({
-            where: { id: order.bag_id.value },
+        if (order.box) {
+          const box = await ctx.box.findFirst({
+            where: { id: order.box_id.value },
           });
 
-          if (!bag) {
-            await ctx.bag.create({
-              data: PrismaBagMapper.toPrisma(order.bag),
+          if (!box) {
+            await ctx.box.create({
+              data: PrismaBoxMapper.toPrisma(order.box),
             });
           }
         }
@@ -261,19 +266,23 @@ export class PrismaBagsRepository implements BagsRepository {
       });
 
       for (const order of bag.orders.values()) {
+        await ctx.order.create({
+          data: PrismaOrderMapper.toPrisma(order),
+        });
+
         await ctx.offer.update({
           where: { id: order.offer_id.value },
           data: { amount: { decrement: order.amount } },
         });
 
-        if (order.bag) {
-          const bag = await ctx.bag.findFirst({
-            where: { id: order.bag_id.value },
+        if (order.box) {
+          const box = await ctx.box.findFirst({
+            where: { id: order.box_id.value },
           });
 
-          if (!bag) {
-            await ctx.bag.create({
-              data: PrismaBagMapper.toPrisma(order.bag),
+          if (!box) {
+            await ctx.box.create({
+              data: PrismaBoxMapper.toPrisma(order.box),
             });
           }
         }

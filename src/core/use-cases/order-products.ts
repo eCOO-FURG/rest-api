@@ -172,7 +172,7 @@ export class OrderProductsUseCase {
 
   private async useBag({ bag_id, user, address, cycle }: UseBagRequest) {
     if (bag_id) {
-      const bag = await this.bagsRepository.find("merge", {
+      const bag = await this.bagsRepository.find("aggregate", {
         id: bag_id,
         statuses: ["PENDING"],
         cycle: { id: cycle.id.value },
@@ -187,7 +187,7 @@ export class OrderProductsUseCase {
       return { bag, existed: true };
     }
 
-    const found = await this.bagsRepository.find("merge", {
+    const found = await this.bagsRepository.find("aggregate", {
       user: { id: user.id.value },
       cycle: { id: cycle.id.value },
       statuses: ["PENDING"],
