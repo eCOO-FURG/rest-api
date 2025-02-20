@@ -36,6 +36,8 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
+    volumes:
+      - ./src:/app/src
     depends_on:
       - database
       - cache
@@ -43,8 +45,6 @@ services:
 
   development-server:
     <<: *server
-    volumes:
-      - ./src:/app/src
     depends_on:
       - smtp
     profiles: ["development"]
