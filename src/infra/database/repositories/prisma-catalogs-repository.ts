@@ -45,6 +45,13 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
         }),
         ...(type === "merge" && {
           offers: {
+            ...(offers?.product?.name && {
+              where: {
+                product: {
+                  name: { contains: offers.product.name, mode: "insensitive" },
+                },
+              },
+            }),
             include: { product: true },
             orderBy: { created_at: "asc" },
             ...(offers?.page && {
