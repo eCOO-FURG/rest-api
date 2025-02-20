@@ -222,12 +222,6 @@ export class PrismaBagsRepository implements BagsRepository {
 
       await ctx.bag.create({ data });
 
-      const orders = Array.from(bag.orders.values()).map(
-        PrismaOrderMapper.toPrisma
-      );
-
-      await ctx.order.createMany({ data: orders });
-
       for (const order of bag.orders.values()) {
         if (order.box) {
           const box = await ctx.box.findFirst({
@@ -246,6 +240,12 @@ export class PrismaBagsRepository implements BagsRepository {
           data: { amount: { decrement: order.amount } },
         });
       }
+
+      const orders = Array.from(bag.orders.values()).map(
+        PrismaOrderMapper.toPrisma
+      );
+
+      await ctx.order.createMany({ data: orders });
     });
   }
 
@@ -270,12 +270,6 @@ export class PrismaBagsRepository implements BagsRepository {
         data,
       });
 
-      const orders = Array.from(bag.orders.values()).map(
-        PrismaOrderMapper.toPrisma
-      );
-
-      await ctx.order.createMany({ data: orders });
-
       for (const order of bag.orders.values()) {
         if (order.box) {
           const box = await ctx.box.findFirst({
@@ -294,6 +288,12 @@ export class PrismaBagsRepository implements BagsRepository {
           data: { amount: { decrement: order.amount } },
         });
       }
+
+      const orders = Array.from(bag.orders.values()).map(
+        PrismaOrderMapper.toPrisma
+      );
+
+      await ctx.order.createMany({ data: orders });
     });
   }
 }
