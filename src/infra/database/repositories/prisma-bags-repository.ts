@@ -229,11 +229,6 @@ export class PrismaBagsRepository implements BagsRepository {
       await ctx.order.createMany({ data: orders });
 
       for (const order of bag.orders.values()) {
-        await ctx.offer.update({
-          where: { id: order.offer_id.value },
-          data: { amount: { decrement: order.amount } },
-        });
-
         if (order.box) {
           const box = await ctx.box.findFirst({
             where: { id: order.box_id.value },
@@ -282,15 +277,6 @@ export class PrismaBagsRepository implements BagsRepository {
       await ctx.order.createMany({ data: orders });
 
       for (const order of bag.orders.values()) {
-        await ctx.order.create({
-          data: PrismaOrderMapper.toPrisma(order),
-        });
-
-        await ctx.offer.update({
-          where: { id: order.offer_id.value },
-          data: { amount: { decrement: order.amount } },
-        });
-
         if (order.box) {
           const box = await ctx.box.findFirst({
             where: { id: order.box_id.value },
