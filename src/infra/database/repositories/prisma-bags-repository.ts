@@ -206,8 +206,6 @@ export class PrismaBagsRepository implements BagsRepository {
 
   async create(bag: Bag): Promise<void> {
     await prisma.$transaction(async (ctx) => {
-      const data = PrismaBagMapper.toPrisma(bag);
-
       if (bag.address) {
         const address = await ctx.address.findFirst({
           where: { id: bag.address.id.value },
@@ -220,6 +218,8 @@ export class PrismaBagsRepository implements BagsRepository {
         }
       }
 
+      const data = PrismaBagMapper.toPrisma(bag);
+
       await ctx.bag.create({ data });
 
       const orders = Array.from(bag.orders.values()).map(
@@ -229,10 +229,6 @@ export class PrismaBagsRepository implements BagsRepository {
       await ctx.order.createMany({ data: orders });
 
       for (const order of bag.orders.values()) {
-        await ctx.order.create({
-          data: PrismaOrderMapper.toPrisma(order),
-        });
-
         await ctx.offer.update({
           where: { id: order.offer_id.value },
           data: { amount: { decrement: order.amount } },
@@ -260,10 +256,30 @@ export class PrismaBagsRepository implements BagsRepository {
 
   async update(bag: Bag): Promise<void> {
     await prisma.$transaction(async (ctx) => {
-      await prisma.bag.update({
+      if (bag.address) {
+        const address = await ctx.address.findFirst({
+          where: { id: bag.address.id.value },
+        });
+
+        if (!address) {
+          await ctx.address.create({
+            data: PrismaAddressMapper.toPrisma(bag.address),
+          });
+        }
+      }
+
+      const data = PrismaBagMapper.toPrisma(bag);
+
+      await ctx.bag.update({
         where: { id: bag.id.value },
-        data: PrismaBagMapper.toPrisma(bag),
+        data,
       });
+
+      const orders = Array.from(bag.orders.values()).map(
+        PrismaOrderMapper.toPrisma
+      );
+
+      await ctx.order.createMany({ data: orders });
 
       for (const order of bag.orders.values()) {
         await ctx.order.create({
