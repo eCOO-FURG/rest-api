@@ -30,6 +30,7 @@ export class PrismaBoxesRepository implements BoxesRepository {
           id: catalog?.id,
           cycle: { id: catalog?.cycle?.id },
           farm: {
+            id: catalog?.farm?.id,
             name: { contains: catalog?.farm?.name, mode: "insensitive" },
           },
         },
@@ -42,7 +43,7 @@ export class PrismaBoxesRepository implements BoxesRepository {
         ...(type === "merge" && {
           orders: {
             include: { offer: { include: { product: true } } },
-            orderBy: { created_at: "asc" },
+            orderBy: { offer: { product: { name: "asc" } } },
             ...(orders?.page && {
               skip: (orders.page - 1) * 20,
               take: 20,
