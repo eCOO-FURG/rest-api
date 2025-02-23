@@ -24,6 +24,7 @@ model User {
   phone       String    @unique
   password    String?
   photo       String?
+  chat        String?   @unique
   roles       ROLE[]    @default([USER])
   verified_at DateTime?
 
