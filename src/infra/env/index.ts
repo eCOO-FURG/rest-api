@@ -21,6 +21,7 @@ const deploy = z.object({
   PIX_PROVIDER_API_KEY: z.string().min(1),
   INTEGRATIONS_AUTHORIZATION: z.string().min(1),
   STORAGE_URL: z.string().min(1),
+  WS_PORT: z.coerce.number().min(1),
 });
 
 const development = deploy.omit({

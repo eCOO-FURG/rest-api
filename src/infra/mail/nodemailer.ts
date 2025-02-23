@@ -12,7 +12,7 @@ import { Transporter } from "nodemailer";
 import { env } from "@/infra/env";
 
 // Loggs
-import { Logger } from "@/infra/logs/sentry";
+import { Logger } from "@/infra/logs/logger";
 
 export class Nodemailer implements Mailer {
   constructor(

@@ -12,6 +12,7 @@ import { OpenPix } from "@/infra/payment/open-pix";
 import { RedisCacheManager } from "@/infra/cache/redis-cache-manager";
 import { Cloudinary } from "@/infra/storage/cloudinary";
 import { ExcelService } from "@/infra/report/spreadsheet/excel";
+import { Telegram } from "@/infra/message/telegram";
 
 // Mocks
 import { MockedPixProvider } from "@/test/payment/mocked-pix-provider";
@@ -66,5 +67,8 @@ export default (container: AwilixContainer) => {
       return new MockedStorage();
     }).singleton(),
     spreadsheetService: asClass(ExcelService).singleton(),
+    chat: asClass(Telegram).singleton(),
   });
+
+  container.resolve("chat");
 };

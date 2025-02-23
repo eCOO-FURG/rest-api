@@ -5,7 +5,7 @@ import { Entity, EntityRequest } from "@/core/entities/entity";
 import { File } from "@/core/types/file";
 import { Optional } from "@/core/types/optional";
 
-interface MessageProps extends EntityRequest {
+export interface MessageProps extends EntityRequest {
   to: string;
   subject: string;
   content: string;
