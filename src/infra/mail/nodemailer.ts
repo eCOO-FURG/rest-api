@@ -22,7 +22,7 @@ export class Nodemailer implements Mailer {
 
   async send(messages: Message[]): Promise<void> {
     const promises = messages.map(async (message) => {
-      const files = message.files?.map((file) => ({
+      const files = message.files.map((file) => ({
         filename: file.name,
         content: file.content,
         contentType: file.mimetype,
