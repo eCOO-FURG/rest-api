@@ -14,7 +14,7 @@ interface SendNotificationUseCaseRequest {
   role: "USER" | "PRODUCER";
   title: string;
   message: string;
-  files: File[];
+  files?: File[];
 }
 
 export class SendNotificationUseCase {
