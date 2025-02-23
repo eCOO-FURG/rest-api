@@ -12,7 +12,7 @@ import { DomainEvents } from "@/core/events/domain-events";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Entities
-import { Email } from "@/core/entities/email";
+import { Message } from "@/core/entities/message";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 interface OnUpdatePasswordRequestEventRequest {
@@ -49,12 +49,12 @@ export class OnUpdatePasswordRequestEvent {
       props: { token, first_name: user.first_name },
     });
 
-    const mail = Email.create({
+    const message = Message.create({
       to: user.email,
       subject: "Atualização de senha | eCOO",
       content: view,
     });
 
-    await this.mailer.send([mail]);
+    await this.mailer.send([message]);
   }
 }

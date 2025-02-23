@@ -1,6 +1,6 @@
 // Services
 import { Mailer } from "@/core/mail/mailer";
-import { Email } from "@/core/entities/email";
+import { Message } from "@/core/entities/message";
 
 // Events
 import { DomainEvents } from "@/core/events/domain-events";
@@ -15,7 +15,7 @@ import { env } from "@/infra/env";
 
 interface OnRequestHelpEventRequest {
   id: UUID;
-  message: string;
+  content: string;
 }
 
 export class OnRequestHelpEvent {
@@ -30,7 +30,7 @@ export class OnRequestHelpEvent {
     DomainEvents.register(OnRequestHelpEvent.name, this.execute.bind(this));
   }
 
-  async execute({ id, message }: OnRequestHelpEventRequest) {
+  async execute({ id, content }: OnRequestHelpEventRequest) {
     const farm = await this.farmsRepository.find("aggregate", {
       admin: { id: id.value },
     });
@@ -39,15 +39,15 @@ export class OnRequestHelpEvent {
 
     const view = await this.mailer.load({
       view: "help",
-      props: { message, farm },
+      props: { text: content, farm },
     });
 
-    const email = Email.create({
+    const message = Message.create({
       to: env.ECOO_EMAIL,
       subject: "Solicitação de ajuda | eCOO",
       content: view,
     });
 
-    await this.mailer.send([email]);
+    await this.mailer.send([message]);
   }
 }

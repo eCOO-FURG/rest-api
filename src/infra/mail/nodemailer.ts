@@ -1,5 +1,5 @@
 // Entities
-import { Email } from "@/core/entities/email";
+import { Message } from "@/core/entities/message";
 
 // Services
 import { Mailer, MailerLoadRequest } from "@/core/mail/mailer";
@@ -20,9 +20,9 @@ export class Nodemailer implements Mailer {
     private fallback?: Transporter
   ) {}
 
-  async send(emails: Email[]): Promise<void> {
-    const promises = emails.map(async (email) => {
-      const files = email.files?.map((file) => ({
+  async send(messages: Message[]): Promise<void> {
+    const promises = messages.map(async (message) => {
+      const files = message.files?.map((file) => ({
         filename: file.name,
         content: file.content,
         contentType: file.mimetype,
@@ -30,9 +30,9 @@ export class Nodemailer implements Mailer {
 
       try {
         await this.transporter.sendMail({
-          to: email.to,
-          subject: email.subject,
-          html: email.content,
+          to: message.to,
+          subject: message.subject,
+          html: message.content,
           attachments: files,
         });
       } catch (error) {
@@ -40,9 +40,9 @@ export class Nodemailer implements Mailer {
         if (this.fallback) {
           try {
             await this.fallback.sendMail({
-              to: email.to,
-              subject: email.subject,
-              html: email.content,
+              to: message.to,
+              subject: message.subject,
+              html: message.content,
               attachments: files,
             });
           } catch (error) {

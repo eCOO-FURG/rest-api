@@ -3,15 +3,16 @@ import { Entity, EntityRequest } from "@/core/entities/entity";
 
 // Types
 import { File } from "@/core/types/file";
+import { Optional } from "@/core/types/optional";
 
-interface EmailProps extends EntityRequest {
+interface MessageProps extends EntityRequest {
   to: string;
   subject: string;
   content: string;
-  files?: File[];
+  files: File[];
 }
 
-export class Email extends Entity<EmailProps> {
+export class Message extends Entity<MessageProps> {
   get to() {
     return this.props.to;
   }
@@ -28,8 +29,11 @@ export class Email extends Entity<EmailProps> {
     return this.props.files;
   }
 
-  static create(props: EmailProps) {
-    const email = new Email(props);
-    return email;
+  static create(props: Optional<MessageProps, "files">) {
+    const message = new Message({
+      ...props,
+      files: props.files ?? [],
+    });
+    return message;
   }
 }

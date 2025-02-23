@@ -1,6 +1,6 @@
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
-import { Email } from "@/core/entities/email";
+import { Message } from "@/core/entities/message";
 
 // Services
 import { Mailer } from "@/core/mail/mailer";
@@ -32,12 +32,12 @@ export class OnRegisteredEvent {
       props: { first_name, token },
     });
 
-    const email = Email.create({
+    const message = Message.create({
       to: address,
       subject: "Bem-vindo | eCOO",
       content: view,
     });
 
-    await this.mailer.send([email]);
+    await this.mailer.send([message]);
   }
 }
