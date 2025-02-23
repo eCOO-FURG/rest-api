@@ -23,6 +23,7 @@ export const updateUserSchema = {
       cpf: z.string().min(11).max(14).optional(),
       phone: z.string().optional(),
       password: z.string().min(8).optional(),
+      chat: z.string().optional(),
       photo: z.custom<Express.Multer.File>().optional(),
     })
     .refine(notEmpty.validation, notEmpty.warning),
@@ -34,7 +35,7 @@ export async function updateUserController(
   next: NextFunction
 ) {
   try {
-    const { first_name, last_name, email, cpf, phone, password, photo } =
+    const { first_name, last_name, email, cpf, phone, password, photo, chat } =
       updateUserSchema.body.parse(request.body);
 
     const updateUserUsecase =
@@ -48,6 +49,7 @@ export async function updateUserController(
       email,
       password,
       phone,
+      chat,
       photo: toFile(photo),
     });
 
