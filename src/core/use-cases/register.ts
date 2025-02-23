@@ -24,7 +24,7 @@ interface RegisterUseCaseRequest {
   cpf: string;
   phone: string;
   password?: string;
-  chat?: string | null;
+  chat?: string;
   role: "USER" | "PRODUCER";
 }
 
@@ -32,7 +32,7 @@ export class RegisterUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private encrypter: Encrypter
-  ) { }
+  ) {}
 
   async execute({
     first_name,
@@ -69,7 +69,6 @@ export class RegisterUseCase {
       });
 
       if (userWithSameChat) throw new ResourceAlreadyExistsError("Chat", chat);
-
     }
 
     const roles: Role[] = role === "PRODUCER" ? ["USER", "PRODUCER"] : ["USER"];
@@ -77,11 +76,11 @@ export class RegisterUseCase {
     const user = User.create({
       first_name,
       last_name,
-      cpf: new CPF(cpf),
       email,
-      phone: new Phone(phone),
-      chat: chat ?? null,
+      chat,
       roles,
+      phone: new Phone(phone),
+      cpf: new CPF(cpf),
     });
 
     if (password) user.password = await this.encrypter.encrypt(password);

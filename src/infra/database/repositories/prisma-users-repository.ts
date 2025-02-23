@@ -22,7 +22,14 @@ export class PrismaUsersRepository implements UsersRepository {
     { id, email, cpf, phone, chat, role }: UsersRepositorySearchRequest
   ): Promise<User | null> {
     const user = await prisma.user.findFirst({
-      where: { id, email, cpf, phone, chat, ...(role && { roles: { has: role } })},
+      where: {
+        id,
+        email,
+        cpf,
+        phone,
+        chat,
+        ...(role && { roles: { has: role } }),
+      },
     });
 
     if (!user) return null;
@@ -32,11 +39,11 @@ export class PrismaUsersRepository implements UsersRepository {
 
   async list(
     _: RepositoryResponse,
-    { id, email, cpf, phone, role }: UsersRepositorySearchRequest,
+    { id, email, cpf, phone, chat, role }: UsersRepositorySearchRequest,
     page?: number
   ): Promise<User[]> {
     const users = await prisma.user.findMany({
-      where: { id, email, cpf, phone, roles: { has: role } },
+      where: { id, email, cpf, phone, chat, roles: { has: role } },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 

@@ -49,8 +49,8 @@ export async function updateUserController(
       email,
       password,
       phone,
+      chat,
       photo: toFile(photo),
-      chat
     });
 
     return response.sendStatus(204);

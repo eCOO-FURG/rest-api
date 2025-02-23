@@ -127,14 +127,14 @@ export class User extends Entity<UserProps> {
   }
 
   static create(
-    props: Optional<UserProps, "password" | "verified_at" | "photo">
+    props: Optional<UserProps, "password" | "verified_at" | "photo" | "chat">
   ) {
     const user = new User({
       ...props,
       password: props.password ?? null,
       verified_at: props.verified_at ?? null,
       photo: props.photo ?? null,
-      chat: props.chat ?? null
+      chat: props.chat ?? null,
     });
 
     const fresh = !props.id;
