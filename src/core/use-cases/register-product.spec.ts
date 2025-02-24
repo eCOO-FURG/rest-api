@@ -44,6 +44,7 @@ describe("register product", () => {
       name: "Produto show",
       image: makeFile(),
       pricing: "UNIT",
+      perishable: true,
       category_id: category.id.value,
     });
 
@@ -52,6 +53,7 @@ describe("register product", () => {
     expect(product.name).toEqual("Produto show");
     expect(product.pricing).toEqual("UNIT");
     expect(product.archived).toBeFalsy();
+    expect(product.perishable).toEqual(true)
   });
 
   it("should find a product by name and pricing", async () => {
@@ -88,6 +90,7 @@ describe("register product", () => {
         name: "Produto novo",
         image: makeFile(),
         pricing: "UNIT",
+        perishable: true,
         category_id: category.id.value,
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
@@ -110,6 +113,7 @@ describe("register product", () => {
       name: "Produto arquivado",
       image: makeFile(),
       pricing: "UNIT",
+      perishable: false,
       category_id: category.id.value,
     });
 
@@ -130,6 +134,7 @@ describe("register product", () => {
       name: "Produto",
       image: makeFile(),
       pricing: "UNIT",
+      perishable: false,
       category_id: category.id.value,
     });
 

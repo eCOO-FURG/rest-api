@@ -69,6 +69,9 @@ export async function seedDevelopment() {
                     ? Math.floor(Math.random() * 20 + 1)
                     : Math.floor(Math.random() * 20 + 1) * 100,
                 price: "10",
+                expires_at: product.perishable
+                  ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+                  : null,
               })),
             },
           },
@@ -76,7 +79,7 @@ export async function seedDevelopment() {
       },
     },
   });
-
+  
   const offers = await prisma.offer.findMany({ include: { product: true } });
 
   const price = offers.reduce((acc, offer) => {

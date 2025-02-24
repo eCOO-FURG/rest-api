@@ -11,11 +11,12 @@ import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { CatalogsRepository } from "@/core//repositories/catalogs-repository";
 
 // Errors
-import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
+import { MissingFieldError } from "@/core/errors/missing-field";
 
 // Utils
 import { mostPast } from "@/core/utils/most-past";
@@ -27,6 +28,7 @@ interface CreateOfferUseCaseRequest {
   amount: number;
   price: number;
   description?: string;
+  expires_at?: Date;
 }
 
 export class CreateOfferUseCase {
@@ -44,6 +46,7 @@ export class CreateOfferUseCase {
     amount,
     price,
     description,
+    expires_at,
   }: CreateOfferUseCaseRequest) {
     const farm = await this.farmsRepository.find("basic", { id: farm_id });
 
@@ -56,6 +59,9 @@ export class CreateOfferUseCase {
     });
 
     if (!product) throw new ResourceNotFoundError("Produto", product_id);
+
+    if (product.perishable && !expires_at)
+      throw new MissingFieldError("expires_at");
 
     const cycle = await this.cyclesRepository.find("basic", { id: cycle_id });
 
@@ -84,8 +90,9 @@ export class CreateOfferUseCase {
       catalog_id: catalog.id,
       product_id: product.id,
       amount,
-      description,
       price: price + (price * farm.tax) / 100,
+      description,
+      expires_at,
     });
 
     catalog.offers.set(product_id, offer);

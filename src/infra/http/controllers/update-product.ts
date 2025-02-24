@@ -24,6 +24,7 @@ export const updateProductSchema = {
       image: z.custom<Express.Multer.File>().optional(),
       pricing: z.enum(["UNIT", "WEIGHT"]).optional(),
       category_id: z.string().uuid().optional(),
+      perishable: z.boolean().optional(),
       archived: z
         .union([
           z.boolean(),
@@ -42,7 +43,7 @@ export async function updateProductController(
   try {
     const { product_id } = updateProductSchema.params.parse(request.params);
 
-    const { name, pricing, archived, image, category_id } =
+    const { name, pricing, archived, image, category_id, perishable } =
       updateProductSchema.body.parse(request.body);
 
     const updateProductUseCase = container.resolve<UpdateProductUseCase>(
@@ -55,6 +56,7 @@ export async function updateProductController(
       pricing,
       category_id,
       archived,
+      perishable,
       image: toFile(image),
     });
 

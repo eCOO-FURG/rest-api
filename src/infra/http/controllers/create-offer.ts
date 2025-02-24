@@ -10,6 +10,8 @@ import container from "@/infra/container";
 
 // Validation
 import { notEmpty } from "@/infra/http/validation/not-empty";
+import { toDate } from "@/infra/utils/to-date";
+import { notPast } from "@/infra/http/validation/not-past";
 
 export const createOfferSchema = {
   body: z
@@ -19,6 +21,11 @@ export const createOfferSchema = {
       amount: z.coerce.number(),
       price: z.coerce.number(),
       description: z.string().optional(),
+      expires_at: z
+        .string()
+        .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
+        .optional()
+        .refine(notPast.validation, notPast.warning),
     })
     .refine(notEmpty.validation, notEmpty.warning),
 };
@@ -29,7 +36,7 @@ export async function createOfferController(
   next: NextFunction
 ) {
   try {
-    const { product_id, cycle_id, amount, price, description } =
+    const { product_id, cycle_id, amount, price, description, expires_at } =
       createOfferSchema.body.parse(request.body);
 
     const createOfferUseCase =
@@ -42,6 +49,7 @@ export async function createOfferController(
       amount,
       price,
       description,
+      expires_at: toDate(expires_at),
     });
 
     return response.sendStatus(201);

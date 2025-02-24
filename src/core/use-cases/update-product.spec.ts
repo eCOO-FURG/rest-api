@@ -51,6 +51,7 @@ describe("Update Product UseCase", () => {
       pricing: "UNIT",
       category_id: category.id.value,
       archived: false,
+      perishable: true,
     });
 
     expect(product).toBeDefined();
@@ -59,6 +60,7 @@ describe("Update Product UseCase", () => {
     expect(product.category_id.value).toBe(category.id.value);
     expect(product.archived).toBe(false);
     expect(product.image).toContain("products");
+    expect(product.perishable).toBe(true);
   });
 
   it("should throw an error if the product does not exist", async () => {
@@ -108,6 +110,7 @@ describe("Update Product UseCase", () => {
     expect(product).toBeDefined();
     expect(product.name).toBe("Novo nome teste");
     expect(product.pricing).toBe("UNIT");
+    expect(product.image).toBe(product.image);
     expect(product.archived).toBe(true);
   });
 });

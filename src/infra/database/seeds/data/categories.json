@@ -5,312 +5,374 @@
       {
         "name": "Abóbora Cabotiá",
         "pricing": "WEIGHT",
-        "image": "abobora_cabotia.jpg"
+        "image": "abobora_cabotia.jpg",
+        "perishable": true
       },
       {
         "name": "Abóbora Cabotiá",
         "pricing": "UNIT",
-        "image": "abobora_cabotia.jpg"
+        "image": "abobora_cabotia.jpg",
+        "perishable": true
       },
       {
         "name": "Abóbora Moranga",
         "pricing": "WEIGHT",
-        "image": "abobora_moranga.jpg"
+        "image": "abobora_moranga.jpg",
+        "perishable": true
       },
       {
         "name": "Abóbora Moranga",
         "pricing": "UNIT",
-        "image": "abobora_moranga.jpg"
+        "image": "abobora_moranga.jpg",
+        "perishable": true
       },
       {
         "name": "Abóbora Paulista",
         "pricing": "WEIGHT",
-        "image": "abobora_paulista.jpg"
+        "image": "abobora_paulista.jpg",
+        "perishable": true
       },
       {
         "name": "Abóbora Paulista",
         "pricing": "UNIT",
-        "image": "abobora_paulista.jpg"
+        "image": "abobora_paulista.jpg",
+        "perishable": true
       },
       {
         "name": "Abobrinha Brasileira",
         "pricing": "WEIGHT",
-        "image": "abobrinha_brasileira.jpg"
+        "image": "abobrinha_brasileira.jpg",
+        "perishable": true
       },
       {
         "name": "Abobrinha Brasileira",
         "pricing": "UNIT",
-        "image": "abobrinha_brasileira.jpg"
+        "image": "abobrinha_brasileira.jpg",
+        "perishable": true
       },
       {
         "name": "Abobrinha Italiana",
         "pricing": "WEIGHT",
-        "image": "abobrinha_italiana.jpg"
+        "image": "abobrinha_italiana.jpg",
+        "perishable": true
       },
       {
         "name": "Abobrinha Italiana",
         "pricing": "UNIT",
-        "image": "abobrinha_italiana.jpg"
+        "image": "abobrinha_italiana.jpg",
+        "perishable": true
       },
       {
         "name": "Aipim",
         "pricing": "WEIGHT",
-        "image": "aipim.jpg"
+        "image": "aipim.jpg",
+        "perishable": true
       },
       {
         "name": "Alcachofra",
         "pricing": "UNIT",
-        "image": "alcachofra.jpg"
+        "image": "alcachofra.jpg",
+        "perishable": true
       },
       {
         "name": "Batata Baroa",
         "pricing": "WEIGHT",
-        "image": "batata_baroa.jpg"
+        "image": "batata_baroa.jpg",
+        "perishable": true
       },
       {
         "name": "Batata Branca",
         "pricing": "WEIGHT",
-        "image": "batata_branca.jpg"
+        "image": "batata_branca.jpg",
+        "perishable": true
       },
       {
         "name": "Batata Doce Abóbora",
         "pricing": "WEIGHT",
-        "image": "batata_doce_abobora.jpg"
+        "image": "batata_doce_abobora.jpg",
+        "perishable": true
       },
       {
         "name": "Batata Doce Amarela",
         "pricing": "WEIGHT",
-        "image": "batata_doce_amarela.jpg"
+        "image": "batata_doce_amarela.jpg",
+        "perishable": true
       },
       {
         "name": "Batata Doce Branca",
         "pricing": "WEIGHT",
-        "image": "batata_doce_branca.jpg"
+        "image": "batata_doce_branca.jpg",
+        "perishable": true
       },
       {
         "name": "Batata Doce Rosada",
         "pricing": "WEIGHT",
-        "image": "batata_doce_rosada.jpg"
+        "image": "batata_doce_rosada.jpg",
+        "perishable": true
       },
       {
         "name": "Batata Rosa",
         "pricing": "WEIGHT",
-        "image": "batata_rosa.jpg"
+        "image": "batata_rosa.jpg",
+        "perishable": true
       },
       {
         "name": "Berinjela Comum",
         "pricing": "WEIGHT",
-        "image": "berinjela_comum.jpg"
+        "image": "berinjela_comum.jpg",
+        "perishable": true
       },
       {
         "name": "Berinjela Comum",
         "pricing": "UNIT",
-        "image": "berinjela_comum.jpg"
+        "image": "berinjela_comum.jpg",
+        "perishable": true
       },
       {
         "name": "Berinjela Japonesa",
         "pricing": "WEIGHT",
-        "image": "berinjela_japonesa.jpg"
+        "image": "berinjela_japonesa.jpg",
+        "perishable": true
       },
       {
         "name": "Berinjela Japonesa",
         "pricing": "UNIT",
-        "image": "berinjela_japonesa.jpg"
+        "image": "berinjela_japonesa.jpg",
+        "perishable": true
       },
       {
         "name": "Beterraba",
         "pricing": "WEIGHT",
-        "image": "beterraba.jpg"
+        "image": "beterraba.jpg",
+        "perishable": true
       },
       {
         "name": "Brócolis",
         "pricing": "WEIGHT",
-        "image": "brocolis.jpg"
+        "image": "brocolis.jpg",
+        "perishable": true
       },
       {
         "name": "Brócolis",
         "pricing": "UNIT",
-        "image": "brocolis.jpg"
+        "image": "brocolis.jpg",
+        "perishable": true
       },
       {
         "name": "Cebola",
         "pricing": "WEIGHT",
-        "image": "cebola.jpg"
+        "image": "cebola.jpg",
+        "perishable": true
       },
       {
         "name": "Cebola Roxa",
         "pricing": "WEIGHT",
-        "image": "cebola_roxa.jpg"
+        "image": "cebola_roxa.jpg",
+        "perishable": true
       },
       {
         "name": "Cebolinha",
         "pricing": "UNIT",
-        "image": "cebolinha.jpg"
+        "image": "cebolinha.jpg",
+        "perishable": true
       },
       {
         "name": "Cenoura",
         "pricing": "WEIGHT",
-        "image": "cenoura.jpg"
+        "image": "cenoura.jpg",
+        "perishable": true
       },
       {
         "name": "Chuchu",
         "pricing": "WEIGHT",
-        "image": "chuchu.jpg"
+        "image": "chuchu.jpg",
+        "perishable": true
       },
       {
         "name": "Couve",
         "pricing": "UNIT",
-        "image": "couve.jpg"
+        "image": "couve.jpg",
+        "perishable": true
       },
       {
         "name": "Couve Bruxelas",
         "pricing": "UNIT",
-        "image": "couve_bruxelas.jpg"
+        "image": "couve_bruxelas.jpg",
+        "perishable": true
       },
       {
         "name": "Couve-Flor",
         "pricing": "UNIT",
-        "image": "couve_flor.jpg"
+        "image": "couve_flor.jpg",
+        "perishable": true
       },
       {
         "name": "Ervilha Comum",
         "pricing": "WEIGHT",
-        "image": "ervilha_comum.jpg"
+        "image": "ervilha_comum.jpg",
+        "perishable": true
       },
       {
         "name": "Ervilha Torta",
         "pricing": "WEIGHT",
-        "image": "ervilha_torta.jpg"
+        "image": "ervilha_torta.jpg",
+        "perishable": true
       },
       {
         "name": "Favas",
         "pricing": "WEIGHT",
-        "image": "fava.jpg"
+        "image": "fava.jpg",
+        "perishable": true
       },
       {
         "name": "Hortelã",
         "pricing": "UNIT",
-        "image": "hortela.jpg"
+        "image": "hortela.jpg",
+        "perishable": true
       },
       {
         "name": "Inhame",
         "pricing": "WEIGHT",
-        "image": "inhame.jpg"
+        "image": "inhame.jpg",
+        "perishable": true
       },
       {
         "name": "Louro",
         "pricing": "UNIT",
-        "image": "louro.jpg"
+        "image": "louro.jpg",
+        "perishable": true
       },
       {
         "name": "Mostarda",
         "pricing": "UNIT",
-        "image": "mostarda.jpg"
+        "image": "mostarda.jpg",
+        "perishable": true
       },
       {
         "name": "Nabo",
         "pricing": "UNIT",
-        "image": "nabo.jpg"
+        "image": "nabo.jpg",
+        "perishable": true
       },
       {
         "name": "Palmito",
         "pricing": "WEIGHT",
-        "image": "palmito.jpg"
+        "image": "palmito.jpg",
+        "perishable": true
       },
       {
         "name": "Pepino",
         "pricing": "WEIGHT",
-        "image": "pepino.jpg"
+        "image": "pepino.jpg",
+        "perishable": true
       },
       {
         "name": "Pepino",
         "pricing": "UNIT",
-        "image": "pepino.jpg"
+        "image": "pepino.jpg",
+        "perishable": true
       },
       {
         "name": "Pimentão Amarelo",
         "pricing": "WEIGHT",
-        "image": "pimentao_amarelo.jpg"
+        "image": "pimentao_amarelo.jpg",
+        "perishable": true
       },
       {
         "name": "Pimentão Amarelo",
         "pricing": "UNIT",
-        "image": "pimentao_amarelo.jpg"
+        "image": "pimentao_amarelo.jpg",
+        "perishable": true
       },
       {
         "name": "Pimentão Verde",
         "pricing": "WEIGHT",
-        "image": "pimentao_verde.jpg"
+        "image": "pimentao_verde.jpg",
+        "perishable": true
       },
       {
         "name": "Pimentão Verde",
         "pricing": "UNIT",
-        "image": "pimentao_verde.jpg"
+        "image": "pimentao_verde.jpg",
+        "perishable": true
       },
       {
         "name": "Pimentão Vermelho",
         "pricing": "WEIGHT",
-        "image": "pimentao_vermelho.jpg"
+        "image": "pimentao_vermelho.jpg",
+        "perishable": true
       },
       {
         "name": "Pimentão Vermelho",
         "pricing": "UNIT",
-        "image": "pimentao_vermelho.jpg"
+        "image": "pimentao_vermelho.jpg",
+        "perishable": true
       },
       {
         "name": "Quiabo",
         "pricing": "WEIGHT",
-        "image": "quiabo.jpg"
+        "image": "quiabo.jpg",
+        "perishable": true
       },
       {
         "name": "Rabanete",
         "pricing": "WEIGHT",
-        "image": "rabanete.jpg"
+        "image": "rabanete.jpg",
+        "perishable": true
       },
       {
         "name": "Repolho",
         "pricing": "WEIGHT",
-        "image": "repolho.jpg"
+        "image": "repolho.jpg",
+        "perishable": true
       },
       {
         "name": "Repolho",
         "pricing": "UNIT",
-        "image": "repolho.jpg"
+        "image": "repolho.jpg",
+        "perishable": true
       },
       {
         "name": "Rúcula",
         "pricing": "UNIT",
-        "image": "rucula.jpg"
+        "image": "rucula.jpg",
+        "perishable": true
       },
       {
         "name": "Tomate Cereja",
         "pricing": "WEIGHT",
-        "image": "tomate_cereja.jpg"
+        "image": "tomate_cereja.jpg",
+        "perishable": true
       },
       {
         "name": "Tomate Gaúcho",
         "pricing": "WEIGHT",
-        "image": "tomate_gaucho.jpg"
+        "image": "tomate_gaucho.jpg",
+        "perishable": true
       },
       {
         "name": "Tomate Italiano",
         "pricing": "WEIGHT",
-        "image": "tomate_italiano.jpg"
+        "image": "tomate_italiano.jpg",
+        "perishable": true
       },
       {
         "name": "Tomate Longa Vida",
         "pricing": "WEIGHT",
-        "image": "tomate_longa_vida.jpg"
+        "image": "tomate_longa_vida.jpg",
+        "perishable": true
       },
       {
         "name": "Tomate Xepa",
         "pricing": "WEIGHT",
-        "image": "tomate_xepa.jpg"
+        "image": "tomate_xepa.jpg",
+        "perishable": true
       },
       {
         "name": "Vagem",
         "pricing": "WEIGHT",
-        "image": "vagem.jpg"
+        "image": "vagem.jpg",
+        "perishable": true
       }
     ]
   },
@@ -320,82 +382,98 @@
       {
         "name": "Acelga",
         "pricing": "UNIT",
-        "image": "acelga.jpg"
+        "image": "acelga.jpg",
+        "perishable": true
       },
       {
         "name": "Agrião",
         "pricing": "UNIT",
-        "image": "agriao.jpg"
+        "image": "agriao.jpg",
+        "perishable": true
       },
       {
         "name": "Alface Americana",
         "pricing": "UNIT",
-        "image": "alface_americana.jpg"
+        "image": "alface_americana.jpg",
+        "perishable": true
       },
       {
         "name": "Alface Crespa",
         "pricing": "UNIT",
-        "image": "alface_crespa.jpg"
+        "image": "alface_crespa.jpg",
+        "perishable": true
       },
       {
         "name": "Alface Lisa",
         "pricing": "UNIT",
-        "image": "alface_lisa.jpg"
+        "image": "alface_lisa.jpg",
+        "perishable": true
       },
       {
         "name": "Alface Mimosa",
         "pricing": "UNIT",
-        "image": "alface_mimosa.jpg"
+        "image": "alface_mimosa.jpg",
+        "perishable": true
       },
       {
         "name": "Alface Quatro Estações",
         "pricing": "UNIT",
-        "image": "alface_quatro_estacoes.jpg"
+        "image": "alface_quatro_estacoes.jpg",
+        "perishable": true
       },
       {
         "name": "Alface Roxa",
         "pricing": "UNIT",
-        "image": "alface_roxa.jpg"
+        "image": "alface_roxa.jpg",
+        "perishable": true
       },
       {
         "name": "Espinafre",
         "pricing": "UNIT",
-        "image": "espinafre.jpg"
+        "image": "espinafre.jpg",
+        "perishable": true
       },
       {
         "name": "Microverdes",
         "pricing": "UNIT",
-        "image": "microverdes.jpg"
+        "image": "microverdes.jpg",
+        "perishable": true
       },
       {
         "name": "Microverdes Amaranto",
         "pricing": "UNIT",
-        "image": "microverde_amaranto.jpg"
+        "image": "microverde_amaranto.jpg",
+        "perishable": true
       },
       {
         "name": "Microverdes Beterraba",
         "pricing": "UNIT",
-        "image": "microverde_beterraba.jpg"
+        "image": "microverde_beterraba.jpg",
+        "perishable": true
       },
       {
         "name": "Microverdes Couve",
         "pricing": "UNIT",
-        "image": "microverde_couve.jpg"
+        "image": "microverde_couve.jpg",
+        "perishable": true
       },
       {
         "name": "Microverdes Mostarda",
         "pricing": "UNIT",
-        "image": "microverde_mostarda.jpg"
+        "image": "microverde_mostarda.jpg",
+        "perishable": true
       },
       {
         "name": "Microverdes Repolho",
         "pricing": "UNIT",
-        "image": "microverde_repolho.jpg"
+        "image": "microverde_repolho.jpg",
+        "perishable": true
       },
       {
         "name": "Microverdes Rúcula",
         "pricing": "UNIT",
-        "image": "microverde_rucula.jpg"
+        "image": "microverde_rucula.jpg",
+        "perishable": true
       }
     ]
   },
@@ -405,97 +483,116 @@
       {
         "name": "Alecrim",
         "pricing": "UNIT",
-        "image": "alecrim.jpg"
+        "image": "alecrim.jpg",
+        "perishable": true
       },
       {
         "name": "Alho",
         "pricing": "WEIGHT",
-        "image": "alho.jpg"
+        "image": "alho.jpg",
+        "perishable": true
       },
       {
         "name": "Alho",
         "pricing": "UNIT",
-        "image": "alho.jpg"
+        "image": "alho.jpg",
+        "perishable": true
       },
       {
         "name": "Alho Poró",
         "pricing": "UNIT",
-        "image": "alho_poro.jpg"
+        "image": "alho_poro.jpg",
+        "perishable": true
       },
       {
         "name": "Coentro",
         "pricing": "UNIT",
-        "image": "coentro.jpg"
+        "image": "coentro.jpg",
+        "perishable": true
       },
       {
         "name": "Erva-Doce",
         "pricing": "UNIT",
-        "image": "erva_doce.jpg"
+        "image": "erva_doce.jpg",
+        "perishable": true
       },
       {
         "name": "Gengibre",
         "pricing": "WEIGHT",
-        "image": "gengibre.jpg"
+        "image": "gengibre.jpg",
+        "perishable": true
       },
       {
         "name": "Gengibre",
         "pricing": "UNIT",
-        "image": "gengibre.jpg"
+        "image": "gengibre.jpg",
+        "perishable": true
       },
       {
         "name": "Manjericão",
         "pricing": "UNIT",
-        "image": "manjericao.jpg"
+        "image": "manjericao.jpg",
+        "perishable": true
       },
       {
         "name": "Pimenta Cambuci",
         "pricing": "WEIGHT",
-        "image": "pimenta_cambuci.jpg"
+        "image": "pimenta_cambuci.jpg",
+        "perishable": true
       },
       {
         "name": "Pimenta Dedo-de-moça",
         "pricing": "WEIGHT",
-        "image": "pimenta_dedo_de_moca.jpg"
+        "image": "pimenta_dedo_de_moca.jpg",
+        "perishable": true
       },
       {
         "name": "Pimenta Malagueta",
         "pricing": "WEIGHT",
-        "image": "pimenta_malagueta.jpg"
+        "image": "pimenta_malagueta.jpg",
+        "perishable": true
       },
       {
         "name": "Pimenta Vermelha",
         "pricing": "WEIGHT",
-        "image": "pimenta_vermelha.jpg"
+        "image": "pimenta_vermelha.jpg",
+        "perishable": true
       },
       {
         "name": "Salsa",
         "pricing": "UNIT",
-        "image": "salsa.jpg"
+        "image": "salsa.jpg",
+        "perishable": true
       },
       {
         "name": "Salsão",
         "pricing": "UNIT",
-        "image": "salsao.jpg"
+        "image": "salsao.jpg",
+        "perishable": true
       },
       {
         "name": "Semente de Funcho",
         "pricing": "WEIGHT",
-        "image": "semente_de_funcho.jpg"
+        "image": "semente_de_funcho.jpg",
+        "perishable": true
       },
       {
         "name": "Semente de Girassol",
         "pricing": "WEIGHT",
-        "image": "sementes_de_girassol.jpg"
+        "image": "sementes_de_girassol.jpg",
+        "perishable": true
       },
       {
         "name": "Tempero Verde",
         "pricing": "UNIT",
-        "image": "tempero_verde.jpg"
+        "image": "tempero_verde.jpg",
+        "perishable": true
       },
       {
         "name": "Tomilho",
         "pricing": "UNIT",
-        "image": "tomilho.jpg"
+        "image": "tomilho.jpg",
+        "perishable": true
       }
     ]
   },
@@ -505,17 +602,20 @@
       {
         "name": "Cogumelo",
         "pricing": "UNIT",
-        "image": "cogumelo.jpg"
+        "image": "cogumelo.jpg",
+        "perishable": true
       },
       {
         "name": "Cogumelo Paris",
         "pricing": "UNIT",
-        "image": "cogumelo_paris.jpg"
+        "image": "cogumelo_paris.jpg",
+        "perishable": true
       },
       {
         "name": "Cogumelo Portobello",
         "pricing": "UNIT",
-        "image": "cogumelo_portobello.jpg"
+        "image": "cogumelo_portobello.jpg",
+        "perishable": true
       }
     ]
   },
@@ -525,212 +625,230 @@
       {
         "name": "Abacate",
         "pricing": "WEIGHT",
-        "image": "abacate.jpg"
+        "image": "abacate.jpg",
+        "perishable": true
       },
       {
         "name": "Abacaxi",
         "pricing": "WEIGHT",
-        "image": "abacaxi.jpg"
+        "image": "abacaxi.jpg",
+        "perishable": true
       },
       {
         "name": "Acerola",
         "pricing": "WEIGHT",
-        "image": "acerola.jpg"
+        "image": "acerola.jpg",
+        "perishable": true
       },
       {
         "name": "Ameixa",
         "pricing": "WEIGHT",
-        "image": "ameixa.jpg"
+        "image": "ameixa.jpg",
+        "perishable": true
       },
       {
         "name": "Amora",
         "pricing": "WEIGHT",
-        "image": "amora.jpg"
+        "image": "amora.jpg",
+        "perishable": true
       },
       {
         "name": "Araçá",
         "pricing": "WEIGHT",
-        "image": "araca.jpg"
+        "image": "araca.jpg",
+        "perishable": true
       },
       {
         "name": "Banana Caturra",
         "pricing": "WEIGHT",
-        "image": "banana_caturra.jpg"
+        "image": "banana_caturra.jpg",
+        "perishable": true
       },
       {
         "name": "Banana Maçã",
         "pricing": "WEIGHT",
-        "image": "banana_maca.jpg"
+        "image": "banana_maca.jpg",
+        "perishable": true
       },
       {
         "name": "Banana Nanica",
         "pricing": "WEIGHT",
-        "image": "banana_nanica.jpg"
+        "image": "banana_nanica.jpg",
+        "perishable": true
       },
       {
         "name": "Banana Prata",
         "pricing": "WEIGHT",
-        "image": "banana_prata.jpg"
+        "image": "banana_prata.jpg",
+        "perishable": true
       },
       {
         "name": "Bergamota",
         "pricing": "WEIGHT",
-        "image": "bergamota.jpg"
+        "image": "bergamota.jpg",
+        "perishable": true
       },
       {
         "name": "Butiá",
         "pricing": "WEIGHT",
-        "image": "butia.jpg"
+        "image": "butia.jpg",
+        "perishable": true
       },
       {
         "name": "Caqui",
         "pricing": "WEIGHT",
-        "image": "caqui.jpg"
+        "image": "caqui.jpg",
+        "perishable": true
       },
       {
         "name": "Carambola",
         "pricing": "WEIGHT",
-        "image": "carambola.jpg"
+        "image": "carambola.jpg",
+        "perishable": true
       },
       {
         "name": "Cereja",
         "pricing": "WEIGHT",
-        "image": "cereja.jpg"
+        "image": "cereja.jpg",
+        "perishable": true
       },
       {
         "name": "Figo",
         "pricing": "WEIGHT",
-        "image": "figo.jpg"
+        "image": "figo.jpg",
+        "perishable": true
       },
       {
         "name": "Framboesa",
         "pricing": "WEIGHT",
-        "image": "framboesa.jpg"
+        "image": "framboesa.jpg",
+        "perishable": true
       },
       {
         "name": "Goiaba",
         "pricing": "WEIGHT",
-        "image": "goiaba.jpg"
+        "image": "goiaba.jpg",
+        "perishable": true
       },
       {
         "name": "Jabuticaba",
         "pricing": "WEIGHT",
-        "image": "jabuticaba.jpg"
+        "image": "jabuticaba.jpg",
+        "perishable": false
       },
       {
         "name": "Laranja do Céu",
         "pricing": "WEIGHT",
-        "image": "laranja_do_ceu.jpg"
+        "image": "laranja_do_ceu.jpg",
+        "perishable": true
       },
       {
         "name": "Laranja Pera",
         "pricing": "WEIGHT",
-        "image": "laranja_pera.jpg"
+        "image": "laranja_pera.jpg",
+        "perishable": true
       },
       {
         "name": "Laranja Umbigo",
         "pricing": "WEIGHT",
-        "image": "laranja_umbigo.jpg"
+        "image": "laranja_umbigo.jpg",
+        "perishable": true
       },
       {
         "name": "Limão Bergamota",
         "pricing": "WEIGHT",
-        "image": "limao_bergamota.jpg"
+        "image": "limao_bergamota.jpg",
+        "perishable": true
       },
       {
         "name": "Limão Taiti",
         "pricing": "WEIGHT",
-        "image": "limao_taiti.jpg"
+        "image": "limao_taiti.jpg",
+        "perishable": true
       },
       {
         "name": "Maçã Nacional Fuji",
         "pricing": "WEIGHT",
-        "image": "maca_fuji.jpg"
+        "image": "maca_fuji.jpg",
+        "perishable": true
       },
       {
         "name": "Maçã Nacional Gala",
         "pricing": "WEIGHT",
-        "image": "maca_gala.jpg"
+        "image": "maca_gala.jpg",
+        "perishable": true
       },
       {
         "name": "Mamão Formosa",
         "pricing": "WEIGHT",
-        "image": "mamao_formosa.jpg"
+        "image": "mamao_formosa.jpg",
+        "perishable": true
       },
       {
         "name": "Mamão Formosa",
         "pricing": "UNIT",
-        "image": "mamao_formosa.jpg"
+        "image": "mamao_formosa.jpg",
+        "perishable": true
       },
       {
         "name": "Mamão Papaya",
         "pricing": "WEIGHT",
-        "image": "mamao_papaya.jpg"
+        "image": "mamao_papaya.jpg",
+        "perishable": true
       },
       {
         "name": "Mamão Papaya",
         "pricing": "UNIT",
-        "image": "mamao_papaya.jpg"
+        "image": "mamao_papaya.jpg",
+        "perishable": true
       },
       {
         "name": "Manga",
         "pricing": "WEIGHT",
-        "image": "manga.jpg"
+        "image": "manga.jpg",
+        "perishable": true
       },
       {
         "name": "Maracujá Azedo",
         "pricing": "WEIGHT",
-        "image": "maracuja_azedo.jpg"
+        "image": "maracuja_azedo.jpg",
+        "perishable": true
       },
       {
         "name": "Maracujá Doce",
         "pricing": "WEIGHT",
-        "image": "maracuja_doce.jpg"
+        "image": "maracuja_doce.jpg",
+        "perishable": true
       },
       {
         "name": "Melancia",
         "pricing": "WEIGHT",
-        "image": "melancia.jpg"
+        "image": "melancia.jpg",
+        "perishable": true
       },
       {
         "name": "Melancia",
         "pricing": "UNIT",
-        "image": "melancia.jpg"
-      },
-      {
-        "name": "Melão Amarelo",
-        "pricing": "WEIGHT",
-        "image": "melao_amarelo.jpg"
-      },
-      {
-        "name": "Melão Amarelo",
-        "pricing": "UNIT",
-        "image": "melao_amarelo.jpg"
-      },
-      {
-        "name": "Melão Casca de Carvalho",
-        "pricing": "WEIGHT",
-        "image": "melao_casca_de_carvalho.jpg"
-      },
-      {
-        "name": "Melão Casca de Carvalho",
-        "pricing": "UNIT",
-        "image": "melao_casca_de_carvalho.jpg"
+        "image": "melancia.jpg",
+        "perishable": true
       },
       {
         "name": "Morango",
         "pricing": "WEIGHT",
-        "image": "morango.jpg"
+        "image": "morango.jpg",
+        "perishable": true
       },
       {
         "name": "Pera",
         "pricing": "WEIGHT",
-        "image": "pera.jpg"
+        "image": "pera.jpg",
+        "perishable": true
       },
       {
         "name": "Uva",
         "pricing": "WEIGHT",
-        "image": "uva.jpg"
+        "image": "uva.jpg",
+        "perishable": true
       }
     ]
   },
@@ -740,102 +858,122 @@
       {
         "name": "Amendoim",
         "pricing": "WEIGHT",
-        "image": "amendoim.jpg"
+        "image": "amendoim.jpg",
+        "perishable": false
       },
       {
         "name": "Arroz Branco",
         "pricing": "WEIGHT",
-        "image": "arroz_branco.jpg"
+        "image": "arroz_branco.jpg",
+        "perishable": false
       },
       {
         "name": "Arroz Cateto",
         "pricing": "WEIGHT",
-        "image": "arroz_cateto.jpg"
+        "image": "arroz_cateto.jpg",
+        "perishable": false
       },
       {
         "name": "Arroz Integral",
         "pricing": "WEIGHT",
-        "image": "arroz_integral.jpg"
+        "image": "arroz_integral.jpg",
+        "perishable": false
       },
       {
         "name": "Arroz Parboilizado",
         "pricing": "WEIGHT",
-        "image": "arroz_parboilizado.jpg"
+        "image": "arroz_parboilizado.jpg",
+        "perishable": false
       },
       {
         "name": "Arroz Polido",
         "pricing": "WEIGHT",
-        "image": "arroz_polido.jpg"
+        "image": "arroz_polido.jpg",
+        "perishable": false
       },
       {
         "name": "Chia",
         "pricing": "WEIGHT",
-        "image": "chia.jpg"
+        "image": "chia.jpg",
+        "perishable": true
       },
       {
         "name": "Feijão Azuki",
         "pricing": "WEIGHT",
-        "image": "feijao_azuki.jpg"
+        "image": "feijao_azuki.jpg",
+        "perishable": false
       },
       {
         "name": "Feijão Branco",
         "pricing": "WEIGHT",
-        "image": "feijao_azuki.jpg"
+        "image": "feijao_azuki.jpg",
+        "perishable": false
       },
       {
         "name": "Feijão Carioca",
         "pricing": "WEIGHT",
-        "image": "feijao_carioca.jpg"
+        "image": "feijao_carioca.jpg",
+        "perishable": false
       },
       {
         "name": "Feijão Fradinho",
         "pricing": "WEIGHT",
-        "image": "feijao_fradinho.jpg"
+        "image": "feijao_fradinho.jpg",
+        "perishable": false
       },
       {
         "name": "Feijão Preto",
         "pricing": "WEIGHT",
-        "image": "feijao_preto.jpg"
+        "image": "feijao_preto.jpg",
+        "perishable": false
       },
       {
         "name": "Feijão Vermelho",
         "pricing": "WEIGHT",
-        "image": "feijao_vermelho.jpg"
+        "image": "feijao_vermelho.jpg",
+        "perishable": false
       },
       {
         "name": "Flocos de Aveia Fino",
         "pricing": "WEIGHT",
-        "image": "flocos_de_aveia_fino.jpg"
+        "image": "flocos_de_aveia_fino.jpg",
+        "perishable": false
       },
       {
         "name": "Flocos de Aveia Grosso",
         "pricing": "WEIGHT",
-        "image": "flocos_de_aveia_grosso.jpg"
+        "image": "flocos_de_aveia_grosso.jpg",
+        "perishable": false
       },
       {
         "name": "Grão de Bico",
         "pricing": "WEIGHT",
-        "image": "grao_de_bico.jpg"
+        "image": "grao_de_bico.jpg",
+        "perishable": true
       },
       {
         "name": "Lentilha",
         "pricing": "WEIGHT",
-        "image": "lentilha.jpg"
+        "image": "lentilha.jpg",
+        "perishable": false
       },
       {
         "name": "Linhaça Dourada",
         "pricing": "WEIGHT",
-        "image": "linhaca_dourada.jpg"
+        "image": "linhaca_dourada.jpg",
+        "perishable": true
       },
       {
         "name": "Milho",
         "pricing": "WEIGHT",
-        "image": "milho.jpg"
+        "image": "milho.jpg",
+        "perishable": true
       },
       {
         "name": "Soja",
         "pricing": "WEIGHT",
-        "image": "soja.jpg"
+        "image": "soja.jpg",
+        "perishable": false
       }
     ]
   },
@@ -845,142 +983,170 @@
       {
         "name": "Banha",
         "pricing": "WEIGHT",
-        "image": "banha.jpg"
+        "image": "banha.jpg",
+        "perishable": true
       },
       {
         "name": "Leite",
         "pricing": "UNIT",
-        "image": "leite.jpg"
+        "image": "leite.jpg",
+        "perishable": true
       },
       {
         "name": "Mel",
         "pricing": "WEIGHT",
-        "image": "mel.jpg"
+        "image": "mel.jpg",
+        "perishable": false
       },
       {
         "name": "Ovelha",
         "pricing": "WEIGHT",
-        "image": "ovelha.jpg"
+        "image": "ovelha.jpg",
+        "perishable": true
       },
       {
         "name": "Ovo Branco (6 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_branco.jpg"
+        "image": "ovo_branco.jpg",
+        "perishable": true
       },
       {
         "name": "Ovo Branco (12 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_branco.jpg"
+        "image": "ovo_branco.jpg",
+        "perishable": true
       },
       {
         "name": "Ovo Branco (24 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_branco.jpg"
+        "image": "ovo_branco.jpg",
+        "perishable": true
       },
       {
         "name": "Ovo Branco (30 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_branco.jpg"
+        "image": "ovo_branco.jpg",
+        "perishable": true
       },
       {
         "name": "Ovo Colonial (6 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_colonial.jpg"
+        "image": "ovo_colonial.jpg",
+        "perishable": true
       },
       {
         "name": "Ovo Colonial (12 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_colonial.jpg"
+        "image": "ovo_colonial.jpg",
+        "perishable": true
       },
       {
         "name": "Ovo Colonial (24 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_colonial.jpg"
+        "image": "ovo_colonial.jpg",
+        "perishable": true
       },
       {
         "name": "Ovo Colonial (30 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_colonial.jpg"
+        "image": "ovo_colonial.jpg",
+        "perishable": true
       },
       {
         "name": "Ovo de Codorna (6 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_codorna.jpg"
+        "image": "ovo_codorna.jpg",
+        "perishable": true
       },
       {
         "name": "Ovo de Codorna (12 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_codorna.jpg"
+        "image": "ovo_codorna.jpg",
+        "perishable": true
       },
       {
         "name": "Ovo de Codorna (24 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_codorna.jpg"
+        "image": "ovo_codorna.jpg",
+        "perishable": true
       },
       {
         "name": "Ovo de Codorna (30 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_codorna.jpg"
+        "image": "ovo_codorna.jpg",
+        "perishable": true
       },
       {
         "name": "Ovo vermelho (6 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_vermelho.jpg"
+        "image": "ovo_vermelho.jpg",
+        "perishable": true
       },
       {
         "name": "Ovo vermelho (12 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_vermelho.jpg"
+        "image": "ovo_vermelho.jpg",
+        "perishable": true
       },
       {
         "name": "Ovo vermelho (24 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_vermelho.jpg"
+        "image": "ovo_vermelho.jpg",
+        "perishable": true
       },
       {
         "name": "Ovo vermelho (30 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_vermelho.jpg"
+        "image": "ovo_vermelho.jpg",
+        "perishable": true
       },
       {
         "name": "Porco",
         "pricing": "WEIGHT",
-        "image": "porco.jpg"
+        "image": "porco.jpg",
+        "perishable": true
       },
       {
         "name": "Queijo Colonial",
         "pricing": "WEIGHT",
-        "image": "queijo_colonial.jpg"
+        "image": "queijo_colonial.jpg",
+        "perishable": false
       },
       {
         "name": "Queijo Colonial",
         "pricing": "UNIT",
-        "image": "queijo_colonial.jpg"
+        "image": "queijo_colonial.jpg",
+        "perishable": false
       },
       {
         "name": "Queijo Gouda",
         "pricing": "WEIGHT",
-        "image": "queijo_gouda.jpg"
+        "image": "queijo_gouda.jpg",
+        "perishable": false
       },
       {
         "name": "Queijo Gouda",
         "pricing": "UNIT",
-        "image": "queijo_gouda.jpg"
+        "image": "queijo_gouda.jpg",
+        "perishable": false
       },
       {
         "name": "Queijo Mussarela Fatiado",
         "pricing": "WEIGHT",
-        "image": "queijo_mussarela_fatiado.jpg"
+        "image": "queijo_mussarela_fatiado.jpg",
+        "perishable": false
       },
       {
         "name": "Queijo Prato Fatiado",
         "pricing": "WEIGHT",
-        "image": "queijo_prato_fatiado.jpg"
+        "image": "queijo_prato_fatiado.jpg",
+        "perishable": false
       },
       {
         "name": "Ricota",
         "pricing": "WEIGHT",
-        "image": "ricota.jpg"
+        "image": "ricota.jpg",
+        "perishable": true
       }
     ]
   },
@@ -990,167 +1156,200 @@
       {
         "name": "Bala de Banana",
         "pricing": "WEIGHT",
-        "image": "bala_de_banana.jpg"
+        "image": "bala_de_banana.jpg",
+        "perishable": false
       },
       {
         "name": "Bala de Banana",
         "pricing": "UNIT",
-        "image": "bala_de_banana.jpg"
+        "image": "bala_de_banana.jpg",
+        "perishable": false
       },
       {
         "name": "Barra de Banana",
         "pricing": "WEIGHT",
-        "image": "barra_de_banana.jpg"
+        "image": "barra_de_banana.jpg",
+        "perishable": false
       },
       {
         "name": "Barra de Banana",
         "pricing": "UNIT",
-        "image": "barra_de_banana.jpg"
+        "image": "barra_de_banana.jpg",
+        "perishable": false
       },
       {
         "name": "Café Torrado e Moido",
         "pricing": "WEIGHT",
-        "image": "cafe_torrado_e_moido.jpg"
+        "image": "cafe_torrado_e_moido.jpg",
+        "perishable": false
       },
       {
         "name": "Café Torrado e Moido",
         "pricing": "UNIT",
-        "image": "cafe_torrado_e_moido.jpg"
+        "image": "cafe_torrado_e_moido.jpg",
+        "perishable": false
       },
       {
         "name": "Cookies",
         "pricing": "WEIGHT",
-        "image": "cookies.jpg"
+        "image": "cookies.jpg",
+        "perishable": false
       },
       {
         "name": "Cookies",
         "pricing": "UNIT",
-        "image": "cookies.jpg"
+        "image": "cookies.jpg",
+        "perishable": false
       },
       {
         "name": "Extrato de Tomate",
         "pricing": "WEIGHT",
-        "image": "extrato_de_tomate.jpg"
+        "image": "extrato_de_tomate.jpg",
+        "perishable": false
       },
       {
         "name": "Extrato de Tomate",
         "pricing": "UNIT",
-        "image": "extrato_de_tomate.jpg"
+        "image": "extrato_de_tomate.jpg",
+        "perishable": false
       },
       {
         "name": "Geleia de Abacaxi com Gengibre",
         "pricing": "UNIT",
-        "image": "geleia_abacaxi_com_gengibre.jpg"
+        "image": "geleia_abacaxi_com_gengibre.jpg",
+        "perishable": false
       },
       {
         "name": "Geleia de Abacaxi com Pimenta",
         "pricing": "UNIT",
-        "image": "geleia_abacaxi_com_pimenta.jpg"
+        "image": "geleia_abacaxi_com_pimenta.jpg",
+        "perishable": false
       },
       {
         "name": "Geleia de Banana com Rum",
         "pricing": "UNIT",
-        "image": "geleia_banana_com_rum.jpg"
+        "image": "geleia_banana_com_rum.jpg",
+        "perishable": false
       },
       {
         "name": "Geleia de Laranja com Damasco",
         "pricing": "UNIT",
-        "image": "geleia_laranja_com_damasco.jpg"
+        "image": "geleia_laranja_com_damasco.jpg",
+        "perishable": false
       },
       {
         "name": "Geleia de Laranja com Especiarias",
         "pricing": "UNIT",
-        "image": "geleia_laranja_com_especiarias.jpg"
+        "image": "geleia_laranja_com_especiarias.jpg",
+        "perishable": false
       },
       {
         "name": "Geleia de Maçã com Canela",
         "pricing": "UNIT",
-        "image": "geleia_maca_com_canela.jpg"
+        "image": "geleia_maca_com_canela.jpg",
+        "perishable": false
       },
       {
         "name": "Geleia de Manga com Maracujá",
         "pricing": "UNIT",
-        "image": "geleia_manga_com_maracuja.jpg"
+        "image": "geleia_manga_com_maracuja.jpg",
+        "perishable": false
       },
       {
         "name": "Geleia de Manga com Maracujá e Pimenta",
         "pricing": "UNIT",
-        "image": "geleia_manga_com_maracuja_e_pimenta.jpg"
+        "image": "geleia_manga_com_maracuja_e_pimenta.jpg",
+        "perishable": false
       },
       {
         "name": "Geleia de Morango",
         "pricing": "UNIT",
-        "image": "geleia_morango.jpg"
+        "image": "geleia_morango.jpg",
+        "perishable": false
       },
       {
         "name": "Geleia de Morango com Chia",
         "pricing": "UNIT",
-        "image": "geleia_morango_com_chia.jpg"
+        "image": "geleia_morango_com_chia.jpg",
+        "perishable": false
       },
       {
         "name": "Geleia de Morango com Pimenta",
         "pricing": "UNIT",
-        "image": "geleia_morango_com_pimenta.jpg"
+        "image": "geleia_morango_com_pimenta.jpg",
+        "perishable": false
       },
       {
         "name": "Geleia de Morango com Vinho",
         "pricing": "UNIT",
-        "image": "geleia_morango_com_vinho.jpg"
+        "image": "geleia_morango_com_vinho.jpg",
+        "perishable": false
       },
       {
         "name": "Geleia de Morango com Jeropiga",
         "pricing": "UNIT",
-        "image": "geleia_morango_com_jeropiga.jpg"
+        "image": "geleia_morango_com_jeropiga.jpg",
+        "perishable": false
       },
       {
         "name": "Geleia de Morango com Maracujá",
         "pricing": "UNIT",
-        "image": "geleia_morango_com_maracuja.jpg"
+        "image": "geleia_morango_com_maracuja.jpg",
+        "perishable": false
       },
       {
         "name": "Geleia de Tomate com Manjericão",
         "pricing": "UNIT",
-        "image": "geleia_tomate_com_manjericao.jpg"
+        "image": "geleia_tomate_com_manjericao.jpg",
+        "perishable": false
       },
       {
         "name": "Húmus",
         "pricing": "WEIGHT",
-        "image": "humus.jpg"
+        "image": "humus.jpg",
+        "perishable": false
       },
       {
         "name": "Molho de Tomate",
         "pricing": "WEIGHT",
-        "image": "molho_de_tomate.jpg"
+        "image": "molho_de_tomate.jpg",
+        "perishable": false
       },
       {
         "name": "Pão Caseiro",
         "pricing": "UNIT",
-        "image": "pao_caseiro.jpg"
+        "image": "pao_caseiro.jpg",
+        "perishable": true
       },
       {
         "name": "Patê de Alho",
         "pricing": "UNIT",
-        "image": "pate_de_alho.jpg"
+        "image": "pate_de_alho.jpg",
+        "perishable": false
       },
       {
         "name": "Patê de Beterraba",
         "pricing": "UNIT",
-        "image": "pate_de_beterraba.jpg"
+        "image": "pate_de_beterraba.jpg",
+        "perishable": false
       },
       {
         "name": "Patê de Brócolis",
         "pricing": "UNIT",
-        "image": "pate_de_brocolis.jpg"
+        "image": "pate_de_brocolis.jpg",
+        "perishable": false
       },
       {
         "name": "Vinagre de Maçã",
         "pricing": "UNIT",
-        "image": "vinagre_de_maca.jpg"
+        "image": "vinagre_de_maca.jpg",
+        "perishable": false
       },
       {
         "name": "Vinagre de Uva",
         "pricing": "UNIT",
-        "image": "vinagre_de_uva.jpg"
+        "image": "vinagre_de_uva.jpg",
+        "perishable": false
       }
     ]
   },
@@ -1160,37 +1359,44 @@
       {
         "name": "Erva Mate",
         "pricing": "WEIGHT",
-        "image": "erva_mate.jpg"
+        "image": "erva_mate.jpg",
+        "perishable": false
       },
       {
         "name": "Erva Mate",
         "pricing": "UNIT",
-        "image": "erva_mate.jpg"
+        "image": "erva_mate.jpg",
+        "perishable": false
       },
       {
         "name": "Farinha de Centeio",
         "pricing": "WEIGHT",
-        "image": "farinha_de_centeio.jpg"
+        "image": "farinha_de_centeio.jpg",
+        "perishable": false
       },
       {
         "name": "Farinha de Milho",
         "pricing": "WEIGHT",
-        "image": "farinha_de_milho.jpg"
+        "image": "farinha_de_milho.jpg",
+        "perishable": false
       },
       {
         "name": "Farinha de Trigo Branca",
         "pricing": "WEIGHT",
-        "image": "farinha_de_trigo_branca.jpg"
+        "image": "farinha_de_trigo_branca.jpg",
+        "perishable": false
       },
       {
         "name": "Farinha de Trigo Integral",
         "pricing": "WEIGHT",
-        "image": "farinha_de_trigo_integral.jpg"
+        "image": "farinha_de_trigo_integral.jpg",
+        "perishable": false
       },
       {
         "name": "Sal Marinho",
         "pricing": "WEIGHT",
-        "image": "sal_marinho.jpg"
+        "image": "sal_marinho.jpg",
+        "perishable": false
       }
     ]
   },
@@ -1200,12 +1406,14 @@
       {
         "name": "Jurupiga Especial",
         "pricing": "UNIT",
-        "image": "jurupiga_especial.jpg"
+        "image": "jurupiga_especial.jpg",
+        "perishable": false
       },
       {
         "name": "Jurupiga Tradicional",
         "pricing": "UNIT",
-        "image": "jurupiga_tradicional.jpg"
+        "image": "jurupiga_tradicional.jpg",
+        "perishable": false
       }
     ]
   },
@@ -1215,62 +1423,74 @@
       {
         "name": "Bagre",
         "pricing": "WEIGHT",
-        "image": "bagre.jpg"
+        "image": "bagre.jpg",
+        "perishable": true
       },
       {
         "name": "Burriquete",
         "pricing": "WEIGHT",
-        "image": "burriquete.jpg"
+        "image": "burriquete.jpg",
+        "perishable": true
       },
       {
         "name": "Camarão",
         "pricing": "WEIGHT",
-        "image": "camarao.jpg"
+        "image": "camarao.jpg",
+        "perishable": true
       },
       {
         "name": "Corvina",
         "pricing": "WEIGHT",
-        "image": "corvina.jpg"
+        "image": "corvina.jpg",
+        "perishable": true
       },
       {
         "name": "Jundiá",
         "pricing": "WEIGHT",
-        "image": "jundia.jpg"
+        "image": "jundia.jpg",
+        "perishable": false
       },
       {
         "name": "Linguado",
         "pricing": "WEIGHT",
-        "image": "linguado.jpg"
+        "image": "linguado.jpg",
+        "perishable": true
       },
       {
         "name": "Miraguaia",
         "pricing": "WEIGHT",
-        "image": "miraguaia.jpg"
+        "image": "miraguaia.jpg",
+        "perishable": true
       },
       {
         "name": "Peixe Rei",
         "pricing": "WEIGHT",
-        "image": "peixe_rei.jpg"
+        "image": "peixe_rei.jpg",
+        "perishable": true
       },
       {
         "name": "Pintado",
         "pricing": "WEIGHT",
-        "image": "pintado.jpg"
+        "image": "pintado.jpg",
+        "perishable": true
       },
       {
         "name": "Siri",
         "pricing": "WEIGHT",
-        "image": "siri.jpg"
+        "image": "siri.jpg",
+        "perishable": true
       },
       {
         "name": "Tainha",
         "pricing": "WEIGHT",
-        "image": "tainha.jpg"
+        "image": "tainha.jpg",
+        "perishable": true
       },
       {
         "name": "Traíra",
         "pricing": "WEIGHT",
-        "image": "traira.jpg"
+        "image": "traira.jpg",
+        "perishable": true
       }
     ]
   },
@@ -1280,12 +1500,14 @@
       {
         "name": "Boi",
         "pricing": "WEIGHT",
-        "image": "boi.jpg"
+        "image": "boi.jpg",
+        "perishable": true
       },
       {
         "name": "Galinha",
         "pricing": "WEIGHT",
-        "image": "galinha.jpg"
+        "image": "galinha.jpg",
+        "perishable": true
       }
     ]
   }

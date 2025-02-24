@@ -22,6 +22,7 @@ export class PrismaProductMapper {
       ...(raw.category && {
         category: PrismaCategoryMapper.toDomain(raw.category),
       }),
+      perishable: raw.perishable,
       created_at: raw.created_at,
       updated_at: raw.updated_at,
     });
@@ -35,6 +36,7 @@ export class PrismaProductMapper {
       pricing: product.pricing,
       archived: product.archived,
       category_id: product.category_id?.value,
+      perishable: product.perishable,
       created_at: product.created_at,
       updated_at: product.updated_at,
     };
