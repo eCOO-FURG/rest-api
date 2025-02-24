@@ -21,6 +21,7 @@ const deploy = z.object({
   PIX_PROVIDER_API_KEY: z.string().min(1),
   INTEGRATIONS_AUTHORIZATION: z.string().min(1),
   STORAGE_URL: z.string().min(1),
+  WS_PORT: z.coerce.number().min(1),
 });
 
 const development = deploy.omit({
@@ -28,7 +29,6 @@ const development = deploy.omit({
   SMTP_FALLBACK_HOST: true,
   ECOO_FALLBACK_EMAIL: true,
   ECOO_FALLBACK_EMAIL_PASSWORD: true,
-  INTEGRATIONS_AUTHORIZATION: true,
   PIX_PROVIDER_API_KEY: true,
 });
 

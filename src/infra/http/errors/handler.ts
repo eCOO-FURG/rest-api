@@ -9,7 +9,7 @@ import { DomainError } from "@/core/errors/domain-error";
 import { HttpErrorMapper } from "@/infra/http/errors/mapper";
 
 // Logs
-import { Logger } from "@/infra/logs/sentry";
+import { Logger } from "@/infra/logs/logger";
 
 export const handler = (
   error: Error,
