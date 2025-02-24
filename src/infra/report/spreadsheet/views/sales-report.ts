@@ -51,6 +51,7 @@ export const SALES_REPORT_VIEW = async ({ bags }: BagsReportViewProps) => {
         producer: order.offer?.catalog?.farm?.admin?.first_name,
         amount: order.amount,
         offer_price: toPrice(offerPrice),
+        tax: order.offer?.catalog?.tax,
         pricing: order.offer?.product?.pricing === "UNIT" ? "Unidade" : "Peso",
         date: bag.created_at.toLocaleDateString("pt-BR"),
         payments,
