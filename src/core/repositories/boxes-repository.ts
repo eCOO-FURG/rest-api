@@ -14,6 +14,7 @@ export interface BoxesRepositorySearchRequest {
   };
   orders?: { page?: number };
   since?: Date;
+  before?: Date;
 }
 
 export interface BoxesRepository {

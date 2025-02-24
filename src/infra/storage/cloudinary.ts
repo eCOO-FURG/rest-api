@@ -8,7 +8,7 @@ import { Storage } from "@/core/storage/storage";
 import { v2 as cloudinary } from "cloudinary";
 
 // Logs
-import { Logger } from "@/infra/logs/sentry";
+import { Logger } from "@/infra/logs/logger";
 
 // Env
 import { env } from "@/infra/env";

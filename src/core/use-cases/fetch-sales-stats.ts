@@ -1,20 +1,20 @@
 // Repositories
 import { BagsRepository } from "@/core/repositories/bags-repository";
 
+interface FetchSalesStatsUseCaseRequest {
+  since?: Date;
+  before?: Date;
+  method?: "CREDIT" | "DEBIT" | "CASH" | "PIX";
+}
+
 export class FetchSalesStatsUseCase {
   constructor(private bagsRepository: BagsRepository) {}
 
-  async execute() {
-    const today = new Date();
-
-    const FIVE_MONTHS_AGO = new Date(
-      today.getFullYear(),
-      today.getMonth() - 4,
-      1
-    );
+  async execute({ since, before, method }: FetchSalesStatsUseCaseRequest) {
+    const FIVE_MONTHS_AGO = new Date().setMonth(new Date().getMonth() - 4);
 
     const bags = await this.bagsRepository.list("basic", {
-      since: FIVE_MONTHS_AGO,
+      since: new Date(FIVE_MONTHS_AGO),
     });
 
     let revenue = 0;
@@ -36,11 +36,89 @@ export class FetchSalesStatsUseCase {
 
       daily[day] += bag.price;
 
-      const current = String(today.getMonth() + 1).padStart(2, "0");
+      const current = String(new Date().getMonth() + 1).padStart(2, "0");
 
       if (month === current) revenue += bag.price;
     }
 
-    return { revenue, monthly, daily };
+    const openPayments = await this.openPaymentsTotal({ since, before });
+    const revenueByMethod = await this.revenueByMethod({
+      since,
+      before,
+      method,
+    });
+
+    return {
+      revenue,
+      monthly,
+      daily,
+      openPayments,
+      revenueByMethod,
+    };
+  }
+
+  private async openPaymentsTotal({
+    since,
+    before,
+  }: FetchSalesStatsUseCaseRequest) {
+    const bags = await this.bagsRepository.list("merge", {
+      since,
+      before,
+      payments: { status: "PENDING" },
+    });
+
+    let totalSum = 0;
+    let totalCount = 0;
+    const daily = {} as Record<string, number>;
+
+    for (const bag of bags) {
+      const date = new Date(bag.created_at);
+      const day = String(date.getDate()).padStart(2, "0");
+
+      if (!daily[day]) daily[day] = 0;
+      daily[day] += bag.price;
+
+      totalSum += bag.price;
+      totalCount += 1;
+    }
+
+    return {
+      sum: totalSum,
+      count: totalCount,
+      daily,
+    };
+  }
+
+  private async revenueByMethod({
+    since,
+    before,
+    method,
+  }: FetchSalesStatsUseCaseRequest) {
+    const bags = await this.bagsRepository.list("merge", {
+      since,
+      before,
+      payments: { method, status: "DONE" },
+    });
+
+    let totalSum = 0;
+    let totalCount = 0;
+    const daily = {} as Record<string, number>;
+
+    for (const bag of bags) {
+      const date = new Date(bag.created_at);
+      const day = String(date.getDate()).padStart(2, "0");
+
+      if (!daily[day]) daily[day] = 0;
+      daily[day] += bag.price;
+
+      totalSum += bag.price;
+      totalCount += 1;
+    }
+
+    return {
+      sum: totalSum,
+      count: totalCount,
+      daily,
+    };
   }
 }

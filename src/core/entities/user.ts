@@ -24,6 +24,7 @@ export interface UserProps extends EntityRequest {
   roles: Role[];
   verified_at: Date | null;
   photo: string | null;
+  chat: string | null;
 }
 
 export class User extends Entity<UserProps> {
@@ -63,6 +64,10 @@ export class User extends Entity<UserProps> {
     return this.props.photo;
   }
 
+  get chat() {
+    return this.props.chat;
+  }
+
   set first_name(value: string) {
     this.props.first_name = value;
   }
@@ -91,6 +96,10 @@ export class User extends Entity<UserProps> {
     this.props.password = value;
   }
 
+  set chat(value: string | null) {
+    this.props.chat = value;
+  }
+
   verify() {
     this.props.verified_at = new Date();
     this.touch();
@@ -109,27 +118,23 @@ export class User extends Entity<UserProps> {
     );
   }
 
-  help(message: string) {
+  help(content: string) {
     DomainEvents.events.push({
       entity: this,
       name: OnRequestHelpEvent.name,
-      payload: { message },
+      payload: { content },
     });
   }
 
   static create(
-    props: Optional<
-      Omit<UserProps, "cpf" | "phone"> & { cpf: CPF; phone: Phone },
-      "password" | "verified_at" | "photo"
-    >
+    props: Optional<UserProps, "password" | "verified_at" | "photo" | "chat">
   ) {
     const user = new User({
       ...props,
       password: props.password ?? null,
       verified_at: props.verified_at ?? null,
       photo: props.photo ?? null,
-      cpf: props.cpf,
-      phone: props.phone,
+      chat: props.chat ?? null,
     });
 
     const fresh = !props.id;

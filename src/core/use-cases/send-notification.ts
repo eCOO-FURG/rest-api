@@ -1,5 +1,5 @@
 // Entities
-import { Email } from "@/core/entities/email";
+import { Message } from "@/core/entities/message";
 
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
@@ -33,22 +33,22 @@ export class SendNotificationUseCase {
 
     const view = await this.mailer.load({
       view: "notification",
-      props: { title, message, files },
+      props: { title, text: message, files },
     });
 
-    const emails: Email[] = [];
+    const messages: Message[] = [];
 
     for (const user of users) {
-      const mail = Email.create({
+      const message = Message.create({
         to: user.email,
         subject: title,
         content: view,
         files,
       });
 
-      emails.push(mail);
+      messages.push(message);
     }
 
-    await this.mailer.send(emails);
+    await this.mailer.send(messages);
   }
 }

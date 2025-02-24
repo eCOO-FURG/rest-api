@@ -50,8 +50,8 @@ describe("send notification", () => {
       message: "This is a producer message",
     });
 
-    expect(mailer.emails).toHaveLength(1);
-    expect(mailer.emails[0].to).toBe("john@producer.com");
+    expect(mailer.messages).toHaveLength(1);
+    expect(mailer.messages[0].to).toBe("john@producer.com");
   });
 
   it("should be able to send notifications with attachments", async () => {
@@ -68,6 +68,6 @@ describe("send notification", () => {
       files: [makeFile()],
     });
 
-    expect(mailer.emails).toHaveLength(2);
+    expect(mailer.messages).toHaveLength(2);
   });
 });

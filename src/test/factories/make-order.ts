@@ -10,7 +10,8 @@ export function makeOrder(props: Partial<Order> = {}) {
     ...props,
     offer_id: props.offer_id ?? new UUID(),
     bag_id: props.bag_id ?? new UUID(),
-    amount: props.amount ?? faker.number.int({ min: 10, max: 12 }),
     box_id: props.box_id ?? new UUID(),
+    tax: props.tax ?? faker.number.int({ min: 1, max: 100 }),
+    amount: props.amount ?? faker.number.int({ min: 10, max: 12 }),
   });
 }

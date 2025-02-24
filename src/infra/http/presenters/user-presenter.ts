@@ -13,6 +13,7 @@ export class UserPresenter {
         cpf: user.cpf.format,
         email: user.email,
         phone: user.phone.format,
+        chat: user.chat,
         admin: user.admin,
         roles: user.roles,
         verified_at: user.verified_at,

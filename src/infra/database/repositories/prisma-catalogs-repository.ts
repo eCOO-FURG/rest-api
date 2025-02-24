@@ -31,6 +31,13 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
           name: { contains: farm?.name, mode: "insensitive" },
         },
         created_at: { lte: before, gte: since },
+        offers: {
+          some: {
+            product: {
+              name: { contains: offers?.product?.name, mode: "insensitive" },
+            },
+          },
+        },
       },
       include: {
         ...(type !== "basic" && {
@@ -38,12 +45,14 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
         }),
         ...(type === "merge" && {
           offers: {
-            include: { product: true },
-            where: {
-              product: {
-                name: { contains: offers?.product?.name, mode: "insensitive" },
+            ...(offers?.product?.name && {
+              where: {
+                product: {
+                  name: { contains: offers.product.name, mode: "insensitive" },
+                },
               },
-            },
+            }),
+            include: { product: true },
             orderBy: { created_at: "asc" },
             ...(offers?.page && {
               skip: (offers.page - 1) * 20,
@@ -70,6 +79,13 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
           id: farm?.id,
           name: { contains: farm?.name, mode: "insensitive" },
         },
+        offers: {
+          some: {
+            product: {
+              name: { contains: offers?.product?.name, mode: "insensitive" },
+            },
+          },
+        },
         created_at: { lte: before, gte: since },
       },
       include: {
@@ -78,11 +94,6 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
           offers: {
             include: { product: true },
             orderBy: { created_at: "asc" },
-            where: {
-              product: {
-                name: { contains: offers?.product?.name, mode: "insensitive" },
-              },
-            },
             ...(offers?.page && {
               skip: (offers.page - 1) * 20,
               take: 20,

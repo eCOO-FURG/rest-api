@@ -1,5 +1,5 @@
 // Entities
-import { Email } from "@/core/entities/email";
+import { Message } from "@/core/entities/message";
 import { Farm } from "@/core/entities/farm";
 
 // Types
@@ -29,7 +29,7 @@ export type MailerLoadRequest =
   | {
       view: "help";
       props: {
-        message: string;
+        text: string;
         farm: Farm;
       };
     }
@@ -37,12 +37,12 @@ export type MailerLoadRequest =
       view: "notification";
       props: {
         title: string;
-        message: string;
+        text: string;
         files?: File[];
       };
     };
 
 export interface Mailer {
-  send(emails: Email[]): Promise<void>;
+  send(messages: Message[]): Promise<void>;
   load({ view, props }: MailerLoadRequest): Promise<string>;
 }

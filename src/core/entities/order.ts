@@ -11,6 +11,7 @@ import { Offer } from "@/core/entities/offer";
 export interface OrderProps extends EntityRequest {
   amount: number;
   price: number;
+  tax: number;
   status: "PENDING" | "CANCELLED" | "RECEIVED" | "REJECTED";
 
   offer_id: UUID;
@@ -70,6 +71,10 @@ export class Order extends Entity<OrderProps> {
 
   set status(value: OrderProps["status"]) {
     this.props.status = value;
+  }
+
+  get tax() {
+    return this.props.tax;
   }
 
   static create(props: Optional<OrderProps, "status" | "price">) {

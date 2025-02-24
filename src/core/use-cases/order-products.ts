@@ -15,6 +15,7 @@ import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
 import { BoxesRepository } from "@/core/repositories/boxes-repository";
 import { AddressesRepository } from "@/core/repositories/addresses-repository";
+import { FarmsRepository } from "@/core/repositories/farms-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -27,7 +28,6 @@ import { mostPast } from "@/core/utils/most-past";
 
 // Services
 import { OtpProvider } from "@/core/cryptography/otp-provider";
-
 interface OrderProductsUseCaseRequest {
   user_id: string;
   cycle_id: string;
@@ -61,6 +61,7 @@ export class OrderProductsUseCase {
     private bagsRepository: BagsRepository,
     private boxesRepository: BoxesRepository,
     private addressesRepository: AddressesRepository,
+    private farmsRepository: FarmsRepository,
     private otpGenerator: OtpProvider
   ) {}
 
@@ -124,12 +125,21 @@ export class OrderProductsUseCase {
 
       const box = await this.useBox(catalog.id);
 
+      const farm = await this.farmsRepository.find("basic", {
+        id: catalog.farm_id.value,
+      });
+
+      if (!farm)
+        throw new ResourceNotFoundError("Fazenda", catalog.farm_id.value);
+
       const order = Order.create({
         amount: item.amount,
         bag_id: bag.id,
         box_id: box.id,
+        box,
         offer_id: offer.id,
         offer,
+        tax: farm.tax,
       });
 
       bag.add(order);
@@ -157,14 +167,12 @@ export class OrderProductsUseCase {
 
     if (found) return found;
 
-    const destination = Address.create(address);
-
-    return destination;
+    return Address.create(address);
   }
 
   private async useBag({ bag_id, user, address, cycle }: UseBagRequest) {
     if (bag_id) {
-      const bag = await this.bagsRepository.find("merge", {
+      const bag = await this.bagsRepository.find("aggregate", {
         id: bag_id,
         statuses: ["PENDING"],
         cycle: { id: cycle.id.value },
@@ -179,7 +187,7 @@ export class OrderProductsUseCase {
       return { bag, existed: true };
     }
 
-    const found = await this.bagsRepository.find("merge", {
+    const found = await this.bagsRepository.find("aggregate", {
       user: { id: user.id.value },
       cycle: { id: cycle.id.value },
       statuses: ["PENDING"],
@@ -194,7 +202,7 @@ export class OrderProductsUseCase {
     const bag = Bag.create({
       user_id: user.id,
       cycle_id: cycle.id,
-      address_id: address ? address.id : null,
+      address_id: address?.id,
       code,
       user,
       address,
@@ -210,10 +218,6 @@ export class OrderProductsUseCase {
 
     if (found) return found;
 
-    const box = Box.create({ catalog_id });
-
-    await this.boxesRepository.create(box);
-
-    return box;
+    return Box.create({ catalog_id });
   }
 }

@@ -2,17 +2,15 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml ./
+RUN apk add --no-cache chromium openssl
 
 RUN npm install -g pnpm
 
+COPY package.json pnpm-lock.yaml ./
+
 RUN pnpm install
 
-RUN apk add chromium
-
-RUN apk add openssl
-
-COPY . ./
+COPY . .
 
 RUN npx prisma generate
 

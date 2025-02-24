@@ -1,14 +1,14 @@
 // Entities
-import { Email } from "@/core/entities/email";
+import { Message } from "@/core/entities/message";
 
 // Services
 import { Mailer, MailerLoadRequest } from "@/core/mail/mailer";
 
 export class MockedMailer implements Mailer {
-  public emails: Email[] = [];
+  public messages: Message[] = [];
 
-  async send(emails: Email[]): Promise<void> {
-    this.emails.push(...emails);
+  async send(messages: Message[]): Promise<void> {
+    this.messages.push(...messages);
   }
 
   async load({ view, props }: MailerLoadRequest): Promise<string> {

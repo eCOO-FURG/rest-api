@@ -118,6 +118,7 @@ export async function seedDevelopment() {
                     ? Number(offer.price) * offer.amount
                     : (Number(offer.price) / 1000) * offer.amount,
                 status: "PENDING",
+                tax: 20,
               })),
             },
           },

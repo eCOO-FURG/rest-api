@@ -19,6 +19,7 @@ export const registerSchema = {
     email: z.string().email(),
     phone: z.string(),
     password: z.string().min(8).optional(),
+    chat: z.string().optional(),
     role: z
       .enum(["USER", "PRODUCER"])
       .openapi({
@@ -35,7 +36,7 @@ export async function registerController(
   next: NextFunction
 ) {
   try {
-    const { first_name, last_name, cpf, email, phone, password, role } =
+    const { first_name, last_name, cpf, email, phone, password, chat, role } =
       registerSchema.body.parse(request.body);
 
     container.resolve("onRegisteredEvent");
@@ -50,6 +51,7 @@ export async function registerController(
       email,
       phone,
       password,
+      chat,
       role,
     });
 

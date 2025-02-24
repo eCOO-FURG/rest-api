@@ -41,6 +41,7 @@ import { UpdateProductUseCase } from "@/core/use-cases/update-product";
 import { UpdateUserUseCase } from "@/core/use-cases/update-user";
 import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
 import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
+import { FetchInboundReportUseCase } from "@/core/use-cases/fetch-inbound-report";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -114,6 +115,7 @@ export default (container: AwilixContainer) => {
         bagsRepository,
         boxesRepository,
         addressesRepository,
+        farmsRepository,
         otpProvider,
       }) =>
         new OrderProductsUseCase(
@@ -124,6 +126,7 @@ export default (container: AwilixContainer) => {
           bagsRepository,
           boxesRepository,
           addressesRepository,
+          farmsRepository,
           otpProvider
         )
     ),
@@ -168,8 +171,13 @@ export default (container: AwilixContainer) => {
         )
     ),
     updateBagUseCase: asFunction(
-      ({ bagsRepository, usersRepository, cyclesRepository }) =>
-        new UpdateBagUseCase(bagsRepository, usersRepository, cyclesRepository)
+      ({ bagsRepository, usersRepository, cyclesRepository, chat }) =>
+        new UpdateBagUseCase(
+          bagsRepository,
+          usersRepository,
+          cyclesRepository,
+          chat
+        )
     ),
     fetchBagUseCase: asFunction(
       ({ bagsRepository, usersRepository }) =>
@@ -210,8 +218,8 @@ export default (container: AwilixContainer) => {
       ({ usersRepository }) => new RequestPasswordUpdateUseCase(usersRepository)
     ),
     openPaymentUseCase: asFunction(
-      ({ bagsRepository, pixProvider }) =>
-        new OpenPaymentUseCase(bagsRepository, pixProvider)
+      ({ bagsRepository, paymentsRepository, pixProvider }) =>
+        new OpenPaymentUseCase(bagsRepository, paymentsRepository, pixProvider)
     ),
     registerPaymentUseCase: asFunction(
       ({ bagsRepository, paymentsRepository }) =>
@@ -259,6 +267,14 @@ export default (container: AwilixContainer) => {
     listCategoriesUseCase: asFunction(
       ({ categoriesRepository }) =>
         new ListCategoriesUseCase(categoriesRepository)
+    ),
+    fetchInboundReportUseCase: asFunction(
+      ({ boxesRepository, cyclesRepository, pdfService }) =>
+        new FetchInboundReportUseCase(
+          boxesRepository,
+          cyclesRepository,
+          pdfService
+        )
     ),
   });
 };

@@ -14,9 +14,10 @@ import { prisma } from "@/infra/database/prisma-service";
 import { RepositoryResponse } from "@/core/types/repository-response";
 
 // Mappers
+import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";
 import { PrismaBagMapper } from "@/infra/database/mappers/prisma-bag-mapper";
 import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
-import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";
+import { PrismaBoxMapper } from "@/infra/database/mappers/prisma-box-mapper";
 
 export class PrismaBagsRepository implements BagsRepository {
   async find(
@@ -83,9 +84,19 @@ export class PrismaBagsRepository implements BagsRepository {
             }),
           },
           payments: {
-            ...(payments?.page && {
-              skip: (payments.page - 1) * 20,
-              take: 20,
+            ...(payments && {
+              where: {
+                status: {
+                  equals: payments.status,
+                },
+                method: {
+                  equals: payments.method,
+                },
+              },
+              ...(payments.page && {
+                skip: (payments.page - 1) * 20,
+                take: 20,
+              }),
             }),
           },
         }),
@@ -140,6 +151,14 @@ export class PrismaBagsRepository implements BagsRepository {
             lte: before,
           },
         }),
+        ...(payments && {
+          payments: {
+            some: {
+              status: payments?.status,
+              method: payments?.method,
+            },
+          },
+        }),
       },
       include: {
         ...(type !== "basic" && {
@@ -162,9 +181,19 @@ export class PrismaBagsRepository implements BagsRepository {
             }),
           },
           payments: {
-            ...(payments?.page && {
-              skip: (payments.page - 1) * 20,
-              take: 20,
+            ...(payments && {
+              where: {
+                status: {
+                  equals: payments.status,
+                },
+                method: {
+                  equals: payments.method,
+                },
+              },
+              ...(payments.page && {
+                skip: (payments.page - 1) * 20,
+                take: 20,
+              }),
             }),
           },
         }),
@@ -176,99 +205,95 @@ export class PrismaBagsRepository implements BagsRepository {
   }
 
   async create(bag: Bag): Promise<void> {
-    const data = PrismaBagMapper.toPrisma(bag);
-
     await prisma.$transaction(async (ctx) => {
-      if (bag.address_id && bag.address) {
+      if (bag.address) {
         const address = await ctx.address.findFirst({
-          where: { id: bag.address_id.value },
+          where: { id: bag.address.id.value },
         });
 
         if (!address) {
           await ctx.address.create({
-            data: { ...PrismaAddressMapper.toPrisma(bag.address) },
+            data: PrismaAddressMapper.toPrisma(bag.address),
           });
         }
       }
 
+      const data = PrismaBagMapper.toPrisma(bag);
+
       await ctx.bag.create({ data });
+
+      for (const order of bag.orders.values()) {
+        if (order.box) {
+          const box = await ctx.box.findFirst({
+            where: { id: order.box_id.value },
+          });
+
+          if (!box) {
+            await ctx.box.create({
+              data: PrismaBoxMapper.toPrisma(order.box),
+            });
+          }
+        }
+
+        await ctx.offer.update({
+          where: { id: order.offer_id.value },
+          data: { amount: { decrement: order.amount } },
+        });
+      }
 
       const orders = Array.from(bag.orders.values()).map(
         PrismaOrderMapper.toPrisma
       );
 
       await ctx.order.createMany({ data: orders });
-
-      for (const order of bag.orders.values()) {
-        await ctx.offer.update({
-          where: { id: order.offer_id.value },
-          data: { amount: { decrement: order.amount } },
-        });
-      }
     });
   }
 
   async update(bag: Bag): Promise<void> {
-    const data = PrismaBagMapper.toPrisma(bag);
-
     await prisma.$transaction(async (ctx) => {
+      if (bag.address) {
+        const address = await ctx.address.findFirst({
+          where: { id: bag.address.id.value },
+        });
+
+        if (!address) {
+          await ctx.address.create({
+            data: PrismaAddressMapper.toPrisma(bag.address),
+          });
+        }
+      }
+
+      const data = PrismaBagMapper.toPrisma(bag);
+
       await ctx.bag.update({
         where: { id: bag.id.value },
         data,
       });
 
-      const previousOrders = await ctx.order.findMany({
-        where: { bag_id: bag.id.value },
-      });
-
-      const createdOrders = [];
-
       for (const order of bag.orders.values()) {
-        const existed = previousOrders.find((p) => order.id.equals(p.id));
-
-        if (!existed) {
-          createdOrders.push(order);
-
-          await ctx.offer.update({
-            where: { id: order.offer_id.value },
-            data: { amount: { decrement: order.amount } },
+        if (order.box) {
+          const box = await ctx.box.findFirst({
+            where: { id: order.box_id.value },
           });
 
-          continue;
+          if (!box) {
+            await ctx.box.create({
+              data: PrismaBoxMapper.toPrisma(order.box),
+            });
+          }
         }
 
-        if (existed.updated_at === order.updated_at) continue;
-
-        await ctx.order.update({
-          where: { id: order.id.value },
-          data: {
-            ...PrismaOrderMapper.toPrisma(order),
-          },
+        await ctx.offer.update({
+          where: { id: order.offer_id.value },
+          data: { amount: { decrement: order.amount } },
         });
       }
 
-      await ctx.order.createMany({
-        data: createdOrders.map(PrismaOrderMapper.toPrisma),
-      });
+      const orders = Array.from(bag.orders.values()).map(
+        PrismaOrderMapper.toPrisma
+      );
 
-      const deletedIds = previousOrders
-        .filter((p) => !bag.orders.has(p.id))
-        .map((order) => order.id);
-
-      if (deletedIds.length)
-        await ctx.order.deleteMany({ where: { id: { in: deletedIds } } });
-
-      if (bag.status === "CANCELLED") {
-        for (const order of bag.orders.values()) {
-          await ctx.order.update({
-            where: { id: order.id.value },
-            data: {
-              status: "CANCELLED",
-              offer: { update: { amount: { increment: order.amount } } },
-            },
-          });
-        }
-      }
+      await ctx.order.createMany({ data: orders });
     });
   }
 }

@@ -24,6 +24,7 @@ model User {
   phone       String    @unique
   password    String?
   photo       String?
+  chat        String?   @unique
   roles       ROLE[]    @default([USER])
   verified_at DateTime?
 
@@ -303,6 +304,7 @@ model Order {
   id     String       @id @default(uuid())
   amount Int
   price  Decimal      @db.Decimal(10, 2)
+  tax    Float
   status ORDER_STATUS
 
   offer_id String

@@ -51,7 +51,7 @@ describe("Update Product UseCase", () => {
       pricing: "UNIT",
       category_id: category.id.value,
       archived: false,
-      perishable: true
+      perishable: true,
     });
 
     expect(product).toBeDefined();
@@ -105,7 +105,6 @@ describe("Update Product UseCase", () => {
     await sut.execute({
       product_id: product.id.value,
       name: "Novo nome teste",
-      archived: false,
     });
 
     expect(product).toBeDefined();
@@ -113,5 +112,6 @@ describe("Update Product UseCase", () => {
     expect(product.pricing).toBe("UNIT");
     expect(product.archived).toBe(false);
     expect(product.image).toBe(product.image);
+    expect(product.archived).toBe(true);
   });
 });

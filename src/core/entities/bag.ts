@@ -1,11 +1,11 @@
 // Entities
-import { Entity, EntityRequest } from "@/core/entities/entity";
-import { UUID } from "@/core/entities/aggregates/uuid";
-import { User } from "@/core/entities/user";
 import { Address } from "@/core/entities/address";
+import { UUID } from "@/core/entities/aggregates/uuid";
 import { Cycle } from "@/core/entities/cycle";
+import { Entity, EntityRequest } from "@/core/entities/entity";
 import { Order } from "@/core/entities/order";
 import { Payment } from "@/core/entities/payment";
+import { User } from "@/core/entities/user";
 
 // Types
 import { Optional } from "@/core/types/optional";
@@ -101,21 +101,29 @@ export class Bag extends Entity<BagProps> {
   paid() {
     const payments = Array.from(this.props.payments.values());
 
-    const done = payments.some((payment) => payment.status === "DONE");
+    for (const payment of payments) {
+      if (payment.status === "DONE") return payment;
+    }
 
-    return done;
+    return false;
   }
 
   open() {
     const payments = Array.from(this.props.payments.values());
 
-    const pending = payments.find(
-      (payment) => payment.status === "PENDING" && !payment.expired
-    );
+    for (const payment of payments) {
+      if (payment.status === "PENDING" && !payment.expired) return payment;
+    }
 
-    if (!pending) return null;
+    return false;
+  }
 
-    return pending;
+  verified() {
+    for (const order of this.props.orders.values()) {
+      if (order.status === "PENDING") return false;
+    }
+
+    return true;
   }
 
   add(order: Order) {
@@ -127,11 +135,12 @@ export class Bag extends Entity<BagProps> {
   static create(
     props: Optional<
       BagProps,
-      "price" | "status" | "address" | "orders" | "payments"
+      "price" | "status" | "address" | "orders" | "payments" | "address_id"
     >
   ) {
     const bag = new Bag({
       ...props,
+      address_id: props.address_id ?? null,
       price: props.price ?? 0,
       status: props.status ?? "PENDING",
       orders: props.orders ?? new Map(),

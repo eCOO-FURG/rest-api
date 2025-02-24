@@ -11,6 +11,10 @@ import { Storage } from "@/core/storage/storage";
 // Types
 import { File } from "@/core/types/file";
 
+// Entities
+import { CPF } from "@/core/entities/cpf";
+import { Phone } from "@/core/entities/phone";
+
 interface UpdateUserUseCaseRequest {
   user_id: string;
   first_name?: string;
@@ -20,6 +24,7 @@ interface UpdateUserUseCaseRequest {
   phone?: string;
   password?: string;
   photo?: File;
+  chat?: string;
 }
 
 export class UpdateUserUseCase {
@@ -38,6 +43,7 @@ export class UpdateUserUseCase {
     phone,
     password,
     photo,
+    chat,
   }: UpdateUserUseCaseRequest) {
     const user = await this.usersRepository.find("basic", { id: user_id });
 
@@ -46,8 +52,9 @@ export class UpdateUserUseCase {
     user.first_name = first_name ?? user.first_name;
     user.last_name = last_name ?? user.last_name;
     user.email = email ?? user.email;
-    user.cpf = cpf ?? user.cpf;
-    user.phone = phone ?? user.phone;
+    user.chat = chat ?? user.chat;
+    user.cpf = new CPF(cpf ?? user.cpf.value);
+    user.phone = new Phone(phone ?? user.phone.value);
 
     if (password) user.password = await this.encrypter.encrypt(password);
 
