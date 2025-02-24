@@ -23,6 +23,16 @@ export class Telegram implements Chat {
     this.server = new WebSocket.Server({
       port: env.WS_PORT,
       path: "/messages",
+      verifyClient: (info, callback) => {
+        const token = info.req.headers["authorization"];
+
+        if (!token || token !== env.INTEGRATIONS_AUTHORIZATION) {
+          callback(false, 401, "Unauthorized");
+          return;
+        }
+
+        callback(true);
+      },
     });
   }
 

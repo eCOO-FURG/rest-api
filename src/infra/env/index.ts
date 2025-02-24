@@ -29,7 +29,6 @@ const development = deploy.omit({
   SMTP_FALLBACK_HOST: true,
   ECOO_FALLBACK_EMAIL: true,
   ECOO_FALLBACK_EMAIL_PASSWORD: true,
-  INTEGRATIONS_AUTHORIZATION: true,
   PIX_PROVIDER_API_KEY: true,
 });
 
