@@ -16,10 +16,10 @@ import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
+import { MissingFieldError } from "@/core/errors/missing-field";
 
 // Utils
 import { mostPast } from "@/core/utils/most-past";
-import { MissingFieldError } from "../errors/missing-field";
 
 interface CreateOfferUseCaseRequest {
   farm_id: string;
@@ -28,7 +28,7 @@ interface CreateOfferUseCaseRequest {
   amount: number;
   price: number;
   description?: string;
-  expires_at?: Date
+  expires_at?: Date;
 }
 
 export class CreateOfferUseCase {
@@ -46,10 +46,8 @@ export class CreateOfferUseCase {
     amount,
     price,
     description,
-    expires_at
+    expires_at,
   }: CreateOfferUseCaseRequest) {
-    const today = (new Date().getDay() + 1) as Week[0];
-
     const farm = await this.farmsRepository.find("basic", { id: farm_id });
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
@@ -62,12 +60,14 @@ export class CreateOfferUseCase {
 
     if (!product) throw new ResourceNotFoundError("Produto", product_id);
 
-    if (product.perishable && !expires_at) 
+    if (product.perishable && !expires_at)
       throw new MissingFieldError("expires_at");
 
     const cycle = await this.cyclesRepository.find("basic", { id: cycle_id });
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+
+    const today = (new Date().getDay() + 1) as Week[0];
 
     if (!cycle.offer.includes(today))
       throw new ResourceClosedError("Ciclo", cycle.id.value);
@@ -90,9 +90,9 @@ export class CreateOfferUseCase {
       catalog_id: catalog.id,
       product_id: product.id,
       amount,
-      description,
       price: price + (price * farm.tax) / 100,
-      expires_at
+      description,
+      expires_at,
     });
 
     catalog.offers.set(product_id, offer);

@@ -11,6 +11,7 @@ import container from "@/infra/container";
 // Validation
 import { notEmpty } from "@/infra/http/validation/not-empty";
 import { toDate } from "@/infra/utils/to-date";
+import { notPast } from "@/infra/http/validation/not-past";
 
 export const createOfferSchema = {
   body: z
@@ -24,16 +25,7 @@ export const createOfferSchema = {
         .string()
         .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
         .optional()
-        .refine((date) => {
-          if (!date) return true;
-
-          const [day, month, year] = date.split("-").map(Number);
-          const expiresDate = new Date(year, month - 1, day);
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
-
-          return expiresDate >= today;
-        }, "A data de expiração não pode estar no passado"),
+        .refine(notPast.validation, notPast.warning),
     })
     .refine(notEmpty.validation, notEmpty.warning),
 };
@@ -57,7 +49,7 @@ export async function createOfferController(
       amount,
       price,
       description,
-      expires_at: toDate(expires_at)
+      expires_at: toDate(expires_at),
     });
 
     return response.sendStatus(201);
