@@ -1,17 +1,16 @@
 // Entities
-import { Entity, EntityRequest } from "@/core/entities/entity";
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { Bag } from "@/core/entities/bag";
 import { Box } from "@/core/entities/box";
+import { Entity, EntityRequest } from "@/core/entities/entity";
 
 // Types
-import { Optional } from "@/core/types/optional";
 import { Offer } from "@/core/entities/offer";
+import { Optional } from "@/core/types/optional";
 
 export interface OrderProps extends EntityRequest {
   amount: number;
   price: number;
-  tax: number;
   status: "PENDING" | "CANCELLED" | "RECEIVED" | "REJECTED";
 
   offer_id: UUID;
@@ -71,10 +70,6 @@ export class Order extends Entity<OrderProps> {
 
   set status(value: OrderProps["status"]) {
     this.props.status = value;
-  }
-
-  get tax() {
-    return this.props.tax;
   }
 
   static create(props: Optional<OrderProps, "status" | "price">) {
