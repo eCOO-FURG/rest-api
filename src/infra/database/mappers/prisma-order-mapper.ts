@@ -1,6 +1,6 @@
 // Entities
-import { Order } from "@/core/entities/order";
 import { UUID } from "@/core/entities/aggregates/uuid";
+import { Order } from "@/core/entities/order";
 
 // Libraries
 import { Prisma } from "@prisma/client";
@@ -22,7 +22,6 @@ export class PrismaOrderMapper {
       box_id: new UUID(raw.box_id),
       bag_id: new UUID(raw.bag_id),
       offer_id: new UUID(raw.offer_id),
-      tax: raw.tax,
       ...(raw.offer && { offer: PrismaOfferMapper.toDomain(raw.offer) }),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
@@ -35,7 +34,6 @@ export class PrismaOrderMapper {
       amount: order.amount,
       price: order.price,
       status: order.status,
-      tax: order.tax,
       bag_id: order.bag_id.value,
       offer_id: order.offer_id.value,
       box_id: order.box_id.value,
