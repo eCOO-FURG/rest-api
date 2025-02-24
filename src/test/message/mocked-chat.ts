@@ -5,7 +5,9 @@ import { Message } from "@/core/entities/message";
 import { Chat } from "@/core/message/chat";
 
 export class MockedChat implements Chat {
+  public messages: Message[] = [];
+
   async send(message: Message): Promise<void> {
-    return;
+    this.messages.push(message);
   }
 }

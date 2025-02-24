@@ -171,8 +171,13 @@ export default (container: AwilixContainer) => {
         )
     ),
     updateBagUseCase: asFunction(
-      ({ bagsRepository, usersRepository, cyclesRepository }) =>
-        new UpdateBagUseCase(bagsRepository, usersRepository, cyclesRepository)
+      ({ bagsRepository, usersRepository, cyclesRepository, chat }) =>
+        new UpdateBagUseCase(
+          bagsRepository,
+          usersRepository,
+          cyclesRepository,
+          chat
+        )
     ),
     fetchBagUseCase: asFunction(
       ({ bagsRepository, usersRepository }) =>
