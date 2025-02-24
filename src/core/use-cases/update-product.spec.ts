@@ -110,7 +110,6 @@ describe("Update Product UseCase", () => {
     expect(product).toBeDefined();
     expect(product.name).toBe("Novo nome teste");
     expect(product.pricing).toBe("UNIT");
-    expect(product.archived).toBe(false);
     expect(product.image).toBe(product.image);
     expect(product.archived).toBe(true);
   });
