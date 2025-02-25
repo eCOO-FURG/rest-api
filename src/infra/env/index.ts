@@ -53,12 +53,13 @@ const schema =
 const _env = schema.safeParse(process.env);
 
 if (_env.success === false) {
-  const issues = _env.error.issues.map((issue) => ({
-    field: issue.path[0],
-    message: issue.message,
-  }));
+  const issues = _env.error.issues
+    .map((issue) => `${issue.path[0]}: ${issue.fatal}`)
+    .join(", ");
 
-  throw new Error(`❌ Variáveis ambiente incorretas: \n${issues}`);
+  console.log(`❌ Variáveis ambiente incorretas: ${issues}`);
+
+  process.exit(1);
 }
 
 export const env = _env.data as z.infer<typeof deploy>;
