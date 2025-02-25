@@ -8,6 +8,7 @@ import { User } from "@/core/entities/user";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Repositories
+import { Mailer } from "@/core/mail/mailer";
 import { UsersRepository } from "@/core/repositories/users-repository";
 import { OffersRepository } from "@/core/repositories/offers-repository";
 import { BagsRepository } from "@/core/repositories/bags-repository";
@@ -28,6 +29,7 @@ import { mostPast } from "@/core/utils/most-past";
 
 // Services
 import { OtpProvider } from "@/core/cryptography/otp-provider";
+import { Email } from "../entities/email";
 interface OrderProductsUseCaseRequest {
   user_id: string;
   cycle_id: string;
@@ -62,7 +64,8 @@ export class OrderProductsUseCase {
     private boxesRepository: BoxesRepository,
     private addressesRepository: AddressesRepository,
     private farmsRepository: FarmsRepository,
-    private otpGenerator: OtpProvider
+    private otpGenerator: OtpProvider,
+    private mailer: Mailer
   ) {}
 
   async execute({
@@ -150,6 +153,30 @@ export class OrderProductsUseCase {
     } else {
       await this.bagsRepository.create(bag);
     }
+
+    const updatedBag = await this.bagsRepository.find("merge", {
+      id: bag.id.value
+    })
+
+    if (!updatedBag)
+      throw new ResourceNotFoundError("Sacola", bag.id.value);
+
+    const view = await this.mailer.load({
+      view: "order-notification",
+      props: {
+        first_name: user.first_name,
+        bag: updatedBag,
+        cycle
+      },
+    });
+    
+    const email = Email.create({
+      to: user.email,
+      subject: "Pedido Confirmado!",
+      content: view,
+    });
+
+    await this.mailer.send([email]);
 
     return { bag };
   }

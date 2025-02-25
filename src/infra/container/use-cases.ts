@@ -117,6 +117,7 @@ export default (container: AwilixContainer) => {
         addressesRepository,
         farmsRepository,
         otpProvider,
+        mailer
       }) =>
         new OrderProductsUseCase(
           usersRepository,
@@ -127,7 +128,8 @@ export default (container: AwilixContainer) => {
           boxesRepository,
           addressesRepository,
           farmsRepository,
-          otpProvider
+          otpProvider,
+          mailer
         )
     ),
     fetchProfileUseCase: asFunction(

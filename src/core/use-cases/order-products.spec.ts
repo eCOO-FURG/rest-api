@@ -33,6 +33,7 @@ import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addre
 
 // Services
 import { MockedOtpProvider } from "@/test/cryptography/mocked-otp-provider";
+import { MockedMailer } from "@/test/mail/mocked-mailer";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
@@ -42,6 +43,7 @@ let catalogsRepository: InMemoryCatalogsRepository;
 let addressesRepository: InMemoryAddressesRepository;
 let bagsRepository: InMemoryBagsRepository;
 let boxesRepository: InMemoryBoxesRepository;
+let mailer: MockedMailer;
 
 let otpProvider: MockedOtpProvider;
 
@@ -57,6 +59,7 @@ describe("order product", () => {
     addressesRepository = new InMemoryAddressesRepository();
     bagsRepository = new InMemoryBagsRepository();
     boxesRepository = new InMemoryBoxesRepository();
+    mailer = new MockedMailer();
 
     otpProvider = new MockedOtpProvider();
 
@@ -69,7 +72,8 @@ describe("order product", () => {
       boxesRepository,
       addressesRepository,
       farmsRepository,
-      otpProvider
+      otpProvider,
+      mailer
     );
   });
 
