@@ -1,436 +1,87 @@
 <!DOCTYPE html>
-<html
-  lang="en"
-  xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:v="urn:schemas-microsoft-com:vml"
-  xmlns:o="urn:schemas-microsoft-com:office:office"
->
-  <head>
+<html lang="en">
+<head>
     <meta charset="utf-8" />
-    <!-- utf-8 works for most cases -->
     <meta name="viewport" content="width=device-width" />
-    <!-- Forcing initial-scale shouldn't be necessary -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!-- Use the latest (edge) version of IE rendering engine -->
-    <meta name="x-apple-disable-message-reformatting" />
-    <!-- Disable auto-scale in iOS 10 Mail entirely -->
-    <title></title>
-    <!-- The title tag shows in email notifications, like Android 4.4. -->
-
-    <link
-      href="https://fonts.googleapis.com/css?family=Poppins:300,400,700"
-      rel="stylesheet"
-    />
-
-    <!-- CSS Reset : BEGIN -->
+    <title>Confirmação de Cadastro</title>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,700" rel="stylesheet" />
     <style>
-      /* What it does: Remove spaces around the email design added by some email clients. */
-      /* Beware: It can remove the padding / margin and add a background color to the compose a reply window. */
-      html,
-      body {
-        margin: 0 auto !important;
-        padding: 0 !important;
-        height: 100% !important;
-        width: 100% !important;
-        background: #f1f1f1;
-      }
-
-      /* What it does: Stops email clients resizing small text. */
-      * {
-        -ms-text-size-adjust: 100%;
-        -webkit-text-size-adjust: 100%;
-      }
-
-      /* What it does: Centers email on Android 4.4 */
-      div[style*="margin: 16px 0"] {
-        margin: 0 !important;
-      }
-
-      /* What it does: Fixes webkit padding issue. */
-      table {
-        border-spacing: 0 !important;
-        border-collapse: collapse !important;
-        table-layout: fixed !important;
-        margin: 0 auto !important;
-      }
-
-      /* What it does: Uses a better rendering method when resizing images in IE. */
-      img {
-        -ms-interpolation-mode: bicubic;
-      }
-
-      /* What it does: Prevents Windows 10 Mail from underlining links despite inline CSS. Styles for underlined links should be inline. */
-      a {
-        text-decoration: none;
-      }
-
-      /* What it does: A work-around for email clients meddling in triggered links. */
-      *[x-apple-data-detectors],  /* iOS */
-.unstyle-auto-detected-links *,
-.aBn {
-        border-bottom: 0 !important;
-        cursor: default !important;
-        color: inherit !important;
-        text-decoration: none !important;
-        font-size: inherit !important;
-        font-family: inherit !important;
-        font-weight: inherit !important;
-        line-height: inherit !important;
-      }
-
-      /* What it does: Prevents Gmail from displaying a download button on large, non-linked images. */
-      .a6S {
-        display: none !important;
-        opacity: 0.01 !important;
-      }
-
-      /* What it does: Prevents Gmail from changing the text color in conversation threads. */
-      .im {
-        color: inherit !important;
-      }
-
-      /* If the above doesn't work, add a .g-img class to any image in question. */
-      img.g-img + div {
-        display: none !important;
-      }
-
-      /* What it does: Removes right gutter in Gmail iOS app: https://github.com/TedGoas/Cerberus/issues/89  */
-      /* Create one of these media queries for each additional viewport size you'd like to fix */
-
-      /* iPhone 4, 4S, 5, 5S, 5C, and 5SE */
-      @media only screen and (min-device-width: 320px) and (max-device-width: 374px) {
-        u ~ div .email-container {
-          min-width: 320px !important;
+        body {
+          margin: 0;
+          padding: 0;
+          background: white;
+          font-family: 'Poppins', sans-serif;
+          overflow-x: hidden;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
         }
-      }
-      /* iPhone 6, 6S, 7, 8, and X */
-      @media only screen and (min-device-width: 375px) and (max-device-width: 413px) {
-        u ~ div .email-container {
-          min-width: 375px !important;
+        .email-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          max-width: 400px;
+          background: #f7f7f7;
+          padding: 75px 46px;
+          border-radius: 8px;
+          text-align: center;
         }
-      }
-      /* iPhone 6+, 7+, and 8+ */
-      @media only screen and (min-device-width: 414px) {
-        u ~ div .email-container {
-          min-width: 414px !important;
+        h2 {
+          color: #2F4A4D;
+          font-size: 30px;
+          font-weight: 400;
+          line-height: 32px;
+          padding-bottom: 16px;
         }
-      }
+        h2 strong {
+          font-weight: 600;
+        }
+        p {
+          font-size: 16px;
+          color: #2F4A4D;
+          padding-bottom: 28px;
+        }
+        .btn {
+          display: inline-block;
+          background: #00735E;
+          color: #ffffff;
+          padding: 14px 20px;
+          font-size: 16px;
+          font-weight: 600;
+          border-radius: 6px;
+          line-height: 22px;
+          text-decoration: none;
+          margin-bottom: 92px;
+        }
+        .logo {
+          margin-top: 20px;
+        }
     </style>
-
-    <style>
-      .primary {
-        background: #2f4a4d;
-      }
-      .bg_white {
-        background: #ffffff;
-      }
-      .bg_light {
-        background: #fafafa;
-      }
-      .bg_black {
-        background: #000000;
-      }
-      .bg_dark {
-        background: rgba(0, 0, 0, 0.8);
-      }
-      .email-section {
-        padding: 2.5em;
-      }
-      .btn {
-        text-align: center;
-        display: inline-block;
-        padding: 18px;
-        font-weight: bold;
-        cursor: pointer;
-      }
-      .btn.btn-primary {
-        border-radius: 5px;
-        background: #2f4a4d;
-        color: white;
-        font-weight: 900;
-        font-size: 22px;
-      }
-      .btn.btn-white {
-        border-radius: 5px;
-        background: #ffffff;
-        color: #000000;
-      }
-      .btn.btn-white-outline {
-        border-radius: 5px;
-        background: transparent;
-        border: 1px solid #fff;
-        color: #fff;
-      }
-      .btn.btn-black-outline {
-        border-radius: 0px;
-        background: transparent;
-        border: 2px solid #000;
-        color: #000;
-        font-weight: 700;
-      }
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6 {
-        font-family: "Lato", sans-serif;
-        color: #000000;
-        margin-top: 0;
-        font-weight: 400;
-      }
-      body {
-        font-family: "Lato", sans-serif;
-        font-weight: 400;
-        font-size: 15px;
-        line-height: 1.8;
-        color: rgba(0, 0, 0, 0.4);
-      }
-      a {
-        color: #2f4a4d;
-      }
-      .logo h1 {
-        margin: 0;
-      }
-      .logo h1 a {
-        color: #2f4a4d;
-        font-size: 24px;
-        font-weight: 700;
-        font-family: "Lato", sans-serif;
-      }
-      .hero {
-        position: relative;
-        z-index: 0;
-      }
-
-      .hero .text {
-        color: rgba(0, 0, 0, 0.3);
-      }
-      .hero .text h2 {
-        color: #000;
-        font-size: 40px;
-        margin-bottom: 0;
-        font-weight: 400;
-        line-height: 1.4;
-      }
-      .hero .text h3 {
-        font-size: 24px;
-        font-weight: 300;
-      }
-      .hero .text h2 span {
-        font-weight: 600;
-        color: #2f4a4d;
-      }
-      .heading-section h2 {
-        color: #000000;
-        font-size: 28px;
-        margin-top: 0;
-        line-height: 1.4;
-        font-weight: 400;
-      }
-      .heading-section .subheading {
-        margin-bottom: 20px !important;
-        display: inline-block;
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        color: rgba(0, 0, 0, 0.4);
-        position: relative;
-      }
-      .heading-section .subheading::after {
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: -10px;
-        content: "";
-        width: 100%;
-        height: 2px;
-        background: #2f4a4d;
-        margin: 0 auto;
-      }
-
-      .heading-section-white {
-        color: rgba(255, 255, 255, 0.8);
-      }
-      ction-white h2 {
-        color: #ffffff;
-      }
-      .heading-section-white .subheading {
-        margin-bottom: 0;
-        display: inline-block;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        color: rgba(255, 255, 255, 0.4);
-      }
-      ul.social {
-        padding: 0;
-      }
-      ul.social li {
-        display: inline-block;
-        margin-right: 10px;
-      }
-
-      /*FOOTER*/
-
-      .footer {
-        border-top: 1px solid rgba(0, 0, 0, 0.05);
-        color: rgba(0, 0, 0, 0.5);
-      }
-      .footer .heading {
-        color: #000;
-        font-size: 20px;
-      }
-      .footer ul {
-        margin: 0;
-        padding: 0;
-      }
-      .footer ul li {
-        list-style: none;
-        margin-bottom: 10px;
-      }
-      .footer ul li a {
-        color: rgba(0, 0, 0, 1);
-      }
-    </style>
-  </head>
-  <body
-    width="100%"
-    style="margin: 0; padding: 0 !important; background-color: #f1f1f1"
-  >
-    <center style="width: 100%; background-color: #f1f1f1">
-      <div
-        style="
-          display: none;
-          font-size: 1px;
-          max-height: 0px;
-          max-width: 0px;
-          opacity: 0;
-          overflow: hidden;
-          font-family: sans-serif;
-        "
-      >
-        &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+</head>
+<body>
+    <div class="email-container">
+      <h2>Bem-vindo <strong><%= props.first_name %></strong>!</h2>
+      <p>Para confirmar o seu cadastro e ter acesso ao aplicativo e-COO, clique no botão abaixo:</p>
+      <a href="<%= props.url %>" class="btn">Confirmar cadastro</a>
+      <div class="logo">
+        <svg width="112" height="37" viewBox="0 0 112 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#clip0_6782_4832)">
+            <path d="M23.8776 13.0952C22.8535 10.9956 21.4297 8.8322 19.6468 6.66177C16.6294 2.98656 13.6544 0.587751 13.5289 0.486842L12.9222 0L12.3155 0.486842C12.1899 0.587751 9.21498 2.98655 6.19756 6.66C4.4147 8.83043 2.99089 10.9955 1.9668 13.0934C0.661497 15.7666 0 18.3477 0 20.7625C0 24.1899 1.35483 27.3216 3.81511 29.5823C5.98001 31.5722 8.84001 32.753 11.9512 32.9548V36.0476H13.8932V32.9548C17.0026 32.7512 19.8626 31.5722 22.0293 29.5823C24.4896 27.3216 25.8444 24.1899 25.8444 20.7625C25.8444 18.346 25.1829 15.7666 23.8793 13.0934L23.8776 13.0952ZM12.1917 12.8774C12.1917 12.4738 12.5189 12.1463 12.9222 12.1463C13.3255 12.1463 13.6527 12.4738 13.6527 12.8774C13.6527 13.2811 13.3255 13.6086 12.9222 13.6086C12.5189 13.6086 12.1917 13.2811 12.1917 12.8774ZM13.8932 31.0074V26.3833L17.6747 22.5983C18.0037 22.7435 18.3663 22.8249 18.7483 22.8249C20.2217 22.8249 21.4208 21.6246 21.4208 20.15C21.4208 18.6753 20.2217 17.475 18.7483 17.475C17.275 17.475 16.0758 18.6753 16.0758 20.15C16.0758 20.5323 16.1572 20.8953 16.3022 21.2245L13.895 23.634V15.37C14.889 14.9806 15.5965 14.0104 15.5965 12.8792C15.5965 11.4045 14.3973 10.2042 12.924 10.2042C11.4506 10.2042 10.2514 11.4045 10.2514 12.8792C10.2514 14.0122 10.9589 14.9806 11.9529 15.37V23.634L9.54573 21.2245C9.69076 20.8953 9.77212 20.5323 9.77212 20.15C9.77212 18.6753 8.57294 17.475 7.0996 17.475C5.62627 17.475 4.42708 18.6753 4.42708 20.15C4.42708 21.6246 5.62627 22.8249 7.0996 22.8249C7.48164 22.8249 7.84423 22.7435 8.17321 22.5983L11.9547 26.3833V31.0074C6.18518 30.5755 1.94735 26.3178 1.94735 20.7643C1.94735 15.9295 5.06382 11.1142 7.67797 7.92579C9.78273 5.35703 11.914 3.40258 12.9257 2.52096C13.9392 3.40258 16.0687 5.3588 18.1735 7.92579C20.7876 11.1142 23.9041 15.9295 23.9041 20.7643C23.9041 26.3178 19.6663 30.5772 13.8968 31.0074H13.8932ZM18.0178 20.1482C18.0178 19.7445 18.3451 19.417 18.7483 19.417C19.1516 19.417 19.4788 19.7445 19.4788 20.1482C19.4788 20.5518 19.1516 20.8793 18.7483 20.8793C18.3451 20.8793 18.0178 20.5518 18.0178 20.1482ZM7.82654 20.1482C7.82654 20.5518 7.49933 20.8793 7.09606 20.8793C6.6928 20.8793 6.36559 20.5518 6.36559 20.1482C6.36559 19.7445 6.6928 19.417 7.09606 19.417C7.49933 19.417 7.82654 19.7445 7.82654 20.1482Z" fill="#2F4A4D"/>
+            <path d="M46.1788 22.1822H36.3678C36.5093 23.0479 36.8878 23.7366 37.5033 24.2482C38.1188 24.7598 38.9041 25.0147 39.8575 25.0147C40.9983 25.0147 41.9799 24.6164 42.7988 23.8162L45.3723 25.0254C44.7303 25.9353 43.9626 26.6098 43.0677 27.0471C42.1727 27.4844 41.1097 27.7021 39.8787 27.7021C37.9703 27.7021 36.4138 27.1002 35.2146 25.8946C34.0137 24.689 33.4141 23.1789 33.4141 21.3661C33.4141 19.5533 34.0119 17.9635 35.2093 16.7367C36.4067 15.508 37.9066 14.8955 39.7124 14.8955C41.6297 14.8955 43.188 15.5098 44.3889 16.7367C45.5899 17.9653 46.1895 19.5869 46.1895 21.6015L46.1788 22.184V22.1822ZM43.1243 19.7746C42.9226 19.0947 42.5247 18.5424 41.9304 18.1175C41.3361 17.6926 40.6481 17.4802 39.8628 17.4802C39.012 17.4802 38.2639 17.7192 37.6218 18.1972C37.2186 18.4964 36.8454 19.0222 36.5005 19.7763H43.1225L43.1243 19.7746Z" fill="#00735E"/>
+            <path d="M49.0762 19.8984H54.759V22.7416H49.0762V19.8984Z" fill="#00735E"/>
+            <path d="M73.7308 13.8135L71.5412 15.9042C70.0501 14.3269 68.3734 13.5391 66.5109 13.5391C64.9386 13.5391 63.6138 14.0772 62.5384 15.1536C61.4613 16.23 60.9236 17.5559 60.9236 19.1315C60.9236 20.2291 61.1624 21.2046 61.6381 22.0561C62.1157 22.9077 62.7896 23.5769 63.6615 24.0619C64.5335 24.547 65.5028 24.7913 66.5675 24.7913C67.4767 24.7913 68.3079 24.6214 69.0597 24.2814C69.8114 23.9415 70.6391 23.3237 71.5412 22.4261L73.6654 24.6444C72.4503 25.8323 71.3006 26.6555 70.2199 27.114C69.1392 27.5725 67.9047 27.8026 66.518 27.8026C63.9605 27.8026 61.8663 26.9901 60.2373 25.3667C58.6083 23.7433 57.793 21.6631 57.793 19.1245C57.793 17.4816 58.1644 16.0228 58.9055 14.7464C59.6483 13.47 60.7096 12.4432 62.0945 11.6678C63.4776 10.8924 64.9669 10.5029 66.564 10.5029C67.9206 10.5029 69.2277 10.7897 70.4852 11.3633C71.741 11.9369 72.8252 12.753 73.7343 13.8117L73.7308 13.8135Z" fill="#00735E"/>
+            <path d="M84.2394 10.5047C86.567 10.5047 88.5692 11.3491 90.2442 13.0345C91.9192 14.7216 92.7575 16.7788 92.7575 19.2041C92.7575 21.6295 91.9315 23.6424 90.2778 25.3065C88.6241 26.9706 86.6201 27.8026 84.2607 27.8026C81.9012 27.8026 79.7381 26.9476 78.1038 25.2392C76.4695 23.5308 75.6523 21.5003 75.6523 19.1475C75.6523 17.5719 76.0326 16.1237 76.7949 14.8031C77.5572 13.4824 78.6026 12.4344 79.9344 11.6625C81.2662 10.8906 82.7006 10.5029 84.2377 10.5029L84.2394 10.5047ZM84.2058 13.5727C82.683 13.5727 81.4024 14.102 80.3642 15.1625C79.326 16.2229 78.8077 17.5701 78.8077 19.2041C78.8077 21.0258 79.4604 22.4669 80.7674 23.5255C81.7827 24.354 82.9465 24.7683 84.2607 24.7683C85.7464 24.7683 87.011 24.2301 88.0563 23.1555C89.1016 22.0809 89.6234 20.7549 89.6234 19.1811C89.6234 17.6073 89.0963 16.2866 88.0439 15.2014C86.9915 14.1162 85.711 13.5727 84.2023 13.5727H84.2058Z" fill="#00735E"/>
+            <path d="M103.482 10.5047C105.809 10.5047 107.811 11.3491 109.486 13.0345C111.161 14.7216 112 16.7788 112 19.2041C112 21.6295 111.174 23.6424 109.52 25.3065C107.866 26.9706 105.862 27.8026 103.503 27.8026C101.143 27.8026 98.9802 26.9476 97.346 25.2392C95.7117 23.5308 94.8945 21.5003 94.8945 19.1475C94.8945 17.5719 95.2748 16.1237 96.0371 14.8031C96.7994 13.4824 97.8447 12.4344 99.1766 11.6625C100.508 10.8906 101.943 10.5029 103.48 10.5029L103.482 10.5047ZM103.448 13.5727C101.925 13.5727 100.645 14.102 99.6064 15.1625C98.5681 16.2229 98.0499 17.5701 98.0499 19.2041C98.0499 21.0258 98.7026 22.4669 100.01 23.5255C101.025 24.354 102.189 24.7683 103.503 24.7683C104.989 24.7683 106.253 24.2301 107.298 23.1555C108.344 22.0809 108.866 20.7549 108.866 19.1811C108.866 17.6073 108.338 16.2866 107.286 15.2014C106.234 14.1162 104.953 13.5727 103.444 13.5727H103.448Z" fill="#00735E"/>
+          </g>
+          <defs>
+            <clipPath id="clip0_6782_4832">
+            <rect width="112" height="37" fill="white"/>
+            </clipPath>
+          </defs>
+          </svg>
       </div>
-      <div style="max-width: 600px; margin: 0 auto" class="email-container">
-        <table
-          align="center"
-          role="presentation"
-          cellspacing="0"
-          cellpadding="0"
-          border="0"
-          width="100%"
-          style="margin: auto"
-        >
-          <tr>
-            <td
-              valign="top"
-              class="bg_white"
-              style="padding: 1em 2.5em 0 2.5em"
-            >
-              <table
-                role="presentation"
-                border="0"
-                cellpadding="0"
-                cellspacing="0"
-                width="100%"
-              >
-                <tr>
-                  <td class="logo" style="text-align: center">
-                    <h1 style="margin-top: 0.4rem"><a href="#">e-COO</a></h1>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <tr>
-            <td
-              valign="middle"
-              class="hero bg_white"
-              style="padding: 2em 0 4em 0"
-            >
-              <table>
-                <tr>
-                  <td>
-                    <div
-                      class="text"
-                      style="padding: 0 2.5em; text-align: center"
-                    >
-                      <h2>
-                        Bem-vindo <br />
-                        <strong class="logo"><%= props.first_name %></strong>!
-                      </h2>
-                      <h3 style="margin-top: 0.4rem">
-                        Complete seu cadastro e comece a desfrutar dos nossos
-                        serviços.
-                      </h3>
-                      <p>
-                        <a
-                          class="btn btn-primary password"
-                          href="<%= props.url %>"
-                        >
-                          VERIFICAR CONTA</a
-                        >
-                      </p>
-                    </div>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </table>
-        <table
-          align="center"
-          role="presentation"
-          cellspacing="0"
-          cellpadding="0"
-          border="0"
-          width="100%"
-          style="margin: auto"
-        >
-          <tr>
-            <td valign="middle" class="bg_light footer email-section">
-              <table>
-                <tr>
-                  <td valign="top" width="100%" style="padding-top: 20px">
-                    <table
-                      role="presentation"
-                      cellspacing="0"
-                      cellpadding="0"
-                      border="0"
-                      width="100%"
-                    >
-                      <tr>
-                        <td style="text-align: left; padding-right: 10px">
-                          <h3 class="heading">Sobre o e-COO</h3>
-                          <p>
-                            O e-COO é uma cooperativa de plataforma projetada
-                            com valores voltados para o fortalecimento da
-                            agricultura familiar. Quando você compra através da
-                            plataforma, você participa de uma construção de
-                            futuro!
-                          </p>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style="text-align: left; padding-right: 10px">
-                          <h3 class="heading"></h3>
-                          <p>Caso já tenha verificado, ignore.</p>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                  <td
-                    valign="top"
-                    width="33.333%"
-                    style="padding-top: 20px"
-                  ></td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </center>
-  </body>
+    </div>
+</body>
 </html>
+
