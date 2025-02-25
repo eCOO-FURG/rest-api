@@ -49,6 +49,7 @@ import { updateUserController } from "@/infra/http/controllers/update-user";
 import { verifyUserController } from "@/infra/http/controllers/verify-user";
 import { updatePaymentController } from "@/infra/http/controllers/update-payment";
 import { fetchInboundReportController } from "@/infra/http/controllers/fetch-inbound-report";
+import { deleteOfferController } from "@/infra/http/controllers/delete-offer";
 
 // Webhooks
 import { openPixWebhookListener } from "@/infra/http/webhooks/open-pix";
@@ -163,6 +164,12 @@ router.post(
   ensureAuthenticated,
   ensureRole(["PRODUCER"]),
   createOfferController
+);
+router.delete(
+  "/catalogs",
+  ensureAuthenticated,
+  ensureRole(["PRODUCER"]),
+  deleteOfferController
 );
 
 // Catalogos
