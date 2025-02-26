@@ -14,9 +14,14 @@ export interface OffersRepositorySearchRequest {
 }
 
 export interface OffersRepository {
+  find(
+    type: RepositoryResponse,
+    filters: OffersRepositorySearchRequest,
+  ): Promise<Offer | null>
   list(
     type: RepositoryResponse,
     filters: OffersRepositorySearchRequest,
     page?: number
   ): Promise<Offer[]>;
+  update(offer: Offer): Promise<void>;
 }

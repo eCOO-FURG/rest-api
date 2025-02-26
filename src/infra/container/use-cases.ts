@@ -42,6 +42,7 @@ import { UpdateUserUseCase } from "@/core/use-cases/update-user";
 import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
 import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
 import { FetchInboundReportUseCase } from "@/core/use-cases/fetch-inbound-report";
+import { UpdateOfferUseCase } from "@/core/use-cases/update-offer";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -92,6 +93,18 @@ export default (container: AwilixContainer) => {
           productsRepository,
           catalogsRepository,
           cyclesRepository
+        )
+    ),
+    updateOfferUseCase: asFunction(
+      ({
+        farmsRepository,
+        cyclesRepository,
+        offersRepository
+      }) =>
+        new UpdateOfferUseCase(
+          farmsRepository,
+          cyclesRepository,
+          offersRepository
         )
     ),
     updateUserUseCase: asFunction(
