@@ -72,17 +72,9 @@ export class Order extends Entity<OrderProps> {
     this.props.status = value;
   }
 
-  static create(props: Optional<OrderProps, "status" | "price">) {
-    const cost = props.offer?.price ?? 1;
-
-    const price =
-      props.price ?? props.offer?.product?.pricing === "WEIGHT"
-        ? (cost / 1000) * props.amount
-        : cost * props.amount;
-
+  static create(props: Optional<OrderProps, "status">) {
     const order = new Order({
       ...props,
-      price,
       status: props.status ?? "PENDING",
     });
     return order;

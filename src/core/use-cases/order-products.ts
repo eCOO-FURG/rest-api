@@ -132,13 +132,18 @@ export class OrderProductsUseCase {
       if (!farm)
         throw new ResourceNotFoundError("Fazenda", catalog.farm_id.value);
 
+      const cost =
+        offer.product?.pricing === "WEIGHT"
+          ? (offer.price / 1000) * item.amount
+          : offer.price * item.amount;
+
       const order = Order.create({
         amount: item.amount,
+        price: cost + (cost * catalog.tax) / 100,
         bag_id: bag.id,
         box_id: box.id,
         box,
         offer_id: offer.id,
-        offer,
       });
 
       bag.add(order);

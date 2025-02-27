@@ -12,5 +12,6 @@ export function makeOrder(props: Partial<Order> = {}) {
     bag_id: props.bag_id ?? new UUID(),
     box_id: props.box_id ?? new UUID(),
     amount: props.amount ?? faker.number.int({ min: 10, max: 12 }),
+    price: props.price ?? faker.number.int({ min: 10, max: 12 }),
   });
 }
