@@ -5,7 +5,7 @@ import { Message, MessageProps } from "@/core/entities/message";
 import { View } from "@/infra/types/view";
 
 export class MessagePresenter {
-  static toHttp(message: Message): View<MessageProps> {
+  static toWS(message: Message): View<MessageProps> {
     return {
       id: message.id.value,
       to: message.to,

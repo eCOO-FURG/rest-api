@@ -17,9 +17,27 @@ import { Logger } from "@/infra/logs/logger";
 import { MessagePresenter } from "@/infra/http/presenters/message-presenter";
 
 export class Telegram implements Chat {
-  private client: WebSocket;
+  private client: WebSocket | null = null;
 
   constructor() {
+    this.connect();
+  }
+
+  async send(message: Message): Promise<void> {
+    if (!this.client) return;
+
+    try {
+      if (this.client.readyState !== WebSocket.OPEN) {
+        await this.connect();
+      }
+
+      this.client.send(JSON.stringify(MessagePresenter.toWS(message)));
+    } catch (error) {
+      Logger.log(error);
+    }
+  }
+
+  private async connect() {
     this.client = new WebSocket(env.WS_URL, {
       headers: { Authorization: env.INTEGRATIONS_AUTHORIZATION },
     });
@@ -27,15 +45,5 @@ export class Telegram implements Chat {
     this.client.on("error", (error) => {
       Logger.log(error);
     });
-  }
-
-  async send(message: Message): Promise<void> {
-    try {
-      if (this.client.readyState === WebSocket.OPEN) {
-        this.client.send(JSON.stringify(MessagePresenter.toHttp(message)));
-      }
-    } catch (error) {
-      Logger.log(error);
-    }
   }
 }
