@@ -29,6 +29,7 @@ export class PrismaOfferMapper {
         product: PrismaProductMapper.toDomain(raw.product),
       }),
       description: raw.description,
+      expires_at: raw.expires_at,
       created_at: raw.created_at,
       updated_at: raw.updated_at,
     });
@@ -42,6 +43,7 @@ export class PrismaOfferMapper {
       description: offer.description,
       amount: offer.amount,
       price: offer.price,
+      expires_at: offer.expires_at,
       updated_at: offer.updated_at,
       created_at: offer.created_at,
     };

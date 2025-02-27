@@ -17,6 +17,7 @@ export const registerProductSchema = {
     pricing: z.enum(["UNIT", "WEIGHT"]),
     image: z.custom<Express.Multer.File>(),
     category_id: z.string(),
+    perishable: z.boolean()
   }),
 };
 
@@ -26,7 +27,7 @@ export async function registerProductController(
   next: NextFunction
 ) {
   try {
-    const { name, pricing, image, category_id } =
+    const { name, pricing, image, category_id, perishable } =
       registerProductSchema.body.parse(request.body);
 
     const registerProductUseCase = container.resolve<RegisterProductUseCase>(
@@ -38,6 +39,7 @@ export async function registerProductController(
       pricing,
       image: toFile(image),
       category_id,
+      perishable
     });
 
     return response.sendStatus(201);

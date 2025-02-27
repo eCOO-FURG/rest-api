@@ -4,6 +4,7 @@ import { Payment } from "@/core/entities/payment";
 
 // Repositories
 import { BagsRepository } from "@/core/repositories/bags-repository";
+import { PaymentsRepository } from "@/core/repositories/payments-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -19,6 +20,7 @@ interface OpenPaymentUseCaseRequest {
 export class OpenPaymentUseCase {
   constructor(
     private bagsRepository: BagsRepository,
+    private paymentsRepository: PaymentsRepository,
     private pixProvider: PixProvider
   ) {}
 
@@ -37,9 +39,7 @@ export class OpenPaymentUseCase {
       bag,
     });
 
-    bag.payments.set(payment.id.value, payment);
-
-    await this.bagsRepository.update(bag);
+    await this.paymentsRepository.create(payment);
 
     const charge = await this.pixProvider.charge(payment);
 

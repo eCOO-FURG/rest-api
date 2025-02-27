@@ -1,6 +1,6 @@
 // Entities
-import { Order } from "@/core/entities/order";
 import { UUID } from "@/core/entities/aggregates/uuid";
+import { Order } from "@/core/entities/order";
 
 // Libraries
 import { Prisma } from "@prisma/client";

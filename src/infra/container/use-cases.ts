@@ -115,6 +115,7 @@ export default (container: AwilixContainer) => {
         bagsRepository,
         boxesRepository,
         addressesRepository,
+        farmsRepository,
         otpProvider,
       }) =>
         new OrderProductsUseCase(
@@ -125,6 +126,7 @@ export default (container: AwilixContainer) => {
           bagsRepository,
           boxesRepository,
           addressesRepository,
+          farmsRepository,
           otpProvider
         )
     ),
@@ -169,8 +171,13 @@ export default (container: AwilixContainer) => {
         )
     ),
     updateBagUseCase: asFunction(
-      ({ bagsRepository, usersRepository, cyclesRepository }) =>
-        new UpdateBagUseCase(bagsRepository, usersRepository, cyclesRepository)
+      ({ bagsRepository, usersRepository, cyclesRepository, chat }) =>
+        new UpdateBagUseCase(
+          bagsRepository,
+          usersRepository,
+          cyclesRepository,
+          chat
+        )
     ),
     fetchBagUseCase: asFunction(
       ({ bagsRepository, usersRepository }) =>
@@ -211,8 +218,8 @@ export default (container: AwilixContainer) => {
       ({ usersRepository }) => new RequestPasswordUpdateUseCase(usersRepository)
     ),
     openPaymentUseCase: asFunction(
-      ({ bagsRepository, pixProvider }) =>
-        new OpenPaymentUseCase(bagsRepository, pixProvider)
+      ({ bagsRepository, paymentsRepository, pixProvider }) =>
+        new OpenPaymentUseCase(bagsRepository, paymentsRepository, pixProvider)
     ),
     registerPaymentUseCase: asFunction(
       ({ bagsRepository, paymentsRepository }) =>

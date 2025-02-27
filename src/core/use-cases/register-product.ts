@@ -20,6 +20,7 @@ interface RegisterProductUseCaseRequest {
   pricing: Product["pricing"];
   image: File;
   category_id: string;
+  perishable: boolean
 }
 
 export class RegisterProductUseCase {
@@ -33,7 +34,8 @@ export class RegisterProductUseCase {
     name,
     image,
     pricing,
-    category_id,
+    perishable,
+    category_id
   }: RegisterProductUseCaseRequest) {
     const category = await this.categoriesRepository.find("basic", {
       id: category_id,
@@ -52,6 +54,7 @@ export class RegisterProductUseCase {
       const product = Product.create({
         name,
         pricing,
+        perishable,
         image: urls[0],
         archived: false,
         category_id: category.id,

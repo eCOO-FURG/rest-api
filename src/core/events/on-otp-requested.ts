@@ -1,5 +1,5 @@
 // Entities
-import { Email } from "@/core/entities/email";
+import { Message } from "@/core/entities/message";
 
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
@@ -47,12 +47,12 @@ export class OnOtpRequestEvent {
       },
     });
 
-    const mail = Email.create({
+    const message = Message.create({
       to: user.email,
       subject: "Senha para acesso | eCOO",
       content: view,
     });
 
-    await this.mailer.send([mail]);
+    await this.mailer.send([message]);
   }
 }

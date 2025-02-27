@@ -52,6 +52,7 @@ export async function seedDevelopment() {
       admin_id: farmerId.value,
       catalogs: {
         create: {
+          tax: 20,
           cycle_id: cycleId.value,
           box: {
             create: {
@@ -69,6 +70,9 @@ export async function seedDevelopment() {
                     ? Math.floor(Math.random() * 20 + 1)
                     : Math.floor(Math.random() * 20 + 1) * 100,
                 price: "10",
+                expires_at: product.perishable
+                  ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+                  : null,
               })),
             },
           },

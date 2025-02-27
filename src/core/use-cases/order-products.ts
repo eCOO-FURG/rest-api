@@ -1,33 +1,33 @@
 // Entities
-import { Cycle, Week } from "@/core/entities/cycle";
-import { Bag } from "@/core/entities/bag";
-import { Order } from "@/core/entities/order";
-import { Box } from "@/core/entities/box";
 import { Address } from "@/core/entities/address";
-import { User } from "@/core/entities/user";
 import { UUID } from "@/core/entities/aggregates/uuid";
+import { Bag } from "@/core/entities/bag";
+import { Box } from "@/core/entities/box";
+import { Cycle, Week } from "@/core/entities/cycle";
+import { Order } from "@/core/entities/order";
+import { User } from "@/core/entities/user";
 
 // Repositories
-import { UsersRepository } from "@/core/repositories/users-repository";
-import { OffersRepository } from "@/core/repositories/offers-repository";
-import { BagsRepository } from "@/core/repositories/bags-repository";
-import { CyclesRepository } from "@/core/repositories/cycles-repository";
-import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
-import { BoxesRepository } from "@/core/repositories/boxes-repository";
 import { AddressesRepository } from "@/core/repositories/addresses-repository";
+import { BagsRepository } from "@/core/repositories/bags-repository";
+import { BoxesRepository } from "@/core/repositories/boxes-repository";
+import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
+import { CyclesRepository } from "@/core/repositories/cycles-repository";
+import { FarmsRepository } from "@/core/repositories/farms-repository";
+import { OffersRepository } from "@/core/repositories/offers-repository";
+import { UsersRepository } from "@/core/repositories/users-repository";
 
 // Errors
-import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 
 // Utils
 import { mostPast } from "@/core/utils/most-past";
 
 // Services
 import { OtpProvider } from "@/core/cryptography/otp-provider";
-
 interface OrderProductsUseCaseRequest {
   user_id: string;
   cycle_id: string;
@@ -61,6 +61,7 @@ export class OrderProductsUseCase {
     private bagsRepository: BagsRepository,
     private boxesRepository: BoxesRepository,
     private addressesRepository: AddressesRepository,
+    private farmsRepository: FarmsRepository,
     private otpGenerator: OtpProvider
   ) {}
 
@@ -124,12 +125,25 @@ export class OrderProductsUseCase {
 
       const box = await this.useBox(catalog.id);
 
+      const farm = await this.farmsRepository.find("basic", {
+        id: catalog.farm_id.value,
+      });
+
+      if (!farm)
+        throw new ResourceNotFoundError("Fazenda", catalog.farm_id.value);
+
+      const cost =
+        offer.product?.pricing === "WEIGHT"
+          ? (offer.price / 1000) * item.amount
+          : offer.price * item.amount;
+
       const order = Order.create({
         amount: item.amount,
+        price: cost + (cost * catalog.tax) / 100,
         bag_id: bag.id,
         box_id: box.id,
+        box,
         offer_id: offer.id,
-        offer,
       });
 
       bag.add(order);
@@ -157,14 +171,12 @@ export class OrderProductsUseCase {
 
     if (found) return found;
 
-    const destination = Address.create(address);
-
-    return destination;
+    return Address.create(address);
   }
 
   private async useBag({ bag_id, user, address, cycle }: UseBagRequest) {
     if (bag_id) {
-      const bag = await this.bagsRepository.find("merge", {
+      const bag = await this.bagsRepository.find("aggregate", {
         id: bag_id,
         statuses: ["PENDING"],
         cycle: { id: cycle.id.value },
@@ -179,7 +191,7 @@ export class OrderProductsUseCase {
       return { bag, existed: true };
     }
 
-    const found = await this.bagsRepository.find("merge", {
+    const found = await this.bagsRepository.find("aggregate", {
       user: { id: user.id.value },
       cycle: { id: cycle.id.value },
       statuses: ["PENDING"],
@@ -194,7 +206,7 @@ export class OrderProductsUseCase {
     const bag = Bag.create({
       user_id: user.id,
       cycle_id: cycle.id,
-      address_id: address ? address.id : null,
+      address_id: address?.id,
       code,
       user,
       address,
@@ -210,10 +222,6 @@ export class OrderProductsUseCase {
 
     if (found) return found;
 
-    const box = Box.create({ catalog_id });
-
-    await this.boxesRepository.create(box);
-
-    return box;
+    return Box.create({ catalog_id });
   }
 }

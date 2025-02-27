@@ -1,6 +1,6 @@
 // Entities
-import { Catalog } from "@/core/entities/catalog";
 import { UUID } from "@/core/entities/aggregates/uuid";
+import { Catalog } from "@/core/entities/catalog";
 
 // Libraries
 import { Prisma } from "@prisma/client";
@@ -18,6 +18,7 @@ export class PrismaCatalogMapper {
   static toDomain(raw: PrismaCatalog): Catalog {
     return Catalog.create({
       id: new UUID(raw.id),
+      tax: raw.tax,
       cycle_id: new UUID(raw.cycle_id),
       farm_id: new UUID(raw.farm_id),
       ...(raw.farm && {
@@ -39,6 +40,7 @@ export class PrismaCatalogMapper {
   static toPrisma(catalog: Catalog): Prisma.CatalogUncheckedCreateInput {
     return {
       id: catalog.id.value,
+      tax: catalog.tax,
       cycle_id: catalog.cycle_id.value,
       farm_id: catalog.farm_id.value,
       created_at: catalog.created_at,

@@ -13,6 +13,7 @@ export interface ProductProps extends EntityRequest {
   image: string;
   archived: boolean;
   pricing: (typeof PRODUCT_PRICINGS)[number];
+  perishable: boolean;
 
   category_id: UUID;
   category?: Category;
@@ -35,6 +36,10 @@ export class Product extends Entity<ProductProps> {
     return this.props.archived;
   }
 
+  get perishable() {
+    return this.props.perishable;
+  }
+
   set name(value: string) {
     this.props.name = value;
   }
@@ -49,6 +54,10 @@ export class Product extends Entity<ProductProps> {
 
   set archived(value: boolean) {
     this.props.archived = value;
+  }
+
+  set perishable(value: boolean) {
+    this.props.perishable = value;
   }
 
   unarchive() {
@@ -68,10 +77,11 @@ export class Product extends Entity<ProductProps> {
     return this.props.category;
   }
 
-  static create(props: Optional<ProductProps, "archived">) {
+  static create(props: Optional<ProductProps, "archived" | "perishable">) {
     const product = new Product({
       ...props,
       archived: props.archived ?? false,
+      perishable: props.perishable ?? false,
     });
     return product;
   }

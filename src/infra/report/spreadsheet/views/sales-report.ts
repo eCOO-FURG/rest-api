@@ -4,6 +4,9 @@ import { SpreadsheetColumn } from "@/core/report/spreadsheet-service";
 // Entities
 import { Bag } from "@/core/entities/bag";
 
+// Utils
+import { toPrice } from "@/infra/utils/to-price";
+
 const columns: SpreadsheetColumn[] = [
   { header: "SACOLA", key: "bag", width: 10 },
   { header: "CONSUMIDOR", key: "user", width: 20 },
@@ -30,9 +33,6 @@ export const SALES_REPORT_VIEW = async ({ bags }: BagsReportViewProps) => {
     const orders = Array.from(bag.orders.values());
 
     for (const order of orders) {
-      const offerPrice = order.offer?.price ? Number(order.offer.price) : 0;
-      const product = order.offer?.product;
-
       const payments = Array.from(bag.payments.values())
         .map((payment) => payment.method)
         .join(", ");
@@ -41,16 +41,25 @@ export const SALES_REPORT_VIEW = async ({ bags }: BagsReportViewProps) => {
         .map((payment) => payment.flag)
         .join(", ");
 
+      const offerPrice = Number(order.offer?.price) ?? 0;
+
+      const tax = Number(order.offer?.catalog?.tax) ?? 0;
+
+      const amount =
+        order.offer?.product?.pricing === "UNIT"
+          ? String(order.amount)
+          : `${String(order.amount / 1000)} kg`;
+
       rows.push({
         bag: bag.code,
         user: `${bag.user?.first_name} ${bag.user?.last_name}`,
-        price: product?.pricing === "UNIT" ? order.price : order.price / 1000,
-        product: product?.name,
-        producer: order.offer?.catalog?.farm?.admin?.first_name,
-        amount:
-          product?.pricing === "UNIT" ? order.amount : order.amount / 1000,
-        offer_price: offerPrice,
-        pricing: product?.pricing === "UNIT" ? "Unidade" : "Peso",
+        price: toPrice(order.price),
+        product: order.offer?.product?.name,
+        producer: order.offer?.catalog?.farm?.name,
+        amount,
+        offer_price: toPrice(offerPrice),
+        tax: toPrice((order.price / 100) * tax),
+        pricing: order.offer?.product?.pricing === "UNIT" ? "Unidade" : "Peso",
         date: bag.created_at.toLocaleDateString("pt-BR"),
         payments,
         flags,

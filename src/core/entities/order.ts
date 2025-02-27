@@ -1,12 +1,12 @@
 // Entities
-import { Entity, EntityRequest } from "@/core/entities/entity";
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { Bag } from "@/core/entities/bag";
 import { Box } from "@/core/entities/box";
+import { Entity, EntityRequest } from "@/core/entities/entity";
 
 // Types
-import { Optional } from "@/core/types/optional";
 import { Offer } from "@/core/entities/offer";
+import { Optional } from "@/core/types/optional";
 
 export interface OrderProps extends EntityRequest {
   amount: number;
@@ -72,17 +72,9 @@ export class Order extends Entity<OrderProps> {
     this.props.status = value;
   }
 
-  static create(props: Optional<OrderProps, "status" | "price">) {
-    const cost = props.offer?.price ?? 1;
-
-    const price =
-      props.price ?? props.offer?.product?.pricing === "WEIGHT"
-        ? (cost / 1000) * props.amount
-        : cost * props.amount;
-
+  static create(props: Optional<OrderProps, "status">) {
     const order = new Order({
       ...props,
-      price,
       status: props.status ?? "PENDING",
     });
     return order;

@@ -23,6 +23,7 @@ interface UpdateProductUseCaseRequest {
   pricing?: Product["pricing"];
   category_id?: string;
   archived?: boolean;
+  perishable?: boolean
 }
 
 export class UpdateProductUseCase {
@@ -39,6 +40,7 @@ export class UpdateProductUseCase {
     pricing,
     category_id,
     archived,
+    perishable
   }: UpdateProductUseCaseRequest) {
     const product = await this.productsRepository.find("basic", {
       id: product_id,
@@ -66,6 +68,7 @@ export class UpdateProductUseCase {
     name && (product.name = name);
     pricing && (product.pricing = pricing);
     archived && (product.archived = archived);
+    perishable && (product.perishable = perishable)
     category_id && (product.category_id = new UUID(category_id));
 
     if (image) {

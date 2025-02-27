@@ -24,6 +24,7 @@ model User {
   phone       String    @unique
   password    String?
   photo       String?
+  chat        String?   @unique
   roles       ROLE[]    @default([USER])
   verified_at DateTime?
 
@@ -98,11 +99,12 @@ enum PRICING {
 }
 
 model Product {
-  id       String  @id @default(uuid())
-  name     String
-  image    String
-  pricing  PRICING
-  archived Boolean @default(false)
+  id         String  @id @default(uuid())
+  name       String
+  image      String
+  pricing    PRICING
+  archived   Boolean @default(false)
+  perishable Boolean @default(false)
 
   category_id String
   category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
@@ -144,7 +146,8 @@ model Cycle {
 }
 
 model Catalog {
-  id String @id @default(uuid())
+  id  String @id @default(uuid())
+  tax Float
 
   farm_id String
   farm    Farm   @relation(fields: [farm_id], references: [id])
@@ -162,10 +165,11 @@ model Catalog {
 }
 
 model Offer {
-  id          String  @id @default(uuid())
+  id          String    @id @default(uuid())
   amount      Int
-  price       Decimal @db.Decimal(10, 2)
-  description String? @db.VarChar(240)
+  price       Decimal   @db.Decimal(10, 2)
+  description String?   @db.VarChar(240)
+  expires_at  DateTime?
 
   catalog_id String
   catalog    Catalog @relation(fields: [catalog_id], references: [id])

@@ -1,14 +1,16 @@
 // Entities
-import { Entity, EntityRequest } from "@/core/entities/entity";
-import { Cycle } from "@/core/entities/cycle";
 import { UUID } from "@/core/entities/aggregates/uuid";
-import { Offer } from "@/core/entities/offer";
+import { Cycle } from "@/core/entities/cycle";
+import { Entity, EntityRequest } from "@/core/entities/entity";
 import { Farm } from "@/core/entities/farm";
+import { Offer } from "@/core/entities/offer";
 
 // Types
 import { Optional } from "@/core/types/optional";
 
 export interface CatalogProps extends EntityRequest {
+  tax: number;
+
   farm_id: UUID;
   farm?: Farm;
 
@@ -19,6 +21,14 @@ export interface CatalogProps extends EntityRequest {
 }
 
 export class Catalog extends Entity<CatalogProps> {
+  get tax() {
+    return this.props.tax;
+  }
+
+  set tax(value: number) {
+    this.props.tax = value;
+  }
+
   get farm_id() {
     return this.props.farm_id;
   }
