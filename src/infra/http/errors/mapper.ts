@@ -12,43 +12,41 @@ import { UnauthorizedError } from "@/core/errors/unauthorized";
 import { SessionExpiredError } from "@/core/errors/session-expired";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { MissingFieldError } from "@/core/errors/missing-field";
+import { ResourceNotVerifiedError } from "@/core/errors/resource-not-verified";
 
 const mappedDomainErrors: {
   status: number;
   errors: (typeof DomainError)[];
 }[] = [
-    {
-      status: 401,
-      errors: [SessionExpiredError],
-    },
-    {
-      status: 400,
-      errors: [
-        WrongCredentialsError,
-        InvalidWeightError,
-        MissingFieldError
-      ],
-    },
-    {
-      status: 403,
-      errors: [
-        ResourceAlreadyExistsError,
-        FarmNotActiveError,
-        ResourceClosedError,
-        UserNotVerifiedError,
-        UserAlreadyVerified,
-        UnauthorizedError,
-      ],
-    },
-    {
-      status: 404,
-      errors: [ResourceNotFoundError],
-    },
-    {
-      status: 409,
-      errors: [UnavailableAmountError],
-    },
-  ];
+  {
+    status: 401,
+    errors: [SessionExpiredError],
+  },
+  {
+    status: 400,
+    errors: [WrongCredentialsError, InvalidWeightError, MissingFieldError],
+  },
+  {
+    status: 403,
+    errors: [
+      ResourceNotVerifiedError,
+      ResourceAlreadyExistsError,
+      FarmNotActiveError,
+      ResourceClosedError,
+      UserNotVerifiedError,
+      UserAlreadyVerified,
+      UnauthorizedError,
+    ],
+  },
+  {
+    status: 404,
+    errors: [ResourceNotFoundError],
+  },
+  {
+    status: 409,
+    errors: [UnavailableAmountError],
+  },
+];
 
 export class HttpErrorMapper {
   static find(error: DomainError) {
