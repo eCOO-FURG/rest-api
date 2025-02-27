@@ -49,9 +49,9 @@ export class PrismaBagMapper {
             PrismaPaymentMapper.toDomain(payment),
           ])
         ),
-        created_at: raw.created_at,
-        updated_at: raw.updated_at,
       }),
+      created_at: raw.created_at,
+      updated_at: raw.updated_at,
     });
   }
 
