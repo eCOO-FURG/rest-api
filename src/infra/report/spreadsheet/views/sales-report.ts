@@ -45,13 +45,18 @@ export const SALES_REPORT_VIEW = async ({ bags }: BagsReportViewProps) => {
 
       const tax = Number(order.offer?.catalog?.tax) ?? 0;
 
+      const amount =
+        order.offer?.product?.pricing === "UNIT"
+          ? String(order.amount)
+          : `${String(order.amount / 1000)} kg`;
+
       rows.push({
         bag: bag.code,
         user: `${bag.user?.first_name} ${bag.user?.last_name}`,
         price: toPrice(order.price),
         product: order.offer?.product?.name,
-        producer: order.offer?.catalog?.farm?.admin?.first_name,
-        amount: order.amount,
+        producer: order.offer?.catalog?.farm?.name,
+        amount,
         offer_price: toPrice(offerPrice),
         tax: toPrice((order.price / 100) * tax),
         pricing: order.offer?.product?.pricing === "UNIT" ? "Unidade" : "Peso",
