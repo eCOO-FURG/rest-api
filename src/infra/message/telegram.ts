@@ -17,30 +17,23 @@ import { Logger } from "@/infra/logs/logger";
 import { MessagePresenter } from "@/infra/http/presenters/message-presenter";
 
 export class Telegram implements Chat {
-  private server: WebSocket.Server;
+  private client: WebSocket;
 
   constructor() {
-    this.server = new WebSocket.Server({
-      port: env.WS_PORT,
-      path: "/messages",
-      verifyClient: (info, callback) => {
-        const token = info.req.headers["authorization"];
+    this.client = new WebSocket(env.WS_URL, {
+      headers: { Authorization: env.INTEGRATIONS_AUTHORIZATION },
+    });
 
-        if (!token || token !== env.INTEGRATIONS_AUTHORIZATION) {
-          callback(false, 401, "Unauthorized");
-          return;
-        }
-
-        callback(true);
-      },
+    this.client.on("error", (error) => {
+      Logger.log(error);
     });
   }
 
   async send(message: Message): Promise<void> {
     try {
-      this.server.clients.forEach((client) => {
-        client.send(JSON.stringify(MessagePresenter.toHttp(message)));
-      });
+      if (this.client.readyState === WebSocket.OPEN) {
+        this.client.send(JSON.stringify(MessagePresenter.toHttp(message)));
+      }
     } catch (error) {
       Logger.log(error);
     }
