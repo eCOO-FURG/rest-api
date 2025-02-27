@@ -52,6 +52,7 @@ export async function seedDevelopment() {
       admin_id: farmerId.value,
       catalogs: {
         create: {
+          tax: 20,
           cycle_id: cycleId.value,
           box: {
             create: {
@@ -79,7 +80,7 @@ export async function seedDevelopment() {
       },
     },
   });
-  
+
   const offers = await prisma.offer.findMany({ include: { product: true } });
 
   const price = offers.reduce((acc, offer) => {
@@ -118,7 +119,6 @@ export async function seedDevelopment() {
                     ? Number(offer.price) * offer.amount
                     : (Number(offer.price) / 1000) * offer.amount,
                 status: "PENDING",
-                tax: 20,
               })),
             },
           },

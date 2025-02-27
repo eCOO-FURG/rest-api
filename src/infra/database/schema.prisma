@@ -146,7 +146,8 @@ model Cycle {
 }
 
 model Catalog {
-  id String @id @default(uuid())
+  id  String @id @default(uuid())
+  tax Float
 
   farm_id String
   farm    Farm   @relation(fields: [farm_id], references: [id])
@@ -164,11 +165,11 @@ model Catalog {
 }
 
 model Offer {
-  id          String  @id @default(uuid())
+  id          String    @id @default(uuid())
   amount      Int
-  price       Decimal @db.Decimal(10, 2)
-  description String? @db.VarChar(240)
-  expires_at DateTime?
+  price       Decimal   @db.Decimal(10, 2)
+  description String?   @db.VarChar(240)
+  expires_at  DateTime?
 
   catalog_id String
   catalog    Catalog @relation(fields: [catalog_id], references: [id])
@@ -304,7 +305,6 @@ model Order {
   id     String       @id @default(uuid())
   amount Int
   price  Decimal      @db.Decimal(10, 2)
-  tax    Float
   status ORDER_STATUS
 
   offer_id String
