@@ -66,7 +66,10 @@ describe("Fetch sales stats", () => {
       await bagsRepository.create(bag);
     }
 
-    const { revenue, monthly, daily } = await sut.execute();
+    const { revenue, monthly, daily } = await sut.execute({
+      since: FIVE_MONTHS_AGO,
+      before: today,
+    });
 
     expect(revenue).toBe(1000);
     expect(Object.keys(monthly).length).toBe(5);
