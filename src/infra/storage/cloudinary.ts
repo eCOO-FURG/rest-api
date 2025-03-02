@@ -43,20 +43,28 @@ export class Cloudinary implements Storage {
       return await Promise.all(promises);
     } catch (error) {
       Logger.log(error);
-      return [];
+      throw error;
     }
   }
 
   private async save(file: File, folder: string): Promise<string> {
-    const url = await new Promise<string>((resolve, reject) => {
-      this.client.uploader
-        .upload_stream({ folder, resource_type: "image" }, (error, result) => {
-          if (error) reject(error);
-          if (result) resolve(result.secure_url);
-        })
-        .end(file.content);
-    });
+    try {
+      const url = await new Promise<string>((resolve, reject) => {
+        this.client.uploader
+          .upload_stream(
+            { folder, resource_type: "image" },
+            (error, result) => {
+              if (error) reject(error);
+              if (result) resolve(result.secure_url);
+            }
+          )
+          .end(file.content);
+      });
 
-    return url;
+      return url;
+    } catch (error) {
+      Logger.log(error);
+      throw error;
+    }
   }
 }
