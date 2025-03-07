@@ -69,7 +69,14 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
   }
   async list(
     type: RepositoryResponse,
-    { cycle, farm, offers, since, before }: CatalogsRepositorySearchRequest,
+    {
+      cycle,
+      farm,
+      offers,
+      since,
+      before,
+      admin,
+    }: CatalogsRepositorySearchRequest,
     page?: number
   ): Promise<Catalog[]> {
     const catalogs = await prisma.catalog.findMany({
@@ -92,7 +99,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
         ...(type !== "basic" && { farm: { include: { admin: true } } }),
         ...(type === "merge" && {
           offers: {
-            include: { product: true },
+            include: { product: true, ...(admin && { orders: true }) },
             orderBy: { created_at: "asc" },
             ...(offers?.page && {
               skip: (offers.page - 1) * 20,
