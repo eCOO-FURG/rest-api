@@ -10,9 +10,11 @@ import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
 import { FetchCurrentBoxUseCase } from "@/core/use-cases/fetch-current-box";
 import { FetchCurrentCatalogUseCase } from "@/core/use-cases/fetch-current-catalog";
 import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
+import { FetchInboundReportUseCase } from "@/core/use-cases/fetch-inbound-report";
 import { FetchLastCatalogUseCase } from "@/core/use-cases/fetch-last-catalog";
 import { FetchPendingsUseCase } from "@/core/use-cases/fetch-pendings";
 import { FetchProfileUseCase } from "@/core/use-cases/fetch-profile";
+import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
 import { FetchSalesStatsUseCase } from "@/core/use-cases/fetch-sales-stats";
 import { ListBagsUseCase } from "@/core/use-cases/list-bags";
 import { ListBoxesUseCase } from "@/core/use-cases/list-boxes";
@@ -40,8 +42,6 @@ import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
 import { UpdateProductUseCase } from "@/core/use-cases/update-product";
 import { UpdateUserUseCase } from "@/core/use-cases/update-user";
 import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
-import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
-import { FetchInboundReportUseCase } from "@/core/use-cases/fetch-inbound-report";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -162,10 +162,17 @@ export default (container: AwilixContainer) => {
       ({ productsRepository }) => new ListProductsUsecase(productsRepository)
     ),
     fetchSalesReportUseCase: asFunction(
-      ({ cyclesRepository, bagsRepository, pdfService, spreadsheetService }) =>
+      ({
+        cyclesRepository,
+        bagsRepository,
+        catalogsRepository,
+        pdfService,
+        spreadsheetService,
+      }) =>
         new FetchSalesReportUseCase(
           cyclesRepository,
           bagsRepository,
+          catalogsRepository,
           pdfService,
           spreadsheetService
         )
