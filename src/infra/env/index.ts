@@ -1,65 +1,92 @@
 // Libraries
-import "dotenv/config";
-import { z } from "zod";
+import Joi from "joi";
+import "joi-extract-type";
 
-const deploy = z.object({
-  ENV: z.enum(["development", "test", "staging", "production"]),
-  SERVER_PORT: z.coerce.number().default(3333),
-  SERVER_URL: z.string().min(1),
-  FRONT_URL: z.string().min(1),
-  DATABASE_URL: z.string().min(1),
-  CACHE_MANAGER_URL: z.string().min(1),
-  JWT_SECRET: z.string().min(1),
-  SMTP_HOST: z.string().min(1),
-  SMTP_FALLBACK_HOST: z.string().min(1),
-  SMTP_PORT: z.coerce.number().min(1),
-  ECOO_EMAIL: z.string().min(1),
-  ECOO_EMAIL_PASSWORD: z.string().min(1),
-  ECOO_FALLBACK_EMAIL: z.string().min(1),
-  ECOO_FALLBACK_EMAIL_PASSWORD: z.string().min(1),
-  SENTRY_DSN: z.string().min(1),
-  PIX_PROVIDER_API_KEY: z.string().min(1),
-  INTEGRATIONS_AUTHORIZATION: z.string().min(1),
-  STORAGE_URL: z.string().min(1),
-  WS_URL: z.string().min(1),
-});
+const schema = Joi.object({
+  // Environment
+  ENVIRONMENT: Joi.string()
+    .valid("PRODUCTION", "STAGING", "DEVELOPMENT")
+    .required(),
 
-const development = deploy.omit({
-  SENTRY_DSN: true,
-  SMTP_FALLBACK_HOST: true,
-  ECOO_FALLBACK_EMAIL: true,
-  ECOO_FALLBACK_EMAIL_PASSWORD: true,
-  PIX_PROVIDER_API_KEY: true,
-});
+  // Server
+  SERVER_PORT: Joi.string().required(),
+  SERVER_URL: Joi.string().required(),
 
-const test = development.omit({
-  SMTP_HOST: true,
-  SMTP_PORT: true,
-  DATABASE_URL: true,
-  JWT_SECRET: true,
-});
+  // WebSocket
+  WS_URL: Joi.string().required(),
 
-const environment = process.env.ENV;
+  // Integrations
+  INTEGRATIONS_AUTHORIZATION: Joi.string(),
 
-if (!environment) throw new Error("❌ Ambiente não especificado.");
+  // Email
+  EMAIL_ACCOUNT: Joi.string().required(),
+  EMAIL_PASSWORD: Joi.string().required(),
 
-const schema =
-  environment === "staging" || environment === "production"
-    ? deploy
-    : environment === "development"
-    ? development
-    : test;
+  SMTP_HOST: Joi.alternatives().conditional("ENVIRONMENT", {
+    is: "DEVELOPMENT",
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
 
-const _env = schema.safeParse(process.env);
+  SMTP_PORT: Joi.alternatives().conditional("ENVIRONMENT", {
+    is: "DEVELOPMENT",
+    then: Joi.number().required(),
+    otherwise: Joi.number().optional(),
+  }),
 
-if (_env.success === false) {
-  const issues = _env.error.issues
-    .map((issue) => `${issue.path[0]}: ${issue.fatal}`)
-    .join(", ");
+  FALLBACK_EMAIL_ACCOUNT: Joi.alternatives().conditional("ENVIRONMENT", {
+    not: "DEVELOPMENT",
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
 
-  console.log(`❌ Variáveis ambiente incorretas: ${issues}`);
+  FALLBACK_EMAIL_PASSWORD: Joi.alternatives().conditional("ENVIRONMENT", {
+    not: "DEVELOPMENT",
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
 
+  // Auth
+  JWT_SECRET: Joi.alternatives().conditional("ENVIRONMENT", {
+    not: "DEVELOPMENT",
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
+
+  // Storage
+  STORAGE_URL: Joi.string().required(),
+
+  // Logs
+  SENTRY_DSN: Joi.alternatives().conditional("ENVIRONMENT", {
+    not: "DEVELOPMENT",
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
+
+  // Cache
+  CACHE_URL: Joi.string().required(),
+
+  // Database
+  DATABASE_URL: Joi.string().required(),
+
+  // App
+  APP_URL: Joi.string().required(),
+
+  // Payments
+  PIX_PROVIDER_API_KEY: Joi.alternatives().conditional("ENVIRONMENT", {
+    not: "DEVELOPMENT",
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
+})
+  .unknown(true)
+  .required();
+
+const { error, value } = schema.validate(process.env);
+
+if (error) {
+  console.log(`❌ Variável ambiente ${error.details[0].path} não encontrada.`);
   process.exit(1);
 }
 
-export const env = _env.data as z.infer<typeof deploy>;
+export const env = value as Joi.extractType<typeof schema>;

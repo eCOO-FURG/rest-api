@@ -11,6 +11,9 @@ importers:
       '@faker-js/faker':
         specifier: ^8.4.1
         version: 8.4.1
+      '@goodrequest/joi-type-extract':
+        specifier: ^0.0.4
+        version: 0.0.4
       '@prisma/client':
         specifier: ^5.16.1
         version: 5.16.1(prisma@5.16.1)
@@ -77,9 +80,6 @@ importers:
       tsx:
         specifier: ^4.15.7
         version: 4.16.2
-      types-joi:
-        specifier: ^2.1.0
-        version: 2.1.0
       typescript:
         specifier: ^5.4.5
         version: 5.4.5
@@ -436,6 +436,9 @@ packages:
 
   '@fast-csv/parse@4.3.6':
     resolution: {integrity: sha512-uRsLYksqpbDmWaSmzvJcuApSEe38+6NQZBUsuAyMZKqHxH0g1wcJgsKUvN3WC8tewaqFjBMMGrkHmC+T7k8LvA==}
+
+  '@goodrequest/joi-type-extract@0.0.4':
+    resolution: {integrity: sha512-W7Sxo6eGNH69NuQqQ00eEH/0ZjUbj7crfxe0DQHgcTjdzQgVj1qgN49Tue0obpHKiZGHOSUpIYFIQwc4UoF+8A==}
 
   '@hapi/hoek@9.3.0':
     resolution: {integrity: sha512-/c6rf4UJlmHlC9b5BaNvzAcFv7HZ2QHaV0D4/HNlBdvFnvQq8RI4kYdhyPCl7Xj+oWvTWQ8ujhqS53LIgAe6KQ==}
@@ -2320,9 +2323,6 @@ packages:
   typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
 
-  types-joi@2.1.0:
-    resolution: {integrity: sha512-wdvZWNhDx9syXdes3V+YH0KLRNiwGsg7itbjL27truN1Av3YvnJDc3HGs9kbTpfzi3vV2q0scM2y6iSkm9nriQ==}
-
   typescript@5.4.5:
     resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
     engines: {node: '>=14.17'}
@@ -2682,6 +2682,10 @@ snapshots:
       lodash.isnil: 4.0.0
       lodash.isundefined: 3.0.1
       lodash.uniq: 4.5.0
+
+  '@goodrequest/joi-type-extract@0.0.4':
+    dependencies:
+      joi: 17.13.3
 
   '@hapi/hoek@9.3.0': {}
 
@@ -4799,8 +4803,6 @@ snapshots:
       mime-types: 2.1.35
 
   typedarray@0.0.6: {}
-
-  types-joi@2.1.0: {}
 
   typescript@5.4.5: {}
 
