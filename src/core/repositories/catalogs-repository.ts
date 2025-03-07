@@ -20,6 +20,7 @@ export interface CatalogsRepositorySearchRequest {
   };
   since?: Date;
   before?: Date;
+  admin?: boolean;
 }
 
 export interface CatalogsRepository {
