@@ -22,15 +22,6 @@ interface UpdateBagUseCaseRequest {
   status?: Bag["status"];
 }
 
-const STATUSES: Record<Bag["status"], string> = {
-  SEPARATED: "separada",
-  DISPATCHED: "despachada",
-  RECEIVED: "recebida",
-  CANCELLED: "cancelada",
-  DEFERRED: "deferida",
-  PENDING: "pendente",
-};
-
 export class UpdateBagUseCase {
   constructor(
     private bagsRepository: BagsRepository,
@@ -47,11 +38,6 @@ export class UpdateBagUseCase {
     const user = await this.usersRepository.find("basic", { id: user_id });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
-
-    const owner = bag.user_id.equals(user_id);
-
-    if (!owner && !user.admin)
-      throw new ResourceNotFoundError("Sacola", bag_id);
 
     const cycle = await this.cyclesRepository.find("basic", {
       id: bag.cycle_id.value,
@@ -86,3 +72,12 @@ export class UpdateBagUseCase {
     }
   }
 }
+
+const STATUSES: Record<Bag["status"], string> = {
+  SEPARATED: "separada",
+  DISPATCHED: "despachada",
+  RECEIVED: "recebida",
+  CANCELLED: "cancelada",
+  DEFERRED: "deferida",
+  PENDING: "pendente",
+};

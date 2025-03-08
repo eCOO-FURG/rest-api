@@ -1,5 +1,5 @@
 // Entities
-import { Role, User } from "@/core/entities/user";
+import { User, UserRole } from "@/core/entities/user";
 
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
@@ -71,14 +71,12 @@ export class RegisterUseCase {
       if (userWithSameChat) throw new ResourceAlreadyExistsError("Chat", chat);
     }
 
-    const roles: Role[] = role === "PRODUCER" ? ["USER", "PRODUCER"] : ["USER"];
-
     const user = User.create({
       first_name,
       last_name,
       email,
       chat,
-      roles,
+      roles: role === "PRODUCER" ? ["USER", "PRODUCER"] : ["USER"],
       phone: new Phone(phone),
       cpf: new CPF(cpf),
     });
