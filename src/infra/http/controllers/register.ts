@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Use-cases
 import { RegisterUseCase } from "@/core/use-cases/register";
@@ -9,26 +9,18 @@ import { RegisterUseCase } from "@/core/use-cases/register";
 import container from "@/infra/container";
 
 // Validation
-import { notEmpty } from "@/infra/http/validation/not-empty";
+import { parse } from "@/infra/http/validation/parse";
 
-export const registerSchema = {
-  body: z.object({
-    first_name: z.string(),
-    last_name: z.string(),
-    cpf: z.string().max(14),
-    email: z.string().email(),
-    phone: z.string(),
-    password: z.string().min(8).optional(),
-    chat: z.string().optional(),
-    role: z
-      .enum(["USER", "PRODUCER"])
-      .openapi({
-        type: "string",
-        enum: ["USER", "PRODUCER"],
-      })
-      .refine(notEmpty.validation, notEmpty.warning),
-  }),
-};
+export const registerSchema = Joi.object({
+  first_name: Joi.string().required(),
+  last_name: Joi.string().required(),
+  cpf: Joi.string().min(11).max(11).required(),
+  phone: Joi.string().required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().min(8).optional(),
+  role: Joi.string().valid("USER", "PRODUCER").required(),
+  chat: Joi.string().optional(),
+});
 
 export async function registerController(
   request: Request,
@@ -37,7 +29,7 @@ export async function registerController(
 ) {
   try {
     const { first_name, last_name, cpf, email, phone, password, chat, role } =
-      registerSchema.body.parse(request.body);
+      parse(registerSchema, request.body);
 
     container.resolve("onRegisteredEvent");
 

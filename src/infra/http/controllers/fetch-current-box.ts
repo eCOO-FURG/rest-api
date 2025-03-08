@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Container
 import container from "@/infra/container";
@@ -11,15 +11,13 @@ import { FetchCurrentBoxUseCase } from "@/core/use-cases/fetch-current-box";
 // Presenters
 import { BoxPresenter } from "@/infra/http/presenters/box-presenter";
 
-export const fetchCurrentBoxSchema = {
-  query: z.object({
-    cycle_id: z.string().uuid().openapi({ description: "ID do ciclo." }),
-    page: z.coerce
-      .number()
-      .min(1)
-      .openapi({ description: "Página das ofertas do catálogo." }),
-  }),
-};
+// Validation
+import { parse } from "@/infra/http/validation/parse";
+
+export const fetchCurrentBoxQuery = Joi.object({
+  cycle_id: Joi.string().uuid().required(),
+  page: Joi.number().integer().min(1).required(),
+});
 
 export async function fetchCurrentBoxController(
   request: Request,
@@ -27,7 +25,7 @@ export async function fetchCurrentBoxController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id, page } = fetchCurrentBoxSchema.query.parse(request.query);
+    const { cycle_id, page } = parse(fetchCurrentBoxQuery, request.query);
 
     const fetchCurrentBoxUsecase = container.resolve<FetchCurrentBoxUseCase>(
       "fetchCurrentBoxUseCase"

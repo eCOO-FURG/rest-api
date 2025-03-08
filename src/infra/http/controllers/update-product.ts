@@ -1,5 +1,5 @@
 // Libraries
-import { z } from "zod";
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
 
 // Use-cases
@@ -9,31 +9,31 @@ import { UpdateProductUseCase } from "@/core/use-cases/update-product";
 import container from "@/infra/container";
 
 // Validation
-import { notEmpty } from "@/infra/http/validation/not-empty";
+import { parse } from "@/infra/http/validation/parse";
 
 // Utils
 import { toFile } from "@/infra/utils/to-file";
 
-export const updateProductSchema = {
-  params: z.object({
-    product_id: z.string().uuid(),
-  }),
-  body: z
-    .object({
-      name: z.string().optional(),
-      image: z.custom<Express.Multer.File>().optional(),
-      pricing: z.enum(["UNIT", "WEIGHT"]).optional(),
-      category_id: z.string().uuid().optional(),
-      perishable: z.boolean().optional(),
-      archived: z
-        .union([
-          z.boolean(),
-          z.enum(["true", "false"]).transform((val) => val === "true"),
-        ])
-        .optional(),
-    })
-    .refine(notEmpty.validation, notEmpty.warning),
-};
+// Validation
+import { file } from "@/infra/http/validation/file";
+
+// Entities
+import { Product } from "@/core/entities/product";
+
+export const updateProductParams = Joi.object({
+  product_id: Joi.string().uuid().required(),
+});
+
+export const updateProductSchema = Joi.object({
+  name: Joi.string().optional(),
+  image: file.optional(),
+  pricing: Joi.string()
+    .valid(...Product.pricings)
+    .optional(),
+  category_id: Joi.string().uuid().optional(),
+  perishable: Joi.boolean().optional(),
+  archived: Joi.boolean().optional(),
+});
 
 export async function updateProductController(
   request: Request,
@@ -41,10 +41,12 @@ export async function updateProductController(
   next: NextFunction
 ) {
   try {
-    const { product_id } = updateProductSchema.params.parse(request.params);
+    const { product_id } = parse(updateProductParams, request.params);
 
-    const { name, pricing, archived, image, category_id, perishable } =
-      updateProductSchema.body.parse(request.body);
+    const { name, pricing, archived, image, category_id, perishable } = parse(
+      updateProductSchema,
+      request.body
+    );
 
     const updateProductUseCase = container.resolve<UpdateProductUseCase>(
       "updateProductUseCase"

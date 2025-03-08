@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Use-cases
 import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
@@ -9,13 +9,15 @@ import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
 import container from "@/infra/container";
 
 // Validation
-import { notEmpty } from "@/infra/http/validation/not-empty";
+import { parse } from "@/infra/http/validation/parse";
 
-export const requestOtpSchema = {
-  body: z
-    .object({ email: z.string() })
-    .refine(notEmpty.validation, notEmpty.warning),
-};
+export const requestOtpSchema = Joi.object({
+  email: Joi.string().email().required(),
+})
+  .required()
+  .messages({
+    "object.missing": "Pelo menos um campo deve ser fornecido.",
+  });
 
 export async function requestOtpController(
   request: Request,
@@ -23,7 +25,7 @@ export async function requestOtpController(
   next: NextFunction
 ) {
   try {
-    const { email } = requestOtpSchema.body.parse(request.body);
+    const { email } = parse(requestOtpSchema, request.body);
 
     container.resolve("onOtpRequestEvent");
 

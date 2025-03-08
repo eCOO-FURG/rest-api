@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Container
 import container from "@/infra/container";
@@ -8,22 +8,25 @@ import container from "@/infra/container";
 // Use-cases
 import { UpdateFarmUseCase } from "@/core/use-cases/update-farm";
 
-// Validation
-import { notEmpty } from "@/infra/http/validation/not-empty";
+// Entities
+import { Farm } from "@/core/entities/farm";
 
-export const handleFarmSchema = {
-  route: z.object({
-    farm_id: z.string().uuid(),
-  }),
-  body: z.object({
-    status: z
-      .enum(["ACTIVE", "INACTIVE", "PENDING"])
-      .openapi({
-        description: "Status de uma fazenda. ACTIVE, INACTIVE ou PENDING.",
-      })
-      .refine(notEmpty.validation, notEmpty.warning),
-  }),
-};
+// Validation
+import { parse } from "@/infra/http/validation/parse";
+
+export const handleFarmParams = Joi.object({
+  farm_id: Joi.string().uuid().required(),
+});
+
+export const handleFarmSchema = Joi.object({
+  status: Joi.string()
+    .valid(...Farm.statuses)
+    .optional(),
+})
+  .required()
+  .messages({
+    "object.missing": "Pelo menos um campo deve ser fornecido.",
+  });
 
 export async function handleFarmController(
   request: Request,
@@ -31,9 +34,8 @@ export async function handleFarmController(
   next: NextFunction
 ) {
   try {
-    const { farm_id } = handleFarmSchema.route.parse(request.params);
-
-    const { status } = handleFarmSchema.body.parse(request.body);
+    const { farm_id } = parse(handleFarmParams, request.params);
+    const { status } = parse(handleFarmSchema, request.body);
 
     const updateFarmUseCase =
       container.resolve<UpdateFarmUseCase>("updateFarmUseCase");

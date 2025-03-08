@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Container
 import container from "@/infra/container";
@@ -12,17 +12,17 @@ import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
 import { UserPresenter } from "@/infra/http/presenters/user-presenter";
 
 // Validation
-import { notEmpty } from "@/infra/http/validation/not-empty";
+import { parse } from "@/infra/http/validation/parse";
 
-export const authenticateSchema = {
-  body: z
-    .object({
-      email: z.string().email(),
-      password: z.string().min(6),
-      type: z.enum(["BASIC", "OTP"]).openapi({ type: "string" }),
-    })
-    .refine(notEmpty.validation, notEmpty.warning),
-};
+export const authenticateSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().min(6).required(),
+  type: Joi.string().valid("BASIC", "OTP").required(),
+})
+  .required()
+  .messages({
+    "object.missing": "Pelo menos um campo deve ser fornecido.",
+  });
 
 export async function authenticateController(
   request: Request,
@@ -30,21 +30,17 @@ export async function authenticateController(
   next: NextFunction
 ) {
   try {
-    const { email, password, type } = authenticateSchema.body.parse(
-      request.body
-    );
+    const { email, password, type } = parse(authenticateSchema, request.body);
 
     const authenticateUseCase = container.resolve<AuthenticateUseCase>(
       "authenticateUseCase"
     );
 
-    const ip = request.ip || request.socket.remoteAddress || "unknown";
-
     const { token, user } = await authenticateUseCase.execute({
       email,
       password,
       type,
-      ip,
+      ip: request.ip || request.socket.remoteAddress || "unknown",
       agent: request.headers["user-agent"] ?? "not-identified",
     });
 

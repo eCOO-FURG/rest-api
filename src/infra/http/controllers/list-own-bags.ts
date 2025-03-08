@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Container
 import container from "@/infra/container";
@@ -15,51 +15,30 @@ import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 import { toDate } from "@/infra/utils/to-date";
 
 // Validation
-import { period } from "@/infra/http/validation/period";
+import { parse } from "@/infra/http/validation/parse";
 
 // Utils
 import { toArray } from "@/infra/utils/to-array";
 
 // Entities
-import { Bag, BAG_STATUSES } from "@/core/entities/bag";
+import { Bag } from "@/core/entities/bag";
 
-// Validation
-import { options } from "@/infra/http/validation/options";
-
-export const listOwnBagsSchema = {
-  query: z
-    .object({
-      page: z.coerce.number().openapi({ description: "Página da listagem." }),
-      cycle_id: z
-        .string()
-        .uuid()
-        .optional()
-        .openapi({ description: "Ciclo da busca." }),
-      statuses: z
-        .string()
-        .optional()
-        .openapi({ description: "Filtro de status, separados por vírgula." }),
-      since: z
-        .string()
-        .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
-        .optional()
-        .openapi({ description: "Bags criadas a partir dessa data." }),
-      before: z
-        .string()
-        .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
-        .optional()
-        .openapi({ description: "Bags criadas antes dessa data." }),
-    })
-    .refine(
-      (data) =>
-        !data.statuses || options.validation(data.statuses, BAG_STATUSES),
-      options.warning
+export const listOwnBagsQuery = Joi.object({
+  page: Joi.number().required(),
+  cycle_id: Joi.string().uuid().optional(),
+  statuses: Joi.alternatives()
+    .try(
+      Joi.string().valid(...Bag.statuses),
+      Joi.array().items(Joi.string().valid(...Bag.statuses))
     )
-    .refine(
-      (data) => period.validation(toDate(data.since), toDate(data.before)),
-      period.warning
-    ),
-};
+    .optional(),
+  since: Joi.string()
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
+    .optional(),
+  before: Joi.string()
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
+    .optional(),
+});
 
 export async function listOwnBagsController(
   request: Request,
@@ -67,8 +46,10 @@ export async function listOwnBagsController(
   next: NextFunction
 ) {
   try {
-    const { page, since, before, statuses, cycle_id } =
-      listOwnBagsSchema.query.parse(request.query);
+    const { page, since, before, statuses, cycle_id } = parse(
+      listOwnBagsQuery,
+      request.query
+    );
 
     const listBagsUseCase =
       container.resolve<ListBagsUseCase>("listBagsUseCase");
@@ -76,7 +57,7 @@ export async function listOwnBagsController(
     const { bags } = await listBagsUseCase.execute({
       user_id: request.user_id,
       cycle_id,
-      statuses: toArray<Bag["status"]>(statuses),
+      statuses: toArray(statuses),
       since: toDate(since),
       before: toDate(before),
       page,

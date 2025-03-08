@@ -1,6 +1,6 @@
 // Libs
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Container
 import container from "@/infra/container";
@@ -11,15 +11,13 @@ import { ListCategoriesUseCase } from "@/core/use-cases/list-categories";
 // Presenters
 import { CategoryPresenter } from "@/infra/http/presenters/category-presenter";
 
-export const listCategoriesSchema = {
-  query: z.object({
-    page: z.coerce.number().openapi({ description: "Página da listagem." }),
-    name: z
-      .string()
-      .optional()
-      .openapi({ description: "Filtro do nome da categoria." }),
-  }),
-};
+// Validation
+import { parse } from "@/infra/http/validation/parse";
+
+export const listCategoriesQuery = Joi.object({
+  page: Joi.number().required(),
+  name: Joi.string().optional(),
+});
 
 export async function listCategoriesController(
   request: Request,
@@ -27,7 +25,7 @@ export async function listCategoriesController(
   next: NextFunction
 ) {
   try {
-    const { page, name } = listCategoriesSchema.query.parse(request.query);
+    const { page, name } = parse(listCategoriesQuery, request.query);
 
     const listCategoriesUseCase = container.resolve<ListCategoriesUseCase>(
       "listCategoriesUseCase"

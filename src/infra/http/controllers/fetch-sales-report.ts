@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Use-cases
 import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
@@ -13,28 +13,20 @@ import { toDate } from "@/infra/utils/to-date";
 import { toBoolean } from "@/infra/utils/to-boolean";
 
 // Validation
-import { period } from "@/infra/http/validation/period";
+import { parse } from "@/infra/http/validation/parse";
 
-export const fetchSalesReportSchema = {
-  query: z
-    .object({
-      cycle_id: z.string().uuid().optional(),
-      withdraw: z.enum(["true", "false"]).optional(),
-      type: z.enum(["pdf", "spreadsheet"]),
-      since: z
-        .string()
-        .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
-        .optional(),
-      before: z
-        .string()
-        .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
-        .optional(),
-    })
-    .refine(
-      (data) => period.validation(toDate(data.since), toDate(data.before)),
-      period.warning
-    ),
-};
+export const fetchSalesReportQuery = Joi.object({
+  cycle_id: Joi.string().uuid().optional(),
+  withdraw: Joi.string().valid("true", "false"),
+  type: Joi.string().valid("pdf", "spreadsheet").required(),
+  since: Joi.string()
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
+    .optional(),
+  before: Joi.string()
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
+    .optional(),
+});
 
 export async function fetchSalesReportController(
   request: Request,
@@ -42,8 +34,10 @@ export async function fetchSalesReportController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id, withdraw, type, since, before } =
-      fetchSalesReportSchema.query.parse(request.query);
+    const { cycle_id, withdraw, type, since, before } = parse(
+      fetchSalesReportQuery,
+      request.query
+    );
 
     const fetchSalesReportUseCase = container.resolve<FetchSalesReportUseCase>(
       "fetchSalesReportUseCase"

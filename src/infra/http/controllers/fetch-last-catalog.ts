@@ -1,24 +1,23 @@
+// Libraries
+import Joi from "joi";
+import { Request, Response, NextFunction } from "express";
+
 // Use-cases
 import { FetchLastCatalogUseCase } from "@/core/use-cases/fetch-last-catalog";
 
 // Container
 import container from "@/infra/container";
 
-// Libraries
-import { Request, Response, NextFunction } from "express";
-import { z } from "zod";
-
 // Presenters
 import { CatalogPresenter } from "@/infra/http/presenters/catalog-presenter";
 
-export const fetchLastCatalogSchema = {
-  query: z.object({
-    cycle_id: z.string().uuid(),
-    page: z.coerce
-      .number()
-      .openapi({ description: "Página das ofertas do catálogo." }),
-  }),
-};
+// Validation
+import { parse } from "@/infra/http/validation/parse";
+
+export const fetchLastCatalogQuery = Joi.object({
+  cycle_id: Joi.string().uuid().required(),
+  page: Joi.number().required(),
+});
 
 export async function fetchLastCatalogController(
   request: Request,
@@ -26,19 +25,15 @@ export async function fetchLastCatalogController(
   next: NextFunction
 ) {
   try {
-    const farm_id = request.farm_id;
-
-    const { page, cycle_id } = fetchLastCatalogSchema.query.parse(
-      request.query
-    );
+    const { page, cycle_id } = parse(fetchLastCatalogQuery, request.query);
 
     const fetchLastCatalogUseCase = container.resolve<FetchLastCatalogUseCase>(
       "fetchLastCatalogUseCase"
     );
 
     const { catalog } = await fetchLastCatalogUseCase.execute({
+      farm_id: request.farm_id,
       cycle_id,
-      farm_id,
       page,
     });
 

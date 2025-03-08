@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { Request, Response, NextFunction } from "express";
-import { z } from "zod";
 
 // Use-cases
 import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
@@ -9,27 +9,30 @@ import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
 import container from "@/infra/container";
 
 // Validation
-import { notEmpty } from "@/infra/http/validation/not-empty";
+import { parse } from "@/infra/http/validation/parse";
 
-export const updatePaymentSchema = {
-  params: z.object({
-    payment_id: z.string().uuid(),
-  }),
-  body: z
-    .object({
-      status: z
-        .enum(["PENDING", "DONE", "REFUNDED"])
-        .optional()
-        .openapi({ type: "string" }),
-      method: z.enum(["CREDIT", "DEBIT", "CASH", "PIX"]).optional().openapi({
-        type: "string",
-      }),
-      flag: z.enum(["VISA", "MASTERCARD", "OTHER"]).optional().openapi({
-        type: "string",
-      }),
-    })
-    .refine(notEmpty.validation, notEmpty.warning),
-};
+// Entities
+import { Payment } from "@/core/entities/payment";
+
+export const updatePaymentParams = Joi.object({
+  payment_id: Joi.string().uuid().required(),
+});
+
+export const updatePaymentSchema = Joi.object({
+  status: Joi.string()
+    .valid(...Payment.statuses)
+    .optional(),
+  method: Joi.string()
+    .valid(...Payment.methods)
+    .optional(),
+  flag: Joi.string()
+    .valid(...Payment.flags)
+    .optional(),
+})
+  .required()
+  .messages({
+    "object.missing": "Pelo menos um campo deve ser fornecido.",
+  });
 
 export async function updatePaymentController(
   request: Request,
@@ -37,11 +40,9 @@ export async function updatePaymentController(
   next: NextFunction
 ) {
   try {
-    const { payment_id } = updatePaymentSchema.params.parse(request.params);
+    const { payment_id } = parse(updatePaymentParams, request.params);
 
-    const { status, method, flag } = updatePaymentSchema.body.parse(
-      request.body
-    );
+    const { status, method, flag } = parse(updatePaymentSchema, request.body);
 
     const updatePaymentUseCase = container.resolve<UpdatePaymentUseCase>(
       "updatePaymentUseCase"

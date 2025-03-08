@@ -1,5 +1,5 @@
 // Libraries
-import { z } from "zod";
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
 
 // Use-cases
@@ -8,11 +8,12 @@ import { FetchPendingsUseCase } from "@/core/use-cases/fetch-pendings";
 // Container
 import container from "@/infra/container";
 
-export const fetchPendingsSchema = {
-  query: z.object({
-    cycle_id: z.string().uuid(),
-  }),
-};
+// Validation
+import { parse } from "@/infra/http/validation/parse";
+
+export const fetchPendingsQuery = Joi.object({
+  cycle_id: Joi.string().uuid().required(),
+});
 
 export async function fetchPendingsController(
   request: Request,
@@ -20,7 +21,7 @@ export async function fetchPendingsController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id } = fetchPendingsSchema.query.parse(request.query);
+    const { cycle_id } = parse(fetchPendingsQuery, request.query);
 
     const fetchPendingsUseCase = container.resolve<FetchPendingsUseCase>(
       "fetchPendingsUseCase"

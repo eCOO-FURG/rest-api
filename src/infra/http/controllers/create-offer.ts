@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Use-cases
 import { CreateOfferUseCase } from "@/core/use-cases/create-offer";
@@ -9,26 +9,25 @@ import { CreateOfferUseCase } from "@/core/use-cases/create-offer";
 import container from "@/infra/container";
 
 // Validation
-import { notEmpty } from "@/infra/http/validation/not-empty";
-import { toDate } from "@/infra/utils/to-date";
-import { notPast } from "@/infra/http/validation/not-past";
+import { parse } from "@/infra/http/validation/parse";
 
-export const createOfferSchema = {
-  body: z
-    .object({
-      product_id: z.string(),
-      cycle_id: z.string(),
-      amount: z.coerce.number(),
-      price: z.coerce.number(),
-      description: z.string().optional(),
-      expires_at: z
-        .string()
-        .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
-        .optional()
-        .refine(notPast.validation, notPast.warning),
-    })
-    .refine(notEmpty.validation, notEmpty.warning),
-};
+// Utils
+import { toDate } from "@/infra/utils/to-date";
+
+export const createOfferSchema = Joi.object({
+  product_id: Joi.string().required(),
+  cycle_id: Joi.string().required(),
+  amount: Joi.number().required(),
+  price: Joi.number().required(),
+  description: Joi.string().optional(),
+  expires_at: Joi.string()
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
+    .optional(),
+})
+  .required()
+  .messages({
+    "object.missing": "Pelo menos um campo deve ser fornecido.",
+  });
 
 export async function createOfferController(
   request: Request,
@@ -37,7 +36,7 @@ export async function createOfferController(
 ) {
   try {
     const { product_id, cycle_id, amount, price, description, expires_at } =
-      createOfferSchema.body.parse(request.body);
+      parse(createOfferSchema, request.body);
 
     const createOfferUseCase =
       container.resolve<CreateOfferUseCase>("createOfferUseCase");

@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Use-cases
 import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
@@ -9,13 +9,15 @@ import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-
 import container from "@/infra/container";
 
 // Validation
-import { notEmpty } from "@/infra/http/validation/not-empty";
+import { parse } from "@/infra/http/validation/parse";
 
-export const requestPasswordUpdateSchema = {
-  body: z
-    .object({ email: z.string() })
-    .refine(notEmpty.validation, notEmpty.warning),
-};
+export const requestPasswordUpdateSchema = Joi.object({
+  email: Joi.string().email().required(),
+})
+  .required()
+  .messages({
+    "object.missing": "Pelo menos um campo deve ser fornecido.",
+  });
 
 export async function requestPasswordUpdateController(
   request: Request,
@@ -23,7 +25,7 @@ export async function requestPasswordUpdateController(
   next: NextFunction
 ) {
   try {
-    const { email } = requestPasswordUpdateSchema.body.parse(request.body);
+    const { email } = parse(requestPasswordUpdateSchema, request.body);
 
     container.resolve("onUpdatePasswordRequestEvent");
 

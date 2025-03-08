@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Container
 import container from "@/infra/container";
@@ -11,20 +11,14 @@ import { ListProductsUsecase } from "@/core/use-cases/list-products";
 // Presenters
 import { ProductPresenter } from "@/infra/http/presenters/product-presenter";
 
-export const listProductSchema = {
-  query: z.object({
-    page: z.coerce.number().openapi({ description: "Página da listagem." }),
-    name: z
-      .string()
-      .optional()
-      .openapi({ description: "Filtro do nome do produto." }),
-    category_id: z
-      .string()
-      .uuid()
-      .optional()
-      .openapi({ description: "Filtro do id da categoria." }),
-  }),
-};
+// Validation
+import { parse } from "@/infra/http/validation/parse";
+
+export const listProductsQuery = Joi.object({
+  page: Joi.number().required(),
+  name: Joi.string().optional(),
+  category_id: Joi.string().uuid().optional(),
+});
 
 export async function listProductsController(
   request: Request,
@@ -32,9 +26,7 @@ export async function listProductsController(
   next: NextFunction
 ) {
   try {
-    const { page, name, category_id } = listProductSchema.query.parse(
-      request.query
-    );
+    const { page, name, category_id } = parse(listProductsQuery, request.query);
 
     const listProductsUseCase = container.resolve<ListProductsUsecase>(
       "listProductsUseCase"
