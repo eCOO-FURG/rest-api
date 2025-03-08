@@ -3,7 +3,7 @@ import { Address } from "@/core/entities/address";
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { Bag } from "@/core/entities/bag";
 import { Box } from "@/core/entities/box";
-import { Cycle, Week } from "@/core/entities/cycle";
+import { Cycle, CycleWeek } from "@/core/entities/cycle";
 import { Order } from "@/core/entities/order";
 import { User } from "@/core/entities/user";
 
@@ -80,7 +80,7 @@ export class OrderProductsUseCase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const today = (new Date().getDay() + 1) as Week[0];
+    const today = (new Date().getDay() + 1) as CycleWeek[0];
 
     if (!cycle.order.includes(today))
       throw new ResourceClosedError("Ciclo", cycle_id);
