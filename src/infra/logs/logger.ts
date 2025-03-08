@@ -14,10 +14,10 @@ Sentry.init({
 
 export class Logger {
   static log(error: unknown) {
-    if (["production", "staging"].includes(env.ENV)) {
-      Sentry.captureException(error);
-    } else {
+    if (env.ENVIRONMENT === "DEVELOPMENT") {
       console.log(error);
+    } else {
+      Sentry.captureException(error);
     }
   }
 }

@@ -1,6 +1,5 @@
 // Libraries
 import Joi from "joi";
-import "joi-extract-type";
 
 const schema = Joi.object({
   // Environment

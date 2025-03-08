@@ -50,7 +50,9 @@ export class Telegram implements Chat {
     });
 
     this.client.on("error", (error) => {
-      Logger.log(error);
+      if (!("code" in error && error.code === "ECONNREFUSED")) {
+        Logger.log(error);
+      }
     });
   }
 }
