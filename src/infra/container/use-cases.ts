@@ -33,8 +33,6 @@ import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
 import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
 import { SendNotificationUseCase } from "@/core/use-cases/send-notification";
 import { UpdateBagUseCase } from "@/core/use-cases/update-bag";
-import { UpdateBoxUseCase } from "@/core/use-cases/update-box";
-import { UpdateCatalogUseCase } from "@/core/use-cases/update-catalog";
 import { UpdateFarmUseCase } from "@/core/use-cases/update-farm";
 import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
 import { UpdateProductUseCase } from "@/core/use-cases/update-product";
@@ -69,9 +67,6 @@ export default (container: AwilixContainer) => {
       ({ usersRepository, sessionsRepository, hasher }) =>
         new VerifyUserUsecase(usersRepository, sessionsRepository, hasher)
     ),
-    updateBoxUseCase: asFunction(
-      ({ boxesRepository }) => new UpdateBoxUseCase(boxesRepository)
-    ),
     registerFarmUseCase: asFunction(
       ({ usersRepository, farmsRepository }) =>
         new RegisterFarmUseCase(usersRepository, farmsRepository)
@@ -97,14 +92,6 @@ export default (container: AwilixContainer) => {
     updateUserUseCase: asFunction(
       ({ usersRepository, encrypter, storage }) =>
         new UpdateUserUseCase(usersRepository, encrypter, storage)
-    ),
-    updateCatalogUseCase: asFunction(
-      ({ farmsRepository, cyclesRepository, catalogsRepository }) =>
-        new UpdateCatalogUseCase(
-          farmsRepository,
-          cyclesRepository,
-          catalogsRepository
-        )
     ),
     orderPoductsUseCase: asFunction(
       ({

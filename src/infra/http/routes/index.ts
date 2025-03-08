@@ -18,8 +18,6 @@ import { fetchPendingsController } from "@/infra/http/controllers/fetch-pendings
 import { fetchProfileController } from "@/infra/http/controllers/fetch-profile";
 import { fetchSalesStatsController } from "@/infra/http/controllers/fetch-sales-stats";
 import { fetchUserFarmController } from "@/infra/http/controllers/fetch-user-farm";
-import { handleBagController } from "@/infra/http/controllers/handle-bag";
-import { handleBoxController } from "@/infra/http/controllers/handle-box";
 import { handleFarmController } from "@/infra/http/controllers/handle-farm";
 import { listBagsController } from "@/infra/http/controllers/list-bags";
 import { listBoxesController } from "@/infra/http/controllers/list-boxes";
@@ -42,7 +40,6 @@ import { requestOtpController } from "@/infra/http/controllers/request-otp";
 import { requestPasswordUpdateController } from "@/infra/http/controllers/request-password-update";
 import { sendNotificationController } from "@/infra/http/controllers/send-notification";
 import { updateBagController } from "@/infra/http/controllers/update-bag";
-import { updateCatalogController } from "@/infra/http/controllers/update-catalog";
 import { updateFarmController } from "@/infra/http/controllers/update-farm";
 import { updateProductController } from "@/infra/http/controllers/update-product";
 import { updateUserController } from "@/infra/http/controllers/update-user";
@@ -144,12 +141,6 @@ router.get(
   ensureRole(["BROKER"]),
   fetchBoxController
 );
-router.patch(
-  "/boxes/:box_id/handle",
-  ensureAuthenticated,
-  ensureRole(["BROKER"]),
-  handleBoxController
-);
 router.get(
   "/boxes",
   ensureAuthenticated,
@@ -181,13 +172,6 @@ router.get(
 router.get("/catalogs", listCatalogsController);
 router.get("/catalogs/:catalog_id", fetchCatalogController);
 
-router.patch(
-  "/catalogs/:catalog_id",
-  ensureAuthenticated,
-  ensureRole(["PRODUCER"]),
-  updateCatalogController
-);
-
 // Sacolas
 router.get(
   "/bags/current",
@@ -202,12 +186,7 @@ router.get(
   listBagsController
 );
 router.get("/bags/own", ensureAuthenticated, listOwnBagsController);
-router.patch(
-  "/bags/:bag_id/handle",
-  ensureAuthenticated,
-  ensureRole(["BROKER", "MANAGER"]),
-  handleBagController
-);
+
 router.get("/bags/:bag_id", ensureAuthenticated, fetchBagController);
 router.post("/bags/:bag_id/open", ensureAuthenticated, openPaymentController);
 router.patch("/bags/:bag_id", ensureAuthenticated, updateBagController);
