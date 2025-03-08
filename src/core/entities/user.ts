@@ -12,7 +12,7 @@ import { DomainEvents } from "@/core/events/domain-events";
 import { OnRequestHelpEvent } from "@/core/events/on-request-help";
 import { OnUpdatePasswordRequestEvent } from "@/core/events/on-password-update-requested";
 
-export type Role = "USER" | "PRODUCER" | "MANAGER" | "BROKER";
+export type UserRole = (typeof User.roles)[number];
 
 export interface UserProps extends EntityRequest {
   first_name: string;
@@ -21,10 +21,10 @@ export interface UserProps extends EntityRequest {
   cpf: CPF;
   phone: Phone;
   password: string | null;
-  roles: Role[];
   verified_at: Date | null;
   photo: string | null;
   chat: string | null;
+  roles: UserRole[];
 }
 
 export class User extends Entity<UserProps> {
@@ -145,4 +145,6 @@ export class User extends Entity<UserProps> {
 
     return user;
   }
+
+  static roles = ["USER", "PRODUCER", "MANAGER", "BROKER"] as const;
 }

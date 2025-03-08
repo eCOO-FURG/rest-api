@@ -4,10 +4,14 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { Optional } from "@/core/types/optional";
 import { Bag } from "@/core/entities/bag";
 
+export type PaymentStatus = (typeof Payment.statuses)[number];
+export type PaymentMethod = (typeof Payment.methods)[number];
+export type PaymentFlag = (typeof Payment.flags)[number];
+
 export interface PaymentProps extends EntityRequest {
-  status: "PENDING" | "DONE" | "FAILED" | "REFUNDED";
-  method: "CREDIT" | "DEBIT" | "CASH" | "PIX";
-  flag: "MASTERCARD" | "VISA" | "OTHER" | null;
+  status: PaymentStatus;
+  method: PaymentMethod;
+  flag: PaymentFlag | null;
   expires_at: Date | null;
 
   bag_id: UUID;
@@ -72,4 +76,8 @@ export class Payment extends Entity<PaymentProps> {
 
     return payment;
   }
+
+  static statuses = ["PENDING", "DONE", "FAILED", "REFUNDED"] as const;
+  static methods = ["CREDIT", "DEBIT", "CASH", "PIX"] as const;
+  static flags = ["MASTERCARD", "VISA", "OTHER"] as const;
 }

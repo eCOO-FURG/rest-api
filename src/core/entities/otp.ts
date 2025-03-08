@@ -11,11 +11,11 @@ import { DomainEvents } from "@/core/events/domain-events";
 import { OnOtpRequestEvent } from "@/core/events/on-otp-requested";
 
 export interface OtpProps extends EntityRequest {
-  value: string;
-  used: boolean;
-
   user_id: UUID;
   user?: User;
+
+  value: string;
+  used: boolean;
 }
 
 export class Otp extends Entity<OtpProps> {

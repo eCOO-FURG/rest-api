@@ -1,13 +1,13 @@
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
-export type Week = (1 | 2 | 3 | 4 | 5 | 6 | 7)[];
+export type CycleWeek = (typeof Cycle.Week)[number][];
 
 export interface CycleProps extends EntityRequest {
   alias: string;
-  offer: Week;
-  order: Week;
-  deliver: Week;
+  offer: CycleWeek;
+  order: CycleWeek;
+  deliver: CycleWeek;
 }
 
 export class Cycle extends Entity<CycleProps> {
@@ -31,4 +31,6 @@ export class Cycle extends Entity<CycleProps> {
     const cycle = new Cycle(props);
     return cycle;
   }
+
+  static Week = [1, 2, 3, 4, 5, 6, 7] as const;
 }

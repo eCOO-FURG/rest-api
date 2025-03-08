@@ -6,17 +6,17 @@ import { Entity, EntityRequest } from "@/core/entities/entity";
 // Types
 import { Optional } from "@/core/types/optional";
 
-export const PRODUCT_PRICINGS = ["UNIT", "WEIGHT"] as const;
+export type ProductPricing = (typeof Product.pricings)[number];
 
 export interface ProductProps extends EntityRequest {
+  category_id: UUID;
+  category?: Category;
+
   name: string;
   image: string;
   archived: boolean;
-  pricing: (typeof PRODUCT_PRICINGS)[number];
   perishable: boolean;
-
-  category_id: UUID;
-  category?: Category;
+  pricing: ProductPricing;
 }
 
 export class Product extends Entity<ProductProps> {
@@ -85,4 +85,6 @@ export class Product extends Entity<ProductProps> {
     });
     return product;
   }
+
+  static pricings = ["UNIT", "WEIGHT"] as const;
 }
