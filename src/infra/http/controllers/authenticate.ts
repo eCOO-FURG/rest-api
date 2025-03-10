@@ -18,11 +18,7 @@ export const authenticateSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().min(6).required(),
   type: Joi.string().valid("BASIC", "OTP").required(),
-})
-  .required()
-  .messages({
-    "object.missing": "Pelo menos um campo deve ser fornecido.",
-  });
+});
 
 export async function authenticateController(
   request: Request,

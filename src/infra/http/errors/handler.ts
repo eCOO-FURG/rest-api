@@ -19,7 +19,7 @@ export const handler = (
 ) => {
   if (error instanceof Joi.ValidationError) {
     return response.status(400).send({
-      message: "Ocorreu um erro de validação",
+      message: "Ocorreu um erro de validação.",
       code: "bad-request",
       details: error.message.replace(/['"]/g, ""),
     });
@@ -28,12 +28,12 @@ export const handler = (
   if (error instanceof SyntaxError) {
     return response
       .status(400)
-      .send({ message: "Sintaxe incorreta", code: "syntax-error" });
+      .send({ message: "Sintaxe incorreta.", code: "syntax-error" });
   }
 
   if (error instanceof MulterError) {
     return response.status(400).send({
-      message: "Erro ao processar arquivo",
+      message: "Erro ao processar arquivo.",
       code: "file-error",
       issues: [
         {
@@ -46,7 +46,7 @@ export const handler = (
 
   if (error instanceof JsonWebTokenError) {
     return response.status(401).send({
-      message: "Assinatura inválida",
+      message: "Assinatura inválida.",
       code: "invalid-signature",
     });
   }
@@ -64,5 +64,5 @@ export const handler = (
 
   return response
     .status(500)
-    .send({ message: "💥 Ocorreu um erro interno.", code: "internal-error" });
+    .send({ message: "Ocorreu um erro interno.", code: "internal-error" });
 };

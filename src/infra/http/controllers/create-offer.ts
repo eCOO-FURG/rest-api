@@ -23,11 +23,7 @@ export const createOfferSchema = Joi.object({
   expires_at: Joi.string()
     .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
     .optional(),
-})
-  .required()
-  .messages({
-    "object.missing": "Pelo menos um campo deve ser fornecido.",
-  });
+});
 
 export async function createOfferController(
   request: Request,

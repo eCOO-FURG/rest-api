@@ -124,8 +124,13 @@ export default (container: AwilixContainer) => {
       ({ farmsRepository }) => new FetchFarmUseCase(farmsRepository)
     ),
     requestOtpUseCase: asFunction(
-      ({ usersRepository, otpProvider, otpsRepository }) =>
-        new RequestOtpUseCase(usersRepository, otpProvider, otpsRepository)
+      ({ usersRepository, otpProvider, otpsRepository, mailer }) =>
+        new RequestOtpUseCase(
+          usersRepository,
+          otpProvider,
+          otpsRepository,
+          mailer
+        )
     ),
     listBoxesUseCase: asFunction(
       ({ cyclesRepository, boxesRepository }) =>

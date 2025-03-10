@@ -6,10 +6,6 @@ import { Entity, EntityRequest } from "@/core/entities/entity";
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { User } from "@/core/entities/user";
 
-// Events
-import { DomainEvents } from "@/core/events/domain-events";
-import { OnOtpRequestEvent } from "@/core/events/on-otp-requested";
-
 export interface OtpProps extends EntityRequest {
   user_id: UUID;
   user?: User;
@@ -41,17 +37,9 @@ export class Otp extends Entity<OtpProps> {
   }
 
   static create(props: Optional<OtpProps, "used">) {
-    const otp = new Otp({
+    return new Otp({
       ...props,
       used: props.used ?? false,
     });
-
-    const fresh = !props.id;
-
-    if (fresh) {
-      DomainEvents.events.push({ entity: otp, name: OnOtpRequestEvent.name });
-    }
-
-    return otp;
   }
 }
