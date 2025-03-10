@@ -21,6 +21,7 @@ export class PrismaFarmMapper {
       tax: raw.tax,
       tally: raw.tally,
       description: raw.description,
+      images: new Map(raw.images.map((url: string) => [url, url])),
       admin_id: new UUID(raw.admin_id),
       ...(raw.admin && {
         admin: PrismaUserMapper.toDomain(raw.admin),
@@ -39,6 +40,7 @@ export class PrismaFarmMapper {
       description: farm.description,
       status: farm.status,
       admin_id: farm.admin_id.value,
+      images: Array.from(farm.images.values()),
       created_at: farm.created_at,
       updated_at: farm.updated_at,
     };

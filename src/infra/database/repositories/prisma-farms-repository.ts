@@ -46,6 +46,7 @@ export class PrismaFarmsRepository implements FarmsRepository {
       include: { admin: type !== "basic" },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
+
     return farms.map(PrismaFarmMapper.toDomain);
   }
 
