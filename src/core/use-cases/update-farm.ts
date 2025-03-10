@@ -6,7 +6,6 @@ import { FarmsRepository } from "@/core/repositories/farms-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { ResourceReachedLimitError } from "@/core/errors/resource-reached-limit";
 
 // Services
 import { Storage } from "@/core/storage/storage";
