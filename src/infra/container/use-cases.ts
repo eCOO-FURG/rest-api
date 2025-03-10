@@ -40,6 +40,8 @@ import { UpdateUserUseCase } from "@/core/use-cases/update-user";
 import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
 import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
 import { FetchInboundReportUseCase } from "@/core/use-cases/fetch-inbound-report";
+import { DeleteFarmImageUseCase } from "@/core/use-cases/delete-farm-image";
+import { RegisterFarmImageUseCase } from "@/core/use-cases/register-farm-image";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -269,6 +271,14 @@ export default (container: AwilixContainer) => {
           cyclesRepository,
           pdfService
         )
+    ),
+    registerFarmImageUseCase: asFunction(
+      ({ farmsRepository, storage }) =>
+        new RegisterFarmImageUseCase(farmsRepository, storage)
+    ),
+    deleteFarmImageUseCase: asFunction(
+      ({ farmsRepository, storage }) =>
+        new DeleteFarmImageUseCase(farmsRepository, storage)
     ),
   });
 };

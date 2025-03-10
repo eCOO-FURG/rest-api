@@ -12,6 +12,8 @@ import { registerFarmController } from "@/infra/http/controllers/register-farm";
 import { fetchUserFarmController } from "@/infra/http/controllers/fetch-user-farm";
 import { handleFarmController } from "@/infra/http/controllers/handle-farm";
 import { updateFarmController } from "@/infra/http/controllers/update-farm";
+import { registerFarmImageController } from "@/infra/http/controllers/register-farm-image";
+import { deleteFarmImageController } from "@/infra/http/controllers/delete-farm-image";
 
 export const farms = Router();
 
@@ -20,6 +22,17 @@ farms.get("/own", ensureRole(["PRODUCER"]), fetchUserFarmController);
 farms.get("/:farm_id", fetchFarmController);
 
 farms.post("/", registerFarmController);
+farms.post(
+  "/own/images",
+  ensureRole(["PRODUCER"]),
+  processFiles([
+    {
+      name: "image",
+      options: { allowed: ["image/jpeg", "image/png"], size: 1 },
+    },
+  ]),
+  registerFarmImageController
+);
 
 farms.patch(
   "/own",
@@ -37,3 +50,9 @@ farms.patch(
   updateFarmController
 );
 farms.patch("/:farm_id", ensureRole(["MANAGER"]), handleFarmController);
+
+farms.delete(
+  "/own/images/:image_url",
+  ensureRole(["PRODUCER"]),
+  deleteFarmImageController
+);
