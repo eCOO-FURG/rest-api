@@ -19,7 +19,7 @@ farms.get("/", ensureRole(["BROKER", "MANAGER"]), listFarmsController);
 farms.get("/own", ensureRole(["PRODUCER"]), fetchUserFarmController);
 farms.get("/:farm_id", fetchFarmController);
 
-farms.post("/", ensureRole(["PRODUCER"]), registerFarmController);
+farms.post("/", registerFarmController);
 
 farms.patch(
   "/own",
