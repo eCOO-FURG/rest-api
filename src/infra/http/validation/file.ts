@@ -10,8 +10,6 @@ export const file = Joi.object({
   mimetype: Joi.string().required(),
   size: Joi.number().required(),
   destination: Joi.string().optional(),
-  filename: Joi.string().required(),
-  path: Joi.string().required(),
   buffer: Joi.any().required(),
 });
 
