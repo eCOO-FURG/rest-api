@@ -2,7 +2,7 @@
 import { Router } from "express";
 
 // Middlewares
-import { logging } from "@/infra/http/middlewares/logging";
+// import { logging } from "@/infra/http/middlewares/logging";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -32,7 +32,7 @@ import { stats } from "@/infra/http/routes/stats";
 
 export const router = Router();
 
-router.use(logging());
+// router.use(logging());
 
 router.use("/auth", auth);
 router.use("/users", users);

@@ -23,13 +23,11 @@ export async function requestHelpController(
   try {
     const { message } = parse(requestHelpSchema, request.body);
 
-    container.resolve("onRequestHelpEvent");
-
     const requestHelpUseCase =
       container.resolve<RequestHelpUseCase>("requestHelpUseCase");
 
     await requestHelpUseCase.execute({
-      message,
+      content: message,
       user_id: request.user_id,
     });
 

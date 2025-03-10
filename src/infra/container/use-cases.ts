@@ -251,7 +251,8 @@ export default (container: AwilixContainer) => {
       ({ bagsRepository }) => new FetchSalesStatsUseCase(bagsRepository)
     ),
     requestHelpUseCase: asFunction(
-      ({ usersRepository }) => new RequestHelpUseCase(usersRepository)
+      ({ usersRepository, farmsRepository, mailer }) =>
+        new RequestHelpUseCase(usersRepository, farmsRepository, mailer)
     ),
     sendNotificationUseCase: asFunction(
       ({ usersRepository, mailer }) =>
