@@ -166,7 +166,7 @@ router.post(
   createOfferController
 );
 router.delete(
-  "/catalogs",
+  "/offers",
   ensureAuthenticated,
   ensureRole(["PRODUCER"]),
   deleteOfferController

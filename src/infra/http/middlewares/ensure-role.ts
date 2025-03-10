@@ -13,6 +13,7 @@ import container from "@/infra/container";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { UnauthorizedError } from "@/core/errors/unauthorized";
+import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 
 // Repositories
 
@@ -40,6 +41,8 @@ export function ensureRole(roles: Role[]): RequestHandler {
 
         if (!farm) throw new ResourceNotFoundError("Fazenda", request.user_id);
 
+        if (farm.status !== "ACTIVE") throw new FarmNotActiveError();
+        
         request.farm_id = farm.id.value;
       }
 

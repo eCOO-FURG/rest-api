@@ -9,9 +9,8 @@ import { DeleteOfferUseCase } from "@/core/use-cases/delete-offer";
 import container from "@/infra/container";
 
 export const deleteOfferSchema = {
-  body: z
+  query: z
     .object({
-      cycle_id: z.string(),
       offer_id: z.string()
     })
 };
@@ -22,15 +21,14 @@ export async function deleteOfferController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id, offer_id } =
-    deleteOfferSchema.body.parse(request.body);
+    const { offer_id } =
+      deleteOfferSchema.query.parse(request.query);
 
     const deleteOfferUseCase =
       container.resolve<DeleteOfferUseCase>("deleteOfferUseCase");
 
     await deleteOfferUseCase.execute({
       farm_id: request.farm_id,
-      cycle_id,
       offer_id
     });
 

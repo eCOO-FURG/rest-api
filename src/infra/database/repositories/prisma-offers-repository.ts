@@ -19,12 +19,15 @@ import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper"
 export class PrismaOffersRepository implements OffersRepository {
   async find(
     type: RepositoryResponse,
-    { id, product, catalog, before, since }: OffersRepositorySearchRequest
+    { id, product, catalog, farm, before, since }: OffersRepositorySearchRequest
   ): Promise<Offer | null> {
     const offer = await prisma.offer.findFirst({
       where: {
         id,
-        catalog: catalog ? { id: catalog.id } : undefined,
+        catalog: {
+          ...(catalog ? { id: catalog.id } : {}),
+          ...(farm ? { farm: { id: farm.id } } : {})
+        },
         product: {
           id: product?.id,
           ...(product?.name && {
@@ -81,9 +84,9 @@ export class PrismaOffersRepository implements OffersRepository {
     return offers.map(PrismaOfferMapper.toDomain);
   }
 
-  async delete(id: string): Promise<void> {  
+  async delete(offer: Offer): Promise<void> {  
     await prisma.offer.delete({
-      where: { id },
+      where: { id: offer.id.value },
     });
   }
 }

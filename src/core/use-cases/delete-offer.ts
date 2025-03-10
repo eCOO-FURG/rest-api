@@ -1,5 +1,4 @@
 // Errors
-import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
@@ -8,12 +7,12 @@ import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { FarmsRepository } from "@/core/repositories/farms-repository";
 import { OffersRepository } from "@/core/repositories/offers-repository";
 
-// Entities
-import { Week } from "@/core/entities/cycle"
+// Utils
+import { getToday } from "@/core/utils/get-today";
+import { mostPast } from "@/core/utils/most-past";
 
 interface DeleteOfferUseCaseRequest {
   farm_id: string;
-  cycle_id: string;
   offer_id: string;
 }
 
@@ -22,30 +21,35 @@ export class DeleteOfferUseCase {
     private farmsRepository: FarmsRepository,
     private cyclesRepository: CyclesRepository,
     private offersRepository: OffersRepository
-  ) { }
+  ) {}
 
-  async execute({ farm_id, cycle_id, offer_id }: DeleteOfferUseCaseRequest) {
+  async execute({ farm_id, offer_id }: DeleteOfferUseCaseRequest) {
     const farm = await this.farmsRepository.find("basic", { id: farm_id });
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
-    if (farm.status !== "ACTIVE") throw new FarmNotActiveError();
-
     const offer = await this.offersRepository.find("basic", {
-      id: offer_id
+      id: offer_id,
+      farm: { id: farm.id.value }
     })
 
     if (!offer) throw new ResourceNotFoundError("Oferta", offer_id);
 
-    const cycle = await this.cyclesRepository.find("basic", { id: cycle_id });
+    if (!offer.catalog) throw new ResourceNotFoundError("Catálogo da oferta", offer_id);
+    
+    const cycle_id = offer.catalog.cycle_id;
 
-    if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+    const cycle = await this.cyclesRepository.find("basic", { id: cycle_id.value });
 
-    const today = (new Date().getDay() + 1) as Week[0];
+    if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id.value);
 
-    if (!cycle.offer.includes(today))
+    const today = getToday();
+
+    const oldestOfferDate = mostPast(cycle.offer);
+
+    if (!cycle.offer.includes(today) || offer.created_at > oldestOfferDate)
       throw new ResourceClosedError("Oferta", offer_id);
 
-    await this.offersRepository.delete(offer.id.value);
+    await this.offersRepository.delete(offer);
   }
 }

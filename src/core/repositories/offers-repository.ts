@@ -9,6 +9,7 @@ export interface OffersRepositorySearchRequest {
   ids?: string[];
   catalog?: { id?: string };
   product?: { id?: string; name?: string };
+  farm?: { id?: string };
   since?: Date;
   before?: Date;
 }
@@ -23,5 +24,5 @@ export interface OffersRepository {
     filters: OffersRepositorySearchRequest,
     page?: number
   ): Promise<Offer[]>;
-  delete(id: string): Promise<void>;
+  delete(offer: Offer): Promise<void>;
 }
