@@ -4,13 +4,7 @@ import { CPF } from "@/core/entities/cpf";
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
 // Types
-import { OnRegisteredEvent } from "@/core/events/on-registered";
 import { Optional } from "@/core/types/optional";
-
-// Events
-import { DomainEvents } from "@/core/events/domain-events";
-import { OnRequestHelpEvent } from "@/core/events/on-request-help";
-import { OnUpdatePasswordRequestEvent } from "@/core/events/on-password-update-requested";
 
 export type UserRole = (typeof User.roles)[number];
 
@@ -105,13 +99,6 @@ export class User extends Entity<UserProps> {
     this.touch();
   }
 
-  reset() {
-    DomainEvents.events.push({
-      entity: this,
-      name: OnUpdatePasswordRequestEvent.name,
-    });
-  }
-
   get admin() {
     for (const role of this.props.roles) {
       if (role === "MANAGER" || role === "BROKER") {
@@ -122,32 +109,16 @@ export class User extends Entity<UserProps> {
     return false;
   }
 
-  help(content: string) {
-    DomainEvents.events.push({
-      entity: this,
-      name: OnRequestHelpEvent.name,
-      payload: { content },
-    });
-  }
-
   static create(
     props: Optional<UserProps, "password" | "verified_at" | "photo" | "chat">
   ) {
-    const user = new User({
+    return new User({
       ...props,
       password: props.password ?? null,
-      verified_at: props.verified_at ?? null,
       photo: props.photo ?? null,
       chat: props.chat ?? null,
+      verified_at: props.verified_at ?? null,
     });
-
-    const fresh = !props.id;
-
-    if (fresh) {
-      DomainEvents.events.push({ entity: user, name: OnRegisteredEvent.name });
-    }
-
-    return user;
   }
 
   static roles = ["USER", "PRODUCER", "MANAGER", "BROKER"] as const;
