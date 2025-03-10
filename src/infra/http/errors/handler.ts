@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { ZodError } from "zod";
 import { MulterError } from "multer";
 import { JsonWebTokenError } from "jsonwebtoken";
 
@@ -17,28 +17,23 @@ export const handler = (
   response: Response,
   __: NextFunction
 ) => {
-  if (error instanceof ZodError) {
-    const issues = error.issues.map((issue) => ({
-      field: issue.path[0],
-      message: issue.message,
-    }));
-
+  if (error instanceof Joi.ValidationError) {
     return response.status(400).send({
-      message: "Erro de validação.",
-      code: "validation-error",
-      issues,
+      message: "Ocorreu um erro de validação",
+      code: "bad-request",
+      details: error.message.replace(/['"]/g, ""),
     });
   }
 
   if (error instanceof SyntaxError) {
     return response
       .status(400)
-      .send({ message: "Sintaxe incorreta.", code: "syntax-error" });
+      .send({ message: "Sintaxe incorreta", code: "syntax-error" });
   }
 
   if (error instanceof MulterError) {
     return response.status(400).send({
-      message: "Erro ao processar arquivo.",
+      message: "Erro ao processar arquivo",
       code: "file-error",
       issues: [
         {
@@ -51,7 +46,7 @@ export const handler = (
 
   if (error instanceof JsonWebTokenError) {
     return response.status(401).send({
-      message: "Assinatura inválida.",
+      message: "Assinatura inválida",
       code: "invalid-signature",
     });
   }
