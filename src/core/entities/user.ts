@@ -113,9 +113,13 @@ export class User extends Entity<UserProps> {
   }
 
   get admin() {
-    return !!this.props.roles.find(
-      (role) => role === "MANAGER" || role === "BROKER"
-    );
+    for (const role of this.props.roles) {
+      if (role === "MANAGER" || role === "BROKER") {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   help(content: string) {

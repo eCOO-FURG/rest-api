@@ -2,11 +2,12 @@
 import { NextFunction, Request, Response, RequestHandler } from "express";
 
 // Core
-import { Role } from "@/core/entities/user";
+import { UserRole } from "@/core/entities/user";
 
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
 import { FarmsRepository } from "@/core/repositories/farms-repository";
+
 // Container
 import container from "@/infra/container";
 
@@ -14,9 +15,7 @@ import container from "@/infra/container";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { UnauthorizedError } from "@/core/errors/unauthorized";
 
-// Repositories
-
-export function ensureRole(roles: Role[]): RequestHandler {
+export function ensureRole(roles: UserRole[]): RequestHandler {
   return async (request: Request, _: Response, next: NextFunction) => {
     try {
       const usersRepository =
@@ -42,6 +41,8 @@ export function ensureRole(roles: Role[]): RequestHandler {
 
         request.farm_id = farm.id.value;
       }
+
+      request.admin = user.admin;
 
       next();
     } catch (error) {

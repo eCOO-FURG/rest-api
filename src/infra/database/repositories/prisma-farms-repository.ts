@@ -56,12 +56,8 @@ export class PrismaFarmsRepository implements FarmsRepository {
       await ctx.farm.create({ data });
 
       await ctx.user.update({
-        where: {
-          id: farm.admin_id.value,
-        },
-        data: {
-          roles: { push: "PRODUCER" },
-        },
+        where: { id: farm.admin_id.value },
+        data: { roles: { push: "PRODUCER" } },
       });
     });
   }
