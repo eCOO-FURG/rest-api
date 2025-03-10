@@ -44,8 +44,8 @@ import { FetchInboundReportUseCase } from "@/core/use-cases/fetch-inbound-report
 export default (container: AwilixContainer) => {
   container.register({
     registerUsecase: asFunction(
-      ({ usersRepository, encrypter }) =>
-        new RegisterUseCase(usersRepository, encrypter)
+      ({ usersRepository, encrypter, hasher, mailer }) =>
+        new RegisterUseCase(usersRepository, encrypter, hasher, mailer)
     ),
     authenticateUseCase: asFunction(
       ({

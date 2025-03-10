@@ -58,7 +58,7 @@ export class Nodemailer implements Mailer {
   async load({ view, props }: MailerLoadRequest): Promise<string> {
     if (view == "welcome") {
       Object.assign(props, {
-        url: `${env.SERVER_URL}/verify?token=${props.token}`,
+        url: `${env.SERVER_URL}/auth/verify?token=${props.token}`,
       });
     }
 

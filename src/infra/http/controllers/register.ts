@@ -15,7 +15,7 @@ export const registerSchema = Joi.object({
   first_name: Joi.string().required(),
   last_name: Joi.string().required(),
   cpf: Joi.string().min(11).max(11).required(),
-  phone: Joi.string().required(),
+  phone: Joi.string().required().min(11).max(11),
   email: Joi.string().email().required(),
   password: Joi.string().min(8).optional(),
   role: Joi.string().valid("USER", "PRODUCER").required(),
@@ -30,8 +30,6 @@ export async function registerController(
   try {
     const { first_name, last_name, cpf, email, phone, password, chat, role } =
       parse(registerSchema, request.body);
-
-    container.resolve("onRegisteredEvent");
 
     const registerUseCase =
       container.resolve<RegisterUseCase>("registerUsecase");
