@@ -3,7 +3,7 @@ import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
 
 // Use-cases
-import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
+import { ResetPasswordUseCase } from "@/core/use-cases/reset-password";
 
 // Container
 import container from "@/infra/container";
@@ -11,7 +11,7 @@ import container from "@/infra/container";
 // Validation
 import { parse } from "@/infra/http/validation/parse";
 
-export const requestPasswordUpdateSchema = Joi.object({
+export const resetPasswordSchema = Joi.object({
   email: Joi.string().email().required(),
 })
   .required()
@@ -19,22 +19,19 @@ export const requestPasswordUpdateSchema = Joi.object({
     "object.missing": "Pelo menos um campo deve ser fornecido.",
   });
 
-export async function requestPasswordUpdateController(
+export async function resetPasswordController(
   request: Request,
   response: Response,
   next: NextFunction
 ) {
   try {
-    const { email } = parse(requestPasswordUpdateSchema, request.body);
+    const { email } = parse(resetPasswordSchema, request.body);
 
-    container.resolve("onUpdatePasswordRequestEvent");
+    const resetPasswordUseCase = container.resolve<ResetPasswordUseCase>(
+      "resetPasswordUseCase"
+    );
 
-    const requestPasswordUpdateUseCase =
-      container.resolve<RequestPasswordUpdateUseCase>(
-        "requestPasswordUpdateUseCase"
-      );
-
-    await requestPasswordUpdateUseCase.execute({
+    await resetPasswordUseCase.execute({
       email,
     });
 

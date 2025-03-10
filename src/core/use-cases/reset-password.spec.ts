@@ -7,17 +7,14 @@ import { MockedMailer } from "@/test/mail/mocked-mailer";
 import { MockedHasher } from "@/test/cryptography/mocked-hasher";
 
 // Use-cases
-import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
-
-// Events
-import { OnUpdatePasswordRequestEvent } from "@/core/events/on-password-update-requested";
+import { ResetPasswordUseCase } from "@/core/use-cases/reset-password";
 
 // Repositories
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
 // Test
 import { waitFor } from "@/test/utils/wait-for";
-import { MockInstance } from "vitest";
+import { beforeEach, expect, MockInstance, vi } from "vitest";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -31,8 +28,7 @@ let mocks: {
   hasher: MockedHasher;
 };
 
-let sut: RequestPasswordUpdateUseCase;
-let _event: OnUpdatePasswordRequestEvent;
+let sut: ResetPasswordUseCase;
 
 let spy: MockInstance;
 
@@ -47,9 +43,7 @@ describe("request password update", () => {
       hasher: new MockedHasher(),
     };
 
-    sut = new RequestPasswordUpdateUseCase(repositories.users);
-
-    _event = new OnUpdatePasswordRequestEvent(
+    sut = new ResetPasswordUseCase(
       repositories.users,
       mocks.hasher,
       mocks.mailer

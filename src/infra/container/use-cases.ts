@@ -30,7 +30,7 @@ import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
 import { RegisterProductUseCase } from "@/core/use-cases/register-product";
 import { RequestHelpUseCase } from "@/core/use-cases/request-help";
 import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
-import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
+import { ResetPasswordUseCase } from "@/core/use-cases/reset-password";
 import { SendNotificationUseCase } from "@/core/use-cases/send-notification";
 import { UpdateBagUseCase } from "@/core/use-cases/update-bag";
 import { UpdateFarmUseCase } from "@/core/use-cases/update-farm";
@@ -206,8 +206,9 @@ export default (container: AwilixContainer) => {
       ({ bagsRepository, usersRepository, cyclesRepository }) =>
         new ListBagsUseCase(bagsRepository, usersRepository, cyclesRepository)
     ),
-    requestPasswordUpdateUseCase: asFunction(
-      ({ usersRepository }) => new RequestPasswordUpdateUseCase(usersRepository)
+    resetPasswordUseCase: asFunction(
+      ({ usersRepository, hasher, mailer }) =>
+        new ResetPasswordUseCase(usersRepository, hasher, mailer)
     ),
     openPaymentUseCase: asFunction(
       ({ bagsRepository, paymentsRepository, pixProvider }) =>
