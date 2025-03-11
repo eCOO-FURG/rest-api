@@ -2,7 +2,7 @@
 import { Week } from "@/core/entities/cycle";
 
 // Use-cases
-import { OrderProductsUseCase } from "@/core/use-cases/order-products";
+import { OrderProductsUseCase } from "@/core/use-cases/register-order";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -23,7 +23,6 @@ import { makeFarm } from "@/test/factories/make-farm";
 // Repositories
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
 import { InMemoryBoxesRepository } from "@/test/repositories/in-memory-boxes-repository";

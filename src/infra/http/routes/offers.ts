@@ -5,8 +5,8 @@ import { Router } from "express";
 import { ensureRole } from "@/infra/http/middlewares/ensure-role";
 
 // Controllers
-import { createOfferController } from "@/infra/http/controllers/create-offer";
+import { registerOfferController } from "@/infra/http/controllers/register-offer";
 
 export const offers = Router();
 
-offers.post("/", ensureRole(["PRODUCER"]), createOfferController);
+offers.post("/", ensureRole(["PRODUCER"]), registerOfferController);

@@ -1,5 +1,5 @@
 // Use-cases
-import { CreateOfferUseCase } from "@/core/use-cases/create-offer";
+import { RegisterOfferUseCase } from "@/core/use-cases/register-offer";
 
 // Services
 import { makeCycle } from "@/test/factories/make-cycle";
@@ -23,7 +23,7 @@ import { MissingFieldError } from "@/core/errors/missing-field";
 
 // Entities
 import { Offer } from "@/core/entities/offer";
-import { Week } from "@/core/entities/cycle";
+import { CycleWeek } from "@/core/entities/cycle";
 import { makeCatalog } from "@/test/factories/make-catalog";
 
 let farmsRepository: InMemoryFarmsRepository;
@@ -31,7 +31,7 @@ let productsRepository: InMemoryProductsRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 
-let sut: CreateOfferUseCase;
+let sut: RegisterOfferUseCase;
 
 describe("offer products", () => {
   beforeEach(() => {
@@ -40,7 +40,7 @@ describe("offer products", () => {
     farmsRepository = new InMemoryFarmsRepository();
     catalogsRepository = new InMemoryCatalogsRepository();
 
-    sut = new CreateOfferUseCase(
+    sut = new RegisterOfferUseCase(
       farmsRepository,
       productsRepository,
       catalogsRepository,
@@ -237,13 +237,13 @@ describe("offer products", () => {
   it("should not be able to offer a perishable product without expires_at", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
-  
+
     const product = makeProduct({ perishable: true });
     await productsRepository.create(product);
-  
+
     const farm = makeFarm({ status: "ACTIVE" });
     await farmsRepository.create(farm);
-  
+
     await expect(() =>
       sut.execute({
         product_id: product.id.value,
@@ -255,5 +255,4 @@ describe("offer products", () => {
       })
     ).rejects.toBeInstanceOf(MissingFieldError);
   });
-  
 });

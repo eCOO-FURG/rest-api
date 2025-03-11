@@ -28,7 +28,8 @@ import { mostPast } from "@/core/utils/most-past";
 
 // Services
 import { OtpProvider } from "@/core/cryptography/otp-provider";
-interface OrderProductsUseCaseRequest {
+
+interface RegisterOrderUseCaseRequest {
   user_id: string;
   cycle_id: string;
   request: {
@@ -39,9 +40,9 @@ interface OrderProductsUseCaseRequest {
   address?: {
     street: string;
     number: string;
-    complement?: string;
     neighborhood: string;
     postal_code: string;
+    complement?: string;
   };
 }
 
@@ -52,7 +53,7 @@ interface UseBagRequest {
   cycle: Cycle;
 }
 
-export class OrderProductsUseCase {
+export class RegisterOrderUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private cyclesRepository: CyclesRepository,
@@ -71,7 +72,7 @@ export class OrderProductsUseCase {
     bag_id,
     address,
     request,
-  }: OrderProductsUseCaseRequest) {
+  }: RegisterOrderUseCaseRequest) {
     const user = await this.usersRepository.find("basic", { id: user_id });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
@@ -158,7 +159,7 @@ export class OrderProductsUseCase {
     return { bag };
   }
 
-  private async useAddress(address: OrderProductsUseCaseRequest["address"]) {
+  private async useAddress(address: RegisterOrderUseCaseRequest["address"]) {
     if (!address) return;
 
     const found = await this.addressesRepository.find("basic", {

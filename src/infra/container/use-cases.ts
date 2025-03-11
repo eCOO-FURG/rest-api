@@ -3,7 +3,7 @@ import { asFunction, AwilixContainer } from "awilix";
 
 // Use-cases
 import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
-import { CreateOfferUseCase } from "@/core/use-cases/create-offer";
+import { RegisterOfferUseCase } from "@/core/use-cases/register-offer";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 import { FetchBoxUseCase } from "@/core/use-cases/fetch-box";
 import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
@@ -23,7 +23,7 @@ import { ListCyclesUseCase } from "@/core/use-cases/list-cycles";
 import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
 import { ListProductsUsecase } from "@/core/use-cases/list-products";
 import { OpenPaymentUseCase } from "@/core/use-cases/open-payment";
-import { OrderProductsUseCase } from "@/core/use-cases/order-products";
+import { RegisterOrderUseCase } from "@/core/use-cases/register-order";
 import { RegisterUseCase } from "@/core/use-cases/register";
 import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
 import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
@@ -77,14 +77,14 @@ export default (container: AwilixContainer) => {
       ({ farmsRepository, storage }) =>
         new UpdateFarmUseCase(farmsRepository, storage)
     ),
-    createOfferUseCase: asFunction(
+    registerOfferUseCase: asFunction(
       ({
         farmsRepository,
         productsRepository,
         catalogsRepository,
         cyclesRepository,
       }) =>
-        new CreateOfferUseCase(
+        new RegisterOfferUseCase(
           farmsRepository,
           productsRepository,
           catalogsRepository,
@@ -95,7 +95,7 @@ export default (container: AwilixContainer) => {
       ({ usersRepository, encrypter, storage }) =>
         new UpdateUserUseCase(usersRepository, encrypter, storage)
     ),
-    orderPoductsUseCase: asFunction(
+    registerOrderUseCase: asFunction(
       ({
         usersRepository,
         cyclesRepository,
@@ -107,7 +107,7 @@ export default (container: AwilixContainer) => {
         farmsRepository,
         otpProvider,
       }) =>
-        new OrderProductsUseCase(
+        new RegisterOrderUseCase(
           usersRepository,
           cyclesRepository,
           offersRepository,

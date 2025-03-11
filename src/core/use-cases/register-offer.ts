@@ -1,6 +1,6 @@
 // Entities
 import { Catalog } from "@/core/entities/catalog";
-import { Cycle, Week } from "@/core/entities/cycle";
+import { Cycle, CycleWeek } from "@/core/entities/cycle";
 import { Farm } from "@/core/entities/farm";
 import { Offer } from "@/core/entities/offer";
 
@@ -21,7 +21,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 // Utils
 import { mostPast } from "@/core/utils/most-past";
 
-interface CreateOfferUseCaseRequest {
+interface RegisterOfferUseCaseRequest {
   farm_id: string;
   product_id: string;
   cycle_id: string;
@@ -31,7 +31,7 @@ interface CreateOfferUseCaseRequest {
   expires_at?: Date;
 }
 
-export class CreateOfferUseCase {
+export class RegisterOfferUseCase {
   constructor(
     private farmsRepository: FarmsRepository,
     private productsRepository: ProductsRepository,
@@ -47,7 +47,7 @@ export class CreateOfferUseCase {
     price,
     description,
     expires_at,
-  }: CreateOfferUseCaseRequest) {
+  }: RegisterOfferUseCaseRequest) {
     const farm = await this.farmsRepository.find("basic", { id: farm_id });
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
@@ -67,7 +67,7 @@ export class CreateOfferUseCase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const today = (new Date().getDay() + 1) as Week[0];
+    const today = (new Date().getDay() + 1) as Cycle["offer"][0];
 
     if (!cycle.offer.includes(today))
       throw new ResourceClosedError("Ciclo", cycle.id.value);

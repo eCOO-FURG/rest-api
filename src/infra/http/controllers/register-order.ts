@@ -3,7 +3,7 @@ import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
 
 // Use-cases
-import { OrderProductsUseCase } from "@/core/use-cases/order-products";
+import { RegisterOrderUseCase } from "@/core/use-cases/register-order";
 
 // Container
 import container from "@/infra/container";
@@ -14,7 +14,7 @@ import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 // Validation
 import { parse } from "@/infra/http/validation/parse";
 
-export const orderProductsSchema = Joi.object({
+export const registerOrderSchema = Joi.object({
   bag_id: Joi.string().uuid().optional(),
   cycle_id: Joi.string().required(),
   address: Joi.object({
@@ -39,22 +39,22 @@ export const orderProductsSchema = Joi.object({
     "object.missing": "Pelo menos um campo deve ser fornecido.",
   });
 
-export async function orderProductsController(
+export async function registerOrderController(
   request: Request,
   response: Response,
   next: NextFunction
 ) {
   try {
     const { cycle_id, address, orders, bag_id } = parse(
-      orderProductsSchema,
+      registerOrderSchema,
       request.body
     );
 
-    const orderProductsUseCase = container.resolve<OrderProductsUseCase>(
-      "orderPoductsUseCase"
+    const registerOrderUseCase = container.resolve<RegisterOrderUseCase>(
+      "registerOrderUseCase"
     );
 
-    const { bag } = await orderProductsUseCase.execute({
+    const { bag } = await registerOrderUseCase.execute({
       bag_id,
       user_id: request.user_id,
       cycle_id,

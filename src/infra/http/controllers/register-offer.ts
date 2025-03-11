@@ -3,7 +3,7 @@ import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
 
 // Use-cases
-import { CreateOfferUseCase } from "@/core/use-cases/create-offer";
+import { RegisterOfferUseCase } from "@/core/use-cases/register-offer";
 
 // Container
 import container from "@/infra/container";
@@ -14,7 +14,7 @@ import { parse } from "@/infra/http/validation/parse";
 // Utils
 import { toDate } from "@/infra/utils/to-date";
 
-export const createOfferSchema = Joi.object({
+export const registerOfferSchema = Joi.object({
   product_id: Joi.string().required(),
   cycle_id: Joi.string().required(),
   amount: Joi.number().required(),
@@ -25,19 +25,20 @@ export const createOfferSchema = Joi.object({
     .optional(),
 });
 
-export async function createOfferController(
+export async function registerOfferController(
   request: Request,
   response: Response,
   next: NextFunction
 ) {
   try {
     const { product_id, cycle_id, amount, price, description, expires_at } =
-      parse(createOfferSchema, request.body);
+      parse(registerOfferSchema, request.body);
 
-    const createOfferUseCase =
-      container.resolve<CreateOfferUseCase>("createOfferUseCase");
+    const registerOfferUseCase = container.resolve<RegisterOfferUseCase>(
+      "registerOfferUseCase"
+    );
 
-    await createOfferUseCase.execute({
+    await registerOfferUseCase.execute({
       farm_id: request.farm_id,
       product_id,
       cycle_id,
