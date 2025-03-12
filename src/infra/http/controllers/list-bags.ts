@@ -50,7 +50,7 @@ export async function listBagsController(
       container.resolve<ListBagsUseCase>("listBagsUseCase");
 
     const { bags } = await listBagsUseCase.execute({
-      user_id,
+      user_id: request.admin ? user_id : request.user_id,
       cycle_id,
       statuses: toArray(statuses),
       since: toDate(since),
