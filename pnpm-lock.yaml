@@ -23,9 +23,6 @@ importers:
       '@sentry/profiling-node':
         specifier: ^8.17.0
         version: 8.17.0
-      '@types/node':
-        specifier: ^20.14.2
-        version: 20.14.2
       '@woovi/node-sdk':
         specifier: ^1.0.1
         version: 1.0.1
@@ -105,6 +102,9 @@ importers:
       '@types/multer':
         specifier: ^1.4.12
         version: 1.4.12
+      '@types/node':
+        specifier: ^20.14.2
+        version: 20.14.2
       '@types/nodemailer':
         specifier: ^6.4.15
         version: 6.4.15
