@@ -36,7 +36,6 @@ export async function updateBagController(
 
     await updateBagUseCase.execute({
       bag_id,
-      user_id: req.user_id,
       status,
     });
 
