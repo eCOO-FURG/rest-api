@@ -1,7 +1,7 @@
 // Libraries
 import express from "express";
 import cors from "cors";
-// import swaggerUi from "swagger-ui-express";
+import swaggerUi from "swagger-ui-express";
 
 // Routes
 import { router } from "@/infra/http/routes";
@@ -13,7 +13,7 @@ import { handler } from "@/infra/http/errors/handler";
 import { env } from "@/infra/env";
 
 // Docs
-// import { docs } from "@/infra/docs/swagger";
+import { docs } from "@/infra/docs";
 
 const server = express();
 
@@ -21,6 +21,6 @@ server.use(cors());
 server.use(express.json());
 server.use(router);
 server.use(handler);
-// server.use("/docs", swaggerUi.serve, swaggerUi.setup(docs));
+server.use("/docs", swaggerUi.serve, swaggerUi.setup(docs));
 
 server.listen(env.SERVER_PORT, () => console.log("🚀 Servidor HTTP rodando!"));

@@ -18,7 +18,7 @@ import { toFile } from "@/infra/utils/to-file";
 // Entities
 import { Farm } from "@/core/entities/farm";
 
-export const handleFarmParams = Joi.object({
+export const updateFarmParams = Joi.object({
   farm_id: Joi.string().uuid().required(),
 });
 
@@ -38,7 +38,7 @@ export async function updateFarmController(
   next: NextFunction
 ) {
   try {
-    const { farm_id } = parse(handleFarmParams, request.params);
+    const { farm_id } = parse(updateFarmParams, request.params);
 
     const { name, tally, description, photo, status } = parse(
       updateFarmSchema,

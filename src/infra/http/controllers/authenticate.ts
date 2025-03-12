@@ -15,9 +15,12 @@ import { UserPresenter } from "@/infra/http/presenters/user-presenter";
 import { parse } from "@/infra/http/validation/parse";
 
 export const authenticateSchema = Joi.object({
-  email: Joi.string().email().required(),
-  password: Joi.string().min(6).required(),
-  type: Joi.string().valid("BASIC", "OTP").required(),
+  email: Joi.string().email().required().example("user@example.com"),
+  password: Joi.string().required(),
+  type: Joi.string()
+    .valid("BASIC", "OTP")
+    .required()
+    .description("BASIC or OTP"),
 });
 
 export async function authenticateController(
