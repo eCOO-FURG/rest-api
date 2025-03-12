@@ -1,23 +1,23 @@
 // Entities
+import { UUID } from "@/core/entities/aggregates/uuid";
 import { Entity, EntityRequest } from "@/core/entities/entity";
 import { Product } from "@/core/entities/product";
 
 // Types
 import { Optional } from "@/core/types/optional";
 import { Catalog } from "@/core/entities/catalog";
-import { UUID } from "@/core/entities/aggregates/uuid";
 
 export interface OfferProps extends EntityRequest {
-  price: number;
-  amount: number;
-  description: string | null;
-  expires_at: Date | null;
-
   catalog_id: UUID;
   catalog?: Catalog;
 
   product_id: UUID;
   product?: Product;
+
+  price: number;
+  amount: number;
+  description: string | null;
+  expires_at: Date | null;
 }
 
 export class Offer extends Entity<OfferProps> {
@@ -73,7 +73,7 @@ export class Offer extends Entity<OfferProps> {
     const offer = new Offer({
       ...props,
       description: props.description ?? null,
-      expires_at: props.expires_at ?? null
+      expires_at: props.expires_at ?? null,
     });
 
     return offer;

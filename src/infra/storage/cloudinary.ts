@@ -47,6 +47,10 @@ export class Cloudinary implements Storage {
     }
   }
 
+  async delete(url: string, folder: string): Promise<void> {
+    await this.client.uploader.destroy(`${folder}/${url}`);
+  }
+
   private async save(file: File, folder: string): Promise<string> {
     try {
       const url = await new Promise<string>((resolve, reject) => {

@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Container
 import container from "@/infra/container";
@@ -12,31 +12,21 @@ import { ListCurrentBagsUseCase } from "@/core/use-cases/list-current-bags";
 import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 
 // Validation
-import { options } from "@/infra/http/validation/options";
 import { toArray } from "@/infra/utils/to-array";
 
 // Entities
-import { Bag, BAG_STATUSES } from "@/core/entities/bag";
+import { Bag } from "@/core/entities/bag";
 
-export const listCurrentBagsSchema = {
-  query: z
-    .object({
-      page: z.coerce.number().openapi({ description: "Página da listagem." }),
-      cycle_id: z.string().uuid().openapi({ description: "Ciclo da busca." }),
-      statuses: z.string().optional().openapi({
-        description: "Filtro de status, separados por vírgula.",
-      }),
-      user: z
-        .string()
-        .optional()
-        .openapi({ description: "Filtro de nome do dono da sacola." }),
-    })
-    .refine(
-      (data) =>
-        !data.statuses || options.validation(data.statuses, BAG_STATUSES),
-      options.warning
-    ),
-};
+// Validation
+import { options } from "@/infra/http/validation/options";
+import { parse } from "@/infra/http/validation/parse";
+
+export const listCurrentBagsQuery = Joi.object({
+  page: Joi.number().required(),
+  cycle_id: Joi.string().uuid().required(),
+  user: Joi.string().optional(),
+  statuses: options(Bag.statuses).optional(),
+});
 
 export async function listCurrentBagsController(
   request: Request,
@@ -44,8 +34,10 @@ export async function listCurrentBagsController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id, page, user, statuses } =
-      listCurrentBagsSchema.query.parse(request.query);
+    const { cycle_id, page, user, statuses } = parse(
+      listCurrentBagsQuery,
+      request.query
+    );
 
     const listCurrentBagsUseCase = container.resolve<ListCurrentBagsUseCase>(
       "listCurrentBagsUseCase"
@@ -55,7 +47,7 @@ export async function listCurrentBagsController(
       cycle_id,
       page,
       user,
-      statuses: toArray<Bag["status"]>(statuses),
+      statuses: toArray(statuses),
     });
 
     return response

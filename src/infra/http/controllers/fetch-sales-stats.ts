@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Use-cases
 import { FetchSalesStatsUseCase } from "@/core/use-cases/fetch-sales-stats";
@@ -12,42 +12,17 @@ import container from "@/infra/container";
 import { toDate } from "@/infra/utils/to-date";
 
 // Validation
-import { period } from "@/infra/http/validation/period";
+import { parse } from "@/infra/http/validation/parse";
 
-export const fetchSalesStatsSchema = {
-  query: z
-    .object({
-      since: z
-        .string()
-        .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
-        .optional()
-        .openapi({
-          description: "Data inicial do período (DD-MM-YYYY)",
-          format: "date",
-          pattern: "^\\d{2}-\\d{2}-\\d{4}$",
-          example: "01-01-2025",
-        }),
-      before: z
-        .string()
-        .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
-        .optional()
-        .openapi({
-          description: "Data final do período (DD-MM-YYYY)",
-          format: "date",
-          pattern: "^\\d{2}-\\d{2}-\\d{4}$",
-          example: "31-12-2025",
-        }),
-
-      method: z.enum(["CREDIT", "DEBIT", "CASH", "PIX"]).optional().openapi({
-        description: "Método de pagamento",
-        example: "CREDIT",
-      }),
-    })
-    .refine(
-      (data) => period.validation(toDate(data.since), toDate(data.before)),
-      period.warning
-    ),
-};
+export const fetchSalesStatsQuery = Joi.object({
+  since: Joi.string()
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
+    .optional(),
+  before: Joi.string()
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
+    .optional(),
+  method: Joi.string().valid("CREDIT", "DEBIT", "CASH", "PIX").optional(),
+});
 
 export async function fetchSalesStatsController(
   request: Request,
@@ -55,7 +30,8 @@ export async function fetchSalesStatsController(
   next: NextFunction
 ) {
   try {
-    const { since, before, method } = fetchSalesStatsSchema.query.parse(
+    const { since, before, method } = parse(
+      fetchSalesStatsQuery,
       request.query
     );
 

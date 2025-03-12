@@ -58,13 +58,13 @@ export class Nodemailer implements Mailer {
   async load({ view, props }: MailerLoadRequest): Promise<string> {
     if (view == "welcome") {
       Object.assign(props, {
-        url: `${env.SERVER_URL}/verify?token=${props.token}`,
+        url: `${env.SERVER_URL}/auth/verify?token=${props.token}`,
       });
     }
 
     if (view == "password-update") {
       Object.assign(props, {
-        url: `${env.FRONT_URL}/alterar-cadastro?token=${props.token}`,
+        url: `${env.APP_URL}/alterar-cadastro?token=${props.token}`,
       });
     }
 

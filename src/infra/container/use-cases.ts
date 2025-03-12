@@ -3,7 +3,7 @@ import { asFunction, AwilixContainer } from "awilix";
 
 // Use-cases
 import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
-import { CreateOfferUseCase } from "@/core/use-cases/create-offer";
+import { RegisterOfferUseCase } from "@/core/use-cases/register-offer";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 import { FetchBoxUseCase } from "@/core/use-cases/fetch-box";
 import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
@@ -23,18 +23,16 @@ import { ListCyclesUseCase } from "@/core/use-cases/list-cycles";
 import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
 import { ListProductsUsecase } from "@/core/use-cases/list-products";
 import { OpenPaymentUseCase } from "@/core/use-cases/open-payment";
-import { OrderProductsUseCase } from "@/core/use-cases/order-products";
+import { RegisterOrderUseCase } from "@/core/use-cases/register-order";
 import { RegisterUseCase } from "@/core/use-cases/register";
 import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
 import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
 import { RegisterProductUseCase } from "@/core/use-cases/register-product";
 import { RequestHelpUseCase } from "@/core/use-cases/request-help";
 import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
-import { RequestPasswordUpdateUseCase } from "@/core/use-cases/request-password-update";
+import { ResetPasswordUseCase } from "@/core/use-cases/reset-password";
 import { SendNotificationUseCase } from "@/core/use-cases/send-notification";
 import { UpdateBagUseCase } from "@/core/use-cases/update-bag";
-import { UpdateBoxUseCase } from "@/core/use-cases/update-box";
-import { UpdateCatalogUseCase } from "@/core/use-cases/update-catalog";
 import { UpdateFarmUseCase } from "@/core/use-cases/update-farm";
 import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
 import { UpdateProductUseCase } from "@/core/use-cases/update-product";
@@ -42,12 +40,14 @@ import { UpdateUserUseCase } from "@/core/use-cases/update-user";
 import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
 import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
 import { FetchInboundReportUseCase } from "@/core/use-cases/fetch-inbound-report";
+import { DeleteFarmImageUseCase } from "@/core/use-cases/delete-farm-image";
+import { RegisterFarmImageUseCase } from "@/core/use-cases/register-farm-image";
 
 export default (container: AwilixContainer) => {
   container.register({
     registerUsecase: asFunction(
-      ({ usersRepository, encrypter }) =>
-        new RegisterUseCase(usersRepository, encrypter)
+      ({ usersRepository, encrypter, hasher, mailer }) =>
+        new RegisterUseCase(usersRepository, encrypter, hasher, mailer)
     ),
     authenticateUseCase: asFunction(
       ({
@@ -69,25 +69,22 @@ export default (container: AwilixContainer) => {
       ({ usersRepository, sessionsRepository, hasher }) =>
         new VerifyUserUsecase(usersRepository, sessionsRepository, hasher)
     ),
-    updateBoxUseCase: asFunction(
-      ({ boxesRepository }) => new UpdateBoxUseCase(boxesRepository)
-    ),
     registerFarmUseCase: asFunction(
       ({ usersRepository, farmsRepository }) =>
         new RegisterFarmUseCase(usersRepository, farmsRepository)
     ),
     updateFarmUseCase: asFunction(
-      ({ farmsRepository, storage }) =>
-        new UpdateFarmUseCase(farmsRepository, storage)
+      ({ farmsRepository, usersRepository, storage }) =>
+        new UpdateFarmUseCase(farmsRepository, usersRepository, storage)
     ),
-    createOfferUseCase: asFunction(
+    registerOfferUseCase: asFunction(
       ({
         farmsRepository,
         productsRepository,
         catalogsRepository,
         cyclesRepository,
       }) =>
-        new CreateOfferUseCase(
+        new RegisterOfferUseCase(
           farmsRepository,
           productsRepository,
           catalogsRepository,
@@ -98,15 +95,7 @@ export default (container: AwilixContainer) => {
       ({ usersRepository, encrypter, storage }) =>
         new UpdateUserUseCase(usersRepository, encrypter, storage)
     ),
-    updateCatalogUseCase: asFunction(
-      ({ farmsRepository, cyclesRepository, catalogsRepository }) =>
-        new UpdateCatalogUseCase(
-          farmsRepository,
-          cyclesRepository,
-          catalogsRepository
-        )
-    ),
-    orderPoductsUseCase: asFunction(
+    registerOrderUseCase: asFunction(
       ({
         usersRepository,
         cyclesRepository,
@@ -118,7 +107,7 @@ export default (container: AwilixContainer) => {
         farmsRepository,
         otpProvider,
       }) =>
-        new OrderProductsUseCase(
+        new RegisterOrderUseCase(
           usersRepository,
           cyclesRepository,
           offersRepository,
@@ -137,8 +126,13 @@ export default (container: AwilixContainer) => {
       ({ farmsRepository }) => new FetchFarmUseCase(farmsRepository)
     ),
     requestOtpUseCase: asFunction(
-      ({ usersRepository, otpProvider, otpsRepository }) =>
-        new RequestOtpUseCase(usersRepository, otpProvider, otpsRepository)
+      ({ usersRepository, otpProvider, otpsRepository, mailer }) =>
+        new RequestOtpUseCase(
+          usersRepository,
+          otpProvider,
+          otpsRepository,
+          mailer
+        )
     ),
     listBoxesUseCase: asFunction(
       ({ cyclesRepository, boxesRepository }) =>
@@ -214,8 +208,9 @@ export default (container: AwilixContainer) => {
       ({ bagsRepository, usersRepository, cyclesRepository }) =>
         new ListBagsUseCase(bagsRepository, usersRepository, cyclesRepository)
     ),
-    requestPasswordUpdateUseCase: asFunction(
-      ({ usersRepository }) => new RequestPasswordUpdateUseCase(usersRepository)
+    resetPasswordUseCase: asFunction(
+      ({ usersRepository, hasher, mailer }) =>
+        new ResetPasswordUseCase(usersRepository, hasher, mailer)
     ),
     openPaymentUseCase: asFunction(
       ({ bagsRepository, paymentsRepository, pixProvider }) =>
@@ -258,7 +253,8 @@ export default (container: AwilixContainer) => {
       ({ bagsRepository }) => new FetchSalesStatsUseCase(bagsRepository)
     ),
     requestHelpUseCase: asFunction(
-      ({ usersRepository }) => new RequestHelpUseCase(usersRepository)
+      ({ usersRepository, farmsRepository, mailer }) =>
+        new RequestHelpUseCase(usersRepository, farmsRepository, mailer)
     ),
     sendNotificationUseCase: asFunction(
       ({ usersRepository, mailer }) =>
@@ -275,6 +271,14 @@ export default (container: AwilixContainer) => {
           cyclesRepository,
           pdfService
         )
+    ),
+    registerFarmImageUseCase: asFunction(
+      ({ farmsRepository, usersRepository, storage }) =>
+        new RegisterFarmImageUseCase(farmsRepository, usersRepository, storage)
+    ),
+    deleteFarmImageUseCase: asFunction(
+      ({ farmsRepository, usersRepository, storage }) =>
+        new DeleteFarmImageUseCase(farmsRepository, usersRepository, storage)
     ),
   });
 };

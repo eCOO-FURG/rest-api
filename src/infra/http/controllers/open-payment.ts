@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Use-cases
 import { OpenPaymentUseCase } from "@/core/use-cases/open-payment";
@@ -11,11 +11,12 @@ import container from "@/infra/container";
 // Presenters
 import { PaymentPresenter } from "@/infra/http/presenters/payment-presenter";
 
-export const openPaymentSchema = {
-  route: z.object({
-    bag_id: z.string().uuid(),
-  }),
-};
+// Validation
+import { parse } from "@/infra/http/validation/parse";
+
+export const openPaymentSchema = Joi.object({
+  bag_id: Joi.string().uuid().required(),
+});
 
 export async function openPaymentController(
   request: Request,
@@ -23,7 +24,7 @@ export async function openPaymentController(
   next: NextFunction
 ) {
   try {
-    const { bag_id } = openPaymentSchema.route.parse(request.params);
+    const { bag_id } = parse(openPaymentSchema, request.body);
 
     const openPaymentUseCase =
       container.resolve<OpenPaymentUseCase>("openPaymentUseCase");

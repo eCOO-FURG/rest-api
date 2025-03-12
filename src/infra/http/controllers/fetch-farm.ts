@@ -1,9 +1,9 @@
+//Libs
+import Joi from "joi";
+import { NextFunction, Request, Response } from "express";
+
 // Container
 import container from "@/infra/container";
-
-//Libs
-import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Use-cases
 import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
@@ -11,9 +11,12 @@ import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
 // Presenters
 import { FarmPresenter } from "@/infra/http/presenters/farm-presenter";
 
-export const fetchFarmSchema = {
-  params: z.object({ farm_id: z.string().uuid() }),
-};
+// Validation
+import { parse } from "@/infra/http/validation/parse";
+
+export const fetchFarmParams = Joi.object({
+  farm_id: Joi.string().uuid().required(),
+});
 
 export async function fetchFarmController(
   request: Request,
@@ -24,7 +27,7 @@ export async function fetchFarmController(
     const fetchUserFarmUseCase =
       container.resolve<FetchFarmUseCase>("fetchFarmUseCase");
 
-    const { farm_id } = fetchFarmSchema.params.parse(request.params);
+    const { farm_id } = parse(fetchFarmParams, request.params);
 
     const { farm } = await fetchUserFarmUseCase.execute({
       farm_id,

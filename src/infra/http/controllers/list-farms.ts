@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Use-cases
 import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
@@ -11,15 +11,13 @@ import container from "@/infra/container";
 // Presenters
 import { FarmPresenter } from "@/infra/http/presenters/farm-presenter";
 
-export const listFarmsSchema = {
-  query: z.object({
-    page: z.coerce.number().openapi({ description: "Página da listagem." }),
-    farm: z
-      .string()
-      .optional()
-      .openapi({ description: "Filtro de nome para a busca." }),
-  }),
-};
+// Validation
+import { parse } from "@/infra/http/validation/parse";
+
+export const listFarmsQuery = Joi.object({
+  page: Joi.number().required(),
+  farm: Joi.string().optional(),
+});
 
 export async function listFarmsController(
   request: Request,
@@ -27,7 +25,7 @@ export async function listFarmsController(
   next: NextFunction
 ) {
   try {
-    const { page, farm } = listFarmsSchema.query.parse(request.query);
+    const { page, farm } = parse(listFarmsQuery, request.query);
 
     const listFarmsUseCase =
       container.resolve<ListFarmsUseCase>("listFarmsUseCase");

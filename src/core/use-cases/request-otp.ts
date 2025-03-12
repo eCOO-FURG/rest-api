@@ -7,10 +7,13 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Entities
 import { Otp } from "@/core/entities/otp";
+import { Message } from "@/core/entities/message";
 
-// Services
+// Mail
+import { Mailer } from "@/core/mail/mailer";
+
+// Cryptography
 import { OtpProvider } from "@/core/cryptography/otp-provider";
-import { DomainEvents } from "@/core/events/domain-events";
 
 interface RequestOtpUseCaseRequest {
   email: string;
@@ -20,7 +23,8 @@ export class RequestOtpUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private otpGenerator: OtpProvider,
-    private otpsRepository: OtpsRepository
+    private otpsRepository: OtpsRepository,
+    private mailer: Mailer
   ) {}
 
   async execute({ email }: RequestOtpUseCaseRequest) {
@@ -37,6 +41,17 @@ export class RequestOtpUseCase {
 
     await this.otpsRepository.create(otp);
 
-    DomainEvents.dispatch(otp);
+    const view = await this.mailer.load({
+      view: "otp",
+      props: { otp: otp.value },
+    });
+
+    const message = Message.create({
+      to: user.email,
+      subject: "Senha de acesso | eCOO",
+      content: view,
+    });
+
+    this.mailer.send([message]);
   }
 }

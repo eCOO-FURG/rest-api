@@ -14,7 +14,7 @@ import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { MissingFieldError } from "@/core/errors/missing-field";
 import { ResourceNotVerifiedError } from "@/core/errors/resource-not-verified";
 
-const mappedDomainErrors: {
+export const mappedDomainErrors: {
   status: number;
   errors: (typeof DomainError)[];
 }[] = [

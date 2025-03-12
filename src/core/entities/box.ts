@@ -7,12 +7,13 @@ import { Catalog } from "@/core/entities/catalog";
 // Types
 import { Optional } from "@/core/types/optional";
 
+export type BoxStatus = (typeof Box.statuses)[number];
 export interface BoxProps extends EntityRequest {
-  status: "PENDING" | "VERIFIED";
-  verified: number;
-
   catalog_id: UUID;
   catalog?: Catalog;
+
+  status: BoxStatus;
+  verified: number;
 
   orders: Map<string, Order>;
 }
@@ -60,4 +61,6 @@ export class Box extends Entity<BoxProps> {
 
     return box;
   }
+
+  static statuses = ["PENDING", "VERIFIED"] as const;
 }

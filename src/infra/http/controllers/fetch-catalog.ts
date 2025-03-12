@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Container
 import container from "@/infra/container";
@@ -11,20 +11,17 @@ import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
 // Presenters
 import { CatalogPresenter } from "@/infra/http/presenters/catalog-presenter";
 
-export const fetchCatalogsSchema = {
-  query: z.object({
-    page: z.coerce
-      .number()
-      .openapi({ description: "Página das ofertas do catálogo." }),
-    product: z
-      .string()
-      .optional()
-      .openapi({ description: "Filtro por nome de produto." }),
-  }),
-  params: z.object({
-    catalog_id: z.string().uuid(),
-  }),
-};
+// Validation
+import { parse } from "@/infra/http/validation/parse";
+
+export const fetchCatalogParams = Joi.object({
+  catalog_id: Joi.string().uuid().required(),
+});
+
+export const fetchCatalogQuery = Joi.object({
+  page: Joi.number().integer().min(1).required(),
+  product: Joi.string().optional(),
+});
 
 export async function fetchCatalogController(
   request: Request,
@@ -32,8 +29,8 @@ export async function fetchCatalogController(
   next: NextFunction
 ) {
   try {
-    const { catalog_id } = fetchCatalogsSchema.params.parse(request.params);
-    const { page, product } = fetchCatalogsSchema.query.parse(request.query);
+    const { catalog_id } = parse(fetchCatalogParams, request.params);
+    const { page, product } = parse(fetchCatalogQuery, request.query);
 
     const fetchCatalogUsecase = container.resolve<FetchCatalogUseCase>(
       "fetchCatalogUseCase"

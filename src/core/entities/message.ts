@@ -9,6 +9,7 @@ export interface MessageProps extends EntityRequest {
   to: string;
   subject: string;
   content: string;
+
   files: File[];
 }
 

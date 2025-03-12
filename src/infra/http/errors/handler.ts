@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { ZodError } from "zod";
 import { MulterError } from "multer";
 import { JsonWebTokenError } from "jsonwebtoken";
 
@@ -11,22 +11,25 @@ import { HttpErrorMapper } from "@/infra/http/errors/mapper";
 // Logs
 import { Logger } from "@/infra/logs/logger";
 
+const FILE_ERRORS: Record<string, string> = {
+  LIMIT_FILE_SIZE: "Arquivo excede o tamanho máximo permitido.",
+  LIMIT_FILE_COUNT: "Número máximo de arquivos excedido.",
+  LIMIT_UNEXPECTED_FILE: "Campo de arquivo inesperado.",
+};
+
 export const handler = (
   error: Error,
   _: Request,
   response: Response,
   __: NextFunction
 ) => {
-  if (error instanceof ZodError) {
-    const issues = error.issues.map((issue) => ({
-      field: issue.path[0],
-      message: issue.message,
-    }));
+  if (error instanceof Joi.ValidationError) {
+    const info = error.details[0].context?.message ?? "";
 
     return response.status(400).send({
-      message: "Erro de validação.",
-      code: "validation-error",
-      issues,
+      message: "Ocorreu um erro de validação.",
+      code: "bad-request",
+      details: `${error.message.replace(/['"]/g, "")}. ${info}`,
     });
   }
 
@@ -38,7 +41,7 @@ export const handler = (
 
   if (error instanceof MulterError) {
     return response.status(400).send({
-      message: "Erro ao processar arquivo.",
+      message: FILE_ERRORS[error.code],
       code: "file-error",
       issues: [
         {
@@ -69,5 +72,5 @@ export const handler = (
 
   return response
     .status(500)
-    .send({ message: "💥 Ocorreu um erro interno.", code: "internal-error" });
+    .send({ message: "Ocorreu um erro interno.", code: "internal-error" });
 };

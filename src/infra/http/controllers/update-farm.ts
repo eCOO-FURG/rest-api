@@ -1,4 +1,5 @@
 // Use-cases
+import Joi from "joi";
 import { UpdateFarmUseCase } from "@/core/use-cases/update-farm";
 
 // Container
@@ -6,27 +7,30 @@ import container from "@/infra/container";
 
 // Libraries
 import { Request, Response, NextFunction } from "express";
-import { z } from "zod";
 
 // Validation
-import { notEmpty } from "@/infra/http/validation/not-empty";
+import { parse } from "@/infra/http/validation/parse";
+import { file } from "@/infra/http/validation/file";
 
 // Utils
 import { toFile } from "@/infra/utils/to-file";
-import { toArray } from "@/infra/utils/to-array";
 
-export const updateFarmSchema = {
-  body: z
-    .object({
-      name: z.string().optional(),
-      tally: z.string().optional(),
-      description: z.string().optional(),
-      photo: z.custom<Express.Multer.File>().optional(),
-      add_images: z.custom<Express.Multer.File[]>().optional(),
-      remove_images: z.array(z.string()).optional().or(z.string().optional()),
-    })
-    .refine(notEmpty.validation, notEmpty.warning),
-};
+// Entities
+import { Farm } from "@/core/entities/farm";
+
+export const updateFarmParams = Joi.object({
+  farm_id: Joi.string().uuid().required(),
+});
+
+export const updateFarmSchema = Joi.object({
+  name: Joi.string().optional(),
+  tally: Joi.string().optional(),
+  description: Joi.string().optional(),
+  photo: file.optional(),
+  status: Joi.string()
+    .valid(...Farm.statuses)
+    .optional(),
+});
 
 export async function updateFarmController(
   request: Request,
@@ -34,19 +38,24 @@ export async function updateFarmController(
   next: NextFunction
 ) {
   try {
-    const { name, tally, description, photo, add_images, remove_images } =
-      updateFarmSchema.body.parse(request.body);
+    const { farm_id } = parse(updateFarmParams, request.params);
+
+    const { name, tally, description, photo, status } = parse(
+      updateFarmSchema,
+      request.body
+    );
 
     const updateFarmUseCase =
       container.resolve<UpdateFarmUseCase>("updateFarmUseCase");
 
     await updateFarmUseCase.execute({
-      farm_id: request.farm_id,
+      user_id: request.user_id,
+      farm_id,
       name,
       tally,
       description,
+      status,
       photo: toFile(photo),
-      images: { add: toFile(add_images), remove: toArray(remove_images) },
     });
 
     return response.sendStatus(204);

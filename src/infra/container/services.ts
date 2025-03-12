@@ -21,7 +21,8 @@ import { MockedStorage } from "@/test/storage/mocked-storage";
 // Env
 import { env } from "@/infra/env";
 
-const deploy = env.ENV === "production" || env.ENV === "staging";
+const deploy =
+  env.ENVIRONMENT === "PRODUCTION" || env.ENVIRONMENT === "STAGING";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -37,17 +38,17 @@ export default (container: AwilixContainer) => {
       if (deploy) {
         Object.assign(transporter, {
           auth: {
-            user: env.ECOO_EMAIL,
-            pass: env.ECOO_EMAIL_PASSWORD,
+            user: env.EMAIL_ACCOUNT,
+            pass: env.EMAIL_PASSWORD,
           },
         });
 
         const fallback = createTransport({
-          host: env.SMTP_FALLBACK_HOST,
-          port: env.SMTP_PORT,
+          host: env.FALLBACK_EMAIL_ACCOUNT,
+          port: env.FALLBACK_EMAIL_PASSWORD,
           auth: {
-            user: env.ECOO_FALLBACK_EMAIL,
-            pass: env.ECOO_FALLBACK_EMAIL_PASSWORD,
+            user: env.FALLBACK_EMAIL_ACCOUNT,
+            pass: env.FALLBACK_EMAIL_PASSWORD,
           },
         });
 

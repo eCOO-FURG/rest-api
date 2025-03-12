@@ -3,11 +3,11 @@ import { Entity, EntityRequest } from "@/core/entities/entity";
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { User } from "@/core/entities/user";
 interface SessionProps extends EntityRequest {
-  ip: string;
-  agent: string;
-
   user_id: UUID;
   user?: User;
+
+  ip: string;
+  agent: string;
 }
 
 export class Session extends Entity<SessionProps> {

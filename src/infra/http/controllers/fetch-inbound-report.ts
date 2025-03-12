@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Use-cases
 import { FetchInboundReportUseCase } from "@/core/use-cases/fetch-inbound-report";
@@ -10,26 +10,19 @@ import container from "@/infra/container";
 
 // Utils
 import { toDate } from "@/infra/utils/to-date";
-import { period } from "@/infra/http/validation/period";
 
-export const fetchInboundReportSchema = {
-  query: z
-    .object({
-      cycle_id: z.string().uuid().optional(),
-      since: z
-        .string()
-        .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
-        .optional(),
-      before: z
-        .string()
-        .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
-        .optional(),
-    })
-    .refine(
-      (data) => period.validation(toDate(data.since), toDate(data.before)),
-      period.warning
-    ),
-};
+// Validation
+import { parse } from "@/infra/http/validation/parse";
+
+export const fetchInboundReportQuery = Joi.object({
+  cycle_id: Joi.string().uuid().optional(),
+  since: Joi.string()
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
+    .optional(),
+  before: Joi.string()
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
+    .optional(),
+});
 
 export async function fetchInboundReportController(
   request: Request,
@@ -37,7 +30,8 @@ export async function fetchInboundReportController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id, since, before } = fetchInboundReportSchema.query.parse(
+    const { cycle_id, since, before } = parse(
+      fetchInboundReportQuery,
       request.query
     );
 

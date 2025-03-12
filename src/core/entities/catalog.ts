@@ -9,13 +9,13 @@ import { Offer } from "@/core/entities/offer";
 import { Optional } from "@/core/types/optional";
 
 export interface CatalogProps extends EntityRequest {
-  tax: number;
-
   farm_id: UUID;
   farm?: Farm;
 
   cycle_id: UUID;
   cycle?: Cycle;
+
+  tax: number;
 
   offers: Map<string, Offer>;
 }
@@ -58,6 +58,7 @@ export class Catalog extends Entity<CatalogProps> {
       ...props,
       offers: props.offers ?? new Map(),
     });
+
     return catalog;
   }
 }

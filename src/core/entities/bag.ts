@@ -10,20 +10,8 @@ import { User } from "@/core/entities/user";
 // Types
 import { Optional } from "@/core/types/optional";
 
-export const BAG_STATUSES = [
-  "PENDING",
-  "SEPARATED",
-  "DISPATCHED",
-  "RECEIVED",
-  "CANCELLED",
-  "DEFERRED",
-] as const;
-
+export type BagStatus = (typeof Bag.statuses)[number];
 export interface BagProps extends EntityRequest {
-  code: string;
-  price: number;
-  status: (typeof BAG_STATUSES)[number];
-
   user_id: UUID;
   user?: User;
 
@@ -32,6 +20,10 @@ export interface BagProps extends EntityRequest {
 
   address_id: UUID | null;
   address?: Address;
+
+  code: string;
+  price: number;
+  status: BagStatus;
 
   orders: Map<string, Order>;
   payments: Map<string, Payment>;
@@ -149,4 +141,13 @@ export class Bag extends Entity<BagProps> {
 
     return bag;
   }
+
+  static statuses = [
+    "PENDING",
+    "SEPARATED",
+    "DISPATCHED",
+    "RECEIVED",
+    "CANCELLED",
+    "DEFERRED",
+  ] as const;
 }

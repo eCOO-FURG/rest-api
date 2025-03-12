@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Container
 import container from "@/infra/container";
@@ -11,14 +11,16 @@ import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 // Presenters
 import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 
-export const fetchBagSchema = {
-  route: z.object({
-    bag_id: z.string().uuid(),
-  }),
-  query: z.object({
-    page: z.coerce.number(),
-  }),
-};
+// Validation
+import { parse } from "@/infra/http/validation/parse";
+
+export const fetchBagParams = Joi.object({
+  bag_id: Joi.string().uuid().required(),
+});
+
+export const fetchBagQuery = Joi.object({
+  page: Joi.number().integer().min(1).required(),
+});
 
 export async function fetchBagController(
   request: Request,
@@ -26,8 +28,9 @@ export async function fetchBagController(
   next: NextFunction
 ) {
   try {
-    const { bag_id } = fetchBagSchema.route.parse(request.params);
-    const { page } = fetchBagSchema.query.parse(request.query);
+    const { bag_id } = parse(fetchBagParams, request.params);
+    const { page } = parse(fetchBagQuery, request.query);
+
     const fetchBagUseCase =
       container.resolve<FetchBagUseCase>("fetchBagUseCase");
 

@@ -3,10 +3,11 @@ import { Farm } from "@/core/entities/farm";
 
 // Repositories
 import { FarmsRepository } from "@/core/repositories/farms-repository";
+import { UsersRepository } from "@/core/repositories/users-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { ResourceReachedLimitError } from "@/core/errors/resource-reached-limit";
+import { UnauthorizedError } from "@/core/errors/unauthorized";
 
 // Services
 import { Storage } from "@/core/storage/storage";
@@ -15,66 +16,49 @@ import { Storage } from "@/core/storage/storage";
 import { File } from "@/core/types/file";
 
 interface UpdateFarmUseCaseRequest {
+  user_id: string;
   farm_id: string;
   name?: string;
   tally?: string;
   description?: string;
   status?: Farm["status"];
   photo?: File;
-  images?: {
-    add?: File[];
-    remove?: string[];
-  };
 }
 
 export class UpdateFarmUseCase {
   constructor(
     private farmsRepository: FarmsRepository,
+    private usersRepository: UsersRepository,
     private storage: Storage
   ) {}
 
   async execute({
+    user_id,
     farm_id,
     name,
     tally,
     description,
     status,
     photo,
-    images,
   }: UpdateFarmUseCaseRequest) {
     const farm = await this.farmsRepository.find("basic", { id: farm_id });
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
+
+    const user = await this.usersRepository.find("basic", { id: user_id });
+
+    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+
+    if (!farm.admin_id.equals(user.id) && !user.admin)
+      throw new ResourceNotFoundError("Fazenda", farm_id);
+
+    if (!user.admin && status) throw new UnauthorizedError();
 
     farm.tally = tally ?? farm.tally;
     farm.name = name ?? farm.name;
     farm.status = status ?? farm.status;
 
     if (description) farm.description = description;
-
-    if (images?.remove) {
-      for (const image of images.remove) {
-        if (!farm.images.has(image))
-          throw new ResourceNotFoundError("Imagem", image);
-      }
-
-      for (const image of images.remove) {
-        farm.images.delete(image);
-      }
-    }
-
-    if (images?.add) {
-      if (farm.images.size + images.add.length > 4)
-        throw new ResourceReachedLimitError(
-          "Fazenda",
-          farm.id.value,
-          "imagens"
-        );
-
-      const urls = await this.storage.upload(images.add, "farms");
-
-      for (const url of urls) farm.images.set(url, url);
-    }
 
     if (photo) {
       const urls = await this.storage.upload([photo], "farms");

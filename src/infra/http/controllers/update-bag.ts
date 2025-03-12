@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Container
 import container from "@/infra/container";
@@ -9,27 +9,18 @@ import container from "@/infra/container";
 import { UpdateBagUseCase } from "@/core/use-cases/update-bag";
 
 // Validation
-import { notEmpty } from "@/infra/http/validation/not-empty";
+import { parse } from "@/infra/http/validation/parse";
+import { Bag } from "@/core/entities/bag";
 
-export const updateBagSchema = {
-  route: z.object({
-    bag_id: z.string().uuid(),
-  }),
-  body: z
-    .object({
-      status: z
-        .enum([
-          "PENDING",
-          "SEPARATED",
-          "DISPATCHED",
-          "RECEIVED",
-          "CANCELLED",
-          "DEFERRED",
-        ])
-        .optional(),
-    })
-    .refine(notEmpty.validation, notEmpty.warning),
-};
+export const updateBagParams = Joi.object({
+  bag_id: Joi.string().uuid().required(),
+});
+
+export const updateBagSchema = Joi.object({
+  status: Joi.string()
+    .valid(...Bag.statuses)
+    .optional(),
+});
 
 export async function updateBagController(
   req: Request,
@@ -37,13 +28,16 @@ export async function updateBagController(
   next: NextFunction
 ) {
   try {
-    const { bag_id } = updateBagSchema.route.parse(req.params);
-    const { status } = updateBagSchema.body.parse(req.body);
+    const { bag_id } = parse(updateBagParams, req.params);
+    const { status } = parse(updateBagSchema, req.body);
 
     const updateBagUseCase =
       container.resolve<UpdateBagUseCase>("updateBagUseCase");
 
-    await updateBagUseCase.execute({ bag_id, user_id: req.user_id, status });
+    await updateBagUseCase.execute({
+      bag_id,
+      status,
+    });
 
     return res.sendStatus(204);
   } catch (error) {
