@@ -18,18 +18,14 @@ import { toArray } from "@/infra/utils/to-array";
 import { Bag } from "@/core/entities/bag";
 
 // Validation
+import { options } from "@/infra/http/validation/options";
 import { parse } from "@/infra/http/validation/parse";
 
 export const listCurrentBagsQuery = Joi.object({
   page: Joi.number().required(),
   cycle_id: Joi.string().uuid().required(),
   user: Joi.string().optional(),
-  statuses: Joi.alternatives()
-    .try(
-      Joi.string().valid(...Bag.statuses),
-      Joi.array().items(Joi.string().valid(...Bag.statuses))
-    )
-    .optional(),
+  statuses: options(Bag.statuses).optional(),
 });
 
 export async function listCurrentBagsController(

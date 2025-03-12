@@ -11,6 +11,12 @@ import { HttpErrorMapper } from "@/infra/http/errors/mapper";
 // Logs
 import { Logger } from "@/infra/logs/logger";
 
+const FILE_ERRORS: Record<string, string> = {
+  LIMIT_FILE_SIZE: "Arquivo excede o tamanho máximo permitido.",
+  LIMIT_FILE_COUNT: "Número máximo de arquivos excedido.",
+  LIMIT_UNEXPECTED_FILE: "Campo de arquivo inesperado.",
+};
+
 export const handler = (
   error: Error,
   _: Request,
@@ -35,7 +41,7 @@ export const handler = (
 
   if (error instanceof MulterError) {
     return response.status(400).send({
-      message: "Erro ao processar arquivo.",
+      message: FILE_ERRORS[error.code],
       code: "file-error",
       issues: [
         {

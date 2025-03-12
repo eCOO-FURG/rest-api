@@ -2,7 +2,7 @@
 import { Router } from "express";
 
 // Middlewares
-// import { logging } from "@/infra/http/middlewares/logging";
+import { logging } from "@/infra/http/middlewares/logging";
 
 // Middlewares
 import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
@@ -25,14 +25,14 @@ import { cycles } from "@/infra/http/routes/cycles";
 import { products } from "@/infra/http/routes/products";
 import { categories } from "@/infra/http/routes/categories";
 import { pendings } from "@/infra/http/routes/pendings";
-import { reports } from "@/infra/http/routes/reports";
-import { webhooks } from "@/infra/http/routes/webhooks";
-import { notification } from "@/infra/http/routes/notification";
 import { stats } from "@/infra/http/routes/stats";
+import { reports } from "@/infra/http/routes/reports";
+import { notifications } from "@/infra/http/routes/notifications";
+import { webhooks } from "@/infra/http/routes/webhooks";
 
 export const router = Router();
 
-// router.use(logging());
+router.use(logging());
 
 router.use("/auth", auth);
 router.use("/users", users);
@@ -60,6 +60,6 @@ router.use(
   "/notifications",
   ensureAuthenticated,
   ensureRole(["MANAGER"]),
-  notification
+  notifications
 );
 router.use("/webhooks", ensureIntegration, webhooks);

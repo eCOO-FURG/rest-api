@@ -7,9 +7,9 @@ import { processFiles } from "@/infra/http/middlewares/process-files";
 // Controllers
 import { sendNotificationController } from "@/infra/http/controllers/send-notification";
 
-export const notification = Router();
+export const notifications = Router();
 
-notification.post(
+notifications.post(
   "/",
   processFiles([
     {
