@@ -24,13 +24,9 @@ export const registerPaymentSchema = Joi.object({
     then: Joi.string()
       .valid(...Payment.flags)
       .required(),
-    otherwise: Joi.optional(),
+    otherwise: Joi.string().optional(),
   }),
-})
-  .required()
-  .messages({
-    "object.missing": "Pelo menos um campo deve ser fornecido.",
-  });
+});
 
 export async function registerPaymentController(
   request: Request,

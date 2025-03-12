@@ -21,8 +21,8 @@ export const registerOrderSchema = Joi.object({
     street: Joi.string().required(),
     number: Joi.string().required(),
     neighborhood: Joi.string().required(),
-    complement: Joi.string().optional(),
     postal_code: Joi.string().required(),
+    complement: Joi.string().optional(),
   }),
   orders: Joi.array()
     .items(
@@ -33,11 +33,7 @@ export const registerOrderSchema = Joi.object({
     )
     .min(1)
     .required(),
-})
-  .required()
-  .messages({
-    "object.missing": "Pelo menos um campo deve ser fornecido.",
-  });
+});
 
 export async function registerOrderController(
   request: Request,

@@ -14,11 +14,7 @@ import { parse } from "@/infra/http/validation/parse";
 export const registerFarmSchema = Joi.object({
   name: Joi.string().required(),
   tally: Joi.string().required(),
-})
-  .required()
-  .messages({
-    "object.missing": "Pelo menos um campo deve ser fornecido.",
-  });
+});
 
 export async function registerFarmController(
   request: Request,

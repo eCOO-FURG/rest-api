@@ -16,11 +16,7 @@ import { parse } from "@/infra/http/validation/parse";
 
 export const openPaymentSchema = Joi.object({
   bag_id: Joi.string().uuid().required(),
-})
-  .required()
-  .messages({
-    "object.missing": "Pelo menos um campo deve ser fornecido.",
-  });
+});
 
 export async function openPaymentController(
   request: Request,

@@ -25,14 +25,14 @@ export const updatePaymentSchema = Joi.object({
   method: Joi.string()
     .valid(...Payment.methods)
     .optional(),
-  flag: Joi.string()
-    .valid(...Payment.flags)
-    .optional(),
-})
-  .required()
-  .messages({
-    "object.missing": "Pelo menos um campo deve ser fornecido.",
-  });
+  flag: Joi.alternatives().conditional("method", {
+    is: Joi.string().valid("CREDIT", "DEBIT"),
+    then: Joi.string()
+      .valid(...Payment.flags)
+      .required(),
+    otherwise: Joi.valid(...Payment.flags).optional(),
+  }),
+});
 
 export async function updatePaymentController(
   request: Request,

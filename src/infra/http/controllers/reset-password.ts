@@ -13,11 +13,7 @@ import { parse } from "@/infra/http/validation/parse";
 
 export const resetPasswordSchema = Joi.object({
   email: Joi.string().email().required(),
-})
-  .required()
-  .messages({
-    "object.missing": "Pelo menos um campo deve ser fornecido.",
-  });
+});
 
 export async function resetPasswordController(
   request: Request,

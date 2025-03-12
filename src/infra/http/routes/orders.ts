@@ -10,9 +10,4 @@ import { registerOrderController } from "@/infra/http/controllers/register-order
 
 export const orders = Router();
 
-orders.post(
-  "/",
-  ensureAuthenticated,
-  ensureRole(["PRODUCER"]),
-  registerOrderController
-);
+orders.post("/", ensureAuthenticated, registerOrderController);
