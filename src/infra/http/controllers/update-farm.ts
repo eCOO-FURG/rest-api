@@ -10,17 +10,26 @@ import { Request, Response, NextFunction } from "express";
 
 // Validation
 import { parse } from "@/infra/http/validation/parse";
+import { file } from "@/infra/http/validation/file";
 
 // Utils
 import { toFile } from "@/infra/utils/to-file";
-import { toArray } from "@/infra/utils/to-array";
-import { file } from "@/infra/http/validation/file";
+
+// Entities
+import { Farm } from "@/core/entities/farm";
+
+export const handleFarmParams = Joi.object({
+  farm_id: Joi.string().uuid().required(),
+});
 
 export const updateFarmSchema = Joi.object({
   name: Joi.string().optional(),
   tally: Joi.string().optional(),
   description: Joi.string().optional(),
   photo: file.optional(),
+  status: Joi.string()
+    .valid(...Farm.statuses)
+    .optional(),
 });
 
 export async function updateFarmController(
@@ -29,7 +38,9 @@ export async function updateFarmController(
   next: NextFunction
 ) {
   try {
-    const { name, tally, description, photo } = parse(
+    const { farm_id } = parse(handleFarmParams, request.params);
+
+    const { name, tally, description, photo, status } = parse(
       updateFarmSchema,
       request.body
     );
@@ -38,10 +49,12 @@ export async function updateFarmController(
       container.resolve<UpdateFarmUseCase>("updateFarmUseCase");
 
     await updateFarmUseCase.execute({
-      farm_id: request.farm_id,
+      user_id: request.user_id,
+      farm_id,
       name,
       tally,
       description,
+      status,
       photo: toFile(photo),
     });
 

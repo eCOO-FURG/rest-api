@@ -74,8 +74,8 @@ export default (container: AwilixContainer) => {
         new RegisterFarmUseCase(usersRepository, farmsRepository)
     ),
     updateFarmUseCase: asFunction(
-      ({ farmsRepository, storage }) =>
-        new UpdateFarmUseCase(farmsRepository, storage)
+      ({ farmsRepository, usersRepository, storage }) =>
+        new UpdateFarmUseCase(farmsRepository, usersRepository, storage)
     ),
     registerOfferUseCase: asFunction(
       ({
@@ -273,12 +273,12 @@ export default (container: AwilixContainer) => {
         )
     ),
     registerFarmImageUseCase: asFunction(
-      ({ farmsRepository, storage }) =>
-        new RegisterFarmImageUseCase(farmsRepository, storage)
+      ({ farmsRepository, usersRepository, storage }) =>
+        new RegisterFarmImageUseCase(farmsRepository, usersRepository, storage)
     ),
     deleteFarmImageUseCase: asFunction(
-      ({ farmsRepository, storage }) =>
-        new DeleteFarmImageUseCase(farmsRepository, storage)
+      ({ farmsRepository, usersRepository, storage }) =>
+        new DeleteFarmImageUseCase(farmsRepository, usersRepository, storage)
     ),
   });
 };
