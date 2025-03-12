@@ -14,8 +14,8 @@ import { updateBagController } from "@/infra/http/controllers/update-bag";
 export const bags = Router();
 
 bags.get("/", ensureRole(["BROKER", "MANAGER"]), listBagsController);
-bags.get("/:bag_id", fetchBagController);
 bags.get("/current", ensureRole(["BROKER"]), listCurrentBagsController);
+bags.get("/:bag_id", fetchBagController);
 
 bags.patch(
   "/:bag_id",
