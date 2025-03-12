@@ -33,10 +33,10 @@ export const listOwnBagsQuery = Joi.object({
     )
     .optional(),
   since: Joi.string()
-    .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
     .optional(),
   before: Joi.string()
-    .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
     .optional(),
 });
 

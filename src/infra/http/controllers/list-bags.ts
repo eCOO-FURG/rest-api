@@ -16,26 +16,22 @@ import { toDate } from "@/infra/utils/to-date";
 import { toArray } from "@/infra/utils/to-array";
 
 // Validation
+import { options } from "@/infra/http/validation/options";
 import { parse } from "@/infra/http/validation/parse";
 
 // Entities
-import { Bag, BagStatus } from "@/core/entities/bag";
+import { Bag } from "@/core/entities/bag";
 
 export const listBagsQuery = Joi.object({
   page: Joi.number().required(),
   cycle_id: Joi.string().uuid().optional(),
   user_id: Joi.string().uuid().optional(),
-  statuses: Joi.alternatives()
-    .try(
-      Joi.string().valid(...Bag.statuses),
-      Joi.array().items(Joi.string().valid(...Bag.statuses))
-    )
-    .optional(),
+  statuses: options(Bag.statuses).optional(),
   since: Joi.string()
-    .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
     .optional(),
   before: Joi.string()
-    .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
     .optional(),
 });
 
@@ -56,7 +52,7 @@ export async function listBagsController(
     const { bags } = await listBagsUseCase.execute({
       user_id,
       cycle_id,
-      statuses: toArray<BagStatus>(statuses),
+      statuses: toArray(statuses),
       since: toDate(since),
       before: toDate(before),
       page,

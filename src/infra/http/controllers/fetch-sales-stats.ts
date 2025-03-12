@@ -16,10 +16,10 @@ import { parse } from "@/infra/http/validation/parse";
 
 export const fetchSalesStatsQuery = Joi.object({
   since: Joi.string()
-    .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
     .optional(),
   before: Joi.string()
-    .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
     .optional(),
   method: Joi.string().valid("CREDIT", "DEBIT", "CASH", "PIX").optional(),
 });

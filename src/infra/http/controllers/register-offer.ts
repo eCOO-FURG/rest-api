@@ -21,7 +21,7 @@ export const registerOfferSchema = Joi.object({
   price: Joi.number().required(),
   description: Joi.string().optional(),
   expires_at: Joi.string()
-    .regex(/^\d{2}-\d{2}-\d{4}$/, "Formato esperado: DD-MM-YYYY")
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
     .optional(),
 });
 
