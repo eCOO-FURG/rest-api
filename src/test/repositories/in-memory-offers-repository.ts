@@ -56,6 +56,14 @@ export class InMemoryOffersRepository implements OffersRepository {
     return offer;
   }
 
+  async update(offer: Offer): Promise<void> {
+    const index = this.items.findIndex((item) => item.id.equals(offer.id));
+
+    if (index === -1) return;
+
+    this.items[index] = offer;
+  }
+
   async delete(offer: Offer): Promise<void> {
     const index = this.items.findIndex((item) => item.id.equals(offer.id));
 
