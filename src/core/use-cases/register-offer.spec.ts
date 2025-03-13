@@ -26,6 +26,9 @@ import { Offer } from "@/core/entities/offer";
 import { CycleWeek } from "@/core/entities/cycle";
 import { makeCatalog } from "@/test/factories/make-catalog";
 
+// Utils
+import { today } from "@/core/utils/today";
+
 let farmsRepository: InMemoryFarmsRepository;
 let productsRepository: InMemoryProductsRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
@@ -207,12 +210,10 @@ describe("offer products", () => {
   });
 
   it("should not be able to offer products off the cycle offering days", async () => {
-    const today = (new Date().getDay() + 1) as Week[0];
-
-    const offer = [1, 2, 3, 4, 5, 6, 7].filter((day) => day != today);
+    const offer = [1, 2, 3, 4, 5, 6, 7].filter((day) => day != today());
 
     const cycle = makeCycle({
-      offer: offer as Week,
+      offer: offer as CycleWeek,
     });
 
     cyclesRepository.items.push(cycle);

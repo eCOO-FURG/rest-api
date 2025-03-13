@@ -36,6 +36,9 @@ import { MockedOtpProvider } from "@/test/cryptography/mocked-otp-provider";
 // Mail
 import { MockedMailer } from "@/test/mail/mocked-mailer";
 
+// Utils
+import { today } from "@/core/utils/today";
+
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 let farmsRepository: InMemoryFarmsRepository;
@@ -257,9 +260,7 @@ describe("order product", () => {
     const user = makeUser();
     await usersRepository.create(user);
 
-    const today = (new Date().getDay() + 1) as CycleWeek[0];
-
-    const orderDays = [1, 2, 3, 4, 5, 6, 7].filter((day) => day != today);
+    const orderDays = [1, 2, 3, 4, 5, 6, 7].filter((day) => day != today());
 
     const cycle = makeCycle({
       order: orderDays as CycleWeek,

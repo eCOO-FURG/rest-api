@@ -20,7 +20,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Utils
 import { mostPast } from "@/core/utils/most-past";
-
+import { today } from "@/core/utils/today";
 interface RegisterOfferUseCaseRequest {
   farm_id: string;
   product_id: string;
@@ -67,9 +67,7 @@ export class RegisterOfferUseCase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const today = (new Date().getDay() + 1) as Cycle["offer"][0];
-
-    if (!cycle.offer.includes(today))
+    if (!cycle.offer.includes(today()))
       throw new ResourceClosedError("Ciclo", cycle.id.value);
 
     const { catalog, existed } = await this.useCatalog(farm, cycle);

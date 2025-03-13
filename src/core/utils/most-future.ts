@@ -1,7 +1,9 @@
-import { Week } from "@/core/entities/cycle";
+// Entities
+import { CycleWeek } from "@/core/entities/cycle";
 
-export function mostFuture(days: Week) {
+export function mostFuture(days: CycleWeek) {
   const today = new Date();
+
   today.setHours(0, 0, 0, 0);
 
   const dates = days.map((day) => {
