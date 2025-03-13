@@ -6,6 +6,7 @@ import { Box } from "@/core/entities/box";
 import { Cycle, CycleWeek } from "@/core/entities/cycle";
 import { Order } from "@/core/entities/order";
 import { User } from "@/core/entities/user";
+import { Message } from "@/core/entities/message";
 
 // Repositories
 import { AddressesRepository } from "@/core/repositories/addresses-repository";
@@ -26,9 +27,11 @@ import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 // Utils
 import { mostPast } from "@/core/utils/most-past";
 
-// Services
+// Cryptography
 import { OtpProvider } from "@/core/cryptography/otp-provider";
 
+// Mail
+import { Mailer } from "@/core/mail/mailer";
 interface RegisterOrderUseCaseRequest {
   user_id: string;
   cycle_id: string;
@@ -63,7 +66,8 @@ export class RegisterOrderUseCase {
     private boxesRepository: BoxesRepository,
     private addressesRepository: AddressesRepository,
     private farmsRepository: FarmsRepository,
-    private otpGenerator: OtpProvider
+    private otpGenerator: OtpProvider,
+    private mailer: Mailer
   ) {}
 
   async execute({
@@ -155,6 +159,19 @@ export class RegisterOrderUseCase {
     } else {
       await this.bagsRepository.create(bag);
     }
+
+    const view = await this.mailer.load({
+      view: "order-notification",
+      props: { first_name: user.first_name, bag, cycle },
+    });
+
+    const email = Message.create({
+      to: user.email,
+      subject: "Pedido Confirmado!",
+      content: view,
+    });
+
+    this.mailer.send([email]);
 
     return { bag };
   }

@@ -1,8 +1,8 @@
 // Entities
-import { Week } from "@/core/entities/cycle";
+import { CycleWeek } from "@/core/entities/cycle";
 
 // Use-cases
-import { OrderProductsUseCase } from "@/core/use-cases/register-order";
+import { RegisterOrderUseCase } from "@/core/use-cases/register-order";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -30,8 +30,11 @@ import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalo
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
 
-// Services
+// Cryptography
 import { MockedOtpProvider } from "@/test/cryptography/mocked-otp-provider";
+
+// Mail
+import { MockedMailer } from "@/test/mail/mocked-mailer";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
@@ -43,8 +46,9 @@ let bagsRepository: InMemoryBagsRepository;
 let boxesRepository: InMemoryBoxesRepository;
 
 let otpProvider: MockedOtpProvider;
+let mailer: MockedMailer;
 
-let sut: OrderProductsUseCase;
+let sut: RegisterOrderUseCase;
 
 describe("order product", () => {
   beforeEach(() => {
@@ -58,8 +62,9 @@ describe("order product", () => {
     boxesRepository = new InMemoryBoxesRepository();
 
     otpProvider = new MockedOtpProvider();
+    mailer = new MockedMailer();
 
-    sut = new OrderProductsUseCase(
+    sut = new RegisterOrderUseCase(
       usersRepository,
       cyclesRepository,
       offersRepository,
@@ -68,7 +73,8 @@ describe("order product", () => {
       boxesRepository,
       addressesRepository,
       farmsRepository,
-      otpProvider
+      otpProvider,
+      mailer
     );
   });
 
@@ -251,12 +257,12 @@ describe("order product", () => {
     const user = makeUser();
     await usersRepository.create(user);
 
-    const today = (new Date().getDay() + 1) as Week[0];
+    const today = (new Date().getDay() + 1) as CycleWeek[0];
 
     const orderDays = [1, 2, 3, 4, 5, 6, 7].filter((day) => day != today);
 
     const cycle = makeCycle({
-      order: orderDays as Week,
+      order: orderDays as CycleWeek,
     });
 
     cyclesRepository.items.push(cycle);

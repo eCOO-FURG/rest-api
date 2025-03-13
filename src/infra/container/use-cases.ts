@@ -106,6 +106,7 @@ export default (container: AwilixContainer) => {
         addressesRepository,
         farmsRepository,
         otpProvider,
+        mailer,
       }) =>
         new RegisterOrderUseCase(
           usersRepository,
@@ -116,7 +117,8 @@ export default (container: AwilixContainer) => {
           boxesRepository,
           addressesRepository,
           farmsRepository,
-          otpProvider
+          otpProvider,
+          mailer
         )
     ),
     fetchProfileUseCase: asFunction(

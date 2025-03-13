@@ -1,6 +1,8 @@
 // Entities
 import { Message } from "@/core/entities/message";
 import { Farm } from "@/core/entities/farm";
+import { Cycle } from "@/core/entities/cycle";
+import { Bag } from "@/core/entities/bag";
 
 // Types
 import { File } from "@/core/types/file";
@@ -39,6 +41,14 @@ export type MailerLoadRequest =
         title: string;
         text: string;
         files?: File[];
+      };
+    }
+  | {
+      view: "order-notification";
+      props: {
+        first_name: string;
+        bag: Bag;
+        cycle: Cycle;
       };
     };
 
