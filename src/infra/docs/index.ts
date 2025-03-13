@@ -24,6 +24,8 @@ import {
   fetchBoxQuery,
 } from "@/infra/http/controllers/fetch-box";
 import { registerOfferSchema } from "@/infra/http/controllers/register-offer";
+import { updateOfferSchema } from "@/infra/http/controllers/update-offer";
+import { updateOfferParams } from "@/infra/http/controllers/update-offer";
 import { deleteOfferParams } from "@/infra/http/controllers/delete-offer";
 import { listCatalogsQuery } from "@/infra/http/controllers/list-catalogs";
 import { fetchCurrentCatalogQuery } from "@/infra/http/controllers/fetch-current-catalog";
@@ -74,6 +76,8 @@ const { swagger: fetchCurrentBoxQuerySwagger } = j2s(fetchCurrentBoxQuery);
 const { swagger: fetchBoxQuerySwagger } = j2s(fetchBoxQuery);
 const { swagger: fetchBoxParamsSwagger } = j2s(fetchBoxParams);
 const { swagger: registerOfferSchemaSwagger } = j2s(registerOfferSchema);
+const { swagger: updateOfferParamsSwagger } = j2s(updateOfferParams);
+const { swagger: updateOfferSchemaSwagger } = j2s(updateOfferSchema);
 const { swagger: deleteOfferParamsSwagger } = j2s(deleteOfferParams);
 const { swagger: listCatalogsQuerySwagger } = j2s(listCatalogsQuery);
 const { swagger: fetchCurrentCatalogQuerySwagger } = j2s(
@@ -482,7 +486,27 @@ export const docs = {
         },
       },
     },
+
     "/offers/{offer_id}": {
+      patch: {
+        tags: ["Ofertas"],
+        summary: "Atualizar oferta",
+        parameters: toRouteParams(updateOfferParamsSwagger),
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: updateOfferSchemaSwagger,
+            },
+          },
+        },
+        responses: {
+          204: {
+            description: "Oferta atualizada com sucesso",
+          },
+        },
+      },
+
       delete: {
         tags: ["Ofertas"],
         summary: "Remover oferta",

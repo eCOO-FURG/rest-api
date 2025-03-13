@@ -64,6 +64,15 @@ export class PrismaOffersRepository implements OffersRepository {
     return offers.map(PrismaOfferMapper.toDomain);
   }
 
+  async update(offer: Offer): Promise<void> {
+    const data = PrismaOfferMapper.toPrisma(offer);
+
+    await prisma.offer.update({
+      where: { id: offer.id.value },
+      data,
+    });
+  }
+
   async delete(offer: Offer): Promise<void> {
     await prisma.offer.delete({
       where: { id: offer.id.value },

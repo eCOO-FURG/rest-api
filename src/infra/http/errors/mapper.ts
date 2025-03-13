@@ -13,6 +13,7 @@ import { SessionExpiredError } from "@/core/errors/session-expired";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { MissingFieldError } from "@/core/errors/missing-field";
 import { ResourceNotVerifiedError } from "@/core/errors/resource-not-verified";
+import { InvalidFieldError } from "@/core/errors/invalid-field";
 
 export const mappedDomainErrors: {
   status: number;
@@ -24,7 +25,12 @@ export const mappedDomainErrors: {
   },
   {
     status: 400,
-    errors: [WrongCredentialsError, InvalidWeightError, MissingFieldError],
+    errors: [
+      WrongCredentialsError,
+      InvalidWeightError,
+      MissingFieldError,
+      InvalidFieldError,
+    ],
   },
   {
     status: 403,
