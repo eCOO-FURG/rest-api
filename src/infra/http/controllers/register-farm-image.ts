@@ -16,6 +16,10 @@ import { file } from "@/infra/http/validation/file";
 // Utils
 import { toFile } from "@/infra/utils/to-file";
 
+export const registerFarmImageParams = Joi.object({
+  farm_id: Joi.string().uuid().required(),
+});
+
 export const registerFarmImageSchema = Joi.object({
   image: file.required(),
 });
@@ -26,13 +30,16 @@ export async function registerFarmImageController(
   next: NextFunction
 ) {
   try {
+    const { farm_id } = parse(registerFarmImageParams, request.params);
+
     const { image } = parse(registerFarmImageSchema, request.body);
 
     const registerFarmImageUseCase =
       container.resolve<RegisterFarmImageUseCase>("registerFarmImageUseCase");
 
     await registerFarmImageUseCase.execute({
-      farm_id: request.farm_id,
+      farm_id,
+      user_id: request.user_id,
       image: toFile(image),
     });
 

@@ -11,6 +11,7 @@ import { parse } from "@/infra/http/validation/parse";
 import { DeleteFarmImageUseCase } from "@/core/use-cases/delete-farm-image";
 
 export const deleteFarmImageParams = Joi.object({
+  farm_id: Joi.string().uuid().required(),
   image_url: Joi.string().required(),
 });
 
@@ -20,14 +21,15 @@ export async function deleteFarmImageController(
   next: NextFunction
 ) {
   try {
-    const { image_url } = parse(deleteFarmImageParams, request.params);
+    const { farm_id, image_url } = parse(deleteFarmImageParams, request.params);
 
     const deleteFarmImageUseCase = container.resolve<DeleteFarmImageUseCase>(
       "deleteFarmImageUseCase"
     );
 
     await deleteFarmImageUseCase.execute({
-      farm_id: request.farm_id,
+      farm_id,
+      user_id: request.user_id,
       image_url: decodeURIComponent(image_url),
     });
 

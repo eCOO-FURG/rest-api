@@ -24,6 +24,7 @@ import {
   fetchBoxQuery,
 } from "@/infra/http/controllers/fetch-box";
 import { registerOfferSchema } from "@/infra/http/controllers/register-offer";
+import { deleteOfferParams } from "@/infra/http/controllers/delete-offer";
 import { listCatalogsQuery } from "@/infra/http/controllers/list-catalogs";
 import { fetchCurrentCatalogQuery } from "@/infra/http/controllers/fetch-current-catalog";
 import { fetchLastCatalogQuery } from "@/infra/http/controllers/fetch-last-catalog";
@@ -73,6 +74,7 @@ const { swagger: fetchCurrentBoxQuerySwagger } = j2s(fetchCurrentBoxQuery);
 const { swagger: fetchBoxQuerySwagger } = j2s(fetchBoxQuery);
 const { swagger: fetchBoxParamsSwagger } = j2s(fetchBoxParams);
 const { swagger: registerOfferSchemaSwagger } = j2s(registerOfferSchema);
+const { swagger: deleteOfferParamsSwagger } = j2s(deleteOfferParams);
 const { swagger: listCatalogsQuerySwagger } = j2s(listCatalogsQuery);
 const { swagger: fetchCurrentCatalogQuerySwagger } = j2s(
   fetchCurrentCatalogQuery
@@ -102,7 +104,6 @@ const { swagger: fetchInboundReportQuerySwagger } = j2s(
 );
 const { swagger: sendNotificationSchemaSwagger } = j2s(sendNotificationSchema);
 const { swagger: openPixSchemaSwagger } = j2s(openPixSchema);
-
 const toQueryParams = (query: SwaggerSchema) =>
   Object.entries(query.properties).map(([name, schema]) => ({
     in: "query",
@@ -356,7 +357,7 @@ export const docs = {
       patch: {
         tags: ["Fazendas"],
         summary: "Atualizar fazenda",
-        parameters: toRouteParams(fetchFarmParamsSwagger),
+        parameters: toRouteParams(updateFarmParamsSwagger),
         requestBody: {
           required: true,
           content: {
@@ -477,6 +478,18 @@ export const docs = {
         responses: {
           201: {
             description: "Oferta registrada com sucesso",
+          },
+        },
+      },
+    },
+    "/offers/{offer_id}": {
+      delete: {
+        tags: ["Ofertas"],
+        summary: "Remover oferta",
+        parameters: toRouteParams(deleteOfferParamsSwagger),
+        responses: {
+          204: {
+            description: "Oferta removida com sucesso",
           },
         },
       },

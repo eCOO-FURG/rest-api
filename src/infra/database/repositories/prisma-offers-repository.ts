@@ -17,6 +17,27 @@ import { prisma } from "@/infra/database/prisma-service";
 import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
 
 export class PrismaOffersRepository implements OffersRepository {
+  async find(
+    type: RepositoryResponse,
+    { id, product, catalog, since, before }: OffersRepositorySearchRequest
+  ): Promise<Offer | null> {
+    const offer = await prisma.offer.findUnique({
+      where: {
+        id,
+        product: {
+          id: product?.id,
+          name: { contains: product?.name, mode: "insensitive" },
+        },
+        catalog: { id: catalog?.id },
+        created_at: { gte: since, lte: before },
+      },
+    });
+
+    if (!offer) return null;
+
+    return PrismaOfferMapper.toDomain(offer);
+  }
+
   async list(
     type: RepositoryResponse,
     { id, ids, product, catalog, since, before }: OffersRepositorySearchRequest,
@@ -41,5 +62,11 @@ export class PrismaOffersRepository implements OffersRepository {
     });
 
     return offers.map(PrismaOfferMapper.toDomain);
+  }
+
+  async delete(offer: Offer): Promise<void> {
+    await prisma.offer.delete({
+      where: { id: offer.id.value },
+    });
   }
 }

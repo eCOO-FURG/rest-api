@@ -42,7 +42,7 @@ import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
 import { FetchInboundReportUseCase } from "@/core/use-cases/fetch-inbound-report";
 import { DeleteFarmImageUseCase } from "@/core/use-cases/delete-farm-image";
 import { RegisterFarmImageUseCase } from "@/core/use-cases/register-farm-image";
-
+import { DeleteOfferUseCase } from "@/core/use-cases/delete-offer";
 export default (container: AwilixContainer) => {
   container.register({
     registerUsecase: asFunction(
@@ -281,6 +281,10 @@ export default (container: AwilixContainer) => {
     deleteFarmImageUseCase: asFunction(
       ({ farmsRepository, usersRepository, storage }) =>
         new DeleteFarmImageUseCase(farmsRepository, usersRepository, storage)
+    ),
+    deleteOfferUseCase: asFunction(
+      ({ offersRepository, cyclesRepository }) =>
+        new DeleteOfferUseCase(offersRepository, cyclesRepository)
     ),
   });
 };
