@@ -84,11 +84,13 @@ export class RegisterOfferUseCase {
     if (product.pricing === "WEIGHT" && amount % 1000 !== 0)
       throw new InvalidWeightError("ofertado", product_id);
 
+    const tax = (price * catalog.tax) / 100;
+
     const offer = Offer.create({
       catalog_id: catalog.id,
       product_id: product.id,
       amount,
-      price: price + (price * farm.tax) / 100,
+      price: price + tax,
       description,
       expires_at,
     });
