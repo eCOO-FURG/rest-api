@@ -29,8 +29,6 @@ export class SendNotificationUseCase {
     message,
     files,
   }: SendNotificationUseCaseRequest) {
-    console.log(files);
-
     const users = await this.usersRepository.list("basic", { role });
 
     const view = await this.mailer.load({

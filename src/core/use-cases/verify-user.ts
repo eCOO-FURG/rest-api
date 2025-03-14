@@ -29,7 +29,7 @@ export class VerifyUserUsecase {
   async execute({ token, ip, agent }: VerifyUserUsecaseRequest) {
     const decoded = await this.hasher.decode(token);
 
-    if (!decoded || !("user_id" in decoded)) throw new WrongCredentialsError();
+    if (!decoded || !decoded.user_id) throw new WrongCredentialsError();
 
     const user = await this.usersRepository.find("basic", {
       id: decoded.user_id,
