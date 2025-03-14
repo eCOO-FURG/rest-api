@@ -12,6 +12,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Factories
 import { makeUser } from "@/test/factories/make-user";
+import { makeFarm } from "@/test/factories/make-farm";
 
 // Mail
 import { MockedMailer } from "@/test/mail/mocked-mailer";
@@ -19,7 +20,6 @@ import { MockedMailer } from "@/test/mail/mocked-mailer";
 // Libraries
 import { beforeEach, expect, MockInstance } from "vitest";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
-
 let usersRepository: InMemoryUsersRepository;
 let farmsRepository: InMemoryFarmsRepository;
 let mailer: MockedMailer;
@@ -40,6 +40,9 @@ describe("RequestHelpUseCase", () => {
   it("should dispatch a help request event for an existing user", async () => {
     const user = makeUser();
     await usersRepository.create(user);
+
+    const farm = makeFarm({ admin_id: user.id });
+    await farmsRepository.create(farm);
 
     await sut.execute({
       user_id: user.id.value,
