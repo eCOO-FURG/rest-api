@@ -9,13 +9,11 @@ import { makeOffer } from "@/test/factories/make-offer";
 import { makeProduct } from "@/test/factories/make-product";
 
 // Repositories
-import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
-import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
 // Errors
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
@@ -35,8 +33,6 @@ let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
-let usersRepository: InMemoryUsersRepository;
-let bagsRepository: InMemoryBagsRepository;
 
 let sut: DeleteOfferUseCase;
 
@@ -47,8 +43,6 @@ describe("delete offer", () => {
     farmsRepository = new InMemoryFarmsRepository();
     offersRepository = new InMemoryOffersRepository();
     catalogsRepository = new InMemoryCatalogsRepository();
-    usersRepository = new InMemoryUsersRepository();
-    bagsRepository = new InMemoryBagsRepository();
 
     sut = new DeleteOfferUseCase(offersRepository, cyclesRepository);
   });
