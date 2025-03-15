@@ -31,6 +31,12 @@ export class PrismaOffersRepository implements OffersRepository {
         catalog: { id: catalog?.id },
         created_at: { gte: since, lte: before },
       },
+      include: {
+        ...(type !== "basic" && {
+          product: true,
+          catalog: { include: { farm: true } },
+        }),
+      },
     });
 
     if (!offer) return null;
