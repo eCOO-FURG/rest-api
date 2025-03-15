@@ -21,8 +21,6 @@ import { UnauthorizedError } from "@/core/errors/unauthorized";
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
 
-// Utils
-
 // Types
 import { File } from "@/core/types/file";
 
