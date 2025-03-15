@@ -113,6 +113,9 @@ describe("delete offer", () => {
     });
     offersRepository.items.push(offer);
 
+    catalog.offers.set(offer.id.value, offer);
+    catalogsRepository.update(catalog);
+
     await expect(() =>
       sut.execute({ farm_id: new UUID().value, offer_id: offer.id.value })
     ).rejects.toBeInstanceOf(UnauthorizedError);
@@ -139,6 +142,9 @@ describe("delete offer", () => {
     });
     offersRepository.items.push(offer);
 
+    catalog.offers.set(offer.id.value, offer);
+    catalogsRepository.update(catalog);
+
     await expect(() =>
       sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value })
     ).rejects.toBeInstanceOf(FarmNotActiveError);
@@ -160,6 +166,9 @@ describe("delete offer", () => {
       product_id: product.id,
     });
     offersRepository.items.push(offer);
+
+    catalog.offers.set(offer.id.value, offer);
+    catalogsRepository.update(catalog);
 
     await expect(() =>
       sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value })
@@ -191,6 +200,9 @@ describe("delete offer", () => {
     });
     offersRepository.items.push(offer);
 
+    catalog.offers.set(offer.id.value, offer);
+    catalogsRepository.update(catalog);
+
     await expect(() =>
       sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value })
     ).rejects.toBeInstanceOf(ResourceClosedError);
@@ -219,6 +231,9 @@ describe("delete offer", () => {
       product_id: product.id,
     });
     offersRepository.items.push(offer);
+
+    catalog.offers.set(offer.id.value, offer);
+    catalogsRepository.update(catalog);
 
     await expect(() =>
       sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value })
