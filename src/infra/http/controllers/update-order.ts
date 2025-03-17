@@ -11,12 +11,17 @@ import { UpdateOrderUseCase } from "@/core/use-cases/update-order";
 // Validation
 import { parse } from "@/infra/http/validation/parse";
 
+// Entities
+import { Order } from "@/core/entities/order";
+
 export const updateOrderParams = Joi.object({
   order_id: Joi.string().uuid().required(),
 });
 
 export const updateOrderSchema = Joi.object({
-  status: Joi.string().valid("PENDING", "RECEIVED", "CANCELLED").required(),
+  status: Joi.string()
+    .valid(...Order.statuses)
+    .required(),
 });
 
 export async function updateOrderController(

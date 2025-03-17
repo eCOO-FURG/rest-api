@@ -4,6 +4,7 @@ import { asFunction, AwilixContainer } from "awilix";
 // Use-cases
 import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
 import { RegisterOfferUseCase } from "@/core/use-cases/register-offer";
+import { UpdateOrderUseCase } from "@/core/use-cases/update-order";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 import { FetchBoxUseCase } from "@/core/use-cases/fetch-box";
 import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
@@ -122,6 +123,10 @@ export default (container: AwilixContainer) => {
           otpProvider,
           mailer
         )
+    ),
+    updateOrderUseCase: asFunction(
+      ({ usersRepository, ordersRepository }) =>
+        new UpdateOrderUseCase(usersRepository, ordersRepository)
     ),
     fetchProfileUseCase: asFunction(
       ({ usersRepository }) => new FetchProfileUseCase(usersRepository)
