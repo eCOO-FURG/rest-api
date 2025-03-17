@@ -60,8 +60,10 @@ export class PrismaOffersRepository implements OffersRepository {
         created_at: { gte: since, lte: before },
       },
       include: {
-        product: true,
-        catalog: { include: { farm: true } },
+        ...(type !== "basic" && {
+          product: true,
+          catalog: { include: { farm: true } },
+        }),
       },
       orderBy: { created_at: "desc" },
       ...(page && { skip: (page - 1) * 20, take: 20 }),

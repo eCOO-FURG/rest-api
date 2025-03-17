@@ -68,9 +68,8 @@ export class UpdateOfferUseCase {
     if (offer.created_at < mostPast(cycle.order))
       throw new ResourceClosedError("Oferta", offer.id.value);
 
-    const isOfferingDay = cycle.offer.includes(today());
-
-    if (!isOfferingDay) throw new ResourceClosedError("Ciclo", cycle.id.value);
+    if (!cycle.offer.includes(today()))
+      throw new ResourceClosedError("Ciclo", cycle.id.value);
 
     if (expires_at && !offer.product?.perishable)
       throw new InvalidFieldError("expires_at");

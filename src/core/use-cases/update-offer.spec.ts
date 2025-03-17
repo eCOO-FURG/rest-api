@@ -1,7 +1,7 @@
 // Use-cases
 import { UpdateOfferUseCase } from "@/core/use-cases/update-offer";
 
-// Services
+// Factories
 import { makeCatalog } from "@/test/factories/make-catalog";
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeFarm } from "@/test/factories/make-farm";
@@ -72,7 +72,7 @@ describe("update offer", () => {
     });
     offersRepository.items.push(offer);
 
-    catalog.offers.set(offer.id.value, offer);
+    catalog.offers.push(offer);
     catalogsRepository.update(catalog);
 
     await sut.execute({
@@ -115,7 +115,7 @@ describe("update offer", () => {
       price: 10,
     });
 
-    catalog.offers.set(offer.id.value, offer);
+    catalog.offers.push(offer);
     catalogsRepository.update(catalog);
 
     await expect(
@@ -153,7 +153,7 @@ describe("update offer", () => {
     });
     offersRepository.items.push(offer);
 
-    catalog.offers.set(offer.id.value, offer);
+    catalog.offers.push(offer);
     catalogsRepository.update(catalog);
 
     await expect(
@@ -191,7 +191,7 @@ describe("update offer", () => {
     });
     offersRepository.items.push(offer);
 
-    catalog.offers.set(offer.id.value, offer);
+    catalog.offers.push(offer);
     catalogsRepository.update(catalog);
 
     await expect(
@@ -226,7 +226,7 @@ describe("update offer", () => {
     });
     offersRepository.items.push(offer);
 
-    catalog.offers.set(offer.id.value, offer);
+    catalog.offers.push(offer);
     catalogsRepository.update(catalog);
 
     await expect(
@@ -268,7 +268,7 @@ describe("update offer", () => {
     });
     offersRepository.items.push(offer);
 
-    catalog.offers.set(offer.id.value, offer);
+    catalog.offers.push(offer);
     catalogsRepository.update(catalog);
 
     await expect(
@@ -309,7 +309,7 @@ describe("update offer", () => {
     });
     offersRepository.items.push(offer);
 
-    catalog.offers.set(offer.id.value, offer);
+    catalog.offers.push(offer);
     catalogsRepository.update(catalog);
 
     await expect(
@@ -348,7 +348,7 @@ describe("update offer", () => {
     });
     offersRepository.items.push(offer);
 
-    catalog.offers.set(offer.id.value, offer);
+    catalog.offers.push(offer);
     catalogsRepository.update(catalog);
 
     await expect(
@@ -384,7 +384,7 @@ describe("update offer", () => {
     });
     offersRepository.items.push(offer);
 
-    catalog.offers.set(offer.id.value, offer);
+    catalog.offers.push(offer);
     catalogsRepository.update(catalog);
 
     await expect(

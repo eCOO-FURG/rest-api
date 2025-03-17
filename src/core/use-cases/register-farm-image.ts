@@ -3,7 +3,6 @@ import { FarmsRepository } from "@/core/repositories/farms-repository";
 import { UsersRepository } from "@/core/repositories/users-repository";
 
 // Errors
-import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceReachedLimitError } from "@/core/errors/resource-reached-limit";
 import { UnauthorizedError } from "@/core/errors/unauthorized";
@@ -36,17 +35,14 @@ export class RegisterFarmImageUseCase {
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
-    if (!farm.admin_id.equals(user.id) && !user.admin)
-      throw new UnauthorizedError();
+    if (!farm.admin_id.equals(user.id)) throw new UnauthorizedError();
 
-    if (farm.status !== "ACTIVE") throw new FarmNotActiveError();
-
-    if (farm.images.size >= 4)
+    if (farm.images.length >= 4)
       throw new ResourceReachedLimitError("Fazenda", farm_id, "images");
 
     const url = await this.storage.upload([image], "farms");
 
-    farm.images.set(url[0], url[0]);
+    farm.images.push(url[0]);
 
     await this.farmsRepository.update(farm);
   }

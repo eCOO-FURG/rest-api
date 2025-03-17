@@ -4,12 +4,12 @@ import { DeleteFarmImageUseCase } from "@/core/use-cases/delete-farm-image";
 // Services
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeUser } from "@/test/factories/make-user";
+
+// Storage
 import { MockedStorage } from "@/test/storage/mocked-storage";
 
 // Repositories
-import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
 // Errors
@@ -24,8 +24,6 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { File } from "@/core/types/file";
 
 let farmsRepository: InMemoryFarmsRepository;
-let productsRepository: InMemoryProductsRepository;
-let catalogsRepository: InMemoryCatalogsRepository;
 let usersRepository: InMemoryUsersRepository;
 
 let storage: MockedStorage;
@@ -34,14 +32,13 @@ let sut: DeleteFarmImageUseCase;
 
 describe("delete farm image", () => {
   beforeEach(() => {
-    productsRepository = new InMemoryProductsRepository();
     farmsRepository = new InMemoryFarmsRepository();
-    catalogsRepository = new InMemoryCatalogsRepository();
     usersRepository = new InMemoryUsersRepository();
     storage = new MockedStorage();
 
     sut = new DeleteFarmImageUseCase(farmsRepository, usersRepository, storage);
   });
+
   it("should be able to delete a farm image", async () => {
     const user = makeUser();
     user.verify();
@@ -59,7 +56,7 @@ describe("delete farm image", () => {
 
     const url = await storage.upload([mockedImage], "farms");
 
-    farm.images.set(url[0], url[0]);
+    farm.images.push(url[0]);
 
     await farmsRepository.update(farm);
 
@@ -69,7 +66,7 @@ describe("delete farm image", () => {
       image_url: url[0],
     });
 
-    expect(farm.images.size).toBe(0);
+    expect(farm.images.length).toBe(0);
   });
   it("should not be able to delete a nonexistent farm image", async () => {
     const user = makeUser();
@@ -88,7 +85,7 @@ describe("delete farm image", () => {
 
     const url = await storage.upload([mockedImage], "farms");
 
-    farm.images.set(url[0], url[0]);
+    farm.images.push(url[0]);
 
     await farmsRepository.update(farm);
 
@@ -137,7 +134,7 @@ describe("delete farm image", () => {
 
     const url = await storage.upload([mockedImage], "farms");
 
-    farm.images.set(url[0], url[0]);
+    farm.images.push(url[0]);
 
     await farmsRepository.update(farm);
 
@@ -166,7 +163,7 @@ describe("delete farm image", () => {
 
     const url = await storage.upload([mockedImage], "farms");
 
-    farm.images.set(url[0], url[0]);
+    farm.images.push(url[0]);
 
     await farmsRepository.update(farm);
 
@@ -198,7 +195,7 @@ describe("delete farm image", () => {
 
     const url = await storage.upload([mockedImage], "farms");
 
-    farm.images.set(url[0], url[0]);
+    farm.images.push(url[0]);
 
     await farmsRepository.update(farm);
 
@@ -223,7 +220,7 @@ describe("delete farm image", () => {
 
     const url = await storage.upload([mockedImage], "farms");
 
-    farm.images.set(url[0], url[0]);
+    farm.images.push(url[0]);
 
     await farmsRepository.update(farm);
 
