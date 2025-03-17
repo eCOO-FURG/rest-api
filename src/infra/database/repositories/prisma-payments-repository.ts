@@ -40,8 +40,15 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
   }
 
   async create(payment: Payment): Promise<void> {
-    await prisma.payment.create({
-      data: PrismaPaymentMapper.toPrisma(payment),
+    await prisma.$transaction(async (ctx) => {
+      await ctx.payment.create({
+        data: PrismaPaymentMapper.toPrisma(payment),
+      });
+
+      await ctx.bag.update({
+        where: { id: payment.bag_id.value },
+        data: { paid: true },
+      });
     });
   }
 
