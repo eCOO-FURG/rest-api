@@ -37,6 +37,7 @@ let cyclesRepository: InMemoryCyclesRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
 
 let sut: UpdateOfferUseCase;
+
 describe("update offer", () => {
   beforeEach(() => {
     cyclesRepository = new InMemoryCyclesRepository();
@@ -47,6 +48,7 @@ describe("update offer", () => {
 
     sut = new UpdateOfferUseCase(offersRepository, cyclesRepository);
   });
+
   it("should be able to update an offer", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
@@ -91,6 +93,7 @@ describe("update offer", () => {
     expect(updatedOffer!.description).toBe("Updated description");
     expect(updatedOffer!.price).toBe(20);
   });
+
   it("should not be able to update a nonexistent offer", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
@@ -128,6 +131,7 @@ describe("update offer", () => {
       })
     ).rejects.toThrowError(ResourceNotFoundError);
   });
+
   it("should not be able to update an offer from a nonexistent farm", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
@@ -166,6 +170,7 @@ describe("update offer", () => {
       })
     ).rejects.toThrowError(UnauthorizedError);
   });
+
   it("should not be able to update an offer from a not active farm", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
@@ -204,6 +209,7 @@ describe("update offer", () => {
       })
     ).rejects.toThrowError(FarmNotActiveError);
   });
+
   it("should not be able to update an offer from a nonexistent cycle", async () => {
     const farm = makeFarm({ status: "ACTIVE" });
     farmsRepository.create(farm);
@@ -239,6 +245,7 @@ describe("update offer", () => {
       })
     ).rejects.toThrowError(ResourceNotFoundError);
   });
+
   it("should not be able to update an offer off the cycle's offering days", async () => {
     const offeringDays = [1, 2, 3, 4, 5, 6, 7].filter((day) => day !== today());
 
@@ -281,6 +288,7 @@ describe("update offer", () => {
       })
     ).rejects.toThrowError(ResourceClosedError);
   });
+
   it("should not be able to update an offer from another farm", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
@@ -322,7 +330,7 @@ describe("update offer", () => {
       })
     ).rejects.toThrowError(UnauthorizedError);
   });
-  it("should not be able to update an offer that has orders", async () => {});
+
   it("should not be able to update an offer without at least one field to update", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
@@ -358,6 +366,7 @@ describe("update offer", () => {
       })
     ).rejects.toThrowError(MissingFieldError);
   });
+
   it("should throw an error if the offered product is not perishable and expires_at is set", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);

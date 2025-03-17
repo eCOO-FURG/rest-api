@@ -57,7 +57,6 @@ describe("update bag", () => {
 
     await sut.execute({
       bag_id: bag.id.value,
-      user_id: bag.user_id.value,
       status: "SEPARATED",
     });
 
@@ -81,7 +80,6 @@ describe("update bag", () => {
 
     await sut.execute({
       bag_id: bag.id.value,
-      user_id: bag.user_id.value,
       status: "SEPARATED",
     });
 
@@ -92,7 +90,6 @@ describe("update bag", () => {
     await expect(
       sut.execute({
         bag_id: "invalid-id",
-        user_id: "invalid-id",
         status: "SEPARATED",
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);

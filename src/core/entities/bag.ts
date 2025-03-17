@@ -23,6 +23,8 @@ export interface BagProps extends EntityRequest {
 
   code: string;
   price: number;
+  paid: boolean;
+  verified: boolean;
   status: BagStatus;
 
   orders: Order[];
@@ -90,12 +92,12 @@ export class Bag extends Entity<BagProps> {
     return this.props.cycle_id;
   }
 
-  paid() {
-    for (const payment of this.props.payments) {
-      if (payment.status === "DONE") return payment;
-    }
+  get paid() {
+    return this.props.paid;
+  }
 
-    return false;
+  get verified() {
+    return this.props.verified;
   }
 
   open() {
@@ -104,14 +106,6 @@ export class Bag extends Entity<BagProps> {
     }
 
     return false;
-  }
-
-  verified() {
-    for (const order of this.props.orders.values()) {
-      if (order.status === "PENDING") return false;
-    }
-
-    return true;
   }
 
   add(order: Order) {
@@ -123,13 +117,22 @@ export class Bag extends Entity<BagProps> {
   static create(
     props: Optional<
       BagProps,
-      "price" | "status" | "address" | "orders" | "payments" | "address_id"
+      | "price"
+      | "status"
+      | "address"
+      | "orders"
+      | "payments"
+      | "address_id"
+      | "paid"
+      | "verified"
     >
   ) {
     const bag = new Bag({
       ...props,
       address_id: props.address_id ?? null,
       price: props.price ?? 0,
+      paid: props.paid ?? false,
+      verified: props.verified ?? false,
       status: props.status ?? "PENDING",
       orders: props.orders ?? [],
       payments: props.payments ?? [],

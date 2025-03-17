@@ -48,7 +48,7 @@ export class UpdateBagUseCase {
     if (bag.status === "CANCELLED")
       throw new ResourceClosedError("Sacola", bag_id);
 
-    if (!bag.verified()) throw new ResourceNotVerifiedError("Sacola", bag_id);
+    if (!bag.verified) throw new ResourceNotVerifiedError("Sacola", bag_id);
 
     bag.status = status ?? bag.status;
 
