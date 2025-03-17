@@ -25,11 +25,11 @@ export class OpenPaymentUseCase {
   ) {}
 
   async execute({ bag_id }: OpenPaymentUseCaseRequest) {
-    const bag = await this.bagsRepository.find("merge", { id: bag_id });
+    const bag = await this.bagsRepository.find("basic", { id: bag_id });
 
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 
-    if (bag.paid() || bag.open())
+    if (bag.paid)
       throw new ResourceAlreadyExistsError("Pagamento da sacola", bag_id);
 
     const payment = Payment.create({

@@ -29,9 +29,7 @@ export class RegisterPaymentUseCase {
 
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 
-    const done = bag.paid();
-
-    if (done)
+    if (bag.paid)
       throw new ResourceAlreadyExistsError("Pagamento da sacola", bag_id);
 
     const payment = Payment.create({

@@ -17,8 +17,7 @@ export class BagPresenter {
       return {
         id: bag.id.value,
         status: bag.status,
-        paid: bag.paid(),
-        open: !!bag.open(),
+        paid: bag.paid,
         price: bag.price,
         code: bag.code,
         cycle_id: bag.cycle_id.value,
