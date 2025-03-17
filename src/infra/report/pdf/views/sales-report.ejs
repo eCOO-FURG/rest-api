@@ -237,7 +237,8 @@
   <body>
     <div class="header" style="font-family: 'Poppins'">
       <h1>
-        <%= props.withdraw ? 'Lista de Retiradas' : 'Lista de Entregas' %>
+        <%= typeof withdraw === "boolean" ? withdraw ? "Relatório de retiradas"
+        : "Relatório de entregas" : "Relatório de vendas" %>
       </h1>
       <!-- <p>
       Página <span class="pageNumber">1</span> de
