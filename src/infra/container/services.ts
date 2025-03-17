@@ -44,8 +44,8 @@ export default (container: AwilixContainer) => {
         });
 
         const fallback = createTransport({
-          host: env.FALLBACK_EMAIL_ACCOUNT,
-          port: env.FALLBACK_EMAIL_PASSWORD,
+          host: env.FALLBACK_SMTP_HOST,
+          port: env.SMTP_PORT,
           auth: {
             user: env.FALLBACK_EMAIL_ACCOUNT,
             pass: env.FALLBACK_EMAIL_PASSWORD,
