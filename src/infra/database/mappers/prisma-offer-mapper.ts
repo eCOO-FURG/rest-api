@@ -1,17 +1,19 @@
 // Entities
-import { Offer } from "@/core/entities/offer";
 import { UUID } from "@/core/entities/aggregates/uuid";
+import { Offer } from "@/core/entities/offer";
 
 // Libraries
 import { Prisma } from "@prisma/client";
 
 // Mappers
-import { PrismaProductMapper } from "@/infra/database/mappers/prisma-product-mapper";
 import { PrismaCatalogMapper } from "@/infra/database/mappers/prisma-catalog-mapper";
+import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
+import { PrismaProductMapper } from "@/infra/database/mappers/prisma-product-mapper";
 
-type PrismaOffer = Prisma.OfferGetPayload<{}> & {
+export type PrismaOffer = Prisma.OfferGetPayload<{}> & {
   product?: Prisma.ProductGetPayload<{}>;
   catalog?: Prisma.CatalogGetPayload<{}>;
+  orders?: Prisma.OrderGetPayload<{}>[];
 };
 
 export class PrismaOfferMapper {
@@ -28,6 +30,7 @@ export class PrismaOfferMapper {
       ...(raw.product && {
         product: PrismaProductMapper.toDomain(raw.product),
       }),
+      orders: raw.orders?.map((order) => PrismaOrderMapper.toDomain(order)),
       description: raw.description,
       expires_at: raw.expires_at,
       created_at: raw.created_at,

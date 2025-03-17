@@ -55,8 +55,8 @@ export class InMemoryBagsRepository implements BagsRepository {
         (!statuses || statuses.includes(item.status)) &&
         (!since || item.created_at >= since) &&
         (!before || item.created_at <= before) &&
-        (!orders?.id || item.orders.has(orders.id)) &&
-        (!payments?.id || item.payments.has(payments.id))
+        (!orders?.id || item.orders.some((o) => o.id.equals(orders.id!))) &&
+        (!payments?.id || item.payments.some((p) => p.id.equals(payments.id!)))
     );
 
     if (!bag) return null;
@@ -105,8 +105,8 @@ export class InMemoryBagsRepository implements BagsRepository {
         (!statuses || statuses.includes(item.status)) &&
         (!since || item.created_at >= since) &&
         (!before || item.created_at <= before) &&
-        (!orders?.id || item.orders.has(orders.id)) &&
-        (!payments?.id || item.payments.has(payments.id))
+        (!orders?.id || item.orders.some((o) => o.id.equals(orders.id!))) &&
+        (!payments?.id || item.payments.some((p) => p.id.equals(payments.id!)))
     );
 
     if (page) bags = paginate(bags, page);

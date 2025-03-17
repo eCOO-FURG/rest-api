@@ -17,7 +17,7 @@ export class BoxPresenter {
         verified: box.verified,
         catalog_id: box.catalog_id.value,
         catalog: CatalogPresenter.toHttp(box.catalog),
-        orders: Array.from(box.orders.values()).map(OrderPresenter.toHttp),
+        orders: box.orders.map(OrderPresenter.toHttp),
         created_at: box.created_at,
         updated_at: box.updated_at,
       };

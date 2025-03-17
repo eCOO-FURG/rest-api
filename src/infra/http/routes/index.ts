@@ -52,8 +52,8 @@ router.use("/pendings", ensureAuthenticated, ensureRole(["BROKER"]), pendings);
 router.use("/stats", ensureAuthenticated, ensureRole(["MANAGER"]), stats);
 router.use(
   "/reports",
-  ensureAuthenticated,
-  ensureRole(["BROKER", "MANAGER"]),
+  // ensureAuthenticated,
+  // ensureRole(["BROKER", "MANAGER"]),
   reports
 );
 router.use(

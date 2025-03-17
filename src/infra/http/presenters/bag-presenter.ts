@@ -27,10 +27,8 @@ export class BagPresenter {
         address: AddressPresenter.toHttp(bag.address),
         user_id: bag.user_id.value,
         user: UserPresenter.toHttp(bag.user),
-        orders: Array.from(bag.orders.values()).map(OrderPresenter.toHttp),
-        payments: Array.from(bag.payments.values()).map(
-          PaymentPresenter.toHttp
-        ),
+        orders: bag.orders.map(OrderPresenter.toHttp),
+        payments: bag.payments.map(PaymentPresenter.toHttp),
         created_at: bag.created_at,
         updated_at: bag.updated_at,
       };

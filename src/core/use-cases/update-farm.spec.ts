@@ -30,7 +30,7 @@ describe("update farm", () => {
     await usersRepository.create(user);
 
     const farm = makeFarm({
-      images: new Map([["image1", "image1"]]),
+      images: ["image1", "image2"],
     });
 
     await farmsRepository.create(farm);

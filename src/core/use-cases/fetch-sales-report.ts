@@ -1,6 +1,7 @@
 // Repositories
-import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { BagsRepository } from "@/core/repositories/bags-repository";
+import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
+import { CyclesRepository } from "@/core/repositories/cycles-repository";
 
 // Services
 import { PDFService } from "@/core/report/pdf-service";
@@ -21,6 +22,7 @@ export class FetchSalesReportUseCase {
   constructor(
     private cyclesRepository: CyclesRepository,
     private bagsRepository: BagsRepository,
+    private catalogsRepository: CatalogsRepository,
     private pdfService: PDFService,
     private spreadsheetService: SpreadsheetService
   ) {}
@@ -47,6 +49,12 @@ export class FetchSalesReportUseCase {
       before,
     });
 
+    const catalogs = await this.catalogsRepository.list("merge", {
+      cycle: { id: cycle_id },
+      since,
+      before,
+    });
+
     switch (type) {
       case "pdf":
         return {
@@ -59,7 +67,7 @@ export class FetchSalesReportUseCase {
         return {
           file: await this.spreadsheetService.generate({
             type: "sales-report",
-            props: { bags },
+            props: { bags, catalogs, since, before },
           }),
         };
     }

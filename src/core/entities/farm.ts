@@ -19,7 +19,7 @@ export interface FarmProps extends EntityRequest {
   photo: string | null;
   status: FarmStatus;
 
-  images: Map<string, string>;
+  images: string[];
 }
 
 export class Farm extends Entity<FarmProps> {
@@ -79,7 +79,7 @@ export class Farm extends Entity<FarmProps> {
     this.props.photo = value;
   }
 
-  set images(value: Map<string, string>) {
+  set images(value: string[]) {
     this.props.images = value;
   }
 
@@ -95,7 +95,7 @@ export class Farm extends Entity<FarmProps> {
       tax: props.tax ?? 20,
       description: props.description ?? null,
       photo: props.photo ?? null,
-      images: props.images ?? new Map(),
+      images: props.images ?? [],
     });
     return farm;
   }

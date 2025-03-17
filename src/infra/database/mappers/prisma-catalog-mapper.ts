@@ -7,11 +7,14 @@ import { Prisma } from "@prisma/client";
 
 // Mappers
 import { PrismaFarmMapper } from "@/infra/database/mappers/prisma-farm-mapper";
-import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
+import {
+  PrismaOffer,
+  PrismaOfferMapper,
+} from "@/infra/database/mappers/prisma-offer-mapper";
 
 type PrismaCatalog = Prisma.CatalogGetPayload<{}> & {
   farm?: Prisma.FarmGetPayload<{}>;
-  offers?: Prisma.OfferGetPayload<{}>[];
+  offers?: PrismaOffer[];
 };
 
 export class PrismaCatalogMapper {
@@ -24,14 +27,7 @@ export class PrismaCatalogMapper {
       ...(raw.farm && {
         farm: PrismaFarmMapper.toDomain(raw.farm),
       }),
-      ...(raw.offers && {
-        offers: new Map(
-          raw.offers.map((offer) => [
-            offer.id,
-            PrismaOfferMapper.toDomain(offer),
-          ])
-        ),
-      }),
+      offers: raw.offers?.map((offer) => PrismaOfferMapper.toDomain(offer)),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
     });

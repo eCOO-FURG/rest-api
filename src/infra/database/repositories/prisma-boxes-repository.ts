@@ -110,11 +110,9 @@ export class PrismaBoxesRepository implements BoxesRepository {
     await prisma.$transaction(async (ctx) => {
       await ctx.box.create({ data });
 
-      const orders = Array.from(box.orders.values()).map(
-        PrismaOrderMapper.toPrisma
-      );
-
-      await ctx.order.createMany({ data: orders });
+      await ctx.order.createMany({
+        data: box.orders.map(PrismaOrderMapper.toPrisma),
+      });
     });
   }
 
@@ -151,7 +149,7 @@ export class PrismaBoxesRepository implements BoxesRepository {
       });
 
       const deletedIds = previous
-        .filter((p) => !box.orders.has(p.id))
+        .filter((p) => !box.orders.some((o) => o.id.equals(p.id)))
         .map((order) => order.id);
 
       if (deletedIds.length)

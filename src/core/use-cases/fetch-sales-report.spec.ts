@@ -1,20 +1,22 @@
 // Repositories
 import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
+import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 
 // Services
-import { MockedPDFService } from "@/test/report/mocked-pdf-service";
 import { makeBag } from "@/test/factories/make-bag";
 import { makeCycle } from "@/test/factories/make-cycle";
+import { MockedPDFService } from "@/test/report/mocked-pdf-service";
 
 // Use-cases
 import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { MockedSpreadsheetService } from "@/test/service/mocked-excel";
+import { MockedSpreadsheetService } from "@/test/report/mocked-spreadsheet-service";
 
 let bagsRepository: InMemoryBagsRepository;
+let catalogsRepository: InMemoryCatalogsRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 
 let pdfService: MockedPDFService;
@@ -26,6 +28,7 @@ describe("print bags report", () => {
   beforeEach(() => {
     cyclesRepository = new InMemoryCyclesRepository();
     bagsRepository = new InMemoryBagsRepository();
+    catalogsRepository = new InMemoryCatalogsRepository();
 
     pdfService = new MockedPDFService();
     spreadsheetService = new MockedSpreadsheetService();
@@ -33,6 +36,7 @@ describe("print bags report", () => {
     sut = new FetchSalesReportUseCase(
       cyclesRepository,
       bagsRepository,
+      catalogsRepository,
       pdfService,
       spreadsheetService
     );

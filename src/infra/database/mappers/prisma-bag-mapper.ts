@@ -35,19 +35,11 @@ export class PrismaBagMapper {
         address: PrismaAddressMapper.toDomain(raw.address),
       }),
       ...(raw.orders && {
-        orders: new Map(
-          raw.orders.map((order) => [
-            order.id,
-            PrismaOrderMapper.toDomain(order),
-          ])
-        ),
+        orders: raw.orders.map((order) => PrismaOrderMapper.toDomain(order)),
       }),
       ...(raw.payments && {
-        payments: new Map(
-          raw.payments.map((payment) => [
-            payment.id,
-            PrismaPaymentMapper.toDomain(payment),
-          ])
+        payments: raw.payments.map((payment) =>
+          PrismaPaymentMapper.toDomain(payment)
         ),
       }),
       created_at: raw.created_at,

@@ -17,7 +17,7 @@ export interface CatalogProps extends EntityRequest {
 
   tax: number;
 
-  offers: Map<string, Offer>;
+  offers: Offer[];
 }
 
 export class Catalog extends Entity<CatalogProps> {
@@ -49,14 +49,14 @@ export class Catalog extends Entity<CatalogProps> {
     return this.props.offers;
   }
 
-  set offers(offers: Map<string, Offer>) {
+  set offers(offers: Offer[]) {
     this.props.offers = offers;
   }
 
   static create(props: Optional<CatalogProps, "offers">) {
     const catalog = new Catalog({
       ...props,
-      offers: props.offers ?? new Map(),
+      offers: props.offers ?? [],
     });
 
     return catalog;

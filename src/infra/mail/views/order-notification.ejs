@@ -98,9 +98,8 @@
       0.00; let subtotal = props.bag.price; let taxRate = 0.20; // 20% de
       imposto let taxAmount = subtotal * taxRate; let total = subtotal +
       taxAmount + deliveryFee; let ordersArray = Array.isArray(props.bag.orders)
-      ? props.bag.orders : Array.from(props.bag.orders.values ?
-      props.bag.orders.values() : props.bag.orders); ordersArray.forEach((order)
-      => { let farmName = order.offer.catalog.farm.name; let productName =
+      ? props.bag.orders : props.bag.orders; ordersArray.forEach((order) => {
+      let farmName = order.offer.catalog.farm.name; let productName =
       order.offer.product.name; let pricingType = order.offer.product.pricing;
       if (!groupedOrders[farmName]) { groupedOrders[farmName] = {}; } if
       (!groupedOrders[farmName][productName]) {
