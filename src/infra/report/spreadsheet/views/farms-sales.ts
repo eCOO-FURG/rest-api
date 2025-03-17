@@ -9,6 +9,9 @@ import { toCurrencyColumnStyle } from "@/infra/utils/to-currency-column-style";
 import { toPercentageColumnStyle } from "@/infra/utils/to-percentage-column-style";
 import { toUntaxed } from "@/infra/utils/to-untaxed";
 
+// Report
+import { SpreadsheetView } from "@/infra/report/spreadsheet/excel";
+
 const columns: SpreadsheetColumn[] = [
   { header: "PRODUTOR", key: "producer", width: 20 },
   { header: "PRODUTO", key: "product", width: 25 },
@@ -48,17 +51,17 @@ const columns: SpreadsheetColumn[] = [
   { header: "DATA FIM CONSULTA", key: "end_date", width: 25 },
 ];
 
-interface SalesProducersReportViewProps {
-  start_date: Date;
-  end_date: Date;
+interface FarmsSalesReportViewProps {
   catalogs: Catalog[];
+  since?: Date;
+  before?: Date;
 }
 
-export const SALES_PRODUCERS_VIEW = async ({
-  start_date,
-  end_date,
+export const FARMS_PRODUCERS_VIEW: SpreadsheetView = async ({
   catalogs,
-}: SalesProducersReportViewProps) => {
+  since,
+  before,
+}: FarmsSalesReportViewProps) => {
   const rows: Record<string, unknown>[] = [];
 
   for (const catalog of catalogs) {
@@ -93,13 +96,13 @@ export const SALES_PRODUCERS_VIEW = async ({
         total_amount: totalAmount,
         total_price: toUntaxed(totalPrice, catalog.tax),
         warehouse_price: totalPrice - toUntaxed(totalPrice, catalog.tax),
-        ...(start_date && {
-          start_date: start_date.toLocaleDateString("pt-BR"),
+        ...(since && {
+          since: since.toLocaleDateString("pt-BR"),
         }),
-        ...(end_date && { end_date: end_date.toLocaleDateString("pt-BR") }),
+        ...(before && { before: before.toLocaleDateString("pt-BR") }),
       });
     }
   }
 
-  return { columns, rows, type: "sales-producers" };
+  return { columns, rows, name: "Vendas por produtor" };
 };

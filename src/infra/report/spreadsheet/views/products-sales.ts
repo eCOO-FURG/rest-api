@@ -9,6 +9,9 @@ import { toCurrencyColumnStyle } from "@/infra/utils/to-currency-column-style";
 import { toPercentageColumnStyle } from "@/infra/utils/to-percentage-column-style";
 import { toUntaxed } from "@/infra/utils/to-untaxed";
 
+// Report
+import { SpreadsheetView } from "@/infra/report/spreadsheet/excel";
+
 const columns: SpreadsheetColumn[] = [
   { header: "SACOLA", key: "bag", width: 10 },
   { header: "PRODUTO", key: "product", width: 20 },
@@ -55,17 +58,17 @@ const columns: SpreadsheetColumn[] = [
   { header: "DATA FIM CONSULTA", key: "end_date", width: 25 },
 ];
 
-interface SalesProductsReportViewProps {
-  start_date?: Date;
-  end_date?: Date;
+interface ProductsSalesReportViewProps {
   bags: Bag[];
+  since?: Date;
+  before?: Date;
 }
 
-export const SALES_PRODUCTS_VIEW = async ({
-  start_date,
-  end_date,
+export const PRODUCTS_SALES_VIEW: SpreadsheetView = async ({
   bags,
-}: SalesProductsReportViewProps) => {
+  since,
+  before,
+}: ProductsSalesReportViewProps) => {
   const rows: Record<string, unknown>[] = [];
 
   for (const bag of bags) {
@@ -92,13 +95,13 @@ export const SALES_PRODUCTS_VIEW = async ({
         total_price_without_tax: toUntaxed(offerPrice * amount, tax),
         pricing: order.offer?.product?.pricing === "UNIT" ? "Unidade" : "Peso",
         date: order.created_at.toLocaleDateString("pt-BR"),
-        ...(start_date && {
-          start_date: start_date.toLocaleDateString("pt-BR"),
+        ...(since && {
+          since: since.toLocaleDateString("pt-BR"),
         }),
-        ...(end_date && { end_date: end_date.toLocaleDateString("pt-BR") }),
+        ...(before && { before: before.toLocaleDateString("pt-BR") }),
       });
     }
   }
 
-  return { columns, rows, type: "sales-products" };
+  return { columns, rows, name: "Vendas por produto" };
 };

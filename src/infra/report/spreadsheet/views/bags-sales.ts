@@ -7,6 +7,9 @@ import { Bag } from "@/core/entities/bag";
 // Utils
 import { toCurrencyColumnStyle } from "@/infra/utils/to-currency-column-style";
 
+// Report
+import { SpreadsheetView } from "@/infra/report/spreadsheet/excel";
+
 const columns: SpreadsheetColumn[] = [
   { header: "SACOLA", key: "bag", width: 10 },
   { header: "CONSUMIDOR", key: "consumer", width: 20 },
@@ -38,17 +41,17 @@ const columns: SpreadsheetColumn[] = [
   { header: "DATA FIM CONSULTA", key: "end_date", width: 25 },
 ];
 
-interface SalesConsumersReportViewProps {
-  start_date: Date;
-  end_date: Date;
+interface BagsSalesReportViewProps {
+  since?: Date;
+  before?: Date;
   bags: Bag[];
 }
 
-export const SALES_CONSUMERS_VIEW = async ({
-  start_date,
-  end_date,
+export const BAGS_SALES_VIEW: SpreadsheetView = async ({
   bags,
-}: SalesConsumersReportViewProps) => {
+  since,
+  before,
+}: BagsSalesReportViewProps) => {
   const rows: Record<string, unknown>[] = [];
 
   for (const bag of bags) {
@@ -74,15 +77,13 @@ export const SALES_CONSUMERS_VIEW = async ({
       date: (bag.updated_at ?? bag.created_at).toLocaleDateString("pt-BR"),
       payment_method: mostRecentPayment?.method ?? "-",
       flag: mostRecentPayment?.flag ?? "-",
-      payment_date: (
-        mostRecentPayment?.updated_at ?? mostRecentPayment?.created_at
-      )?.toLocaleDateString("pt-BR"),
-      ...(start_date && {
-        start_date: start_date.toLocaleDateString("pt-BR"),
+      payment_date: mostRecentPayment?.created_at?.toLocaleDateString("pt-BR"),
+      ...(since && {
+        since: since.toLocaleDateString("pt-BR"),
       }),
-      ...(end_date && { end_date: end_date.toLocaleDateString("pt-BR") }),
+      ...(before && { before: before.toLocaleDateString("pt-BR") }),
     });
   }
 
-  return { columns, rows, type: "sales-consumers" };
+  return { columns, rows, name: "Vendas por cliente" };
 };

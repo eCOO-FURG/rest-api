@@ -6,9 +6,9 @@ import {
 } from "@/core/report/spreadsheet-service";
 
 // Views
-import { SALES_CONSUMERS_VIEW } from "@/infra/report/spreadsheet/views/sales-consumers";
-import { SALES_PRODUCERS_VIEW } from "@/infra/report/spreadsheet/views/sales-producers";
-import { SALES_PRODUCTS_VIEW } from "@/infra/report/spreadsheet/views/sales-products";
+import { PRODUCTS_SALES_VIEW } from "@/infra/report/spreadsheet/views/products-sales";
+import { BAGS_SALES_VIEW } from "@/infra/report/spreadsheet/views/bags-sales";
+import { FARMS_PRODUCERS_VIEW } from "@/infra/report/spreadsheet/views/farms-sales";
 
 // Libraries
 import { Workbook } from "exceljs";
@@ -16,26 +16,19 @@ import { Workbook } from "exceljs";
 // Types
 import { File } from "@/core/types/file";
 
-// Errors
-import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+export type SpreadsheetView = (
+  props: SpreadsheetServiceGenerateRequest["props"]
+) => Promise<{
+  columns: SpreadsheetColumn[];
+  rows: Record<string, unknown>[];
+  name: string;
+}>;
 
 export const SPREADSHEETS: Record<
   SpreadsheetServiceGenerateRequest["type"],
-  (props: SpreadsheetServiceGenerateRequest["props"]) => Promise<
-    {
-      columns: SpreadsheetColumn[];
-      rows: Record<string, unknown>[];
-    }[]
-  >
+  SpreadsheetView[]
 > = {
-  "sales-report": [
-    SALES_PRODUCTS_VIEW,
-    SALES_PRODUCERS_VIEW,
-    SALES_CONSUMERS_VIEW,
-  ] as any,
-  "sales-products": [SALES_PRODUCTS_VIEW] as any,
-  "sales-producers": [SALES_PRODUCERS_VIEW] as any,
-  "sales-consumers": [SALES_CONSUMERS_VIEW] as any,
+  "sales-report": [PRODUCTS_SALES_VIEW, BAGS_SALES_VIEW, FARMS_PRODUCERS_VIEW],
 };
 
 export class ExcelService implements SpreadsheetService {
@@ -43,7 +36,21 @@ export class ExcelService implements SpreadsheetService {
     type,
     props,
   }: SpreadsheetServiceGenerateRequest): Promise<File> {
-    const workbook = await this.generateWorkbook(type, props);
+    const workbook = new Workbook();
+
+    const views = SPREADSHEETS[type];
+
+    for (const view of views) {
+      const { columns, rows, name } = await view(props);
+
+      const worksheet = workbook.addWorksheet(name);
+
+      worksheet.columns = columns;
+
+      for (const row of rows) {
+        worksheet.addRow(row);
+      }
+    }
 
     const buffer = await workbook.xlsx.writeBuffer();
 
@@ -54,33 +61,5 @@ export class ExcelService implements SpreadsheetService {
       size: buffer.byteLength,
       content: Buffer.from(buffer),
     };
-  }
-
-  private async generateWorkbook(
-    type: SpreadsheetServiceGenerateRequest["type"],
-    props: SpreadsheetServiceGenerateRequest["props"]
-  ) {
-    const workbook = new Workbook();
-
-    const views = SPREADSHEETS[type];
-
-    if (!views) throw new ResourceNotFoundError("Spreadsheet view", type);
-
-    if (!Array.isArray(views))
-      throw new TypeError("Spreadsheet view must be an array");
-
-    for (const view of views) {
-      const { columns, rows, type } = await view(props);
-
-      const worksheet = workbook.addWorksheet(type);
-
-      worksheet.columns = columns;
-
-      for (const row of rows) {
-        worksheet.addRow(row);
-      }
-    }
-
-    return workbook;
   }
 }
