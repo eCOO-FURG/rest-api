@@ -55,7 +55,7 @@ describe("list catalogs", () => {
         product,
       });
 
-      catalog.offers.set(offer.id.value, offer);
+      catalog.offers.push(offer);
 
       catalogsRepository.items.push(catalog);
     }

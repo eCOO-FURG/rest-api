@@ -46,7 +46,7 @@ describe("fetch catalog", () => {
       product,
     });
 
-    catalog.offers.set(product.id.value, offer);
+    catalog.offers.push(offer);
 
     await catalogsRepository.create(catalog);
 

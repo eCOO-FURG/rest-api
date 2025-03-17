@@ -33,12 +33,12 @@ describe("Update payment", () => {
     const payment = makePayment();
     await paymentsRepository.create(payment);
 
-    bag.payments.set(payment.id.value, payment);
+    bag.payments.push(payment);
     await bagsRepository.create(bag);
 
     await sut.execute({ payment_id: payment.id.value, status: "DONE" });
 
-    expect(bag.payments.get(payment.id.value)?.status).toBe("DONE");
+    expect(bag.payments[0].status).toBe("DONE");
   });
 
   it("should not be able to update a non-existent payment", async () => {

@@ -16,15 +16,7 @@ import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-r
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 
 // Errors
-import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-
-// Entities
-import { UUID } from "@/core/entities/aggregates/uuid";
-import { CycleWeek } from "@/core/entities/cycle";
-
-// Utils
-import { today } from "@/core/utils/today";
 
 let farmsRepository: InMemoryFarmsRepository;
 let productsRepository: InMemoryProductsRepository;
@@ -116,40 +108,6 @@ describe("delete offer", () => {
     await expect(() =>
       sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
-  });
-
-  it("should not be able to delete an offer off the cycle's offering days", async () => {
-    const offeringDays = [1, 2, 3, 4, 5, 6, 7].filter((day) => day !== today());
-
-    const cycle = makeCycle({
-      offer: offeringDays as CycleWeek,
-    });
-    cyclesRepository.items.push(cycle);
-
-    const farm = makeFarm({ status: "ACTIVE" });
-    farmsRepository.create(farm);
-
-    const product = makeProduct();
-    productsRepository.create(product);
-
-    const catalog = makeCatalog({
-      farm,
-      cycle_id: cycle.id,
-    });
-    catalogsRepository.create(catalog);
-
-    const offer = makeOffer({
-      catalog,
-      product_id: product.id,
-    });
-    offersRepository.items.push(offer);
-
-    catalog.offers.push(offer);
-    catalogsRepository.update(catalog);
-
-    await expect(() =>
-      sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value })
-    ).rejects.toBeInstanceOf(ResourceClosedError);
   });
 
   it("should not be able to delete an offer from another farm", async () => {

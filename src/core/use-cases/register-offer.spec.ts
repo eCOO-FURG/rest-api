@@ -71,7 +71,7 @@ describe("offer products", () => {
     });
 
     expect(catalogsRepository.items.length).toBe(1);
-    expect(catalogsRepository.items[0].offers.size).toBe(1);
+    expect(catalogsRepository.items[0].offers.length).toBe(1);
   });
 
   it("should not be able to offer products from a nonexistent farm", async () => {
@@ -174,7 +174,7 @@ describe("offer products", () => {
       price: 30,
     });
 
-    catalog.offers.set(product.id.value, offer);
+    catalog.offers.push(offer);
     await catalogsRepository.create(catalog);
 
     await expect(() =>

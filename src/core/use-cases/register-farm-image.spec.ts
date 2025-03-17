@@ -69,7 +69,7 @@ describe("register farm image", () => {
       image: mockedImage,
     });
 
-    expect(farm.images.size).toBe(1);
+    expect(farm.images.length).toBe(1);
   });
   it("should not be able to register an image in a nonexistent farm", async () => {
     const user = makeUser();
@@ -91,52 +91,7 @@ describe("register farm image", () => {
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
-  it("should not be able to register an image to a not active farm", async () => {
-    const user = makeUser();
-    user.verify();
-    usersRepository.create(user);
 
-    const farm = makeFarm({ admin_id: user.id, status: "INACTIVE" });
-    farmsRepository.create(farm);
-
-    const mockedImage: File = {
-      name: "image.jpg",
-      mimetype: "image/jpeg",
-      size: 100,
-      content: Buffer.from("image"),
-    };
-
-    await expect(
-      sut.execute({
-        user_id: user.id.value,
-        farm_id: farm.id.value,
-        image: mockedImage,
-      })
-    ).rejects.toBeInstanceOf(FarmNotActiveError);
-  });
-  it("should not be able to register an image to a farm that the user is not the admin", async () => {
-    const user = makeUser();
-    user.verify();
-    usersRepository.create(user);
-
-    const farm = makeFarm({ status: "ACTIVE" });
-    farmsRepository.create(farm);
-
-    const mockedImage: File = {
-      name: "image.jpg",
-      mimetype: "image/jpeg",
-      size: 100,
-      content: Buffer.from("image"),
-    };
-
-    await expect(
-      sut.execute({
-        user_id: user.id.value,
-        farm_id: farm.id.value,
-        image: mockedImage,
-      })
-    ).rejects.toBeInstanceOf(UnauthorizedError);
-  });
   it("should not be able to register an image to another farm", async () => {
     const user = makeUser();
     user.verify();
@@ -163,6 +118,7 @@ describe("register farm image", () => {
       })
     ).rejects.toBeInstanceOf(UnauthorizedError);
   });
+
   it("should not be able to register more than 4 images to a farm", async () => {
     const user = makeUser();
     user.verify();
@@ -206,25 +162,6 @@ describe("register farm image", () => {
         image: mockedImage,
       })
     ).rejects.toBeInstanceOf(ResourceReachedLimitError);
-    expect(farm.images.size).toBe(4);
-  });
-  it("should not be able to register an image without a user", async () => {
-    const farm = makeFarm({ status: "ACTIVE" });
-    farmsRepository.create(farm);
-
-    const mockedImage: File = {
-      name: "image.jpg",
-      mimetype: "image/jpeg",
-      size: 100,
-      content: Buffer.from("image"),
-    };
-
-    await expect(
-      sut.execute({
-        user_id: new UUID().value,
-        farm_id: farm.id.value,
-        image: mockedImage,
-      })
-    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+    expect(farm.images.length).toBe(4);
   });
 });

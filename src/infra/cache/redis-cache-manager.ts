@@ -11,7 +11,7 @@ export class RedisCacheManager implements CacheManager {
   private client: RedisClientType;
 
   constructor() {
-    this.client = createClient({ url: env.CACHE_MANAGER_URL });
+    this.client = createClient({ url: env.CACHE_URL! });
     this.client.connect();
   }
 

@@ -72,7 +72,7 @@ describe("list farms with orders", () => {
 
     const order = makeOrder({ offer_id: offer.id });
 
-    box.orders.set(order.id.value, order);
+    box.orders.push(order);
 
     await boxesRepository.create(box);
 

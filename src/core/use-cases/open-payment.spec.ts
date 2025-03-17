@@ -62,7 +62,7 @@ describe("open payment", () => {
 
     const payment = makePayment({ bag_id: bag.id, status: "DONE" });
 
-    bag.payments.set(payment.id.value, payment);
+    bag.payments.push(payment);
 
     bagsRepository.items.push(bag);
 
@@ -78,7 +78,7 @@ describe("open payment", () => {
 
     const payment = makePayment({ bag_id: bag.id, status: "PENDING" });
 
-    bag.payments.set(payment.id.value, payment);
+    bag.payments.push(payment);
 
     bagsRepository.items.push(bag);
 
