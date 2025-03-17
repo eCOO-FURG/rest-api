@@ -95,7 +95,7 @@
       </p>
 
       <% let groupedOrders = {}; let deliveryFee = props.bag.address ? 10.00 :
-      0.00; let subtotal = props.bag.price; let feeRate = 0.20; // 20% de
+      0.00; let subtotal = props.bag.total; let feeRate = 0.20; // 20% de
       imposto let feeAmount = subtotal * feeRate; let total = subtotal +
       feeAmount + deliveryFee; let ordersArray = Array.isArray(props.bag.orders)
       ? props.bag.orders : props.bag.orders; ordersArray.forEach((order) => {
