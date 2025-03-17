@@ -52,6 +52,8 @@ import { fetchSalesReportQuery } from "@/infra/http/controllers/fetch-sales-repo
 import { fetchInboundReportQuery } from "@/infra/http/controllers/fetch-inbound-report";
 import { sendNotificationSchema } from "@/infra/http/controllers/send-notification";
 import { openPixSchema } from "@/infra/http/webhooks/open-pix";
+import { updateOrderSchema } from "@/infra/http/controllers/update-order";
+import { updateOrderParams } from "@/infra/http/controllers/update-order";
 
 // Schemas
 const { swagger: authenticateSchemaSwagger } = j2s(authenticateSchema);
@@ -71,6 +73,8 @@ const { swagger: deleteFarmImageParamsSwagger } = j2s(deleteFarmImageParams);
 const { swagger: fetchFarmParamsSwagger } = j2s(fetchFarmParams);
 const { swagger: updateFarmParamsSwagger } = j2s(updateFarmParams);
 const { swagger: registerOrderSchemaSwagger } = j2s(registerOrderSchema);
+const { swagger: updateOrderParamsSwagger } = j2s(updateOrderParams);
+const { swagger: updateOrderSchemaSwagger } = j2s(updateOrderSchema);
 const { swagger: listBoxesQuerySwagger } = j2s(listBoxesQuery);
 const { swagger: fetchCurrentBoxQuerySwagger } = j2s(fetchCurrentBoxQuery);
 const { swagger: fetchBoxQuerySwagger } = j2s(fetchBoxQuery);
@@ -426,6 +430,16 @@ export const docs = {
             description: "Pedido registrado com sucesso",
           },
         },
+      },
+    },
+    "/orders/{order_id}": {
+      patch: {
+        tags: ["Pedidos"],
+        summary: "Atualizar pedido",
+        parameters: [
+          ...toRouteParams(updateOrderParamsSwagger),
+          ...toQueryParams(updateOrderSchemaSwagger),
+        ],
       },
     },
     "/boxes": {
