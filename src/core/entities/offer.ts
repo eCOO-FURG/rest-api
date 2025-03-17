@@ -18,7 +18,7 @@ export interface OfferProps extends EntityRequest {
   description: string | null;
   expires_at: Date | null;
 
-  orders: Map<string, Order>;
+  orders: Order[];
 }
 
 export class Offer extends Entity<OfferProps> {
@@ -81,7 +81,7 @@ export class Offer extends Entity<OfferProps> {
       ...props,
       description: props.description ?? null,
       expires_at: props.expires_at ?? null,
-      orders: new Map(),
+      orders: props.orders ?? [],
     });
 
     return offer;

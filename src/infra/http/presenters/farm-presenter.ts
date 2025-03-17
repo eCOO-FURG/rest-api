@@ -24,7 +24,7 @@ export class FarmPresenter {
         tally: farm.tally,
         tax: farm.tax,
         photo: farm.photo,
-        images: Array.from(farm.images.values()),
+        images: farm.images,
         description: farm.description,
         admin_id: farm.admin_id.value,
         admin: admin,

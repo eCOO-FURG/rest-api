@@ -1,6 +1,6 @@
 // Entities
 import { Catalog } from "@/core/entities/catalog";
-import { Cycle, CycleWeek } from "@/core/entities/cycle";
+import { Cycle } from "@/core/entities/cycle";
 import { Farm } from "@/core/entities/farm";
 import { Offer } from "@/core/entities/offer";
 
@@ -73,7 +73,7 @@ export class RegisterOfferUseCase {
     const { catalog, existed } = await this.useCatalog(farm, cycle);
 
     if (existed) {
-      const offered = Array.from(catalog.offers.values()).find(
+      const offered = catalog.offers.find(
         (offer) => offer.product_id.value === product_id
       );
 
@@ -95,7 +95,7 @@ export class RegisterOfferUseCase {
       expires_at,
     });
 
-    catalog.offers.set(product_id, offer);
+    catalog.offers.push(offer);
 
     if (existed) return await this.catalogsRepository.update(catalog);
 

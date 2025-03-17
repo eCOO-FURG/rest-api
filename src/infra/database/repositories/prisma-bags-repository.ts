@@ -241,11 +241,9 @@ export class PrismaBagsRepository implements BagsRepository {
         });
       }
 
-      const orders = Array.from(bag.orders.values()).map(
-        PrismaOrderMapper.toPrisma
-      );
-
-      await ctx.order.createMany({ data: orders });
+      await ctx.order.createMany({
+        data: bag.orders.map(PrismaOrderMapper.toPrisma),
+      });
     });
   }
 
@@ -271,7 +269,7 @@ export class PrismaBagsRepository implements BagsRepository {
         where: { bag_id: bag.id.value },
       });
 
-      for (const order of Array.from(bag.orders.values())) {
+      for (const order of bag.orders) {
         const fresh = !orders.find((old) => order.id.equals(old.id));
 
         if (fresh) {

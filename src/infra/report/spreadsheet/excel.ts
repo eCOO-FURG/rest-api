@@ -16,6 +16,10 @@ import { Workbook } from "exceljs";
 // Types
 import { File } from "@/core/types/file";
 
+const names: Record<SpreadsheetServiceGenerateRequest["type"], string> = {
+  "sales-report": "Relatorio de vendas",
+};
+
 export type SpreadsheetView = (
   props: SpreadsheetServiceGenerateRequest["props"]
 ) => Promise<{
@@ -55,7 +59,7 @@ export class ExcelService implements SpreadsheetService {
     const buffer = await workbook.xlsx.writeBuffer();
 
     return {
-      name: `${type}.xlsx`,
+      name: `${names[type]}.xlsx`,
       mimetype:
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       size: buffer.byteLength,

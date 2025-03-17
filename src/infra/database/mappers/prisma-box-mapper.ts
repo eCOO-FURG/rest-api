@@ -25,12 +25,7 @@ export class PrismaBoxMapper {
         catalog: PrismaCatalogMapper.toDomain(raw.catalog),
       }),
       ...(raw.orders && {
-        orders: new Map(
-          raw.orders.map((order) => [
-            order.id,
-            PrismaOrderMapper.toDomain(order),
-          ])
-        ),
+        orders: raw.orders.map((order) => PrismaOrderMapper.toDomain(order)),
       }),
       created_at: raw.created_at,
       updated_at: raw.updated_at,

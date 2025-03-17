@@ -113,11 +113,9 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
     await prisma.$transaction(async (ctx) => {
       await ctx.catalog.create({ data });
 
-      const offers = Array.from(catalog.offers.values()).map(
-        PrismaOfferMapper.toPrisma
-      );
-
-      await ctx.offer.createMany({ data: offers });
+      await ctx.offer.createMany({
+        data: catalog.offers.map(PrismaOfferMapper.toPrisma),
+      });
     });
   }
 
@@ -154,7 +152,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
       });
 
       const deletedIds = previous
-        .filter((p) => !catalog.offers.has(p.id))
+        .filter((p) => !catalog.offers.some((o) => o.id.equals(p.id)))
         .map((offer) => offer.id);
 
       if (deletedIds.length)

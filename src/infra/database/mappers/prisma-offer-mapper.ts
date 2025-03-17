@@ -10,7 +10,7 @@ import { PrismaCatalogMapper } from "@/infra/database/mappers/prisma-catalog-map
 import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
 import { PrismaProductMapper } from "@/infra/database/mappers/prisma-product-mapper";
 
-type PrismaOffer = Prisma.OfferGetPayload<{}> & {
+export type PrismaOffer = Prisma.OfferGetPayload<{}> & {
   product?: Prisma.ProductGetPayload<{}>;
   catalog?: Prisma.CatalogGetPayload<{}>;
   orders?: Prisma.OrderGetPayload<{}>[];
@@ -30,12 +30,7 @@ export class PrismaOfferMapper {
       ...(raw.product && {
         product: PrismaProductMapper.toDomain(raw.product),
       }),
-      orders: new Map(
-        raw.orders?.map((order) => [
-          order.id,
-          PrismaOrderMapper.toDomain(order),
-        ])
-      ),
+      orders: raw.orders?.map((order) => PrismaOrderMapper.toDomain(order)),
       description: raw.description,
       expires_at: raw.expires_at,
       created_at: raw.created_at,

@@ -4,9 +4,6 @@ import { SpreadsheetColumn } from "@/core/report/spreadsheet-service";
 // Entities
 import { Bag } from "@/core/entities/bag";
 
-// Utils
-import { toCurrencyColumnStyle } from "@/infra/utils/to-currency-column-style";
-
 // Report
 import { SpreadsheetView } from "@/infra/report/spreadsheet/excel";
 
@@ -19,19 +16,19 @@ const columns: SpreadsheetColumn[] = [
     header: "VALOR SACOLA",
     key: "bag_price",
     width: 20,
-    style: toCurrencyColumnStyle("BRL"),
+    style: { numFmt: "R$ #,##0.00" },
   },
   {
     header: "VALOR ENTREGA",
     key: "delivery_price",
     width: 20,
-    style: toCurrencyColumnStyle("BRL"),
+    style: { numFmt: "R$ #,##0.00" },
   },
   {
     header: "VALOR TOTAL",
     key: "total_price",
     width: 20,
-    style: toCurrencyColumnStyle("BRL"),
+    style: { numFmt: "R$ #,##0.00" },
   },
   { header: "DATA DO PEDIDO", key: "date", width: 25 },
   { header: "PAGAMENTO", key: "payment_method", width: 20 },
@@ -55,13 +52,12 @@ export const BAGS_SALES_VIEW: SpreadsheetView = async ({
   const rows: Record<string, unknown>[] = [];
 
   for (const bag of bags) {
-    const payments = Array.from(bag.payments.values());
-
-    const mostRecentPayment = !!payments.length
-      ? payments.reduce((acc, payment) => {
+    const mostRecentPayment = bag.payments.length
+      ? bag.payments.reduce((acc, payment) => {
           if (payment.created_at > acc.created_at) {
             return payment;
           }
+
           return acc;
         })
       : null;
