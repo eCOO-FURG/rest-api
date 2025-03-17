@@ -106,7 +106,7 @@ export async function seedDevelopment() {
         create: {
           code: "123-456",
           subtotal: price,
-          fee: 0,
+          delivery_fee: 10,
           status: "PENDING",
           cycle_id: cycleId.value,
           address_id: null,
