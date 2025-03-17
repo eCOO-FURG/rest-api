@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Container
 import container from "@/infra/container";
@@ -8,9 +8,12 @@ import container from "@/infra/container";
 // Use-cases
 import { RequestHelpUseCase } from "@/core/use-cases/request-help";
 
-export const requestHelpSchema = {
-  body: z.object({ message: z.string().max(500) }),
-};
+// Validation
+import { parse } from "@/infra/http/validation/parse";
+
+export const requestHelpSchema = Joi.object({
+  message: Joi.string().max(500).required(),
+});
 
 export async function requestHelpController(
   request: Request,
@@ -18,18 +21,14 @@ export async function requestHelpController(
   next: NextFunction
 ) {
   try {
-    const { message } = requestHelpSchema.body.parse(request.body);
-
-    const user_id = request.user_id;
-
-    container.resolve("onRequestHelpEvent");
+    const { message } = parse(requestHelpSchema, request.body);
 
     const requestHelpUseCase =
       container.resolve<RequestHelpUseCase>("requestHelpUseCase");
 
     await requestHelpUseCase.execute({
-      message,
-      user_id,
+      content: message,
+      user_id: request.user_id,
     });
 
     return response.sendStatus(200);

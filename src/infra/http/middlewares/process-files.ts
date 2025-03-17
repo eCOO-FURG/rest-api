@@ -19,10 +19,17 @@ interface FieldConfig {
 function config(fields: FieldConfig[]): multer.Options {
   return {
     storage: multer.memoryStorage(),
-    fileFilter: (_, file, callback) => {
+    fileFilter: (req, file, callback) => {
       const config = fields.find((f) => f.name === file.fieldname);
 
       if (!config) return callback(new MulterError("LIMIT_UNEXPECTED_FILE"));
+
+      const files =
+        (req.files?.[file.fieldname] as Express.Multer.File[]) || [];
+
+      if (files.length > (config.options.max ?? 1)) {
+        return callback(new MulterError("LIMIT_FILE_COUNT", file.fieldname));
+      }
 
       const ok =
         !config.options.allowed ||

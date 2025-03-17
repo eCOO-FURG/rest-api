@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Use-cases
 import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
@@ -11,11 +11,12 @@ import container from "@/infra/container";
 // Env
 import { env } from "@/infra/env";
 
-export const verifyUserSchema = {
-  query: z.object({
-    token: z.string(),
-  }),
-};
+// Validation
+import { parse } from "@/infra/http/validation/parse";
+
+export const verifyUserSchema = Joi.object({
+  token: Joi.string().required(),
+});
 
 export async function verifyUserController(
   request: Request,
@@ -23,7 +24,7 @@ export async function verifyUserController(
   next: NextFunction
 ) {
   try {
-    const { token } = verifyUserSchema.query.parse(request.query);
+    const { token } = parse(verifyUserSchema, request.query);
 
     const verifyUserUseCase =
       container.resolve<VerifyUserUsecase>("verifyUserUseCase");
@@ -36,11 +37,11 @@ export async function verifyUserController(
       agent: request.headers["user-agent"] ?? "not-identified",
     });
 
-    const isProducer = roles.includes("PRODUCER");
+    const path = roles.includes("PRODUCER") ? "login" : "telegram";
 
-    const path = isProducer ? "login" : "telegram";
-
-    return response.redirect(301, `${env.FRONT_URL}/${path}?token=${refresh}`);
+    return response
+      .status(301)
+      .redirect(`${env.APP_URL}/${path}?token=${refresh}`);
   } catch (error) {
     next(error);
   }

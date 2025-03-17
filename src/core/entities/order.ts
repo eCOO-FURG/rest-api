@@ -8,11 +8,9 @@ import { Entity, EntityRequest } from "@/core/entities/entity";
 import { Offer } from "@/core/entities/offer";
 import { Optional } from "@/core/types/optional";
 
-export interface OrderProps extends EntityRequest {
-  amount: number;
-  price: number;
-  status: "PENDING" | "CANCELLED" | "RECEIVED" | "REJECTED";
+export type OrderStatus = (typeof Order.statuses)[number];
 
+export interface OrderProps extends EntityRequest {
   offer_id: UUID;
   offer?: Offer;
 
@@ -21,6 +19,10 @@ export interface OrderProps extends EntityRequest {
 
   box_id: UUID;
   box?: Box;
+
+  amount: number;
+  price: number;
+  status: OrderStatus;
 }
 
 export class Order extends Entity<OrderProps> {
@@ -79,4 +81,6 @@ export class Order extends Entity<OrderProps> {
     });
     return order;
   }
+
+  static statuses = ["PENDING", "CANCELLED", "RECEIVED", "REJECTED"] as const;
 }

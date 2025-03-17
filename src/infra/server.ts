@@ -2,7 +2,6 @@
 import express from "express";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
-import "zod-openapi/extend";
 
 // Routes
 import { router } from "@/infra/http/routes";
@@ -14,7 +13,7 @@ import { handler } from "@/infra/http/errors/handler";
 import { env } from "@/infra/env";
 
 // Docs
-import { docs } from "@/infra/docs/swagger";
+import { docs } from "@/infra/docs";
 
 const server = express();
 

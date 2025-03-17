@@ -46,6 +46,7 @@ export class PrismaFarmsRepository implements FarmsRepository {
       include: { admin: type !== "basic" },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
+
     return farms.map(PrismaFarmMapper.toDomain);
   }
 
@@ -55,14 +56,16 @@ export class PrismaFarmsRepository implements FarmsRepository {
     await prisma.$transaction(async (ctx) => {
       await ctx.farm.create({ data });
 
-      await ctx.user.update({
-        where: {
-          id: farm.admin_id.value,
-        },
-        data: {
-          roles: { push: "PRODUCER" },
-        },
+      const admin = await ctx.user.findFirstOrThrow({
+        where: { id: farm.admin_id.value },
       });
+
+      if (!admin.roles.includes("PRODUCER")) {
+        await ctx.user.update({
+          where: { id: farm.admin_id.value },
+          data: { roles: { push: "PRODUCER" } },
+        });
+      }
     });
   }
 

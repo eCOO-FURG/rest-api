@@ -13,9 +13,6 @@ import WebSocket from "ws";
 // Logger
 import { Logger } from "@/infra/logs/logger";
 
-// Presenters
-import { MessagePresenter } from "@/infra/http/presenters/message-presenter";
-
 export class Telegram implements Chat {
   private client: WebSocket | null = null;
 
@@ -31,7 +28,17 @@ export class Telegram implements Chat {
         await this.connect();
       }
 
-      this.client.send(JSON.stringify(MessagePresenter.toWS(message)));
+      this.client.send(
+        JSON.stringify({
+          id: message.id.value,
+          to: message.to,
+          subject: message.subject,
+          content: message.content,
+          files: message.files,
+          created_at: message.created_at,
+          updated_at: message.updated_at,
+        })
+      );
     } catch (error) {
       Logger.log(error);
     }
@@ -43,7 +50,9 @@ export class Telegram implements Chat {
     });
 
     this.client.on("error", (error) => {
-      Logger.log(error);
+      if (!("code" in error && error.code === "ECONNREFUSED")) {
+        Logger.log(error);
+      }
     });
   }
 }

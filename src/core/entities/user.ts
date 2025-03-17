@@ -4,15 +4,9 @@ import { CPF } from "@/core/entities/cpf";
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
 // Types
-import { OnRegisteredEvent } from "@/core/events/on-registered";
 import { Optional } from "@/core/types/optional";
 
-// Events
-import { DomainEvents } from "@/core/events/domain-events";
-import { OnRequestHelpEvent } from "@/core/events/on-request-help";
-import { OnUpdatePasswordRequestEvent } from "@/core/events/on-password-update-requested";
-
-export type Role = "USER" | "PRODUCER" | "MANAGER" | "BROKER";
+export type UserRole = (typeof User.roles)[number];
 
 export interface UserProps extends EntityRequest {
   first_name: string;
@@ -21,10 +15,10 @@ export interface UserProps extends EntityRequest {
   cpf: CPF;
   phone: Phone;
   password: string | null;
-  roles: Role[];
   verified_at: Date | null;
   photo: string | null;
   chat: string | null;
+  roles: UserRole[];
 }
 
 export class User extends Entity<UserProps> {
@@ -105,44 +99,27 @@ export class User extends Entity<UserProps> {
     this.touch();
   }
 
-  reset() {
-    DomainEvents.events.push({
-      entity: this,
-      name: OnUpdatePasswordRequestEvent.name,
-    });
-  }
-
   get admin() {
-    return !!this.props.roles.find(
-      (role) => role === "MANAGER" || role === "BROKER"
-    );
-  }
+    for (const role of this.props.roles) {
+      if (role === "MANAGER" || role === "BROKER") {
+        return true;
+      }
+    }
 
-  help(content: string) {
-    DomainEvents.events.push({
-      entity: this,
-      name: OnRequestHelpEvent.name,
-      payload: { content },
-    });
+    return false;
   }
 
   static create(
     props: Optional<UserProps, "password" | "verified_at" | "photo" | "chat">
   ) {
-    const user = new User({
+    return new User({
       ...props,
       password: props.password ?? null,
-      verified_at: props.verified_at ?? null,
       photo: props.photo ?? null,
       chat: props.chat ?? null,
+      verified_at: props.verified_at ?? null,
     });
-
-    const fresh = !props.id;
-
-    if (fresh) {
-      DomainEvents.events.push({ entity: user, name: OnRegisteredEvent.name });
-    }
-
-    return user;
   }
+
+  static roles = ["USER", "PRODUCER", "MANAGER", "BROKER"] as const;
 }

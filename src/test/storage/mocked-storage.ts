@@ -37,6 +37,14 @@ export class MockedStorage implements Storage {
     return `file://${env.STORAGE_URL}/${folder}/${name}`;
   }
 
+  async delete(url: string, folder: string): Promise<void> {
+    const name = url.replace(`file://${env.STORAGE_URL}/${folder}/`, "");
+
+    const file = path.join(__dirname, "temp", folder, name);
+
+    fs.unlinkSync(file);
+  }
+
   private useDirectory(folder: string): string {
     const directory = path.join(__dirname, "temp", folder);
 

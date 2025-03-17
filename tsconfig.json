@@ -8,11 +8,13 @@
       "@/infra/*": ["src/infra/*"],
       "@/test/*": ["src/test/*"]
     },
-    "types": ["vitest/globals"],
+    "types": ["vitest/globals", "@goodrequest/joi-type-extract"],
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "skipLibCheck": true
-  }
+    "skipLibCheck": true,
+    "strictNullChecks": true
+  },
+  "include": ["src", "src/@types"]
 }

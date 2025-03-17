@@ -1,4 +1,5 @@
 // Use-cases
+import Joi from "joi";
 import { UpdateUserUseCase } from "@/core/use-cases/update-user";
 
 // Container
@@ -6,28 +7,30 @@ import container from "@/infra/container";
 
 // Libraries
 import { Request, Response, NextFunction } from "express";
-import { z } from "zod";
 
 // Validation
-import { notEmpty } from "@/infra/http/validation/not-empty";
+import { parse } from "@/infra/http/validation/parse";
 
 // Utils
 import { toFile } from "@/infra/utils/to-file";
 
-export const updateUserSchema = {
-  body: z
-    .object({
-      first_name: z.string().optional(),
-      last_name: z.string().optional(),
-      email: z.string().email().optional(),
-      cpf: z.string().min(11).max(14).optional(),
-      phone: z.string().optional(),
-      password: z.string().min(8).optional(),
-      chat: z.string().optional(),
-      photo: z.custom<Express.Multer.File>().optional(),
-    })
-    .refine(notEmpty.validation, notEmpty.warning),
-};
+// Validation
+import { file } from "@/infra/http/validation/file";
+
+export const updateUserParams = Joi.object({
+  user_id: Joi.string().uuid().required(),
+});
+
+export const updateUserSchema = Joi.object({
+  first_name: Joi.string().optional(),
+  last_name: Joi.string().optional(),
+  email: Joi.string().email().optional(),
+  cpf: Joi.string().min(11).max(11).optional(),
+  phone: Joi.string().min(11).max(11).optional(),
+  password: Joi.string().min(8).optional(),
+  chat: Joi.string().optional(),
+  photo: file.optional(),
+});
 
 export async function updateUserController(
   request: Request,
@@ -36,7 +39,7 @@ export async function updateUserController(
 ) {
   try {
     const { first_name, last_name, email, cpf, phone, password, photo, chat } =
-      updateUserSchema.body.parse(request.body);
+      parse(updateUserSchema, request.body);
 
     const updateUserUsecase =
       container.resolve<UpdateUserUseCase>("updateUserUseCase");

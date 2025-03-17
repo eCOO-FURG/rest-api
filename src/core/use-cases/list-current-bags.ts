@@ -9,12 +9,12 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { mostPast } from "@/core/utils/most-past";
 
 // Entities
-import { Bag } from "@/core/entities/bag";
+import { BagStatus } from "@/core/entities/bag";
 
 interface ListCurrentBagsUseCaseRequest {
   cycle_id: string;
   page: number;
-  statuses?: Bag["status"][];
+  statuses?: BagStatus[];
   user?: string;
 }
 

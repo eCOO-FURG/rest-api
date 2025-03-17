@@ -16,14 +16,11 @@ export async function fetchUserFarmController(
   next: NextFunction
 ) {
   try {
-    const fetchUserFarmUseCase = container.resolve<FetchFarmUseCase>(
-      "fetchFarmUseCase"
-    );
-
-    const farm_id = request.farm_id;
+    const fetchUserFarmUseCase =
+      container.resolve<FetchFarmUseCase>("fetchFarmUseCase");
 
     const { farm } = await fetchUserFarmUseCase.execute({
-      farm_id
+      farm_id: request.farm_id,
     });
 
     return response.status(200).send(FarmPresenter.toHttp(farm));

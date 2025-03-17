@@ -1,9 +1,7 @@
 // Entities
+import { UUID } from "@/core/entities/aggregates/uuid";
 import { Entity, EntityRequest } from "@/core/entities/entity";
 import { Product } from "@/core/entities/product";
-
-// Types
-import { UUID } from "@/core/entities/aggregates/uuid";
 import { Catalog } from "@/core/entities/catalog";
 import { Order } from "@/core/entities/order";
 import { Optional } from "@/core/types/optional";

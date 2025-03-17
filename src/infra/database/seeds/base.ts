@@ -24,7 +24,7 @@ async function seedBase() {
       email: "admin@ecoo.org.br",
       cpf: "00000000000",
       roles: ["USER", "MANAGER"],
-      password: await hash(env.ECOO_EMAIL_PASSWORD, 8),
+      password: await hash(env.EMAIL_PASSWORD, 8),
       phone: "55555555555",
       verified_at: new Date(),
     },
@@ -37,7 +37,7 @@ async function seedBase() {
       email: "agent@ecoo.org.br",
       cpf: "11111111111",
       roles: ["USER", "BROKER"],
-      password: await hash(env.ECOO_EMAIL_PASSWORD, 8),
+      password: await hash(env.EMAIL_PASSWORD, 8),
       phone: "66666666666",
       verified_at: new Date(),
     },
@@ -66,7 +66,7 @@ async function seedBase() {
     },
   });
 
-  const homolog = ["development", "staging"].includes(env.ENV);
+  const homolog = ["DEVELOPMENT", "STAGING"].includes(env.ENVIRONMENT);
 
   if (homolog) await seedDevelopment();
 }

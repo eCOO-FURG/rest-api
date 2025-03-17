@@ -1,5 +1,5 @@
 // Entities
-import { Bag } from "@/core/entities/bag";
+import { BagStatus } from "@/core/entities/bag";
 
 // Repositories
 import { BagsRepository } from "@/core/repositories/bags-repository";
@@ -12,7 +12,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 interface ListBagsUseCaseRequest {
   page: number;
   user_id?: string;
-  statuses?: Bag["status"][];
+  statuses?: BagStatus[];
   cycle_id?: string;
   name?: string;
   since?: Date;

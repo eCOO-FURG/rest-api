@@ -5,16 +5,21 @@ import { Optional } from "@/core/types/optional";
 import { Entity, EntityRequest } from "@/core/entities/entity";
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { User } from "@/core/entities/user";
+
+export type FarmStatus = (typeof Farm.statuses)[number];
+
 export interface FarmProps extends EntityRequest {
+  admin_id: UUID;
+  admin?: User;
+
   name: string;
   tally: string;
-  status: "ACTIVE" | "INACTIVE" | "PENDING";
   tax: number;
   description: string | null;
   photo: string | null;
+  status: FarmStatus;
+
   images: Map<string, string>;
-  admin_id: UUID;
-  admin?: User;
 }
 
 export class Farm extends Entity<FarmProps> {
@@ -94,4 +99,6 @@ export class Farm extends Entity<FarmProps> {
     });
     return farm;
   }
+
+  static statuses = ["ACTIVE", "INACTIVE", "PENDING"] as const;
 }

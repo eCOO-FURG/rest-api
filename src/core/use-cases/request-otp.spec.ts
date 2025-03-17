@@ -1,6 +1,11 @@
-// Services
+// Factories
 import { makeUser } from "@/test/factories/make-user";
+
+// Cryptography
 import { MockedOtpProvider } from "@/test/cryptography/mocked-otp-provider";
+
+// Mail
+import { MockedMailer } from "@/test/mail/mocked-mailer";
 
 // Entities
 import { Otp } from "@/core/entities/otp";
@@ -17,6 +22,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 let usersRepository: InMemoryUsersRepository;
 let otpsRepository: InMemoryOtpsRepository;
+let mailer: MockedMailer;
 
 let otpGenerator: MockedOtpProvider;
 
@@ -28,8 +34,14 @@ describe("request otp", async () => {
     otpsRepository = new InMemoryOtpsRepository();
 
     otpGenerator = new MockedOtpProvider();
+    mailer = new MockedMailer();
 
-    sut = new RequestOtpUseCase(usersRepository, otpGenerator, otpsRepository);
+    sut = new RequestOtpUseCase(
+      usersRepository,
+      otpGenerator,
+      otpsRepository,
+      mailer
+    );
   });
 
   it("should be able to request a otp", async () => {

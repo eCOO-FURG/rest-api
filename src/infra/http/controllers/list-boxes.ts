@@ -1,4 +1,5 @@
 // Use-cases
+import Joi from "joi";
 import { ListBoxesUseCase } from "@/core/use-cases/list-boxes";
 
 // Container
@@ -6,23 +7,18 @@ import container from "@/infra/container";
 
 // Libraries
 import { Request, Response, NextFunction } from "express";
-import { z } from "zod";
 
 // Presenters
 import { BoxPresenter } from "@/infra/http/presenters/box-presenter";
 
-export const listBoxesSchema = {
-  query: z.object({
-    cycle_id: z
-      .string()
-      .uuid()
-      .openapi({ description: "O ciclo de busca das caixas." }),
-    page: z.coerce.number().openapi({ description: "A página de busca." }),
-    farm: z.string().optional().openapi({
-      description: "O filtro por nome de fazenda responsável pela caixa.",
-    }),
-  }),
-};
+// Validation
+import { parse } from "@/infra/http/validation/parse";
+
+export const listBoxesQuery = Joi.object({
+  cycle_id: Joi.string().uuid().required(),
+  page: Joi.number().required(),
+  farm: Joi.string().optional(),
+});
 
 export async function listBoxesController(
   request: Request,
@@ -30,7 +26,7 @@ export async function listBoxesController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id, page, farm } = listBoxesSchema.query.parse(request.query);
+    const { cycle_id, page, farm } = parse(listBoxesQuery, request.query);
 
     const listBoxesUseCase =
       container.resolve<ListBoxesUseCase>("listBoxesUseCase");

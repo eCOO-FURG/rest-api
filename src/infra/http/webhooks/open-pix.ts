@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Container
 import container from "@/infra/container";
@@ -8,11 +8,16 @@ import container from "@/infra/container";
 // Use-cases
 import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
 
-export const openPixSchema = z.object({
-  event: z.enum(["OPENPIX:CHARGE_COMPLETED", "OPENPIX:CHARGE_EXPIRED"]),
-  charge: z.object({
-    correlationID: z.string(),
-  }),
+// Validation
+import { parse } from "@/infra/http/validation/parse";
+
+export const openPixSchema = Joi.object({
+  event: Joi.string()
+    .valid("OPENPIX:CHARGE_COMPLETED", "OPENPIX:CHARGE_EXPIRED")
+    .required(),
+  charge: Joi.object({
+    correlationID: Joi.string().required(),
+  }).required(),
 });
 
 export const openPixWebhookListener = async (
@@ -21,7 +26,7 @@ export const openPixWebhookListener = async (
   next: NextFunction
 ) => {
   try {
-    const { event, charge } = openPixSchema.parse(request.body);
+    const { event, charge } = parse(openPixSchema, request.body);
 
     const updatePaymentUseCase = container.resolve<UpdatePaymentUseCase>(
       "updatePaymentUseCase"

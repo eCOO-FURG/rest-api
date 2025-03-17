@@ -23,6 +23,8 @@ export class FarmPresenter {
         status: farm.status,
         tally: farm.tally,
         tax: farm.tax,
+        photo: farm.photo,
+        images: Array.from(farm.images.values()),
         description: farm.description,
         admin_id: farm.admin_id.value,
         admin: admin,

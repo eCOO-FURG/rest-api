@@ -1,38 +1,32 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 
 // Use-cases
 import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
 
+// Entities
+import { Payment } from "@/core/entities/payment";
+
 // Container
 import container from "@/infra/container";
 
-export const registerPaymentSchema = {
-  body: z
-    .object({
-      bag_id: z.string().uuid(),
-      method: z
-        .enum(["CREDIT", "DEBIT", "CASH", "PIX"])
-        .openapi({ type: "string" }),
-      flag: z
-        .enum(["MASTERCARD", "VISA", "OTHER"])
-        .optional()
-        .openapi({ type: "string" }),
-    })
-    .refine(
-      ({ method, flag }) => {
-        if (method && ["CREDIT", "DEBIT"].includes(method)) {
-          return !!flag;
-        }
-        return true;
-      },
-      {
-        message: "Flag is required when method is CREDIT or DEBIT",
-        path: ["flag"],
-      }
-    ),
-};
+// Validation
+import { parse } from "@/infra/http/validation/parse";
+
+export const registerPaymentSchema = Joi.object({
+  bag_id: Joi.string().uuid().required(),
+  method: Joi.string()
+    .valid(...Payment.methods)
+    .required(),
+  flag: Joi.alternatives().conditional("method", {
+    is: Joi.string().valid("CREDIT", "DEBIT"),
+    then: Joi.string()
+      .valid(...Payment.flags)
+      .required(),
+    otherwise: Joi.string().optional(),
+  }),
+});
 
 export async function registerPaymentController(
   request: Request,
@@ -40,12 +34,10 @@ export async function registerPaymentController(
   next: NextFunction
 ) {
   try {
+    const { method, flag, bag_id } = parse(registerPaymentSchema, request.body);
+
     const registerPaymentUseCase = container.resolve<RegisterPaymentUseCase>(
       "registerPaymentUseCase"
-    );
-
-    const { method, flag, bag_id } = registerPaymentSchema.body.parse(
-      request.body
     );
 
     await registerPaymentUseCase.execute({

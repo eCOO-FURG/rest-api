@@ -18,7 +18,7 @@ export class OpenPix implements PixProvider {
   private client: Client;
 
   constructor() {
-    this.client = createClient({ appId: env.PIX_PROVIDER_API_KEY });
+    this.client = createClient({ appId: env.PIX_PROVIDER_API_KEY! });
   }
 
   async charge(payment: Payment) {
@@ -30,11 +30,8 @@ export class OpenPix implements PixProvider {
       const { charge } = await this.client.charge.create({
         correlationID: payment.id.value,
         value: payment.bag!.price,
-        expiresIn: 60 * 15, // 15 minutes
-        customer: {
-          name,
-          phone: payment.bag!.user!.phone.value,
-        },
+        expiresIn: 60 * 15,
+        customer: { name, phone: payment.bag!.user!.phone.value },
         additionalInfo: [
           {
             key: "payment_id",

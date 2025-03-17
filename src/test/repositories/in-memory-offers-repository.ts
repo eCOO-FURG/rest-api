@@ -11,6 +11,7 @@ import { RepositoryResponse } from "@/core/types/repository-response";
 // Utils
 import { filter } from "@/test/utils/filter";
 import { paginate } from "@/test/utils/paginate";
+import { find } from "@/test/utils/find";
 
 export class InMemoryOffersRepository implements OffersRepository {
   items: Offer[] = [];
@@ -34,5 +35,40 @@ export class InMemoryOffersRepository implements OffersRepository {
     if (page) offers = paginate(offers, page);
 
     return offers;
+  }
+
+  async find(
+    _: RepositoryResponse,
+    { id, catalog, product, since, before }: OffersRepositorySearchRequest
+  ): Promise<Offer | null> {
+    const offer = await find<Offer>(this.items, async (item) => {
+      return (
+        (!id || item.id.equals(id)) &&
+        (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
+        (!product?.id || item.product_id.equals(product.id)) &&
+        (!since || item.created_at >= since) &&
+        (!before || item.created_at <= before)
+      );
+    });
+
+    if (!offer) return null;
+
+    return offer;
+  }
+
+  async update(offer: Offer): Promise<void> {
+    const index = this.items.findIndex((item) => item.id.equals(offer.id));
+
+    if (index === -1) return;
+
+    this.items[index] = offer;
+  }
+
+  async delete(offer: Offer): Promise<void> {
+    const index = this.items.findIndex((item) => item.id.equals(offer.id));
+
+    if (index === -1) return;
+
+    this.items.splice(index, 1);
   }
 }

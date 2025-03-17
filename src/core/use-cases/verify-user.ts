@@ -27,17 +27,17 @@ export class VerifyUserUsecase {
   ) {}
 
   async execute({ token, ip, agent }: VerifyUserUsecaseRequest) {
-    const { user_id } = await this.hasher.decode(token);
+    const decoded = await this.hasher.decode(token);
 
-    if (!user_id) {
-      throw new WrongCredentialsError();
-    }
+    if (!decoded || !decoded.user_id) throw new WrongCredentialsError();
 
-    const user = await this.usersRepository.find("basic", { id: user_id });
+    const user = await this.usersRepository.find("basic", {
+      id: decoded.user_id,
+    });
 
-    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+    if (!user) throw new ResourceNotFoundError("Usuário", decoded.user_id);
 
-    if (user.verified_at) throw new UserAlreadyVerified(user_id);
+    if (user.verified_at) throw new UserAlreadyVerified(user.id.value);
 
     user.verify();
 

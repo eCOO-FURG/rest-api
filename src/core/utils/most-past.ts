@@ -1,6 +1,7 @@
-import { Week } from "@/core/entities/cycle";
+// Entities
+import { CycleWeek } from "@/core/entities/cycle";
 
-export function mostPast(days: Week) {
+export function mostPast(days: CycleWeek) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
