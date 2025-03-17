@@ -7,6 +7,7 @@ import { Storage } from "@/core/storage/storage";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { UnauthorizedError } from "@/core/errors/unauthorized";
 
 interface DeleteFarmImageUseCaseRequest {
   user_id: string;
@@ -30,20 +31,19 @@ export class DeleteFarmImageUseCase {
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
-    const image = farm.images.get(image_url);
-
-    if (!image) throw new ResourceNotFoundError("Imagem", image_url);
-
     const user = await this.usersRepository.find("basic", { id: user_id });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
-    if (!farm.admin_id.equals(user.id) && !user.admin)
-      throw new ResourceNotFoundError("Fazenda", farm_id);
+    if (!farm.admin_id.equals(user.id)) throw new UnauthorizedError();
+
+    const image = farm.images.find((image) => image === image_url);
+
+    if (!image) throw new ResourceNotFoundError("Imagem", image_url);
 
     await this.storage.delete(image, "farms");
 
-    farm.images.delete(image_url);
+    farm.images = farm.images.filter((image) => image !== image_url);
 
     await this.farmsRepository.update(farm);
   }

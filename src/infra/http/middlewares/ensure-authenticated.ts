@@ -1,6 +1,6 @@
 // Libraries
+import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 import { sign, verify } from "jsonwebtoken";
 
 // Container
@@ -15,9 +15,12 @@ import { env } from "@/infra/env";
 // Errors
 import { SessionExpiredError } from "@/core/errors/session-expired";
 
-const jwtPayloadSchema = z.object({
-  user_id: z.string(),
-  iat: z.coerce.number(),
+// Validation
+import { parse } from "@/infra/http/validation/parse";
+
+const jwtPayloadSchema = Joi.object({
+  user_id: Joi.string().required(),
+  iat: Joi.number().required(),
 });
 
 export async function ensureAuthenticated(
@@ -32,9 +35,9 @@ export async function ensureAuthenticated(
 
     const [, token] = authHeader.split(" ");
 
-    const payload = verify(token, env.JWT_SECRET, { ignoreExpiration: true });
+    const payload = verify(token, env.JWT_SECRET!, { ignoreExpiration: true });
 
-    const { user_id, iat } = jwtPayloadSchema.parse(payload);
+    const { user_id, iat } = parse(jwtPayloadSchema, payload);
 
     const now = Date.now() / 1000;
 
@@ -55,7 +58,7 @@ export async function ensureAuthenticated(
 
       if (!session) throw new SessionExpiredError();
 
-      const refresh = sign({ user_id }, env.JWT_SECRET);
+      const refresh = sign({ user_id }, env.JWT_SECRET!);
 
       response.header("set-cookie", `token=${refresh}`);
     }

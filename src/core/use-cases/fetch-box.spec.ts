@@ -52,15 +52,16 @@ describe("list farm sales", () => {
       box_id: box.id,
     });
 
-    box.orders.set(offer.id.value, order);
+    box.orders.push(order);
     await boxesRepository.create(box);
 
     const result = await sut.execute({
       box_id: box.id.value,
       user_id: user.id.value,
+      page: 1,
     });
 
-    expect(result.box.orders.size).toBeGreaterThan(0);
+    expect(result.box.orders.length).toBeGreaterThan(0);
   });
 
   it("should not be able to fetch a box that does not exist", async () => {
@@ -71,6 +72,7 @@ describe("list farm sales", () => {
       sut.execute({
         box_id: "",
         user_id: user.id.value,
+        page: 1,
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });

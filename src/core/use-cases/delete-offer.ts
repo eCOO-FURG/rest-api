@@ -2,8 +2,8 @@
 import { OffersRepository } from "@/core/repositories/offers-repository";
 
 // Errors
-import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Repositories
 import { CyclesRepository } from "@/core/repositories/cycles-repository";

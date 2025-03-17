@@ -119,7 +119,7 @@ describe("order product", () => {
     });
 
     expect(bagsRepository.items.length).toBe(1);
-    expect(bagsRepository.items[0].orders.size).toBe(1);
+    expect(bagsRepository.items[0].orders.length).toBe(1);
   });
 
   it("should be add orders to a existing bag if exists", async () => {
@@ -168,7 +168,7 @@ describe("order product", () => {
       request: [{ offer_id: offer.id.value, amount: 5 }],
     });
 
-    expect(bagsRepository.items[0].orders.size).toBe(1);
+    expect(bagsRepository.items[0].orders.length).toBe(1);
   });
 
   it("should not allow an non existing user to create an order", async () => {

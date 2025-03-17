@@ -48,17 +48,18 @@ describe("Fetch bag", () => {
 
     const order = makeOrder({ bag_id: bag.id, offer_id: offer.id });
 
-    bag.orders.set(offer.id.value, order);
+    bag.orders.push(order);
 
     await bagsRepository.create(bag);
 
     const result = await sut.execute({
       bag_id: bag.id.value,
       user_id: user.id.value,
+      page: 1,
     });
 
     expect(result.bag).toBeInstanceOf(Bag);
-    expect(result.bag.orders.size).toBe(1);
+    expect(result.bag.orders.length).toBe(1);
   });
 
   it("should not be able to fetch a bag that does not exists", async () => {
@@ -69,6 +70,7 @@ describe("Fetch bag", () => {
       sut.execute({
         bag_id: "1234",
         user_id: user.id.value,
+        page: 1,
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
@@ -87,6 +89,7 @@ describe("Fetch bag", () => {
       sut.execute({
         bag_id: bag.id.value,
         user_id: user2.id.value,
+        page: 1,
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
