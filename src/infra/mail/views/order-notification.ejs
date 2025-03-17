@@ -95,9 +95,9 @@
       </p>
 
       <% let groupedOrders = {}; let deliveryFee = props.bag.address ? 10.00 :
-      0.00; let subtotal = props.bag.price; let taxRate = 0.20; // 20% de
-      imposto let taxAmount = subtotal * taxRate; let total = subtotal +
-      taxAmount + deliveryFee; let ordersArray = Array.isArray(props.bag.orders)
+      0.00; let subtotal = props.bag.price; let feeRate = 0.20; // 20% de
+      imposto let feeAmount = subtotal * feeRate; let total = subtotal +
+      feeAmount + deliveryFee; let ordersArray = Array.isArray(props.bag.orders)
       ? props.bag.orders : props.bag.orders; ordersArray.forEach((order) => {
       let farmName = order.offer.catalog.farm.name; let productName =
       order.offer.product.name; let pricingType = order.offer.product.pricing;
@@ -134,8 +134,8 @@
           <span>R$<%= subtotal.toFixed(2) %></span>
         </div>
         <div class="order-item">
-          <span>Taxa de 20%:</span>
-          <span>R$<%= taxAmount.toFixed(2) %></span>
+          <span>feea de 20%:</span>
+          <span>R$<%= feeAmount.toFixed(2) %></span>
         </div>
         <div class="order-item">
           <span>Entrega:</span>

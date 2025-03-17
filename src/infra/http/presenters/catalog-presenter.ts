@@ -13,7 +13,7 @@ export class CatalogPresenter {
     if (catalog)
       return {
         id: catalog.id.value,
-        tax: catalog.tax,
+        fee: catalog.fee,
         cycle_id: catalog.cycle_id.value,
         cycle: CyclePresenter.toHttp(catalog.cycle),
         farm_id: catalog.farm_id.value,

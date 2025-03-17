@@ -15,18 +15,18 @@ export interface CatalogProps extends EntityRequest {
   cycle_id: UUID;
   cycle?: Cycle;
 
-  tax: number;
+  fee: number;
 
   offers: Offer[];
 }
 
 export class Catalog extends Entity<CatalogProps> {
-  get tax() {
-    return this.props.tax;
+  get fee() {
+    return this.props.fee;
   }
 
-  set tax(value: number) {
-    this.props.tax = value;
+  set fee(value: number) {
+    this.props.fee = value;
   }
 
   get farm_id() {

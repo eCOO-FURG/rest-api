@@ -4,7 +4,7 @@ import { Catalog } from "@/core/entities/catalog";
 export function makeCatalog(props: Partial<Catalog> = {}) {
   const catalog = Catalog.create({
     ...props,
-    tax: props.tax ?? 20,
+    fee: props.fee ?? 20,
     cycle_id: props.cycle_id ?? new UUID(),
     farm_id: props.farm_id ?? new UUID(),
   });

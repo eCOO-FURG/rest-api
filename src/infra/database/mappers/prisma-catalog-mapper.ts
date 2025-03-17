@@ -21,7 +21,7 @@ export class PrismaCatalogMapper {
   static toDomain(raw: PrismaCatalog): Catalog {
     return Catalog.create({
       id: new UUID(raw.id),
-      tax: raw.tax,
+      fee: raw.fee,
       cycle_id: new UUID(raw.cycle_id),
       farm_id: new UUID(raw.farm_id),
       ...(raw.farm && {
@@ -36,7 +36,7 @@ export class PrismaCatalogMapper {
   static toPrisma(catalog: Catalog): Prisma.CatalogUncheckedCreateInput {
     return {
       id: catalog.id.value,
-      tax: catalog.tax,
+      fee: catalog.fee,
       cycle_id: catalog.cycle_id.value,
       farm_id: catalog.farm_id.value,
       created_at: catalog.created_at,

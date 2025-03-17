@@ -21,10 +21,12 @@ export interface BagProps extends EntityRequest {
   address_id: UUID | null;
   address?: Address;
 
+  subtotal: number;
+  delivery_fee: number;
   code: string;
-  price: number;
   paid: boolean;
   verified: boolean;
+
   status: BagStatus;
 
   orders: Order[];
@@ -56,12 +58,24 @@ export class Bag extends Entity<BagProps> {
     return this.props.code;
   }
 
-  get price() {
-    return this.props.price;
+  get subtotal() {
+    return this.props.subtotal;
   }
 
-  set price(value: number) {
-    this.props.price = value;
+  get delivery_fee() {
+    return this.props.delivery_fee;
+  }
+
+  get total() {
+    return this.props.subtotal + this.props.delivery_fee;
+  }
+
+  set subtotal(value: number) {
+    this.props.subtotal = value;
+  }
+
+  set delivery_fee(value: number) {
+    this.props.delivery_fee = value;
   }
 
   get orders() {
@@ -110,14 +124,13 @@ export class Bag extends Entity<BagProps> {
 
   add(order: Order) {
     this.props.orders.push(order);
-    this.props.price += order.price;
+    this.props.subtotal += order.price;
     this.touch();
   }
 
   static create(
     props: Optional<
       BagProps,
-      | "price"
       | "status"
       | "address"
       | "orders"
@@ -125,12 +138,15 @@ export class Bag extends Entity<BagProps> {
       | "address_id"
       | "paid"
       | "verified"
+      | "subtotal"
+      | "delivery_fee"
     >
   ) {
     const bag = new Bag({
       ...props,
       address_id: props.address_id ?? null,
-      price: props.price ?? 0,
+      delivery_fee: props.address_id ? 10 : 0,
+      subtotal: props.subtotal ?? 0,
       paid: props.paid ?? false,
       verified: props.verified ?? false,
       status: props.status ?? "PENDING",

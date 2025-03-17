@@ -47,12 +47,12 @@ export async function seedDevelopment() {
     data: {
       name: "Fazenda do eCOO",
       tally: "12345678",
-      tax: 20,
+      fee: 20,
       status: "ACTIVE",
       admin_id: farmerId.value,
       catalogs: {
         create: {
-          tax: 20,
+          fee: 20,
           cycle_id: cycleId.value,
           box: {
             create: {
@@ -105,9 +105,11 @@ export async function seedDevelopment() {
       bags: {
         create: {
           code: "123-456",
-          price: price,
+          subtotal: price,
+          fee: 0,
           status: "PENDING",
           cycle_id: cycleId.value,
+          address_id: null,
           orders: {
             createMany: {
               data: offers.map((offer) => ({

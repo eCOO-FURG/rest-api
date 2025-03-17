@@ -29,7 +29,7 @@ export class OpenPix implements PixProvider {
 
       const { charge } = await this.client.charge.create({
         correlationID: payment.id.value,
-        value: payment.bag!.price,
+        value: payment.bag!.total,
         expiresIn: 60 * 15,
         customer: { name, phone: payment.bag!.user!.phone.value },
         additionalInfo: [
@@ -52,7 +52,7 @@ export class OpenPix implements PixProvider {
       await this.client.refund.create({
         correlationID: payment.id.value,
         transactionEndToEndId: payment.id.value,
-        value: payment.bag!.price,
+        value: payment.bag!.total,
       });
     } catch (error) {
       Logger.log(error);

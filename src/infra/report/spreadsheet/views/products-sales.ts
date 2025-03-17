@@ -69,7 +69,7 @@ export const PRODUCTS_SALES_VIEW: SpreadsheetView = async ({
   for (const bag of bags) {
     for (const order of bag.orders) {
       const offerPrice = order.offer?.price ?? 0;
-      const tax = order.offer?.catalog?.tax ?? 0;
+      const fee = order.offer?.catalog?.fee ?? 0;
       const amount =
         order.offer?.product?.pricing === "UNIT"
           ? order.amount
@@ -80,13 +80,13 @@ export const PRODUCTS_SALES_VIEW: SpreadsheetView = async ({
         product: order.offer?.product?.name,
         producer: order.offer?.catalog?.farm?.name,
         user: `${bag.user?.first_name} ${bag.user?.last_name}`,
-        tax: (order.offer?.catalog?.tax ?? 0) / 100,
-        offer_price_without_tax: offerPrice - (offerPrice * tax) / 100,
+        fee,
+        offer_price_without_tax: offerPrice - (offerPrice * fee) / 100,
         offer_price: offerPrice,
         amount,
         total_price: offerPrice * amount,
         total_price_without_tax:
-          offerPrice * amount - (offerPrice * amount * tax) / 100,
+          offerPrice * amount - (offerPrice * amount * fee) / 100,
         pricing: order.offer?.product?.pricing === "UNIT" ? "Unidade" : "Peso",
         date: order.created_at.toLocaleDateString("pt-BR"),
         ...(since && {

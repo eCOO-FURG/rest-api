@@ -78,7 +78,7 @@ model Farm {
   id          String      @id @default(uuid())
   name        String
   tally       String      @unique
-  tax         Float
+  fee         Float       @default(0)
   description String?
   images      String[]
   status      FARM_STATUS @default(PENDING)
@@ -148,7 +148,7 @@ model Cycle {
 
 model Catalog {
   id  String @id @default(uuid())
-  tax Float
+  fee Float  @default(0)
 
   farm_id String
   farm    Farm   @relation(fields: [farm_id], references: [id])
@@ -213,11 +213,12 @@ enum BAG_STATUS {
 }
 
 model Bag {
-  id       String  @id @default(uuid())
-  code     String
-  price    Decimal @db.Decimal(10, 2)
-  paid     Boolean @default(false)
-  verified Boolean @default(false)
+  id           String  @id @default(uuid())
+  code         String
+  subtotal     Decimal @default(0) @db.Decimal(10, 2)
+  delivery_fee Decimal @default(0) @db.Decimal(10, 2)
+  paid         Boolean @default(false)
+  verified     Boolean @default(false)
 
   status BAG_STATUS
 
