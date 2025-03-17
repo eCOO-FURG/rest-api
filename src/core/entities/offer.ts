@@ -2,10 +2,9 @@
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { Entity, EntityRequest } from "@/core/entities/entity";
 import { Product } from "@/core/entities/product";
-
-// Types
-import { Optional } from "@/core/types/optional";
 import { Catalog } from "@/core/entities/catalog";
+import { Order } from "@/core/entities/order";
+import { Optional } from "@/core/types/optional";
 
 export interface OfferProps extends EntityRequest {
   catalog_id: UUID;
@@ -18,6 +17,8 @@ export interface OfferProps extends EntityRequest {
   amount: number;
   description: string | null;
   expires_at: Date | null;
+
+  orders: Order[];
 }
 
 export class Offer extends Entity<OfferProps> {
@@ -39,6 +40,10 @@ export class Offer extends Entity<OfferProps> {
 
   get catalog() {
     return this.props.catalog;
+  }
+
+  get orders() {
+    return this.props.orders;
   }
 
   get product_id() {
@@ -69,11 +74,14 @@ export class Offer extends Entity<OfferProps> {
     this.props.expires_at = value;
   }
 
-  static create(props: Optional<OfferProps, "description" | "expires_at">) {
+  static create(
+    props: Optional<OfferProps, "description" | "expires_at" | "orders">
+  ) {
     const offer = new Offer({
       ...props,
       description: props.description ?? null,
       expires_at: props.expires_at ?? null,
+      orders: props.orders ?? [],
     });
 
     return offer;

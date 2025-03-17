@@ -15,7 +15,7 @@ export interface BoxProps extends EntityRequest {
   status: BoxStatus;
   verified: number;
 
-  orders: Map<string, Order>;
+  orders: Order[];
 }
 
 export class Box extends Entity<BoxProps> {
@@ -39,7 +39,7 @@ export class Box extends Entity<BoxProps> {
     return this.props.orders;
   }
 
-  set orders(value: Map<string, Order>) {
+  set orders(value: Order[]) {
     this.props.orders = value;
   }
 
@@ -56,7 +56,7 @@ export class Box extends Entity<BoxProps> {
       ...props,
       verified: props.verified ?? 0,
       status: props.status ?? "PENDING",
-      orders: props.orders ?? new Map(),
+      orders: props.orders ?? [],
     });
 
     return box;

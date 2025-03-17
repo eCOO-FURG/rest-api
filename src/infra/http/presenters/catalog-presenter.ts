@@ -18,7 +18,7 @@ export class CatalogPresenter {
         cycle: CyclePresenter.toHttp(catalog.cycle),
         farm_id: catalog.farm_id.value,
         farm: FarmPresenter.toHttp(catalog.farm),
-        offers: Array.from(catalog.offers.values()).map(OfferPresenter.toHttp),
+        offers: catalog.offers.map(OfferPresenter.toHttp),
         created_at: catalog.created_at,
         updated_at: catalog.updated_at,
       };

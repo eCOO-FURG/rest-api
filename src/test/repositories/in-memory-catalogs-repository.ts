@@ -31,9 +31,9 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
         (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
         (!farm?.id || item.farm_id.equals(farm.id)) &&
         Boolean(!farm?.name || item?.farm?.name.includes(farm.name)) &&
-        (!offers?.id || item.offers.has(offers.id)) &&
+        (!offers?.id || item.offers.some((o) => o.id.equals(offers.id!))) &&
         (!offers?.product?.name ||
-          Array.from(item.offers.values()).some((offer) =>
+          item.offers.some((offer) =>
             offer.product?.name.includes(offers?.product?.name!)
           ))
     );
@@ -58,9 +58,9 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
         (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
         (!farm?.id || item.farm_id.equals(farm.id)) &&
         Boolean(!farm?.name || item?.farm?.name.includes(farm.name)) &&
-        (!offers?.id || item.offers.has(offers.id)) &&
+        (!offers?.id || item.offers.some((o) => o.id.equals(offers.id!))) &&
         (!offers?.product?.name ||
-          Array.from(item.offers.values()).some((offer) =>
+          item.offers.some((offer) =>
             offer.product?.name.includes(offers?.product?.name!)
           ))
     );

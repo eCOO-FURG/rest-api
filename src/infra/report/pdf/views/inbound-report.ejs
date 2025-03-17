@@ -127,8 +127,8 @@
     <% if (props.boxes.length === 0) { %>
     <p class="no-boxes-message">Nenhuma caixa pendente encontrada.</p>
     <% } else { %> <% props.boxes.forEach(function(box) { const ordersArray =
-    Array.from(box.orders.values()); let recebidos = ordersArray.filter(order =>
-    order.status === "RECEBIDO").length; %>
+    box.orders; let recebidos = ordersArray.filter(order => order.status ===
+    "RECEBIDO").length; %>
     <div class="delivery-box">
       <div class="box-header">
         <h3>
