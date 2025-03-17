@@ -53,7 +53,6 @@ export class FetchSalesReportUseCase {
       cycle: { id: cycle_id },
       since,
       before,
-      admin: true,
     });
 
     switch (type) {
@@ -68,12 +67,7 @@ export class FetchSalesReportUseCase {
         return {
           file: await this.spreadsheetService.generate({
             type: "sales-report",
-            props: {
-              ...(since && { start_date: since }),
-              ...(before && { end_date: before }),
-              bags,
-              catalogs,
-            },
+            props: { bags, catalogs, since, before },
           }),
         };
     }

@@ -6,21 +6,11 @@ import { Catalog } from "@/core/entities/catalog";
 
 export interface CatalogsRepositorySearchRequest {
   id?: string;
-  farm?: {
-    id?: string;
-    name?: string;
-  };
-  cycle?: {
-    id?: string;
-  };
-  offers?: {
-    id?: string;
-    product?: { name?: string };
-    page?: number;
-  };
+  farm?: { id?: string; name?: string };
+  cycle?: { id?: string };
+  offers?: { id?: string; product?: { name?: string }; page?: number };
   since?: Date;
   before?: Date;
-  admin?: boolean;
 }
 
 export interface CatalogsRepository {

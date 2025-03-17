@@ -13,7 +13,7 @@ import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { MockedSpreadsheetService } from "@/test/service/mocked-excel";
+import { MockedSpreadsheetService } from "@/test/report/mocked-spreadsheet-service";
 
 let bagsRepository: InMemoryBagsRepository;
 let catalogsRepository: InMemoryCatalogsRepository;

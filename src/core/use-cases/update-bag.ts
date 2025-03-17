@@ -11,10 +11,10 @@ import { UsersRepository } from "@/core/repositories/users-repository";
 // Entities
 import { Bag } from "@/core/entities/bag";
 import { Week } from "@/core/entities/cycle";
+import { Message } from "@/core/entities/message";
 
 // Message
 import { Chat } from "@/core/message/chat";
-import { Message } from "@/core/entities/message";
 
 interface UpdateBagUseCaseRequest {
   bag_id: string;
