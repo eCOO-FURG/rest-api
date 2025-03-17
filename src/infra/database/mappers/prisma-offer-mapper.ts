@@ -30,14 +30,12 @@ export class PrismaOfferMapper {
       ...(raw.product && {
         product: PrismaProductMapper.toDomain(raw.product),
       }),
-      ...(raw.orders && {
-        orders: new Map(
-          raw.orders.map((order) => [
-            order.id,
-            PrismaOrderMapper.toDomain(order),
-          ])
-        ),
-      }),
+      orders: new Map(
+        raw.orders?.map((order) => [
+          order.id,
+          PrismaOrderMapper.toDomain(order),
+        ])
+      ),
       description: raw.description,
       expires_at: raw.expires_at,
       created_at: raw.created_at,

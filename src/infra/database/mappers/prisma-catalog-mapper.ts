@@ -24,14 +24,12 @@ export class PrismaCatalogMapper {
       ...(raw.farm && {
         farm: PrismaFarmMapper.toDomain(raw.farm),
       }),
-      ...(raw.offers && {
-        offers: new Map(
-          raw.offers.map((offer) => [
-            offer.id,
-            PrismaOfferMapper.toDomain(offer),
-          ])
-        ),
-      }),
+      offers: new Map(
+        raw.offers?.map((offer) => [
+          offer.id,
+          PrismaOfferMapper.toDomain(offer),
+        ])
+      ),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
     });

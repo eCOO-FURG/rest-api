@@ -35,7 +35,7 @@ export class Address extends Entity<AddressProps> {
 
   get format() {
     return `${this.street}, ${this.number}${
-      !!this.complement && `, ${this.complement}`
+      this.complement ? `, ${this.complement}` : ""
     } - ${this.neighborhood} | ${this.postal_code}`;
   }
 

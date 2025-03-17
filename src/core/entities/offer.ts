@@ -9,18 +9,18 @@ import { Order } from "@/core/entities/order";
 import { Optional } from "@/core/types/optional";
 
 export interface OfferProps extends EntityRequest {
+  catalog_id: UUID;
+  catalog?: Catalog;
+
+  product_id: UUID;
+  product?: Product;
+
   price: number;
   amount: number;
   description: string | null;
   expires_at: Date | null;
 
-  catalog_id: UUID;
-  catalog?: Catalog;
-
-  orders?: Map<string, Order>;
-
-  product_id: UUID;
-  product?: Product;
+  orders: Map<string, Order>;
 }
 
 export class Offer extends Entity<OfferProps> {
@@ -76,11 +76,14 @@ export class Offer extends Entity<OfferProps> {
     this.props.expires_at = value;
   }
 
-  static create(props: Optional<OfferProps, "description" | "expires_at">) {
+  static create(
+    props: Optional<OfferProps, "description" | "expires_at" | "orders">
+  ) {
     const offer = new Offer({
       ...props,
       description: props.description ?? null,
       expires_at: props.expires_at ?? null,
+      orders: new Map(),
     });
 
     return offer;
