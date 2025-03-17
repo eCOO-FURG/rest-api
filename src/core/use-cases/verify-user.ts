@@ -11,7 +11,6 @@ import { Session } from "@/core/entities/session";
 // Errors
 import { WrongCredentialsError } from "@/core/errors/wrong-credentials";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { UserAlreadyVerified } from "@/core/errors/user-already-verified";
 
 interface VerifyUserUsecaseRequest {
   token: string;
@@ -37,17 +36,25 @@ export class VerifyUserUsecase {
 
     if (!user) throw new ResourceNotFoundError("Usuário", decoded.user_id);
 
-    if (user.verified_at) throw new UserAlreadyVerified(user.id.value);
-
-    user.verify();
-
-    await this.usersRepository.update(user);
-
     const session = Session.create({
       user_id: user.id,
       agent,
       ip,
     });
+
+    await this.sessionsRepository.create(session);
+
+    token = await this.hasher.hash({ user_id: user.id.value });
+
+    if (user.verified_at)
+      return {
+        roles: user.roles,
+        refresh: token,
+      };
+
+    user.verify();
+
+    await this.usersRepository.update(user);
 
     await this.sessionsRepository.create(session);
 

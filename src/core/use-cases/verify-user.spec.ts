@@ -11,7 +11,6 @@ import { makeUser } from "@/test/factories/make-user";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { UserAlreadyVerified } from "@/core/errors/user-already-verified";
 import { WrongCredentialsError } from "@/core/errors/wrong-credentials";
 
 let usersRepository: InMemoryUsersRepository;
@@ -65,22 +64,5 @@ describe("Verify user", () => {
         ip: "0.0.0.0",
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
-  });
-
-  it("should not be able to be verified if the user is already verified", async () => {
-    const user = makeUser({
-      verified_at: new Date(),
-    });
-    await usersRepository.create(user);
-
-    const token = await hasher.hash({ user_id: user.id.value });
-
-    await expect(() =>
-      sut.execute({
-        token,
-        agent: "browser",
-        ip: "0.0.0.0",
-      })
-    ).rejects.toBeInstanceOf(UserAlreadyVerified);
   });
 });

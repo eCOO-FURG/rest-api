@@ -4,7 +4,6 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { UserNotVerifiedError } from "@/core/errors/user-not-verified";
-import { UserAlreadyVerified } from "@/core/errors/user-already-verified";
 import { WrongCredentialsError } from "@/core/errors/wrong-credentials";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
@@ -40,7 +39,6 @@ export const mappedDomainErrors: {
       FarmNotActiveError,
       ResourceClosedError,
       UserNotVerifiedError,
-      UserAlreadyVerified,
       UnauthorizedError,
     ],
   },
