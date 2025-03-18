@@ -65,10 +65,6 @@ export const PRODUCTS_SALES_VIEW: SpreadsheetView = async ({
   before,
 }: ProductsSalesReportViewProps) => {
   const rows: Record<string, unknown>[] = [];
-
-  console.log("since", since);
-  console.log("before", before);
-
   for (const bag of bags) {
     for (const order of bag.orders) {
       const amount =
