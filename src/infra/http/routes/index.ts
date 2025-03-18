@@ -42,7 +42,7 @@ router.use("/farms", ensureAuthenticated, farms);
 router.use("/orders", ensureAuthenticated, orders);
 router.use("/boxes", ensureAuthenticated, boxes);
 router.use("/offers", ensureAuthenticated, offers);
-router.use("/catalogs", ensureAuthenticated, catalogs);
+router.use("/catalogs", catalogs);
 router.use("/bags", ensureAuthenticated, bags);
 router.use("/payments", ensureAuthenticated, payments);
 router.use("/cycles", cycles);
