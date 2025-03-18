@@ -22,6 +22,8 @@ export interface OrderProps extends EntityRequest {
 
   amount: number;
   price: number;
+  fee: number;
+
   status: OrderStatus;
 }
 
@@ -56,6 +58,14 @@ export class Order extends Entity<OrderProps> {
 
   get price() {
     return this.props.price;
+  }
+
+  get fee() {
+    return this.props.fee;
+  }
+
+  get total() {
+    return this.props.price + this.props.fee;
   }
 
   set price(value: number) {

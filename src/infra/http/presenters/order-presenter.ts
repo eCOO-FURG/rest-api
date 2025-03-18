@@ -13,8 +13,10 @@ export class OrderPresenter {
       return {
         id: order.id.value,
         status: order.status,
+        fee: order.fee,
         amount: order.amount,
         price: order.price,
+        total: order.total,
         bag_id: order.bag_id.value,
         box_id: order.box_id.value,
         offer_id: order.offer_id.value,

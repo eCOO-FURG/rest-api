@@ -167,8 +167,8 @@ model Catalog {
 
 model Offer {
   id          String    @id @default(uuid())
-  amount      Int
-  price       Decimal   @db.Decimal(10, 2)
+  amount      Int       @default(0)
+  price       Decimal   @default(0) @db.Decimal(10, 2)
   description String?   @db.VarChar(240)
   expires_at  DateTime?
 
@@ -213,12 +213,16 @@ enum BAG_STATUS {
 }
 
 model Bag {
-  id           String  @id @default(uuid())
-  code         String
-  subtotal     Decimal @default(0) @db.Decimal(10, 2)
-  delivery_fee Decimal @default(0) @db.Decimal(10, 2)
-  paid         Boolean @default(false)
-  verified     Boolean @default(false)
+  id String @id @default(uuid())
+
+  code String
+
+  subtotal Decimal @default(0) @db.Decimal(10, 2)
+  shipping Decimal @default(0) @db.Decimal(10, 2)
+  fee      Decimal @default(0) @db.Decimal(10, 2)
+
+  paid     Boolean @default(false)
+  verified Boolean @default(false)
 
   status BAG_STATUS
 
@@ -284,9 +288,10 @@ enum BOX_STATUS {
 }
 
 model Box {
-  id       String     @id @default(uuid())
+  id       String @id @default(uuid())
   verified Int
-  status   BOX_STATUS
+
+  status BOX_STATUS
 
   catalog_id String  @unique
   catalog    Catalog @relation(fields: [catalog_id], references: [id])
@@ -307,9 +312,11 @@ enum ORDER_STATUS {
 }
 
 model Order {
-  id     String       @id @default(uuid())
+  id     String  @id @default(uuid())
   amount Int
-  price  Decimal      @db.Decimal(10, 2)
+  price  Decimal @default(0) @db.Decimal(10, 2)
+  fee    Decimal @default(0) @db.Decimal(10, 2)
+
   status ORDER_STATUS
 
   offer_id String

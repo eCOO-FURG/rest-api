@@ -22,7 +22,9 @@ export interface BagProps extends EntityRequest {
   address?: Address;
 
   subtotal: number;
-  delivery_fee: number;
+  shipping: number;
+  fee: number;
+
   code: string;
   paid: boolean;
   verified: boolean;
@@ -62,20 +64,24 @@ export class Bag extends Entity<BagProps> {
     return this.props.subtotal;
   }
 
-  get delivery_fee() {
-    return this.props.delivery_fee;
+  get fee() {
+    return this.props.fee;
+  }
+
+  get shipping() {
+    return this.props.shipping;
   }
 
   get total() {
-    return this.props.subtotal + this.props.delivery_fee;
+    return this.props.subtotal + this.props.shipping + this.props.fee;
   }
 
   set subtotal(value: number) {
     this.props.subtotal = value;
   }
 
-  set delivery_fee(value: number) {
-    this.props.delivery_fee = value;
+  set shipping(value: number) {
+    this.props.shipping = value;
   }
 
   get orders() {
@@ -114,17 +120,10 @@ export class Bag extends Entity<BagProps> {
     return this.props.verified;
   }
 
-  open() {
-    for (const payment of this.props.payments) {
-      if (payment.status === "PENDING" && !payment.expired) return payment;
-    }
-
-    return false;
-  }
-
   add(order: Order) {
     this.props.orders.push(order);
     this.props.subtotal += order.price;
+    this.props.fee += order.fee;
     this.touch();
   }
 
@@ -139,14 +138,16 @@ export class Bag extends Entity<BagProps> {
       | "paid"
       | "verified"
       | "subtotal"
-      | "delivery_fee"
+      | "shipping"
+      | "fee"
     >
   ) {
     const bag = new Bag({
       ...props,
       address_id: props.address_id ?? null,
-      delivery_fee: props.address_id ? 10 : 0,
+      shipping: props.address_id ? 10 : 0,
       subtotal: props.subtotal ?? 0,
+      fee: props.fee ?? 0,
       paid: props.paid ?? false,
       verified: props.verified ?? false,
       status: props.status ?? "PENDING",

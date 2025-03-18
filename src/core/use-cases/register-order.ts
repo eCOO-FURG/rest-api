@@ -138,16 +138,19 @@ export class RegisterOrderUseCase {
       if (!farm)
         throw new ResourceNotFoundError("Fazenda", catalog.farm_id.value);
 
+      const price =
+        offer.product?.pricing === "WEIGHT"
+          ? (offer.price / 1000) * item.amount
+          : offer.price * item.amount;
+
       const order = Order.create({
         box_id: box.id,
         box,
         bag_id: bag.id,
         offer_id: offer.id,
         amount: item.amount,
-        price:
-          offer.product?.pricing === "WEIGHT"
-            ? (offer.price / 1000) * item.amount
-            : offer.price * item.amount,
+        fee: price * (catalog.fee / 100),
+        price,
       });
 
       bag.add(order);
