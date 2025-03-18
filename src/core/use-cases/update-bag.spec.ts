@@ -7,6 +7,7 @@ import { UpdateBagUseCase } from "@/core/use-cases/update-bag";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { ResourceNotVerifiedError } from "@/core/errors/resource-not-verified";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 
 // Messages
@@ -51,6 +52,7 @@ describe("update bag", () => {
       status: "PENDING",
       cycle_id: cycle.id,
       user_id: user.id,
+      verified: true,
     });
 
     await bagsRepository.create(bag);
@@ -74,6 +76,7 @@ describe("update bag", () => {
       status: "PENDING",
       cycle_id: cycle.id,
       user_id: user.id,
+      verified: true,
     });
 
     await bagsRepository.create(bag);
@@ -93,5 +96,28 @@ describe("update bag", () => {
         status: "SEPARATED",
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it("should not be able to update a bag that is not verified", async () => {
+    const user = makeUser();
+    usersRepository.items.push(user);
+
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
+    const bag = makeBag({
+      status: "PENDING",
+      cycle_id: cycle.id,
+      user_id: user.id,
+    });
+
+    await bagsRepository.create(bag);
+
+    await expect(
+      sut.execute({
+        bag_id: bag.id.value,
+        status: "SEPARATED",
+      })
+    ).rejects.toBeInstanceOf(ResourceNotVerifiedError);
   });
 });

@@ -58,27 +58,7 @@ describe("open payment", () => {
   it("should not be able to open a payment from a paid bag", async () => {
     const user = makeUser();
 
-    const bag = makeBag({ user_id: user.id });
-
-    const payment = makePayment({ bag_id: bag.id, status: "DONE" });
-
-    bag.payments.push(payment);
-
-    bagsRepository.items.push(bag);
-
-    await expect(() =>
-      sut.execute({ bag_id: bag.id.value })
-    ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
-  });
-
-  it("should not be able to open a payment for a bag with an open payment", async () => {
-    const user = makeUser();
-
-    const bag = makeBag({ user_id: user.id, user });
-
-    const payment = makePayment({ bag_id: bag.id, status: "PENDING" });
-
-    bag.payments.push(payment);
+    const bag = makeBag({ user_id: user.id, paid: true });
 
     bagsRepository.items.push(bag);
 
