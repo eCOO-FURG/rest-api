@@ -40,8 +40,8 @@ const columns: SpreadsheetColumn[] = [
   { header: "PAGAMENTO", key: "payment_method", width: 20 },
   { header: "BANDEIRA", key: "flag", width: 20 },
   { header: "DATA DO PAGAMENTO", key: "payment_date", width: 25 },
-  { header: "DATA INÍCIO CONSULTA", key: "start_date", width: 25 },
-  { header: "DATA FIM CONSULTA", key: "end_date", width: 25 },
+  { header: "DATA INÍCIO CONSULTA", key: "since", width: 25 },
+  { header: "DATA FIM CONSULTA", key: "before", width: 25 },
 ];
 
 interface BagsSalesReportViewProps {
@@ -81,10 +81,8 @@ export const BAGS_SALES_VIEW: SpreadsheetView = async ({
       payment_method: mostRecentPayment?.method ?? "-",
       flag: mostRecentPayment?.flag ?? "-",
       payment_date: mostRecentPayment?.created_at?.toLocaleDateString("pt-BR"),
-      ...(since && {
-        since: since.toLocaleDateString("pt-BR"),
-      }),
-      ...(before && { before: before.toLocaleDateString("pt-BR") }),
+      since: since?.toLocaleDateString("pt-BR"),
+      before: before?.toLocaleDateString("pt-BR"),
     });
   }
 

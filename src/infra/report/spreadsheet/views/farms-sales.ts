@@ -42,8 +42,8 @@ const columns: SpreadsheetColumn[] = [
     width: 20,
     style: { numFmt: "R$ #,##0.00" },
   },
-  { header: "DATA INÍCIO CONSULTA", key: "start_date", width: 25 },
-  { header: "DATA FIM CONSULTA", key: "end_date", width: 25 },
+  { header: "DATA INÍCIO CONSULTA", key: "since", width: 25 },
+  { header: "DATA FIM CONSULTA", key: "before", width: 25 },
 ];
 
 interface FarmsSalesReportViewProps {
@@ -78,10 +78,8 @@ export const FARMS_PRODUCERS_VIEW: SpreadsheetView = async ({
         total_amount: amount,
         total_price: amount * (offer.price + fee),
         warehouse_price: amount * fee,
-        ...(since && {
-          since: since.toLocaleDateString("pt-BR"),
-        }),
-        ...(before && { before: before.toLocaleDateString("pt-BR") }),
+        since: since?.toLocaleDateString("pt-BR"),
+        before: before?.toLocaleDateString("pt-BR"),
       });
     }
   }

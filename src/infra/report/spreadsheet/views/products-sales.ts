@@ -47,10 +47,10 @@ const columns: SpreadsheetColumn[] = [
   { header: "DATA DO PEDIDO", key: "date", width: 25 },
   {
     header: "DATA INÍCIO CONSULTA",
-    key: "start_date",
+    key: "since",
     width: 25,
   },
-  { header: "DATA FIM CONSULTA", key: "end_date", width: 25 },
+  { header: "DATA FIM CONSULTA", key: "before", width: 25 },
 ];
 
 interface ProductsSalesReportViewProps {
@@ -65,6 +65,9 @@ export const PRODUCTS_SALES_VIEW: SpreadsheetView = async ({
   before,
 }: ProductsSalesReportViewProps) => {
   const rows: Record<string, unknown>[] = [];
+
+  console.log("since", since);
+  console.log("before", before);
 
   for (const bag of bags) {
     for (const order of bag.orders) {
@@ -88,10 +91,8 @@ export const PRODUCTS_SALES_VIEW: SpreadsheetView = async ({
         total_price_without_tax: offerPrice * amount,
         pricing: order.offer?.product?.pricing === "UNIT" ? "Unidade" : "Peso",
         date: order.created_at.toLocaleDateString("pt-BR"),
-        ...(since && {
-          since: since.toLocaleDateString("pt-BR"),
-        }),
-        ...(before && { before: before.toLocaleDateString("pt-BR") }),
+        since: since?.toLocaleDateString("pt-BR"),
+        before: before?.toLocaleDateString("pt-BR"),
       });
     }
   }
