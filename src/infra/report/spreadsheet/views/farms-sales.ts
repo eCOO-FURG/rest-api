@@ -32,13 +32,13 @@ const columns: SpreadsheetColumn[] = [
   { header: "TOTAL COMERCIALIZADO", key: "total_amount", width: 20 },
   {
     header: "VALOR A RECEBER",
-    key: "total_price",
+    key: "farm_income",
     width: 20,
     style: { numFmt: "R$ #,##0.00" },
   },
   {
     header: "VALOR DO ARMAZÉM",
-    key: "warehouse_price",
+    key: "warehouse_income",
     width: 20,
     style: { numFmt: "R$ #,##0.00" },
   },
@@ -62,22 +62,21 @@ export const FARMS_PRODUCERS_VIEW: SpreadsheetView = async ({
   for (const catalog of catalogs) {
     for (const offer of catalog.offers) {
       const amount =
-        offer.product?.pricing === "UNIT"
-          ? offer.orders.length
-          : offer.orders.length / 1000;
-
-      const fee = offer.price * (catalog.fee / 100);
+        offer.orders.reduce((acc, order) => acc + order.amount, 0) /
+        (offer.product?.pricing === "UNIT" ? 1 : 1000);
 
       rows.push({
         producer: `${catalog.farm?.admin?.first_name} ${catalog.farm?.admin?.last_name}`,
         product: offer.product?.name,
         pricing: offer.product?.pricing === "UNIT" ? "Unidade" : "Peso",
         price_without_tax: offer.price,
-        offer_price: offer.price + fee,
-        fee,
+        offer_price: offer.price + (offer.price * catalog.fee) / 100,
+        fee: catalog.fee / 100,
         total_amount: amount,
-        total_price: amount * (offer.price + fee),
-        warehouse_price: amount * fee,
+        farm_income: amount * offer.price,
+        warehouse_income:
+          amount * (offer.price + (offer.price * catalog.fee) / 100) -
+          amount * offer.price,
         ...(since && {
           since: since.toLocaleDateString("pt-BR"),
         }),

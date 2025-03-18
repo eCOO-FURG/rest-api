@@ -25,12 +25,6 @@ const columns: SpreadsheetColumn[] = [
     style: { numFmt: "R$ #,##0.00" },
   },
   {
-    header: "VALOR DE TAXAS",
-    key: "fee",
-    width: 20,
-    style: { numFmt: "R$ #,##0.00" },
-  },
-  {
     header: "VALOR TOTAL",
     key: "total_price",
     width: 20,
@@ -73,9 +67,8 @@ export const BAGS_SALES_VIEW: SpreadsheetView = async ({
       consumer: `${bag.user?.first_name} ${bag.user?.last_name}`,
       cpf: bag.user?.cpf.format,
       address: bag.address?.format,
-      bag_price: bag.subtotal,
+      bag_price: bag.subtotal + bag.fee,
       shipping_price: bag.shipping,
-      fee: bag.fee,
       total_price: bag.total,
       date: (bag.updated_at ?? bag.created_at).toLocaleDateString("pt-BR"),
       payment_method: mostRecentPayment?.method ?? "-",
