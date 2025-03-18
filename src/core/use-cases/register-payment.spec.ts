@@ -51,7 +51,7 @@ describe("Register payment", () => {
   it("should not be able to register a payment with a bag that is already paid", async () => {
     const user = makeUser();
 
-    const bag = makeBag({ user_id: user.id, user });
+    const bag = makeBag({ user_id: user.id, user, paid: true });
     await bagsRepository.create(bag);
 
     const payment = makePayment({ bag_id: bag.id, status: "DONE" });

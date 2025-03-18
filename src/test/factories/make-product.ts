@@ -1,11 +1,11 @@
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
-import { Product } from "@/core/entities/product";
+import { Product, ProductProps } from "@/core/entities/product";
 
 // Libraries
 import { faker } from "@faker-js/faker";
 
-export function makeProduct(props: Partial<Product> = {}) {
+export function makeProduct(props: Partial<ProductProps> = {}) {
   return Product.create({
     ...props,
     name: props.name ?? faker.animal.fish(),

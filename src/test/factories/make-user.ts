@@ -1,12 +1,12 @@
 // Entities
 import { CPF } from "@/core/entities/cpf";
-import { User } from "@/core/entities/user";
+import { User, UserProps } from "@/core/entities/user";
 import { Phone } from "@/core/entities/phone";
 
 // Libraries
 import { faker } from "@faker-js/faker";
 
-export function makeUser(props: Partial<User> = {}) {
+export function makeUser(props: Partial<UserProps> = {}) {
   const cpf =
     props.cpf ?? new CPF(faker.number.bigInt({ min: 11, max: 11 }).toString());
 

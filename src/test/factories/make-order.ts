@@ -1,11 +1,11 @@
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
-import { Order } from "@/core/entities/order";
+import { Order, OrderProps } from "@/core/entities/order";
 
 // Libraries
 import { faker } from "@faker-js/faker";
 
-export function makeOrder(props: Partial<Order> = {}) {
+export function makeOrder(props: Partial<OrderProps> = {}) {
   return Order.create({
     ...props,
     offer_id: props.offer_id ?? new UUID(),

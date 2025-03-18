@@ -1,10 +1,10 @@
 // Entities
-import { Cycle } from "@/core/entities/cycle";
+import { Cycle, CycleProps } from "@/core/entities/cycle";
 
 // Libraries
 import { faker } from "@faker-js/faker";
 
-export function makeCycle(props: Partial<Cycle> = {}) {
+export function makeCycle(props: Partial<CycleProps> = {}) {
   return Cycle.create({
     ...props,
     alias:

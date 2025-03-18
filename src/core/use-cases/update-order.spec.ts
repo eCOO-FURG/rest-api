@@ -7,6 +7,7 @@ import { UpdateOrderUseCase } from "@/core/use-cases/update-order";
 // Factories
 import { makeOrder } from "@/test/factories/make-order";
 import { makeUser } from "@/test/factories/make-user";
+import { makeBag } from "@/test/factories/make-bag";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -28,7 +29,9 @@ describe("update order", () => {
     const user = makeUser();
     usersRepository.items.push(user);
 
-    const order = makeOrder();
+    const bag = makeBag({ user_id: user.id });
+
+    const order = makeOrder({ bag });
     ordersRepository.items.push(order);
 
     await sut.execute({

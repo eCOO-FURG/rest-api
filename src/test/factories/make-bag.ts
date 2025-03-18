@@ -1,8 +1,8 @@
 // Entities
-import { Bag } from "@/core/entities/bag";
+import { Bag, BagProps } from "@/core/entities/bag";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
-export function makeBag(props: Partial<Bag> = {}) {
+export function makeBag(props: Partial<BagProps> = {}) {
   const bag = Bag.create({
     ...props,
     user_id: props.user_id ?? new UUID(),

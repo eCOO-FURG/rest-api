@@ -1,11 +1,11 @@
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
-import { Address } from "@/core/entities/address";
+import { Address, AddressProps } from "@/core/entities/address";
 
 // Libraries
 import { faker } from "@faker-js/faker";
 
-export function makeAddress(props: Partial<Address> = {}) {
+export function makeAddress(props: Partial<AddressProps> = {}) {
   const address = Address.create({
     ...props,
     id: props.id ?? new UUID(),

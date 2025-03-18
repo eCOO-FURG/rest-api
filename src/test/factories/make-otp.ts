@@ -1,11 +1,11 @@
 // Entities
-import { Otp } from "@/core/entities/otp";
+import { Otp, OtpProps } from "@/core/entities/otp";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Libraries
 import { faker } from "@faker-js/faker";
 
-export function makeOtp(props: Partial<Otp> = {}) {
+export function makeOtp(props: Partial<OtpProps> = {}) {
   return Otp.create({
     ...props,
     user_id: props.user_id ?? new UUID(),
