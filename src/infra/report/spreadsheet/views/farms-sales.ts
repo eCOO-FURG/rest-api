@@ -25,7 +25,7 @@ const columns: SpreadsheetColumn[] = [
   },
   {
     header: "TAXA (%)",
-    key: "tax",
+    key: "fee",
     width: 15,
     style: { numFmt: "0%" },
   },
@@ -61,22 +61,23 @@ export const FARMS_PRODUCERS_VIEW: SpreadsheetView = async ({
 
   for (const catalog of catalogs) {
     for (const offer of catalog.offers) {
-      const totalAmount =
-        offer.orders.reduce((acc, order) => acc + order.amount, 0) /
-        (offer.product?.pricing === "UNIT" ? 1 : 1000);
+      const amount =
+        offer.product?.pricing === "UNIT"
+          ? offer.orders.length
+          : offer.orders.length / 1000;
 
-      const totalPrice = totalAmount * offer.price;
+      const fee = offer.price * (catalog.fee / 100);
 
       rows.push({
         producer: `${catalog.farm?.admin?.first_name} ${catalog.farm?.admin?.last_name}`,
         product: offer.product?.name,
         pricing: offer.product?.pricing === "UNIT" ? "Unidade" : "Peso",
-        price_without_tax: offer.price - (offer.price * catalog.fee) / 100,
-        offer_price: offer.price,
-        fee: catalog.fee / 100,
-        total_amount: totalAmount,
-        total_price: totalPrice,
-        warehouse_price: totalPrice - offer.price,
+        price_without_tax: offer.price,
+        offer_price: offer.price + fee,
+        fee,
+        total_amount: amount,
+        total_price: amount * (offer.price + fee),
+        warehouse_price: amount * fee,
         ...(since && {
           since: since.toLocaleDateString("pt-BR"),
         }),

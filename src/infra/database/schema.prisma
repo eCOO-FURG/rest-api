@@ -78,7 +78,7 @@ model Farm {
   id          String      @id @default(uuid())
   name        String
   tally       String      @unique
-  fee         Float       @default(0)
+  fee         Float
   description String?
   images      String[]
   status      FARM_STATUS @default(PENDING)
@@ -148,7 +148,7 @@ model Cycle {
 
 model Catalog {
   id  String @id @default(uuid())
-  fee Float  @default(0)
+  fee Float
 
   farm_id String
   farm    Farm   @relation(fields: [farm_id], references: [id])
@@ -167,8 +167,8 @@ model Catalog {
 
 model Offer {
   id          String    @id @default(uuid())
-  amount      Int       @default(0)
-  price       Decimal   @default(0) @db.Decimal(10, 2)
+  amount      Int
+  price       Decimal   @db.Decimal(10, 2)
   description String?   @db.VarChar(240)
   expires_at  DateTime?
 
@@ -217,9 +217,9 @@ model Bag {
 
   code String
 
-  subtotal Decimal @default(0) @db.Decimal(10, 2)
-  shipping Decimal @default(0) @db.Decimal(10, 2)
-  fee      Decimal @default(0) @db.Decimal(10, 2)
+  subtotal Decimal @db.Decimal(10, 2)
+  shipping Decimal @db.Decimal(10, 2)
+  fee      Decimal @db.Decimal(10, 2)
 
   paid     Boolean @default(false)
   verified Boolean @default(false)
@@ -314,8 +314,8 @@ enum ORDER_STATUS {
 model Order {
   id     String  @id @default(uuid())
   amount Int
-  price  Decimal @default(0) @db.Decimal(10, 2)
-  fee    Decimal @default(0) @db.Decimal(10, 2)
+  price  Decimal @db.Decimal(10, 2)
+  fee    Decimal @db.Decimal(10, 2)
 
   status ORDER_STATUS
 

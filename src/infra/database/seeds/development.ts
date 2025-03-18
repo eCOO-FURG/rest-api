@@ -65,11 +65,11 @@ export async function seedDevelopment() {
             createMany: {
               data: products.map((product) => ({
                 product_id: product.id,
+                price: Math.floor(Math.random() * 20 + 1),
                 amount:
                   product.pricing === "UNIT"
                     ? Math.floor(Math.random() * 20 + 1)
                     : Math.floor(Math.random() * 20 + 1) * 100,
-                price: "10",
                 expires_at: product.perishable
                   ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
                   : null,
@@ -106,10 +106,11 @@ export async function seedDevelopment() {
         create: {
           code: "123-456",
           subtotal: price,
-          delivery_fee: 10,
+          fee: price * (20 / 100),
           status: "PENDING",
           cycle_id: cycleId.value,
           address_id: null,
+          shipping: 0,
           orders: {
             createMany: {
               data: offers.map((offer) => ({
@@ -119,7 +120,11 @@ export async function seedDevelopment() {
                 price:
                   offer.product.pricing === "UNIT"
                     ? Number(offer.price) * offer.amount
-                    : (Number(offer.price) / 1000) * offer.amount,
+                    : Number(offer.price) * (offer.amount / 1000),
+                fee:
+                  offer.product.pricing === "UNIT"
+                    ? Number(offer.price) * offer.amount * (20 / 100)
+                    : Number(offer.price) * (offer.amount / 1000) * (20 / 100),
                 status: "PENDING",
               })),
             },

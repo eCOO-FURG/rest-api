@@ -140,7 +140,7 @@ export class RegisterOrderUseCase {
 
       const price =
         offer.product?.pricing === "WEIGHT"
-          ? (offer.price / 1000) * item.amount
+          ? offer.price * (item.amount / 1000)
           : offer.price * item.amount;
 
       const order = Order.create({

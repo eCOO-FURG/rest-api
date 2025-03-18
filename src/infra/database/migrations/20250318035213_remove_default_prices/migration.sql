@@ -1,0 +1,18 @@
+-- AlterTable
+ALTER TABLE "bags" ALTER COLUMN "subtotal" DROP DEFAULT,
+ALTER COLUMN "fee" DROP DEFAULT,
+ALTER COLUMN "shipping" DROP DEFAULT;
+
+-- AlterTable
+ALTER TABLE "catalogs" ALTER COLUMN "fee" DROP DEFAULT;
+
+-- AlterTable
+ALTER TABLE "farms" ALTER COLUMN "fee" DROP DEFAULT;
+
+-- AlterTable
+ALTER TABLE "offers" ALTER COLUMN "price" DROP DEFAULT,
+ALTER COLUMN "amount" DROP DEFAULT;
+
+-- AlterTable
+ALTER TABLE "orders" ALTER COLUMN "price" DROP DEFAULT,
+ALTER COLUMN "fee" DROP DEFAULT;
