@@ -78,19 +78,13 @@ export class PrismaBagsRepository implements BagsRepository {
             }),
           },
           payments: {
-            ...(payments && {
-              where: {
-                status: {
-                  equals: payments.status,
-                },
-                method: {
-                  equals: payments.method,
-                },
-              },
-              ...(payments.page && {
-                skip: (payments.page - 1) * 20,
-                take: 20,
-              }),
+            where: {
+              ...(payments?.status && { status: payments.status }),
+              ...(payments?.method && { method: payments.method }),
+            },
+            ...(payments?.page && {
+              skip: (payments.page - 1) * 20,
+              take: 20,
             }),
           },
         }),
@@ -133,17 +127,19 @@ export class PrismaBagsRepository implements BagsRepository {
             ],
           }),
         },
+        ...(payments && {
+          payments: {
+            some: {
+              ...(payments?.status && { status: payments.status }),
+              ...(payments?.method && { method: payments.method }),
+            },
+          },
+        }),
         ...(typeof withdraw === "boolean" &&
           (withdraw ? { address_id: null } : { address_id: { not: null } })),
         created_at: {
           gte: since,
           lte: before,
-        },
-        payments: {
-          some: {
-            status: payments?.status,
-            method: payments?.method,
-          },
         },
       },
       include: {
@@ -167,19 +163,13 @@ export class PrismaBagsRepository implements BagsRepository {
             }),
           },
           payments: {
-            ...(payments && {
-              where: {
-                status: {
-                  equals: payments.status,
-                },
-                method: {
-                  equals: payments.method,
-                },
-              },
-              ...(payments.page && {
-                skip: (payments.page - 1) * 20,
-                take: 20,
-              }),
+            where: {
+              ...(payments?.status && { status: payments.status }),
+              ...(payments?.method && { method: payments.method }),
+            },
+            ...(payments?.page && {
+              skip: (payments.page - 1) * 20,
+              take: 20,
             }),
           },
         }),
