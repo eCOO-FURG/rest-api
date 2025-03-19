@@ -92,6 +92,27 @@ describe("offer products", () => {
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
+  it("should not be able to offer products from a closed product", async () => {
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
+    const product = makeProduct({ archived: true });
+    await productsRepository.create(product);
+
+    const farm = makeFarm({ status: "ACTIVE" });
+    await farmsRepository.create(farm);
+
+    await expect(() =>
+      sut.execute({
+        product_id: product.id.value,
+        cycle_id: cycle.id.value,
+        farm_id: farm.id.value,
+        amount: 10,
+        price: 10,
+      })
+    ).rejects.toBeInstanceOf(ResourceClosedError);
+  });
+
   it("should not be able to offer products from a not active farm", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);

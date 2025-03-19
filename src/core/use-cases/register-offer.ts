@@ -63,6 +63,8 @@ export class RegisterOfferUseCase {
     if (product.perishable && !expires_at)
       throw new MissingFieldError("expires_at");
 
+    if (product.archived) throw new ResourceClosedError("Produto", product_id);
+
     const cycle = await this.cyclesRepository.find("basic", { id: cycle_id });
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
