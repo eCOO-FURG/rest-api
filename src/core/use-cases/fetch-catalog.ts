@@ -16,7 +16,7 @@ export class FetchCatalogUseCase {
   async execute({ catalog_id, product, page }: FetchCatalogUseCaseRequest) {
     const catalog = await this.catalogsRepository.find("merge", {
       id: catalog_id,
-      offers: { product: { name: product }, page },
+      offers: { product: { name: product }, expired: false, page },
     });
 
     if (!catalog) throw new ResourceNotFoundError("Catálogo", catalog_id);

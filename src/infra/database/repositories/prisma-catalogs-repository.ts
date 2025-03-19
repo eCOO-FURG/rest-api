@@ -31,13 +31,6 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
           name: { contains: farm?.name, mode: "insensitive" },
         },
         created_at: { lte: before, gte: since },
-        offers: {
-          some: {
-            product: {
-              name: { contains: offers?.product?.name, mode: "insensitive" },
-            },
-          },
-        },
       },
       include: {
         ...(type !== "basic" && {
@@ -45,13 +38,25 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
         }),
         ...(type === "merge" && {
           offers: {
-            ...(offers?.product?.name && {
-              where: {
-                product: {
-                  name: { contains: offers.product.name, mode: "insensitive" },
-                },
+            where: {
+              product: {
+                name: { contains: offers?.product?.name, mode: "insensitive" },
               },
-            }),
+              ...(typeof offers?.expired === "boolean" &&
+                (offers.expired
+                  ? {
+                      AND: [
+                        { expires_at: { lte: new Date() } },
+                        { expires_at: { not: null } },
+                      ],
+                    }
+                  : {
+                      OR: [
+                        { expires_at: { gt: new Date() } },
+                        { expires_at: null },
+                      ],
+                    })),
+            },
             include: { product: true, orders: true },
             orderBy: { created_at: "asc" },
             ...(offers?.page && {
@@ -84,6 +89,20 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
             product: {
               name: { contains: offers?.product?.name, mode: "insensitive" },
             },
+            ...(typeof offers?.expired === "boolean" &&
+              (offers.expired
+                ? {
+                    AND: [
+                      { expires_at: { lte: new Date() } },
+                      { expires_at: { not: null } },
+                    ],
+                  }
+                : {
+                    OR: [
+                      { expires_at: { gt: new Date() } },
+                      { expires_at: null },
+                    ],
+                  })),
           },
         },
         created_at: { lte: before, gte: since },
@@ -92,6 +111,25 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
         ...(type !== "basic" && { farm: { include: { admin: true } } }),
         ...(type === "merge" && {
           offers: {
+            where: {
+              product: {
+                name: { contains: offers?.product?.name, mode: "insensitive" },
+              },
+              ...(typeof offers?.expired === "boolean" &&
+                (offers.expired
+                  ? {
+                      AND: [
+                        { expires_at: { lte: new Date() } },
+                        { expires_at: { not: null } },
+                      ],
+                    }
+                  : {
+                      OR: [
+                        { expires_at: { gt: new Date() } },
+                        { expires_at: null },
+                      ],
+                    })),
+            },
             include: { product: true, orders: true },
             orderBy: { created_at: "asc" },
             ...(offers?.page && {

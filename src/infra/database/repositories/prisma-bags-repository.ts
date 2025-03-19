@@ -52,16 +52,10 @@ export class PrismaBagsRepository implements BagsRepository {
         },
         ...(typeof withdraw === "boolean" &&
           (withdraw ? { address_id: null } : { address_id: { not: null } })),
-        ...(since && {
-          created_at: {
-            gte: since,
-          },
-        }),
-        ...(before && {
-          created_at: {
-            lte: before,
-          },
-        }),
+        created_at: {
+          gte: since,
+          lte: before,
+        },
       },
       include: {
         ...(type !== "basic" && {
@@ -141,24 +135,16 @@ export class PrismaBagsRepository implements BagsRepository {
         },
         ...(typeof withdraw === "boolean" &&
           (withdraw ? { address_id: null } : { address_id: { not: null } })),
-        ...(since && {
-          created_at: {
-            gte: since,
+        created_at: {
+          gte: since,
+          lte: before,
+        },
+        payments: {
+          some: {
+            status: payments?.status,
+            method: payments?.method,
           },
-        }),
-        ...(before && {
-          created_at: {
-            lte: before,
-          },
-        }),
-        ...(payments && {
-          payments: {
-            some: {
-              status: payments?.status,
-              method: payments?.method,
-            },
-          },
-        }),
+        },
       },
       include: {
         ...(type !== "basic" && {

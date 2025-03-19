@@ -8,7 +8,12 @@ export interface CatalogsRepositorySearchRequest {
   id?: string;
   farm?: { id?: string; name?: string };
   cycle?: { id?: string };
-  offers?: { id?: string; product?: { name?: string }; page?: number };
+  offers?: {
+    id?: string;
+    product?: { name?: string };
+    page?: number;
+    expired?: boolean;
+  };
   since?: Date;
   before?: Date;
 }

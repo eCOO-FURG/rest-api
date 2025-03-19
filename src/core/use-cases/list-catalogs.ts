@@ -36,7 +36,7 @@ export class ListCatalogsUseCase {
       {
         cycle: { id: cycle_id },
         since: mostPast(cycle.offer),
-        offers: { product: { name: product }, page },
+        offers: { product: { name: product }, expired: false, page },
       },
       page
     );
