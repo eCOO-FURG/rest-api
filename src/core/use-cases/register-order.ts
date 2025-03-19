@@ -3,7 +3,7 @@ import { Address } from "@/core/entities/address";
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { Bag } from "@/core/entities/bag";
 import { Box } from "@/core/entities/box";
-import { Cycle, CycleWeek } from "@/core/entities/cycle";
+import { Cycle } from "@/core/entities/cycle";
 import { Order } from "@/core/entities/order";
 import { User } from "@/core/entities/user";
 import { Message } from "@/core/entities/message";
@@ -118,7 +118,7 @@ export class RegisterOrderUseCase {
       if (!catalog) throw new ResourceNotFoundError("Catálogo", item.offer_id);
 
       if (!catalog.cycle_id.equals(cycle_id))
-        throw new ResourceNotFoundError("Catálogo", catalog.id.value);
+        throw new ResourceNotFoundError("Oferta", item.offer_id);
 
       if (item.amount > offer.amount)
         throw new UnavailableAmountError(offer.id.value);
@@ -145,9 +145,10 @@ export class RegisterOrderUseCase {
 
       const order = Order.create({
         box_id: box.id,
-        box,
         bag_id: bag.id,
+        box,
         offer_id: offer.id,
+        offer,
         amount: item.amount,
         fee: price * (catalog.fee / 100),
         price,

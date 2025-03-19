@@ -77,6 +77,13 @@
         padding-bottom: 22px;
         text-align: start;
       }
+      .total-box strong {
+        display: block;
+        font-size: 14px;
+        text-align: start;
+        font-weight: bold;
+        padding-bottom: 8px;
+      }
       .pickup-info {
         padding: 22px 0;
         font-size: 14px;
@@ -94,12 +101,8 @@
         compra!
       </p>
 
-      <% let groupedOrders = {}; let deliveryFee = props.bag.address ? 10.00 :
-      0.00; let subtotal = props.bag.total; let feeRate = 0.20; // 20% de
-      imposto let feeAmount = subtotal * feeRate; let total = subtotal +
-      feeAmount + deliveryFee; let ordersArray = Array.isArray(props.bag.orders)
-      ? props.bag.orders : props.bag.orders; ordersArray.forEach((order) => {
-      let farmName = order.offer.catalog.farm.name; let productName =
+      <% let groupedOrders = {}; props.bag.orders.forEach((order) => { let
+      farmName = order.offer.catalog.farm.name; let productName =
       order.offer.product.name; let pricingType = order.offer.product.pricing;
       if (!groupedOrders[farmName]) { groupedOrders[farmName] = {}; } if
       (!groupedOrders[farmName][productName]) {
@@ -129,21 +132,25 @@
       <% }) %>
 
       <div class="total-box">
+        <strong>Sacola <%= props.bag.code %></strong>
+
         <div class="order-item">
           <span>Subtotal:</span>
-          <span>R$<%= subtotal.toFixed(2) %></span>
+          <span>R$<%= props.bag.subtotal.toFixed(2) %></span>
         </div>
         <div class="order-item">
-          <span>feea de 20%:</span>
-          <span>R$<%= feeAmount.toFixed(2) %></span>
+          <span>Taxas:</span>
+          <span>R$<%= props.bag.fee.toFixed(2) %></span>
         </div>
+        <% if (props.bag.address) { %>
         <div class="order-item">
           <span>Entrega:</span>
-          <span><%= deliveryFee > 0 ? 'R$10.00' : '*' %></span>
+          <span>R$<%= props.bag.shipping.toFixed(2) %></span>
         </div>
+        <% } %>
         <div class="order-item">
           <strong>Total:</strong>
-          <strong>R$<%= total.toFixed(2) %></strong>
+          <strong>R$<%= props.bag.total.toFixed(2) %></strong>
         </div>
       </div>
 
