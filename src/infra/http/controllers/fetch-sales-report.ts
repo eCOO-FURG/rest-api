@@ -14,10 +14,11 @@ import { toBoolean } from "@/infra/utils/to-boolean";
 
 // Validation
 import { parse } from "@/infra/http/validation/parse";
+import { boolean } from "@/infra/http/validation/boolean";
 
 export const fetchSalesReportQuery = Joi.object({
   cycle_id: Joi.string().uuid().optional(),
-  withdraw: Joi.string().valid("true", "false"),
+  withdraw: boolean.optional(),
   type: Joi.string().valid("pdf", "spreadsheet").required(),
   since: Joi.string()
     .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")

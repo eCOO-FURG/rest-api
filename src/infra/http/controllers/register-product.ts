@@ -17,15 +17,19 @@ import { file } from "@/infra/http/validation/file";
 
 // Utils
 import { toFile } from "@/infra/utils/to-file";
+import { toBoolean } from "@/infra/utils/to-boolean";
+
+// Validation
+import { boolean } from "@/infra/http/validation/boolean";
 
 export const registerProductSchema = Joi.object({
   name: Joi.string().required(),
   pricing: Joi.string()
     .valid(...Product.pricings)
     .required(),
+  perishable: boolean.required(),
   image: file.required(),
   category_id: Joi.string().required(),
-  perishable: Joi.boolean().required(),
 });
 
 export async function registerProductController(
@@ -47,8 +51,8 @@ export async function registerProductController(
       name,
       pricing,
       image: toFile(image),
+      perishable: toBoolean(perishable),
       category_id,
-      perishable,
     });
 
     return response.sendStatus(201);

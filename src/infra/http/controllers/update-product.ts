@@ -20,6 +20,12 @@ import { file } from "@/infra/http/validation/file";
 // Entities
 import { Product } from "@/core/entities/product";
 
+// Validation
+import { boolean } from "@/infra/http/validation/boolean";
+
+// Utils
+import { toBoolean } from "@/infra/utils/to-boolean";
+
 export const updateProductParams = Joi.object({
   product_id: Joi.string().uuid().required(),
 });
@@ -31,8 +37,8 @@ export const updateProductSchema = Joi.object({
     .valid(...Product.pricings)
     .optional(),
   category_id: Joi.string().uuid().optional(),
-  perishable: Joi.boolean().optional(),
-  archived: Joi.boolean().optional(),
+  perishable: boolean.optional(),
+  archived: boolean.optional(),
 });
 
 export async function updateProductController(
@@ -57,8 +63,8 @@ export async function updateProductController(
       name,
       pricing,
       category_id,
-      archived,
-      perishable,
+      archived: toBoolean(archived),
+      perishable: toBoolean(perishable),
       image: toFile(image),
     });
 
