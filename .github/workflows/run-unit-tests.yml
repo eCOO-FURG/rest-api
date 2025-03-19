@@ -1,0 +1,32 @@
+name: run unit tests
+
+on: [push]
+
+jobs:
+  run-unit-tests:
+    name: run unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "pnpm"
+      - run: pnpm install
+      - run: pnpm run test
+        env:
+          ENVIRONMENT: DEVELOPMENT
+          SERVER_PORT: 3333
+          SERVER_URL: http://localhost:3333
+          JWT_SECRET: UNIT_TESTS
+          APP_URL: http://localhost:3000
+          WS_URL: ws://localhost:8080/messages
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ecoo_db?schema=public
+          CACHE_URL: redis://localhost:6379
+          STORAGE_URL: ubuntu/ecoo/rest-api/src/test/storage/temp
+          INTEGRATIONS_AUTHORIZATION: UNIT_TESTS
+          EMAIL_ACCOUNT: suporte@ecoo.org.br
+          EMAIL_PASSWORD: senha
+          SMTP_HOST: localhost
+          SMTP_PORT: 2525
