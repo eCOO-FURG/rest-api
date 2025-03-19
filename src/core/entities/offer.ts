@@ -74,6 +74,10 @@ export class Offer extends Entity<OfferProps> {
     this.props.expires_at = value;
   }
 
+  get expired() {
+    return this.props.expires_at && this.props.expires_at < new Date();
+  }
+
   static create(
     props: Optional<OfferProps, "description" | "expires_at" | "orders">
   ) {

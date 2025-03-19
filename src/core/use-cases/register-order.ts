@@ -111,6 +111,8 @@ export class RegisterOrderUseCase {
 
       if (!offer) throw new ResourceNotFoundError("Oferta", item.offer_id);
 
+      if (offer.expired) throw new ResourceClosedError("Oferta", item.offer_id);
+
       const catalog = await this.catalogsRepository.find("basic", {
         id: offer.catalog?.id.value,
       });
