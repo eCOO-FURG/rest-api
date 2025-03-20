@@ -3,51 +3,70 @@ import { Farm } from "@/core/entities/farm";
 
 // Repositories
 import {
+  FarmRepositoryReturnType,
+  FarmEntityOf,
   FarmsRepository,
   FarmsRepositorySearchRequest,
 } from "@/core/repositories/farms-repository";
 
-// Services
+// Database
 import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
 import { PrismaFarmMapper } from "@/infra/database/mappers/prisma-farm-mapper";
-
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
+import { PrismaFarmAndAdminMapper } from "@/infra/database/mappers/prisma-farm-and-admin-mapper";
 
 export class PrismaFarmsRepository implements FarmsRepository {
-  async find(
-    type: RepositoryResponse,
+  async find<T extends FarmRepositoryReturnType>(
+    type: T,
     { id, name, status, tally, admin }: FarmsRepositorySearchRequest
-  ): Promise<Farm | null> {
+  ): Promise<FarmEntityOf<T> | null> {
     const farm = await prisma.farm.findFirst({
-      where: { id, name, status, tally, admin },
-      include: { admin: type !== "basic" },
+      where: {
+        id,
+        name: { contains: name, mode: "insensitive" },
+        status,
+        tally,
+        admin,
+      },
+      include: {
+        admin: type === "farm-and-admin",
+      },
     });
 
     if (!farm) return null;
 
-    return PrismaFarmMapper.toDomain(farm);
+    switch (type) {
+      default:
+        return PrismaFarmMapper.toDomain<T>(farm);
+      case "farm-and-admin":
+        return PrismaFarmAndAdminMapper.toDomain<T>(farm);
+    }
   }
-  async list(
-    type: RepositoryResponse,
+
+  async list<T extends FarmRepositoryReturnType>(
+    type: T,
     { id, name, status, tally, admin }: FarmsRepositorySearchRequest,
     page?: number
-  ): Promise<Farm[]> {
+  ): Promise<FarmEntityOf<T>[]> {
     const farms = await prisma.farm.findMany({
       where: {
         id,
+        name: { contains: name, mode: "insensitive" },
         status,
         tally,
         admin,
-        ...(name && { name: { contains: name, mode: "insensitive" } }),
       },
-      include: { admin: type !== "basic" },
+      include: { admin: type === "farm-and-admin" },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
-    return farms.map(PrismaFarmMapper.toDomain);
+    switch (type) {
+      default:
+        return farms.map(PrismaFarmMapper.toDomain<T>);
+      case "farm-and-admin":
+        return farms.map(PrismaFarmAndAdminMapper.toDomain<T>);
+    }
   }
 
   async create(farm: Farm): Promise<void> {
@@ -82,14 +101,20 @@ export class PrismaFarmsRepository implements FarmsRepository {
   }
 
   async count({
-    status,
-    admin,
     id,
     name,
+    status,
     tally,
+    admin,
   }: FarmsRepositorySearchRequest): Promise<number> {
     return await prisma.farm.count({
-      where: { id, status, admin, name, tally },
+      where: {
+        id,
+        name: { contains: name, mode: "insensitive" },
+        status,
+        admin,
+        tally,
+      },
     });
   }
 }

@@ -1,19 +1,18 @@
 // Libraries
-import { Prisma } from "@prisma/client";
+import { Prisma, Farm as PrismaFarm } from "@prisma/client";
 
 // Entities
 import { Farm } from "@/core/entities/farm";
 import { UUID } from "@/core/entities/aggregates/uuid";
-
-// Mappers
-import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
-
-export type PrismaFarm = Prisma.FarmGetPayload<{}> & {
-  admin?: Prisma.UserGetPayload<{}>;
-};
+import {
+  FarmEntityOf,
+  FarmRepositoryReturnType,
+} from "@/core/repositories/farms-repository";
 
 export class PrismaFarmMapper {
-  static toDomain(raw: PrismaFarm): Farm {
+  static toDomain<T extends FarmRepositoryReturnType>(
+    raw: PrismaFarm
+  ): FarmEntityOf<T> {
     return Farm.create({
       id: new UUID(raw.id),
       status: raw.status,
@@ -21,14 +20,12 @@ export class PrismaFarmMapper {
       fee: raw.fee,
       tally: raw.tally,
       description: raw.description,
+      photo: raw.photo,
       images: raw.images,
       admin_id: new UUID(raw.admin_id),
-      ...(raw.admin && {
-        admin: PrismaUserMapper.toDomain(raw.admin),
-      }),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
-    });
+    }) as FarmEntityOf<T>;
   }
 
   static toPrisma(farm: Farm): Prisma.FarmUncheckedCreateInput {
@@ -39,8 +36,9 @@ export class PrismaFarmMapper {
       fee: farm.fee,
       description: farm.description,
       status: farm.status,
-      admin_id: farm.admin_id.value,
+      photo: farm.photo,
       images: farm.images,
+      admin_id: farm.admin_id.value,
       created_at: farm.created_at,
       updated_at: farm.updated_at,
     };
