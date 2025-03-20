@@ -6,23 +6,28 @@ import { Entity, EntityRequest } from "@/core/entities/entity";
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { User } from "@/core/entities/user";
 
+export type OptionalFarmProps = Optional<
+  FarmProps,
+  "status" | "fee" | "description" | "photo" | "images"
+>;
+
 export type FarmStatus = (typeof Farm.statuses)[number];
 
 export interface FarmProps extends EntityRequest {
-  admin_id: UUID;
-  admin?: User;
-
   name: string;
   tally: string;
-  fee: number;
   description: string | null;
   photo: string | null;
+  images: string[];
+  fee: number;
+
   status: FarmStatus;
 
-  images: string[];
+  admin_id: UUID;
+  admin?: User;
 }
 
-export class Farm extends Entity<FarmProps> {
+export class Farm<Props extends FarmProps = FarmProps> extends Entity<Props> {
   get name() {
     return this.props.name;
   }
@@ -83,13 +88,12 @@ export class Farm extends Entity<FarmProps> {
     this.props.images = value;
   }
 
-  static create(
-    props: Optional<
-      FarmProps,
-      "status" | "fee" | "description" | "photo" | "images"
-    >
-  ) {
-    const farm = new Farm({
+  set fee(value: number) {
+    this.props.fee = value;
+  }
+
+  static create(props: OptionalFarmProps) {
+    return new Farm({
       ...props,
       status: props.status ?? "PENDING",
       fee: props.fee ?? 20,
@@ -97,7 +101,6 @@ export class Farm extends Entity<FarmProps> {
       photo: props.photo ?? null,
       images: props.images ?? [],
     });
-    return farm;
   }
 
   static statuses = ["ACTIVE", "INACTIVE", "PENDING"] as const;

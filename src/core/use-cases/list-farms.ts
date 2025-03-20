@@ -11,7 +11,7 @@ export class ListFarmsUseCase {
 
   async execute({ page, name }: ListFarmsUseCaseRequest) {
     const farms = await this.farmsRepository.list(
-      "aggregate",
+      "farm-and-admin",
       {
         name,
       },
