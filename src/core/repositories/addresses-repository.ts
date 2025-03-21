@@ -1,8 +1,10 @@
 // Entities
 import { Address } from "@/core/entities/address";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
+export type AddressRepositoryReturnType = "address";
+
+export type AddressEntityOf<T extends AddressRepositoryReturnType> =
+  T extends "address" ? Address : never;
 
 export interface AddressesRepositorySearchRequest {
   id?: string;
@@ -14,8 +16,8 @@ export interface AddressesRepositorySearchRequest {
 }
 
 export interface AddressesRepository {
-  find(
-    type: RepositoryResponse,
+  find<T extends AddressRepositoryReturnType>(
+    type: T,
     filters: AddressesRepositorySearchRequest
-  ): Promise<Address | null>;
+  ): Promise<AddressEntityOf<T> | null>;
 }
