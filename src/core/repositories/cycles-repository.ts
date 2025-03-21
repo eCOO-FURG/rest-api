@@ -1,21 +1,23 @@
 // Entities
 import { Cycle } from "@/core/entities/cycle";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
+export type CycleRepositoryReturnType = "cycle";
+
+export type CycleEntityOf<T extends CycleRepositoryReturnType> =
+  T extends "cycle" ? Cycle : never;
 
 export interface CyclesRepositorySearchRequest {
   id?: string;
 }
 
 export interface CyclesRepository {
-  find(
-    type: RepositoryResponse,
+  find<T extends CycleRepositoryReturnType>(
+    type: T,
     filters: CyclesRepositorySearchRequest
-  ): Promise<Cycle | null>;
-  list(
-    type: RepositoryResponse,
+  ): Promise<CycleEntityOf<T> | null>;
+  list<T extends CycleRepositoryReturnType>(
+    type: T,
     filters: CyclesRepositorySearchRequest,
     page?: number
-  ): Promise<Cycle[]>;
+  ): Promise<CycleEntityOf<T>[]>;
 }
