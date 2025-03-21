@@ -30,7 +30,7 @@ export class AuthenticateUseCase {
     private sessionsRepository: SessionsRepository,
     private encrypter: Encrypter,
     private hasher: Hasher
-  ) { }
+  ) {}
 
   async execute({
     email,
@@ -39,7 +39,7 @@ export class AuthenticateUseCase {
     ip,
     type,
   }: AuthenticateUseCaseRequest) {
-    const user = await this.usersRepository.find("basic", { email });
+    const user = await this.usersRepository.find("user", { email });
 
     if (!user) throw new WrongCredentialsError();
 

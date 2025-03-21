@@ -1,8 +1,11 @@
 // Entities
-import { Role, User } from "@/core/entities/user";
+import { User, UserRole } from "@/core/entities/user";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
+export type UserRepositoryReturnType = "user";
+
+export type UserEntityOf<T extends UserRepositoryReturnType> = T extends "user"
+  ? User
+  : never;
 
 export interface UsersRepositorySearchRequest {
   id?: string;
@@ -10,19 +13,19 @@ export interface UsersRepositorySearchRequest {
   phone?: string;
   cpf?: string;
   chat?: string;
-  role?: Role;
+  roles?: UserRole[];
 }
 
 export interface UsersRepository {
-  find(
-    type: RepositoryResponse,
+  find<T extends UserRepositoryReturnType>(
+    type: T,
     filters: UsersRepositorySearchRequest
-  ): Promise<User | null>;
-  list(
-    type: RepositoryResponse,
+  ): Promise<UserEntityOf<T> | null>;
+  list<T extends UserRepositoryReturnType>(
+    type: T,
     filters: UsersRepositorySearchRequest,
     page?: number
-  ): Promise<User[]>;
+  ): Promise<UserEntityOf<T>[]>;
   create(user: User): Promise<void>;
   update(user: User): Promise<void>;
 }

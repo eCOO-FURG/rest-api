@@ -5,56 +5,55 @@ import { User } from "@/core/entities/user";
 import {
   UsersRepository,
   UsersRepositorySearchRequest,
+  UserRepositoryReturnType,
+  UserEntityOf,
 } from "@/core/repositories/users-repository";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
-
 // Utils
-import { find } from "@/test/utils/find";
-import { filter } from "@/test/utils/filter";
 import { paginate } from "@/test/utils/paginate";
 
 export class InMemoryUsersRepository implements UsersRepository {
   items: User[] = [];
 
-  async find(
-    _: RepositoryResponse,
-    { id, email, phone, cpf, role }: UsersRepositorySearchRequest
-  ): Promise<User | null> {
-    const user = await find<User>(this.items, async (item) =>
+  async find<T extends UserRepositoryReturnType>(
+    type: T,
+    { id, email, phone, cpf, chat, roles }: UsersRepositorySearchRequest
+  ): Promise<UserEntityOf<T> | null> {
+    const user = this.items.find((item) =>
       Boolean(
         (!id || item.id.equals(id)) &&
           (!email || item.email === email) &&
           (!phone || item.phone.equals(phone)) &&
           (!cpf || item.cpf.equals(cpf)) &&
-          (!role || item.roles.includes(role))
+          (!chat || item.chat === chat) &&
+          (!roles || roles.every((role) => item.roles.includes(role)))
       )
     );
 
     if (!user) return null;
 
-    return user;
+    return user as UserEntityOf<T>;
   }
 
-  async list(
-    _: RepositoryResponse,
-    { id, email, phone, cpf, role }: UsersRepositorySearchRequest,
+  async list<T extends UserRepositoryReturnType>(
+    type: T,
+    { id, email, phone, cpf, roles, chat }: UsersRepositorySearchRequest,
     page?: number
-  ): Promise<User[]> {
-    let users = await filter<User>(this.items, async (item) =>
+  ): Promise<UserEntityOf<T>[]> {
+    let users = this.items.filter((item) =>
       Boolean(
         (!id || item.id.equals(id)) &&
           (!email || item.email === email) &&
           (!phone || item.phone.equals(phone)) &&
           (!cpf || item.cpf.equals(cpf)) &&
-          (!role || item.roles.includes(role))
+          (!chat || item.chat === chat) &&
+          (!roles || roles.every((role) => item.roles.includes(role)))
       )
     );
 
     if (page) users = paginate(users, page);
 
-    return users;
+    return users.map((user) => user as UserEntityOf<T>);
   }
 
   async create(user: User): Promise<void> {
@@ -63,7 +62,6 @@ export class InMemoryUsersRepository implements UsersRepository {
 
   async update(user: User): Promise<void> {
     const index = this.items.findIndex((item) => item.id.equals(user.id));
-
     this.items[index] = user;
   }
 }
