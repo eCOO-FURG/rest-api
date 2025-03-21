@@ -75,11 +75,7 @@ export class PrismaFarmsRepository implements FarmsRepository {
     await prisma.$transaction(async (ctx) => {
       await ctx.farm.create({ data });
 
-      const admin = await ctx.user.findFirstOrThrow({
-        where: { id: farm.admin_id.value },
-      });
-
-      if (!admin.roles.includes("PRODUCER")) {
+      if (farm.admin && !farm.admin.roles.includes("PRODUCER")) {
         await ctx.user.update({
           where: { id: farm.admin_id.value },
           data: { roles: { push: "PRODUCER" } },
@@ -89,14 +85,9 @@ export class PrismaFarmsRepository implements FarmsRepository {
   }
 
   async update(farm: Farm): Promise<void> {
-    const { admin_id, ...data } = PrismaFarmMapper.toPrisma(farm);
-
     await prisma.farm.update({
       where: { id: farm.id.value },
-      data: {
-        ...data,
-        admin: { connect: { id: admin_id } },
-      },
+      data: PrismaFarmMapper.toPrisma(farm),
     });
   }
 

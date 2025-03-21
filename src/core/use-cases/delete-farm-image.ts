@@ -27,11 +27,11 @@ export class DeleteFarmImageUseCase {
     farm_id,
     image_url,
   }: DeleteFarmImageUseCaseRequest) {
-    const farm = await this.farmsRepository.find("basic", { id: farm_id });
+    const farm = await this.farmsRepository.find("farm", { id: farm_id });
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
-    const user = await this.usersRepository.find("basic", { id: user_id });
+    const user = await this.usersRepository.find("user", { id: user_id });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
