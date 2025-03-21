@@ -1,8 +1,10 @@
 // Entities
 import { Category } from "@/core/entities/category";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
+export type CategoryRepositoryReturnType = "category";
+
+export type CategoryEntityOf<T extends CategoryRepositoryReturnType> =
+  T extends "category" ? Category : never;
 
 export interface CategoriesRepositorySearchRequest {
   id?: string;
@@ -10,15 +12,15 @@ export interface CategoriesRepositorySearchRequest {
 }
 
 export interface CategoriesRepository {
-  find(
-    type: RepositoryResponse,
+  find<T extends CategoryRepositoryReturnType>(
+    type: T,
     filters: CategoriesRepositorySearchRequest
-  ): Promise<Category | null>;
-  list(
-    type: RepositoryResponse,
+  ): Promise<CategoryEntityOf<T> | null>;
+  list<T extends CategoryRepositoryReturnType>(
+    type: T,
     filters: CategoriesRepositorySearchRequest,
     page?: number
-  ): Promise<Category[]>;
+  ): Promise<CategoryEntityOf<T>[]>;
   create(category: Category): Promise<void>;
   update(category: Category): Promise<void>;
 }

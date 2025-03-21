@@ -5,16 +5,24 @@ import { Prisma } from "@prisma/client";
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { Category } from "@/core/entities/category";
 
+// Repositories
+import {
+  CategoryRepositoryReturnType,
+  CategoryEntityOf,
+} from "@/core/repositories/categories-repository";
+
 type PrismaCategory = Prisma.CategoryGetPayload<{}>;
 
 export class PrismaCategoryMapper {
-  static toDomain(raw: PrismaCategory): Category {
+  static toDomain<T extends CategoryRepositoryReturnType>(
+    raw: PrismaCategory
+  ): CategoryEntityOf<T> {
     return Category.create({
       id: new UUID(raw.id),
       name: raw.name,
       created_at: raw.created_at,
       updated_at: raw.updated_at,
-    });
+    }) as CategoryEntityOf<T>;
   }
 
   static toPrisma(category: Category): Prisma.CategoryUncheckedCreateInput {
