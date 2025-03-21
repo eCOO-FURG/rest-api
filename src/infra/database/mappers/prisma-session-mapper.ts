@@ -8,12 +8,20 @@ import { Prisma } from "@prisma/client";
 // Mappers
 import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
 
+// Repositories
+import {
+  SessionRepositoryReturnType,
+  SessionEntityOf,
+} from "@/core/repositories/sessions-repository";
+
 type PrismaSession = Prisma.SessionGetPayload<{}> & {
   user?: Prisma.UserGetPayload<{}>;
 };
 
 export class PrismaSessionMapper {
-  static toDomain(raw: PrismaSession): Session {
+  static toDomain<T extends SessionRepositoryReturnType>(
+    raw: PrismaSession
+  ): SessionEntityOf<T> {
     return Session.create({
       id: new UUID(raw.id),
       ip: raw.ip,
@@ -22,7 +30,7 @@ export class PrismaSessionMapper {
       ...(raw.user && { user: PrismaUserMapper.toDomain(raw.user) }),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
-    });
+    }) as SessionEntityOf<T>;
   }
 
   static toPrisma(session: Session): Prisma.SessionUncheckedCreateInput {

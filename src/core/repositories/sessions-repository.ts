@@ -1,6 +1,10 @@
 // Entities
 import { Session } from "@/core/entities/session";
-import { RepositoryResponse } from "../types/repository-response";
+
+export type SessionRepositoryReturnType = "session";
+
+export type SessionEntityOf<T extends SessionRepositoryReturnType> =
+  T extends "session" ? Session : never;
 
 export interface SessionsRepositorySearchRequest {
   ip?: string;
@@ -10,8 +14,8 @@ export interface SessionsRepositorySearchRequest {
 }
 export interface SessionsRepository {
   create(session: Session): Promise<void>;
-  find(
-    type: RepositoryResponse,
+  find<T extends SessionRepositoryReturnType>(
+    type: T,
     filters: SessionsRepositorySearchRequest
-  ): Promise<Session | null>;
+  ): Promise<SessionEntityOf<T> | null>;
 }
