@@ -32,7 +32,7 @@ export class PrismaProductRepository implements ProductsRepository {
             name: { equals: category.name, mode: "insensitive" },
           }),
         },
-        ...(name && { name: { equals: name, mode: "insensitive" } }), // Alterado para busca exata
+        ...(name && { name: { equals: name, mode: "insensitive" } }),
       },
       include: {
         ...(type !== "basic" && {
