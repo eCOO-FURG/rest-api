@@ -1,5 +1,5 @@
 // Libraries
-import { Prisma, Farm as PrismaFarm, User as PrismaUser } from "@prisma/client";
+import { Farm as PrismaFarm, User as PrismaUser } from "@prisma/client";
 
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";

@@ -6,25 +6,20 @@ import { Entity, EntityRequest } from "@/core/entities/entity";
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { User } from "@/core/entities/user";
 
-export type OptionalFarmProps = Optional<
-  FarmProps,
-  "status" | "fee" | "description" | "photo" | "images"
->;
-
 export type FarmStatus = (typeof Farm.statuses)[number];
 
 export interface FarmProps extends EntityRequest {
+  admin_id: UUID;
+  admin?: User;
   name: string;
   tally: string;
   description: string | null;
   photo: string | null;
-  images: string[];
   fee: number;
 
-  status: FarmStatus;
+  images: string[];
 
-  admin_id: UUID;
-  admin?: User;
+  status: FarmStatus;
 }
 
 export class Farm<Props extends FarmProps = FarmProps> extends Entity<Props> {
@@ -92,7 +87,12 @@ export class Farm<Props extends FarmProps = FarmProps> extends Entity<Props> {
     this.props.fee = value;
   }
 
-  static create(props: OptionalFarmProps) {
+  static create(
+    props: Optional<
+      FarmProps,
+      "status" | "fee" | "description" | "photo" | "images"
+    >
+  ) {
     return new Farm({
       ...props,
       status: props.status ?? "PENDING",

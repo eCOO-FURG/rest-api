@@ -1,8 +1,15 @@
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
-
 // Entities
 import { Catalog } from "@/core/entities/catalog";
+import { CatalogAndFarm } from "@/core/entities/aggregates/catalog-and-farm";
+
+export type CatalogRepositoryReturnType = "catalog" | "catalog-and-farm";
+
+export type CatalogEntityOf<T extends CatalogRepositoryReturnType> =
+  T extends "catalog"
+    ? Catalog
+    : T extends "catalog-and-farm"
+    ? CatalogAndFarm
+    : never;
 
 export interface CatalogsRepositorySearchRequest {
   id?: string;
@@ -19,15 +26,15 @@ export interface CatalogsRepositorySearchRequest {
 }
 
 export interface CatalogsRepository {
-  find(
-    type: RepositoryResponse,
+  find<T extends CatalogRepositoryReturnType>(
+    type: T,
     filters: CatalogsRepositorySearchRequest
-  ): Promise<Catalog | null>;
-  list(
-    type: RepositoryResponse,
+  ): Promise<CatalogEntityOf<T> | null>;
+  list<T extends CatalogRepositoryReturnType>(
+    type: T,
     filters: CatalogsRepositorySearchRequest,
     page?: number
-  ): Promise<Catalog[]>;
+  ): Promise<CatalogEntityOf<T>[]>;
   create(catalog: Catalog): Promise<void>;
   update(catalog: Catalog): Promise<void>;
 }

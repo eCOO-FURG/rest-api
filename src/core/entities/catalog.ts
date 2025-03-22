@@ -20,7 +20,9 @@ export interface CatalogProps extends EntityRequest {
   offers: Offer[];
 }
 
-export class Catalog extends Entity<CatalogProps> {
+export class Catalog<
+  Props extends CatalogProps = CatalogProps
+> extends Entity<Props> {
   get fee() {
     return this.props.fee;
   }
@@ -54,11 +56,9 @@ export class Catalog extends Entity<CatalogProps> {
   }
 
   static create(props: Optional<CatalogProps, "offers">) {
-    const catalog = new Catalog({
+    return new Catalog({
       ...props,
       offers: props.offers ?? [],
     });
-
-    return catalog;
   }
 }
