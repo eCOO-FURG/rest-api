@@ -29,10 +29,10 @@ export class PrismaProductRepository implements ProductsRepository {
         category: {
           id: category?.id,
           ...(category?.name && {
-            name: { contains: category.name, mode: "insensitive" },
+            name: { equals: category.name, mode: "insensitive" },
           }),
         },
-        ...(name && { name: { contains: name, mode: "insensitive" } }),
+        ...(name && { name: { equals: name, mode: "insensitive" } }), // Alterado para busca exata
       },
       include: {
         ...(type !== "basic" && {

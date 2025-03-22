@@ -22,7 +22,7 @@ export class InMemoryProductsRepository implements ProductsRepository {
     const product = await find<Product>(this.items, async (item) => {
       return Boolean(
         (!id || item.id.equals(id)) &&
-          (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
+          (!name || item.name.toLowerCase() === name.toLowerCase()) && // Alterado para igualdade
           (!pricing || item.pricing === pricing) &&
           (!archived || item.archived === archived) &&
           (!category?.id || item.category_id?.equals(category.id)) &&
