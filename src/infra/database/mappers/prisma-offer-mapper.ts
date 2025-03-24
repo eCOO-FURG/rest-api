@@ -2,11 +2,19 @@
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { Offer } from "@/core/entities/offer";
 
+// Repositories
+import {
+  OfferEntityOf,
+  OfferRepositoryReturnType,
+} from "@/core/repositories/offers-repository";
+
 // Libraries
 import { Prisma, Offer as PrismaOffer } from "@prisma/client";
 
 export class PrismaOfferMapper {
-  static toDomain(raw: PrismaOffer): Offer {
+  static toDomain<T extends OfferRepositoryReturnType>(
+    raw: PrismaOffer
+  ): OfferEntityOf<T> {
     return Offer.create({
       id: new UUID(raw.id),
       amount: raw.amount,
@@ -17,7 +25,7 @@ export class PrismaOfferMapper {
       expires_at: raw.expires_at,
       created_at: raw.created_at,
       updated_at: raw.updated_at,
-    });
+    }) as OfferEntityOf<T>;
   }
 
   static toPrisma(offer: Offer): Prisma.OfferUncheckedCreateInput {
