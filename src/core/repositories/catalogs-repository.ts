@@ -1,14 +1,20 @@
 // Entities
 import { Catalog } from "@/core/entities/catalog";
 import { CatalogAndFarm } from "@/core/entities/aggregates/catalog-and-farm";
+import { CatalogAndOffers } from "@/core/entities/aggregates/catalog-and-offers";
 
-export type CatalogRepositoryReturnType = "catalog" | "catalog-and-farm";
+export type CatalogRepositoryReturnType =
+  | "catalog"
+  | "catalog-and-farm"
+  | "catalog-and-offers";
 
 export type CatalogEntityOf<T extends CatalogRepositoryReturnType> =
   T extends "catalog"
     ? Catalog
     : T extends "catalog-and-farm"
     ? CatalogAndFarm
+    : T extends "catalog-and-offers"
+    ? CatalogAndOffers
     : never;
 
 export interface CatalogsRepositorySearchRequest {

@@ -16,6 +16,10 @@ import { prisma } from "@/infra/database/prisma-service";
 import { PrismaCatalogMapper } from "@/infra/database/mappers/prisma-catalog-mapper";
 import { PrismaCatalogAndFarmMapper } from "@/infra/database/mappers/prisma-catalog-and-farm-mapper";
 import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
+import {
+  PrismaCatalogAndOffersMapper,
+  PrismaCatalogAndOffers,
+} from "@/infra/database/mappers/prisma-catalog-and-offers-mapper";
 
 export class PrismaCatalogsRepository implements CatalogsRepository {
   async find<T extends CatalogRepositoryReturnType>(
@@ -39,28 +43,55 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
         ...(type === "catalog-and-farm" && {
           farm: { include: { admin: true } },
         }),
-        // offers: {
-        //   where: {
-        //     product: {
-        //       name: { contains: offers?.product?.name, mode: "insensitive" },
-        //     },
-        //     ...(typeof offers?.expired === "boolean" &&
-        //       (offers.expired
-        //         ? {
-        //             AND: [
-        //               { expires_at: { lte: new Date() } },
-        //               { expires_at: { not: null } },
-        //             ],
-        //           }
-        //         : {
-        //             OR: [
-        //               { expires_at: { gt: new Date() } },
-        //               { expires_at: null },
-        //             ],
-        //           })),
-        //   },
-        //   ...(offers?.page && { skip: (offers.page - 1) * 20, take: 20 }),
-        // },
+        offers: {
+          where: {
+            product: {
+              name: { contains: offers?.product?.name, mode: "insensitive" },
+            },
+            ...(typeof offers?.expired === "boolean" &&
+              (offers.expired
+                ? {
+                    AND: [
+                      { expires_at: { lte: new Date() } },
+                      { expires_at: { not: null } },
+                    ],
+                  }
+                : {
+                    OR: [
+                      { expires_at: { gt: new Date() } },
+                      { expires_at: null },
+                    ],
+                  })),
+          },
+          ...(type === "catalog-and-offers" && {
+            offers: {
+              where: {
+                product: {
+                  name: {
+                    contains: offers?.product?.name,
+                    mode: "insensitive",
+                  },
+                },
+                ...(typeof offers?.expired === "boolean" &&
+                  (offers.expired
+                    ? {
+                        AND: [
+                          { expires_at: { lte: new Date() } },
+                          { expires_at: { not: null } },
+                        ],
+                      }
+                    : {
+                        OR: [
+                          { expires_at: { gt: new Date() } },
+                          { expires_at: null },
+                        ],
+                      })),
+              },
+              ...(offers?.page && { skip: (offers.page - 1) * 20, take: 20 }),
+            },
+          }),
+          ...(offers?.page && { skip: (offers.page - 1) * 20, take: 20 }),
+        },
       },
     });
 
@@ -71,6 +102,10 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
         return PrismaCatalogMapper.toDomain<T>(catalog);
       case "catalog-and-farm":
         return PrismaCatalogAndFarmMapper.toDomain<T>(catalog);
+      case "catalog-and-offers":
+        return PrismaCatalogAndOffersMapper.toDomain<T>(
+          catalog as PrismaCatalogAndOffers
+        );
     }
   }
 
@@ -91,12 +126,59 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
           name: { contains: farm?.name, mode: "insensitive" },
         },
         cycle: { id: cycle?.id },
+        offers: {
+          some: {
+            product: {
+              name: { contains: offers?.product?.name, mode: "insensitive" },
+            },
+            ...(typeof offers?.expired === "boolean" &&
+              (offers.expired
+                ? {
+                    AND: [
+                      { expires_at: { lte: new Date() } },
+                      { expires_at: { not: null } },
+                    ],
+                  }
+                : {
+                    OR: [
+                      { expires_at: { gt: new Date() } },
+                      { expires_at: null },
+                    ],
+                  })),
+          },
+        },
       },
       include: {
         ...(type === "catalog-and-farm" && {
           farm: { include: { admin: true } },
         }),
+        ...(type === "catalog-and-offers" && {
+          offers: {
+            include: { product: true },
+            where: {
+              product: {
+                name: { contains: offers?.product?.name, mode: "insensitive" },
+              },
+              ...(typeof offers?.expired === "boolean" &&
+                (offers.expired
+                  ? {
+                      AND: [
+                        { expires_at: { lte: new Date() } },
+                        { expires_at: { not: null } },
+                      ],
+                    }
+                  : {
+                      OR: [
+                        { expires_at: { gt: new Date() } },
+                        { expires_at: null },
+                      ],
+                    })),
+            },
+            ...(offers?.page && { skip: (offers.page - 1) * 20, take: 20 }),
+          },
+        }),
       },
+      ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
     switch (type) {
@@ -104,6 +186,12 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
         return catalogs.map(PrismaCatalogMapper.toDomain<T>);
       case "catalog-and-farm":
         return catalogs.map(PrismaCatalogAndFarmMapper.toDomain<T>);
+      case "catalog-and-offers":
+        return catalogs.map((catalog) =>
+          PrismaCatalogAndOffersMapper.toDomain<T>(
+            catalog as PrismaCatalogAndOffers
+          )
+        );
     }
   }
 
