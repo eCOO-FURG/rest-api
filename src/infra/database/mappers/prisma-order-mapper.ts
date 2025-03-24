@@ -3,17 +3,18 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { Order } from "@/core/entities/order";
 
 // Libraries
-import { Prisma } from "@prisma/client";
+import { Prisma, Order as PrismaOrder } from "@prisma/client";
 
-// Mappers
-import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
-
-type PrismaOrder = Prisma.OrderGetPayload<{}> & {
-  offer?: Prisma.OfferGetPayload<{}>;
-};
+// Repositories
+import {
+  OrderRepositoryReturnType,
+  OrderEntityOf,
+} from "@/core/repositories/orders-repository";
 
 export class PrismaOrderMapper {
-  static toDomain(raw: PrismaOrder): Order {
+  static toDomain<T extends OrderRepositoryReturnType>(
+    raw: PrismaOrder
+  ): OrderEntityOf<T> {
     return Order.create({
       id: new UUID(raw.id),
       amount: raw.amount,
@@ -23,10 +24,9 @@ export class PrismaOrderMapper {
       bag_id: new UUID(raw.bag_id),
       offer_id: new UUID(raw.offer_id),
       fee: raw.fee.toNumber(),
-      ...(raw.offer && { offer: PrismaOfferMapper.toDomain(raw.offer) }),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
-    });
+    }) as OrderEntityOf<T>;
   }
 
   static toPrisma(order: Order): Prisma.OrderUncheckedCreateInput {

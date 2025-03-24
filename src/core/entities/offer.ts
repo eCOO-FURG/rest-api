@@ -21,7 +21,9 @@ export interface OfferProps extends EntityRequest {
   orders: Order[];
 }
 
-export class Offer extends Entity<OfferProps> {
+export class Offer<
+  Props extends OfferProps = OfferProps
+> extends Entity<Props> {
   get price() {
     return this.props.price;
   }

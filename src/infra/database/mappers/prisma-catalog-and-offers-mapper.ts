@@ -1,9 +1,5 @@
 // Libraries
-import {
-  Catalog as PrismaCatalog,
-  Offer as PrismaOffer,
-  Farm as PrismaFarm,
-} from "@prisma/client";
+import { Catalog as PrismaCatalog, Farm as PrismaFarm } from "@prisma/client";
 
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
