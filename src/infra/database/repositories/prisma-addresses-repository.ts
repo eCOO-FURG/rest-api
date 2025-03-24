@@ -6,7 +6,7 @@ import {
   AddressEntityOf,
 } from "@/core/repositories/addresses-repository";
 
-// Services
+// Database
 import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers

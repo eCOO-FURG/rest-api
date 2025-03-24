@@ -75,13 +75,15 @@ enum FARM_STATUS {
 }
 
 model Farm {
-  id          String      @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
-  tally       String      @unique
-  fee         Float
+  tally       String   @unique
   description String?
+  photo       String?
+  fee         Float
   images      String[]
-  status      FARM_STATUS @default(PENDING)
+
+  status FARM_STATUS @default(PENDING)
 
   admin_id String @unique
   admin    User   @relation(fields: [admin_id], references: [id], onDelete: Cascade)
@@ -226,8 +228,8 @@ model Bag {
 
   status BAG_STATUS
 
-  user_id  String
-  customer User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  customer_id String
+  customer    User   @relation(fields: [customer_id], references: [id], onDelete: Cascade)
 
   cycle_id String
   cycle    Cycle  @relation(fields: [cycle_id], references: [id], onDelete: Cascade)

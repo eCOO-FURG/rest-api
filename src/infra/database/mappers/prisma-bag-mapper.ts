@@ -3,23 +3,17 @@ import { Bag } from "@/core/entities/bag";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Libraries
-import { Prisma } from "@prisma/client";
-
-// Mappers
-import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";
-import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
-import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
-import { PrismaPaymentMapper } from "@/infra/database/mappers/prisma-payment-mapper";
-
-type PrismaBag = Prisma.BagGetPayload<{}> & {
-  customer?: Prisma.UserGetPayload<{}>;
-  address?: Prisma.AddressGetPayload<{}> | null;
-  orders?: Prisma.OrderGetPayload<{}>[];
-  payments?: Prisma.PaymentGetPayload<{}>[];
-};
+import { Bag as PrismaBag } from "@prisma/client";
+import { Decimal } from "@prisma/client/runtime/library";
+import {
+  BagRepositoryReturnType,
+  BagEntityOf,
+} from "@/core/repositories/bags-repository";
 
 export class PrismaBagMapper {
-  static toDomain(raw: PrismaBag): Bag {
+  static toDomain<T extends BagRepositoryReturnType>(
+    raw: PrismaBag
+  ): BagEntityOf<T> {
     return Bag.create({
       id: new UUID(raw.id),
       code: raw.code,
@@ -29,37 +23,23 @@ export class PrismaBagMapper {
       subtotal: raw.subtotal.toNumber(),
       fee: raw.fee.toNumber(),
       shipping: raw.shipping.toNumber(),
+      customer_id: new UUID(raw.customer_id),
       cycle_id: new UUID(raw.cycle_id),
-      user_id: new UUID(raw.user_id),
-      ...(raw.customer && {
-        user: PrismaUserMapper.toDomain(raw.customer),
-      }),
       address_id: raw.address_id ? new UUID(raw.address_id) : null,
-      ...(raw.address && {
-        address: PrismaAddressMapper.toDomain(raw.address),
-      }),
-      ...(raw.orders && {
-        orders: raw.orders.map((order) => PrismaOrderMapper.toDomain(order)),
-      }),
-      ...(raw.payments && {
-        payments: raw.payments.map((payment) =>
-          PrismaPaymentMapper.toDomain(payment)
-        ),
-      }),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
-    });
+    }) as BagEntityOf<T>;
   }
 
-  static toPrisma(bag: Bag): Prisma.BagUncheckedCreateInput {
+  static toPrisma(bag: Bag): PrismaBag {
     return {
       id: bag.id.value,
-      user_id: bag.user_id.value,
+      customer_id: bag.customer_id.value,
       cycle_id: bag.cycle_id.value,
       address_id: bag.address_id ? bag.address_id.value : null,
-      subtotal: bag.subtotal,
-      fee: bag.fee,
-      shipping: bag.shipping,
+      subtotal: new Decimal(bag.subtotal),
+      fee: new Decimal(bag.fee),
+      shipping: new Decimal(bag.shipping),
       paid: bag.paid,
       verified: bag.verified,
       code: bag.code,

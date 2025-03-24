@@ -1,12 +1,19 @@
 // Entities
 import { Bag } from "@/core/entities/bag";
-import { Payment } from "@/core/entities/payment";
+import { PaymentMethod, PaymentStatus } from "@/core/entities/payment";
+import { BagAndCustomer } from "@/core/entities/aggregates/bag-and-customer";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
+export type BagRepositoryReturnType = "bag" | "bag-and-details";
+
+export type BagEntityOf<T extends BagRepositoryReturnType> = T extends "bag"
+  ? Bag
+  : T extends "bag-and-details"
+  ? BagAndCustomer
+  : never;
 
 export interface BagsRepositorySearchRequest {
   id?: string;
+  withdraw?: boolean;
   statuses?: Bag["status"][];
   user?: { id?: string; name?: string };
   cycle?: { id?: string };
@@ -14,25 +21,24 @@ export interface BagsRepositorySearchRequest {
   orders?: { id?: string; page?: number };
   payments?: {
     id?: string;
-    status?: Payment["status"];
-    method?: Payment["method"];
+    status?: PaymentStatus[];
+    method?: PaymentMethod[];
     page?: number;
   };
-  withdraw?: boolean;
   since?: Date;
   before?: Date;
 }
 
 export interface BagsRepository {
-  find(
-    type: RepositoryResponse,
+  find<T extends BagRepositoryReturnType>(
+    type: T,
     filters: BagsRepositorySearchRequest
-  ): Promise<Bag | null>;
-  list(
-    type: RepositoryResponse,
+  ): Promise<BagEntityOf<T> | null>;
+  list<T extends BagRepositoryReturnType>(
+    type: T,
     filters: BagsRepositorySearchRequest,
     page?: number
-  ): Promise<Bag[]>;
+  ): Promise<BagEntityOf<T>[]>;
   create(bag: Bag): Promise<void>;
   update(bag: Bag): Promise<void>;
 }

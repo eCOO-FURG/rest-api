@@ -90,7 +90,6 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
               ...(offers?.page && { skip: (offers.page - 1) * 20, take: 20 }),
             },
           }),
-          ...(offers?.page && { skip: (offers.page - 1) * 20, take: 20 }),
         },
       },
     });
