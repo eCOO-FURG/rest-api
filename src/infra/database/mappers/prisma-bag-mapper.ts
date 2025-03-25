@@ -5,6 +5,8 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 // Libraries
 import { Bag as PrismaBag } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
+
+// Repositories
 import {
   BagRepositoryReturnType,
   BagEntityOf,
@@ -19,7 +21,6 @@ export class PrismaBagMapper {
       code: raw.code,
       status: raw.status,
       verified: raw.verified,
-      paid: raw.paid,
       subtotal: raw.subtotal.toNumber(),
       fee: raw.fee.toNumber(),
       shipping: raw.shipping.toNumber(),
@@ -40,7 +41,6 @@ export class PrismaBagMapper {
       subtotal: new Decimal(bag.subtotal),
       fee: new Decimal(bag.fee),
       shipping: new Decimal(bag.shipping),
-      paid: bag.paid,
       verified: bag.verified,
       code: bag.code,
       status: bag.status,

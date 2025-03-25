@@ -1,14 +1,20 @@
 // Entities
 import { Bag } from "@/core/entities/bag";
 import { PaymentMethod, PaymentStatus } from "@/core/entities/payment";
-import { BagAndCustomer } from "@/core/entities/aggregates/bag-and-customer";
+import { BagAndDetails } from "@/core/entities/aggregates/bag-and-details";
+import { BagAndOrders } from "@/core/entities/aggregates/bag-and-orders";
 
-export type BagRepositoryReturnType = "bag" | "bag-and-details";
+export type BagRepositoryReturnType =
+  | "bag"
+  | "bag-and-details"
+  | "bag-and-orders";
 
 export type BagEntityOf<T extends BagRepositoryReturnType> = T extends "bag"
   ? Bag
   : T extends "bag-and-details"
-  ? BagAndCustomer
+  ? BagAndDetails
+  : T extends "bag-and-orders"
+  ? BagAndOrders
   : never;
 
 export interface BagsRepositorySearchRequest {
@@ -19,11 +25,9 @@ export interface BagsRepositorySearchRequest {
   cycle?: { id?: string };
   address?: { id?: string } | null;
   orders?: { id?: string; page?: number };
-  payments?: {
-    id?: string;
+  payment?: {
     status?: PaymentStatus[];
     method?: PaymentMethod[];
-    page?: number;
   };
   since?: Date;
   before?: Date;

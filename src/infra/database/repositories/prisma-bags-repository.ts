@@ -17,7 +17,7 @@ import { PrismaBagMapper } from "@/infra/database/mappers/prisma-bag-mapper";
 import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
 import { PrismaBoxMapper } from "@/infra/database/mappers/prisma-box-mapper";
 import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";
-import { PrismaBagAndCustomerMapper } from "@/infra/database/mappers/prisma-bag-and-customer-mapper";
+import { PrismaBagAndDetailsMapper } from "@/infra/database/mappers/prisma-bag-and-details-mapper";
 
 export class PrismaBagsRepository implements BagsRepository {
   async find<T extends BagRepositoryReturnType>(
@@ -30,7 +30,7 @@ export class PrismaBagsRepository implements BagsRepository {
       cycle,
       address,
       orders,
-      payments,
+      payment,
       since,
       before,
     }: BagsRepositorySearchRequest
@@ -41,6 +41,10 @@ export class PrismaBagsRepository implements BagsRepository {
         status: { in: statuses },
         cycle,
         address,
+        payment: {
+          ...(payment?.status && { status: { in: payment.status } }),
+          ...(payment?.method && { method: { in: payment.method } }),
+        },
         customer: {
           id: user?.id,
           ...(user?.name && {
@@ -60,6 +64,18 @@ export class PrismaBagsRepository implements BagsRepository {
       include: {
         customer: type === "bag-and-details",
         address: type === "bag-and-details",
+        ...(type === "bag-and-details" && {
+          orders: {
+            include: { offer: { include: { product: true } } },
+            where: {
+              ...(orders?.id && { id: orders.id }),
+            },
+            ...(orders?.page && {
+              skip: (orders.page - 1) * 20,
+              take: 20,
+            }),
+          },
+        }),
       },
     });
 
@@ -69,7 +85,7 @@ export class PrismaBagsRepository implements BagsRepository {
       default:
         return PrismaBagMapper.toDomain<T>(bag);
       case "bag-and-details":
-        return PrismaBagAndCustomerMapper.toDomain<T>(bag);
+        return PrismaBagAndDetailsMapper.toDomain<T>(bag);
     }
   }
 
@@ -83,7 +99,7 @@ export class PrismaBagsRepository implements BagsRepository {
       cycle,
       address,
       orders,
-      payments,
+      payment,
       since,
       before,
     }: BagsRepositorySearchRequest,
@@ -95,6 +111,10 @@ export class PrismaBagsRepository implements BagsRepository {
         status: { in: statuses },
         cycle,
         address,
+        payment: {
+          ...(payment?.status && { status: { in: payment.status } }),
+          ...(payment?.method && { method: { in: payment.method } }),
+        },
         customer: {
           id: user?.id,
           ...(user?.name && {
@@ -106,23 +126,24 @@ export class PrismaBagsRepository implements BagsRepository {
         },
         ...(typeof withdraw === "boolean" &&
           (withdraw ? { address_id: null } : { address_id: { not: null } })),
-        ...(orders && { orders: { some: { id: orders?.id } } }),
-        ...(payments && {
-          payments: {
-            some: {
-              status: { in: payments?.status },
-              method: { in: payments?.method },
-            },
-          },
-        }),
         created_at: {
           gte: since,
           lte: before,
         },
       },
       include: {
-        customer: type === "bag-and-details",
-        address: type === "bag-and-details",
+        customer: type === "bag",
+        address: type === "bag",
+        payment: type !== "bag",
+        ...(type === "bag-and-details" && {
+          orders: {
+            include: { offer: { include: { product: true } } },
+          },
+          ...(orders?.page && {
+            skip: (orders.page - 1) * 20,
+            take: 20,
+          }),
+        }),
       },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
@@ -131,7 +152,9 @@ export class PrismaBagsRepository implements BagsRepository {
       default:
         return bags.map((bag) => PrismaBagMapper.toDomain<T>(bag));
       case "bag-and-details":
-        return bags.map((bag) => PrismaBagAndCustomerMapper.toDomain<T>(bag));
+        return bags.map((bag) => PrismaBagAndDetailsMapper.toDomain<T>(bag));
+      case "bag-and-orders":
+        return bags.map((bag) => PrismaBagAndOrdersMapper.toDomain<T>(bag));
     }
   }
 

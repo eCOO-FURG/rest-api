@@ -1,8 +1,9 @@
-import { BagAndCustomer } from "@/core/entities/aggregates/bag-and-customer";
+import { BagAndDetails } from "@/core/entities/aggregates/bag-and-details";
 import {
   User as PrismaUser,
   Bag as PrismaBag,
   Address as PrismaAddress,
+  Payment as PrismaPayment,
 } from "@prisma/client";
 
 // Repositories
@@ -15,22 +16,23 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 // Mappers
 import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
 import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";
+import { PrismaPaymentMapper } from "@/infra/database/mappers/prisma-payment-mapper";
 
-export type PrismaBagAndCustomer = PrismaBag & {
+export type PrismaBagAndDetails = PrismaBag & {
   customer: PrismaUser;
   address: PrismaAddress | null;
+  payment: PrismaPayment | null;
 };
 
-export class PrismaBagAndCustomerMapper {
+export class PrismaBagAndDetailsMapper {
   static toDomain<T extends BagRepositoryReturnType>(
-    raw: PrismaBagAndCustomer
+    raw: PrismaBagAndDetails
   ): BagEntityOf<T> {
-    return BagAndCustomer.create({
+    return BagAndDetails.create({
       id: new UUID(raw.id),
       code: raw.code,
       status: raw.status,
       verified: raw.verified,
-      paid: raw.paid,
       subtotal: raw.subtotal.toNumber(),
       fee: raw.fee.toNumber(),
       shipping: raw.shipping.toNumber(),
@@ -41,6 +43,7 @@ export class PrismaBagAndCustomerMapper {
       address: raw.address ? PrismaAddressMapper.toDomain(raw.address) : null,
       created_at: raw.created_at,
       updated_at: raw.updated_at,
+      payment: raw.payment ? PrismaPaymentMapper.toDomain(raw.payment) : null,
     }) as BagEntityOf<T>;
   }
 }
