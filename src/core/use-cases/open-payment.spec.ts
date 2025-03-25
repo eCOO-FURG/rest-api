@@ -16,7 +16,6 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 // Factories
 import { makeUser } from "@/test/factories/make-user";
 import { makeBag } from "@/test/factories/make-bag";
-import { makePayment } from "@/test/factories/make-payment";
 
 let bagsRepository: InMemoryBagsRepository;
 let paymentsRepository: InMemoryPaymentsRepository;
@@ -41,7 +40,7 @@ describe("open payment", () => {
   it("be able to open a payment", async () => {
     const user = makeUser();
 
-    const bag = makeBag({ user_id: user.id, user });
+    const bag = makeBag({ customer_id: user.id, customer: user });
     bagsRepository.items.push(bag);
 
     await sut.execute({ bag_id: bag.id.value });
@@ -58,7 +57,7 @@ describe("open payment", () => {
   it("should not be able to open a payment from a paid bag", async () => {
     const user = makeUser();
 
-    const bag = makeBag({ user_id: user.id, paid: true });
+    const bag = makeBag({ customer_id: user.id, customer: user });
 
     bagsRepository.items.push(bag);
 

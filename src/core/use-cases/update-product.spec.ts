@@ -6,7 +6,7 @@ import { InMemoryProductsRepository } from "@/test/repositories/in-memory-produc
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
-// Services
+// Storage
 import { MockedStorage } from "@/test/storage/mocked-storage";
 
 // Factories
@@ -16,7 +16,7 @@ import { makeProduct } from "@/test/factories/make-product";
 // Use-Cases
 import { UpdateProductUseCase } from "@/core/use-cases/update-product";
 
-// Utils
+// Factories
 import { makeFile } from "@/test/factories/make-file";
 
 let productsRepository: InMemoryProductsRepository;

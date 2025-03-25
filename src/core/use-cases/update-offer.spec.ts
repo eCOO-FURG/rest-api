@@ -85,7 +85,7 @@ describe("update offer", () => {
       price: 20,
     });
 
-    const updatedOffer = await offersRepository.find("basic", {
+    const updatedOffer = await offersRepository.find("offer", {
       id: offer.id.value,
     });
 

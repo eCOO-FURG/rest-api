@@ -8,6 +8,7 @@ export type PaymentEntityOf<T extends PaymentRepositoryReturnType> =
 
 export interface PaymentsRepositorySearchRequest {
   id?: string;
+  bag_id?: string;
 }
 
 export interface PaymentsRepository {

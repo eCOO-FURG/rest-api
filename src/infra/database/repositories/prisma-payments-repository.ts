@@ -16,10 +16,10 @@ import { PrismaPaymentMapper } from "@/infra/database/mappers/prisma-payment-map
 export class PrismaPaymentsRepository implements PaymentsRepository {
   async find<T extends PaymentRepositoryReturnType>(
     _: T,
-    { id }: PaymentsRepositorySearchRequest
+    { id, bag_id }: PaymentsRepositorySearchRequest
   ): Promise<PaymentEntityOf<T> | null> {
     const payment = await prisma.payment.findFirst({
-      where: { id },
+      where: { id, bag_id },
     });
 
     if (!payment) return null;

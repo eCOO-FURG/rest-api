@@ -53,7 +53,7 @@ describe("register product", () => {
     expect(product.name).toEqual("Produto show");
     expect(product.pricing).toEqual("UNIT");
     expect(product.archived).toBeFalsy();
-    expect(product.perishable).toEqual(true)
+    expect(product.perishable).toEqual(true);
   });
 
   it("should find a product by name and pricing", async () => {
@@ -64,7 +64,7 @@ describe("register product", () => {
 
     await productsRepository.create(product);
 
-    const foundProduct = await productsRepository.find("basic", {
+    const foundProduct = await productsRepository.find("product", {
       name: "Teste produto",
       pricing: "UNIT",
     });
@@ -117,7 +117,7 @@ describe("register product", () => {
       category_id: category.id.value,
     });
 
-    const updatedProduct = await productsRepository.find("basic", {
+    const updatedProduct = await productsRepository.find("product", {
       name: "Produto arquivado",
       pricing: "UNIT",
     });

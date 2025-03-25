@@ -16,6 +16,8 @@ import { makeAddress } from "@/test/factories/make-address";
 import { makePayment } from "@/test/factories/make-payment";
 import { BagAndOrders } from "@/core/entities/aggregates/bag-and-orders";
 import { makeUser } from "../factories/make-user";
+import { makeOfferAndDetails } from "../factories/make-offer-and-details";
+import { OrderAndOffer } from "@/core/entities/aggregates/order-and-offer";
 
 export class InMemoryBagsRepository implements BagsRepository {
   items: Bag[] = [];
@@ -82,6 +84,12 @@ export class InMemoryBagsRepository implements BagsRepository {
           address: bag.address ?? makeAddress(),
           payment: makePayment(),
           customer: bag.customer ?? makeUser(),
+          orders: bag.orders.map((order) =>
+            OrderAndOffer.create({
+              ...order.props,
+              offer: makeOfferAndDetails(order.offer),
+            })
+          ),
         }) as BagEntityOf<T>;
     }
   }
@@ -156,6 +164,12 @@ export class InMemoryBagsRepository implements BagsRepository {
               address: bag.address ?? makeAddress(),
               payment: makePayment(),
               customer: bag.customer ?? makeUser(),
+              orders: bag.orders.map((order) =>
+                OrderAndOffer.create({
+                  ...order.props,
+                  offer: makeOfferAndDetails(order.offer),
+                })
+              ),
             }) as BagEntityOf<T>
         );
     }

@@ -1,6 +1,7 @@
 // Entities
 import { Box } from "@/core/entities/box";
 import { BoxAndOrders } from "@/core/entities/aggregates/box-and-orders";
+import { OrderAndOffer } from "@/core/entities/aggregates/order-and-offer";
 
 // Repositories
 import {
@@ -14,10 +15,8 @@ import {
 import { paginate } from "@/test/utils/paginate";
 
 // Factories
-import { makeUser } from "@/test/factories/make-user";
-import { makeCatalog } from "@/test/factories/make-catalog";
-import { makeFarm } from "@/test/factories/make-farm";
 import { makeCatalogAndFarm } from "@/test/factories/make-farm-and-catalog";
+import { makeOfferAndDetails } from "@/test/factories/make-offer-and-details";
 
 export class InMemoryBoxesRepository implements BoxesRepository {
   items: Box[] = [];
@@ -55,6 +54,12 @@ export class InMemoryBoxesRepository implements BoxesRepository {
         return BoxAndOrders.create({
           ...box.props,
           catalog: makeCatalogAndFarm(box.catalog),
+          orders: box.orders.map((order) =>
+            OrderAndOffer.create({
+              ...order.props,
+              offer: makeOfferAndDetails(order.offer),
+            })
+          ),
         }) as BoxEntityOf<T>;
     }
   }
@@ -98,6 +103,12 @@ export class InMemoryBoxesRepository implements BoxesRepository {
             BoxAndOrders.create({
               ...box.props,
               catalog: makeCatalogAndFarm(box.catalog),
+              orders: box.orders.map((order) =>
+                OrderAndOffer.create({
+                  ...order.props,
+                  offer: makeOfferAndDetails(order.offer),
+                })
+              ),
             }) as BoxEntityOf<T>
         );
     }

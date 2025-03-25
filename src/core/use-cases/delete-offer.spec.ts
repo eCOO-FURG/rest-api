@@ -34,7 +34,11 @@ describe("delete offer", () => {
     offersRepository = new InMemoryOffersRepository();
     catalogsRepository = new InMemoryCatalogsRepository();
 
-    sut = new DeleteOfferUseCase(offersRepository, cyclesRepository);
+    sut = new DeleteOfferUseCase(
+      offersRepository,
+      catalogsRepository,
+      cyclesRepository
+    );
   });
 
   it("should be able to delete an offer", async () => {
@@ -64,7 +68,7 @@ describe("delete offer", () => {
 
     await sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value });
 
-    const deletedOffer = await offersRepository.find("basic", {
+    const deletedOffer = await offersRepository.find("offer", {
       id: offer.id.value,
     });
 

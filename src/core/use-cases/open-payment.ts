@@ -1,5 +1,4 @@
 // Entities
-import { UUID } from "@/core/entities/aggregates/uuid";
 import { Payment } from "@/core/entities/payment";
 
 // Repositories
@@ -25,22 +24,24 @@ export class OpenPaymentUseCase {
   ) {}
 
   async execute({ bag_id }: OpenPaymentUseCaseRequest) {
-    const bag = await this.bagsRepository.find("bag-and-details", {
+    const bag = await this.bagsRepository.find("bag", {
       id: bag_id,
     });
 
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 
-    if (bag.paid)
+    const previous = await this.paymentsRepository.find("payment", {
+      bag_id: bag.id.value,
+    });
+
+    if (previous && previous.status === "DONE")
       throw new ResourceAlreadyExistsError("Pagamento da sacola", bag_id);
 
     const payment = Payment.create({
       method: "PIX",
-      bag_id: new UUID(bag_id),
+      bag_id: bag.id,
       bag,
     });
-
-    await this.paymentsRepository.create(payment);
 
     const charge = await this.pixProvider.charge(payment);
 

@@ -1,7 +1,7 @@
 // Entities
 import { Catalog } from "@/core/entities/catalog";
 import { CatalogAndFarm } from "@/core/entities/aggregates/catalog-and-farm";
-import { FarmAndAdmin } from "@/core/entities/aggregates/farm-and-admin";
+
 // Repositories
 import {
   CatalogsRepository,
@@ -14,9 +14,9 @@ import {
 import { paginate } from "@/test/utils/paginate";
 
 // Factories
-import { makeFarm } from "@/test/factories/make-farm";
-import { makeUser } from "@/test/factories/make-user";
 import { makeFarmAndAdmin } from "@/test/factories/make-farm-and-admin";
+import { CatalogAndOffers } from "@/core/entities/aggregates/catalog-and-offers";
+import { makeOfferAndDetails } from "@/test/factories/make-offer-and-details";
 
 export class InMemoryCatalogsRepository implements CatalogsRepository {
   items: Catalog[] = [];
@@ -47,14 +47,15 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
       default:
         return catalog as CatalogEntityOf<T>;
       case "catalog-and-farm":
-        const farm = catalog.farm ?? makeFarm();
-
         return CatalogAndFarm.create({
           ...catalog.props,
-          farm: FarmAndAdmin.create({
-            ...farm.props,
-            admin: farm.admin ?? makeUser(),
-          }),
+          farm: makeFarmAndAdmin(catalog.farm),
+        }) as CatalogEntityOf<T>;
+      case "catalog-and-offers":
+        return CatalogAndOffers.create({
+          ...catalog.props,
+          farm: makeFarmAndAdmin(catalog.farm),
+          offers: catalog.offers.map((offer) => makeOfferAndDetails(offer)),
         }) as CatalogEntityOf<T>;
     }
   }
@@ -89,6 +90,14 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
           return CatalogAndFarm.create({
             ...catalog.props,
             farm: makeFarmAndAdmin(catalog.farm),
+          }) as CatalogEntityOf<T>;
+        });
+      case "catalog-and-offers":
+        return catalogs.map((catalog) => {
+          return CatalogAndOffers.create({
+            ...catalog.props,
+            farm: makeFarmAndAdmin(catalog.farm),
+            offers: catalog.offers.map((offer) => makeOfferAndDetails(offer)),
           }) as CatalogEntityOf<T>;
         });
     }

@@ -18,15 +18,14 @@ import { makeFarm } from "@/test/factories/make-farm";
 import { MockedMailer } from "@/test/mail/mocked-mailer";
 
 // Libraries
-import { beforeEach, expect, MockInstance } from "vitest";
+import { beforeEach, expect } from "vitest";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
+
 let usersRepository: InMemoryUsersRepository;
 let farmsRepository: InMemoryFarmsRepository;
 let mailer: MockedMailer;
 
 let sut: RequestHelpUseCase;
-
-let spy: MockInstance;
 
 describe("RequestHelpUseCase", () => {
   beforeEach(() => {
