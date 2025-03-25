@@ -12,15 +12,19 @@ import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
 import { PrismaProductMapper } from "@/infra/database/mappers/prisma-product-mapper";
+import { PrismaProductAndCategoryMapper } from "@/infra/database/mappers/prisma-product-and-category-mapper";
 
 // Types
-import { RepositoryResponse } from "@/core/types/repository-response";
+import {
+  ProductRepositoryReturnType,
+  ProductEntityOf,
+} from "@/core/repositories/products-repository";
 
 export class PrismaProductRepository implements ProductsRepository {
-  async find(
-    type: RepositoryResponse,
+  async find<T extends ProductRepositoryReturnType>(
+    type: T,
     { id, name, pricing, archived, category }: ProductsRepositorySearchRequest
-  ): Promise<Product | null> {
+  ): Promise<ProductEntityOf<T> | null> {
     const product = await prisma.product.findFirst({
       where: {
         id,
@@ -35,44 +39,48 @@ export class PrismaProductRepository implements ProductsRepository {
         ...(name && { name: { contains: name, mode: "insensitive" } }),
       },
       include: {
-        ...(type !== "basic" && {
-          category: true,
-        }),
+        category: type === "product-and-category",
       },
     });
 
     if (!product) return null;
 
-    return PrismaProductMapper.toDomain(product);
+    switch (type) {
+      default:
+        return PrismaProductMapper.toDomain<T>(product);
+      case "product-and-category":
+        return PrismaProductAndCategoryMapper.toDomain<T>(product);
+    }
   }
 
-  async list(
-    type: RepositoryResponse,
+  async list<T extends ProductRepositoryReturnType>(
+    type: T,
     { name, id, archived, pricing, category }: ProductsRepositorySearchRequest,
     page?: number
-  ): Promise<Product[]> {
+  ): Promise<ProductEntityOf<T>[]> {
     const products = await prisma.product.findMany({
       where: {
         id,
         pricing,
         archived,
+        name: { contains: name, mode: "insensitive" },
         category: {
           id: category?.id,
-          ...(category?.name && {
-            name: { contains: category.name, mode: "insensitive" },
-          }),
+          name: { contains: category?.name, mode: "insensitive" },
         },
-        ...(name && { name: { contains: name, mode: "insensitive" } }),
       },
       include: {
-        ...(type !== "basic" && {
-          category: true,
-        }),
+        category: type === "product-and-category",
       },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
-    return products.map((product) => PrismaProductMapper.toDomain(product));
+    switch (type) {
+      default:
+        return products.map(PrismaProductMapper.toDomain<T>);
+      case "product-and-category":
+        return products.map(PrismaProductAndCategoryMapper.toDomain<T>);
+    }
   }
 
   async create(product: Product): Promise<void> {

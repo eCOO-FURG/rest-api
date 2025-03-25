@@ -8,7 +8,6 @@ export type PaymentEntityOf<T extends PaymentRepositoryReturnType> =
 
 export interface PaymentsRepositorySearchRequest {
   id?: string;
-  bag?: { id?: string };
 }
 
 export interface PaymentsRepository {
@@ -16,11 +15,6 @@ export interface PaymentsRepository {
     type: T,
     filters: PaymentsRepositorySearchRequest
   ): Promise<PaymentEntityOf<T> | null>;
-  list<T extends PaymentRepositoryReturnType>(
-    type: T,
-    filters: PaymentsRepositorySearchRequest,
-    page?: number
-  ): Promise<PaymentEntityOf<T>[]>;
   create(payment: Payment): Promise<void>;
   update(payment: Payment): Promise<void>;
 }

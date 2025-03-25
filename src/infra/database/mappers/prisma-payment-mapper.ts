@@ -4,15 +4,13 @@ import { Payment } from "@/core/entities/payment";
 import { PaymentEntityOf } from "@/core/repositories/payments-repository";
 
 // Libraries
-import { Prisma } from "@prisma/client";
+import { Prisma, Payment as PrismaPayment } from "@prisma/client";
 
 // Types
 import { PaymentRepositoryReturnType } from "@/core/repositories/payments-repository";
 
-type PrismaPayment = Prisma.PaymentGetPayload<{}>;
-
 export class PrismaPaymentMapper {
-  static toDomain<T extends PaymentRepositoryReturnType>(
+  static toDomain<T extends PaymentRepositoryReturnType = "payment">(
     raw: PrismaPayment
   ): PaymentEntityOf<T> {
     return Payment.create({

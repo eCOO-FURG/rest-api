@@ -22,7 +22,7 @@ export type PrismaOrderAndOffer = PrismaOrder & {
 };
 
 export class PrismaOrderAndOfferMapper {
-  static toDomain<T extends OrderRepositoryReturnType>(
+  static toDomain<T extends OrderRepositoryReturnType = "order-and-offer">(
     raw: PrismaOrderAndOffer
   ): OrderEntityOf<T> {
     return OrderAndOffer.create({

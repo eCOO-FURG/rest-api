@@ -85,7 +85,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
         return PrismaCatalogMapper.toDomain<T>(catalog);
       case "catalog-and-farm":
         return PrismaCatalogAndFarmMapper.toDomain<T>(
-          catalog as unknown as PrismaCatalogAndFarm
+          catalog as PrismaCatalogAndFarm
         );
       case "catalog-and-offers":
         return PrismaCatalogAndOffersMapper.toDomain<T>(
