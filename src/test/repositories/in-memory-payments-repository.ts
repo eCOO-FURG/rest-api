@@ -5,44 +5,41 @@ import { Payment } from "@/core/entities/payment";
 import {
   PaymentsRepository,
   PaymentsRepositorySearchRequest,
+  PaymentRepositoryReturnType,
+  PaymentEntityOf,
 } from "@/core/repositories/payments-repository";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
-
 // Utils
-import { find } from "@/test/utils/find";
-import { filter } from "@/test/utils/filter";
 import { paginate } from "@/test/utils/paginate";
 
 export class InMemoryPaymentsRepository implements PaymentsRepository {
   items: Payment[] = [];
 
-  async find(
-    _: RepositoryResponse,
+  async find<T extends PaymentRepositoryReturnType>(
+    _: T,
     { id }: PaymentsRepositorySearchRequest
-  ): Promise<Payment | null> {
-    const payment = await find<Payment>(
-      this.items,
-      async (item) => !id || item.id.equals(id)
+  ): Promise<PaymentEntityOf<T> | null> {
+    const payment = this.items.find((item) =>
+      Boolean(!id || item.id.equals(id))
     );
 
-    return payment ?? null;
+    if (!payment) return null;
+
+    return payment as PaymentEntityOf<T>;
   }
 
-  async list(
-    _: RepositoryResponse,
+  async list<T extends PaymentRepositoryReturnType>(
+    _: T,
     { id }: PaymentsRepositorySearchRequest,
     page?: number
-  ): Promise<Payment[]> {
-    let payments = await filter<Payment>(
-      this.items,
-      async (item) => !id || item.id.equals(id)
+  ): Promise<PaymentEntityOf<T>[]> {
+    let payments = this.items.filter((item) =>
+      Boolean(!id || item.id.equals(id))
     );
 
     if (page) payments = paginate(payments, page);
 
-    return payments;
+    return payments as PaymentEntityOf<T>[];
   }
 
   async create(payment: Payment): Promise<void> {

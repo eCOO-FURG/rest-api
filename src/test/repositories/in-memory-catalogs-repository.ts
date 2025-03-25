@@ -16,6 +16,7 @@ import { paginate } from "@/test/utils/paginate";
 // Factories
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeUser } from "@/test/factories/make-user";
+import { makeFarmAndAdmin } from "@/test/factories/make-farm-and-admin";
 
 export class InMemoryCatalogsRepository implements CatalogsRepository {
   items: Catalog[] = [];
@@ -85,14 +86,9 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
         return catalogs as CatalogEntityOf<T>[];
       case "catalog-and-farm":
         return catalogs.map((catalog) => {
-          const farm = catalog.farm ?? makeFarm({});
-
           return CatalogAndFarm.create({
             ...catalog.props,
-            farm: FarmAndAdmin.create({
-              ...farm.props,
-              admin: farm.admin ?? makeUser(),
-            }),
+            farm: makeFarmAndAdmin(catalog.farm),
           }) as CatalogEntityOf<T>;
         });
     }

@@ -1,71 +1,78 @@
 // Entities
 import { Box } from "@/core/entities/box";
+import { BoxAndOrders } from "@/core/entities/aggregates/box-and-orders";
 
 // Repositories
 import {
   BoxesRepository,
   BoxesRepositorySearchRequest,
+  BoxRepositoryReturnType,
+  BoxEntityOf,
 } from "@/core/repositories/boxes-repository";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
-
 // Utils
-import { find } from "@/test/utils/find";
-import { filter } from "@/test/utils/filter";
 import { paginate } from "@/test/utils/paginate";
+
+// Factories
+import { makeUser } from "@/test/factories/make-user";
+import { makeCatalog } from "@/test/factories/make-catalog";
+import { makeFarm } from "@/test/factories/make-farm";
+import { makeCatalogAndFarm } from "@/test/factories/make-farm-and-catalog";
 
 export class InMemoryBoxesRepository implements BoxesRepository {
   items: Box[] = [];
 
-  async find(
-    _: RepositoryResponse,
+  async find<T extends BoxRepositoryReturnType>(
+    type: T,
     { id, catalog, orders, since, status }: BoxesRepositorySearchRequest
-  ): Promise<Box | null> {
-    const box = await find<Box>(
-      this.items,
-      async (item) =>
+  ): Promise<BoxEntityOf<T> | null> {
+    const box = this.items.find((item) =>
+      Boolean(
         (!id || item.id.equals(id)) &&
-        (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
-        Boolean(
-          !catalog?.farm?.id || item.catalog?.farm_id.equals(catalog.farm.id)
-        ) &&
-        Boolean(
-          !catalog?.farm?.name ||
-            item.catalog?.farm?.name.includes(catalog.farm.name!)
-        ) &&
-        Boolean(
-          !catalog?.cycle?.id || item.catalog?.cycle_id.equals(catalog.cycle.id)
-        ) &&
-        (!since || item.created_at >= since) &&
-        (!status || item.status === status)
+          (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
+          (!catalog?.farm?.id ||
+            item.catalog?.farm_id.equals(catalog.farm.id)) &&
+          (!catalog?.farm?.name ||
+            item.catalog?.farm?.name.includes(catalog.farm.name!)) &&
+          (!since || item.created_at >= since) &&
+          (!status || item.status === status)
+      )
     );
 
     if (!box) return null;
 
     if (orders?.page) box.orders = paginate(box.orders, orders.page);
 
-    return box;
+    switch (type) {
+      default:
+        return box as BoxEntityOf<T>;
+      case "box-and-orders":
+        return BoxAndOrders.create({
+          ...box.props,
+          catalog: makeCatalogAndFarm(box.catalog),
+        }) as BoxEntityOf<T>;
+      case "box-and-catalog":
+        return BoxAndOrders.create({
+          ...box.props,
+          catalog: makeCatalogAndFarm(box.catalog),
+        }) as BoxEntityOf<T>;
+    }
   }
-
-  async list(
-    _: RepositoryResponse,
+  async list<T extends BoxRepositoryReturnType>(
+    type: T,
     { catalog, orders, since, status }: BoxesRepositorySearchRequest,
     page?: number
-  ): Promise<Box[]> {
-    let boxes = await filter(
-      this.items,
-      async (item) =>
-        Boolean(!catalog?.id || item.catalog_id.equals(catalog.id)) &&
-        Boolean(
-          !catalog?.farm?.id || item.catalog?.farm_id.equals(catalog.farm.id)
-        ) &&
-        Boolean(
-          !catalog?.farm?.name ||
-            item.catalog?.farm?.name.includes(catalog.farm.name!)
-        ) &&
-        (!since || item.created_at >= since) &&
-        (!status || item.status === status)
+  ): Promise<BoxEntityOf<T>[]> {
+    let boxes = this.items.filter((item) =>
+      Boolean(
+        (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
+          (!catalog?.farm?.id ||
+            item.catalog?.farm_id.equals(catalog.farm.id)) &&
+          (!catalog?.farm?.name ||
+            item.catalog?.farm?.name.includes(catalog.farm.name!)) &&
+          (!since || item.created_at >= since) &&
+          (!status || item.status === status)
+      )
     );
 
     if (orders?.page) {
@@ -74,12 +81,30 @@ export class InMemoryBoxesRepository implements BoxesRepository {
 
     if (page) boxes = paginate(boxes, page);
 
-    return boxes;
+    switch (type) {
+      default:
+        return boxes as BoxEntityOf<T>[];
+      case "box-and-orders":
+        return boxes.map(
+          (box) =>
+            BoxAndOrders.create({
+              ...box.props,
+              catalog: makeCatalogAndFarm(box.catalog),
+            }) as BoxEntityOf<T>
+        );
+      case "box-and-catalog":
+        return boxes.map(
+          (box) =>
+            BoxAndOrders.create({
+              ...box.props,
+              catalog: makeCatalogAndFarm(box.catalog),
+            }) as BoxEntityOf<T>
+        );
+    }
   }
 
   async count(filters: BoxesRepositorySearchRequest): Promise<number> {
-    const boxes = await this.list("basic", filters);
-    return boxes.length;
+    return (await this.list("box", filters)).length;
   }
 
   async create(box: Box): Promise<void> {

@@ -1,24 +1,26 @@
 // Entities
 import { Order } from "@/core/entities/order";
+import { OrderAndOffer } from "@/core/entities/aggregates/order-and-offer";
 
 // Repositories
 import {
   OrdersRepository,
   OrdersRepositorySearchRequest,
+  OrderRepositoryReturnType,
+  OrderEntityOf,
 } from "@/core/repositories/orders-repository";
-import { RepositoryResponse } from "@/core/types/repository-response";
 
-// Utils
-import { find } from "@/test/utils/find";
+// Factories
+import { makeOfferAndDetails } from "@/test/factories/make-offer-and-details";
 
 export class InMemoryOrdersRepository implements OrdersRepository {
   items: Order[] = [];
 
-  async find(
-    _: RepositoryResponse,
+  async find<T extends OrderRepositoryReturnType>(
+    type: T,
     { id, bag, offer, since, before }: OrdersRepositorySearchRequest
-  ): Promise<Order | null> {
-    const order = await find<Order>(this.items, async (item) => {
+  ): Promise<OrderEntityOf<T> | null> {
+    const order = this.items.find((item) => {
       return (
         (!id || item.id.equals(id)) &&
         (!bag?.id || item.bag_id.equals(bag.id)) &&
@@ -30,7 +32,15 @@ export class InMemoryOrdersRepository implements OrdersRepository {
 
     if (!order) return null;
 
-    return order;
+    switch (type) {
+      default:
+        return order as OrderEntityOf<T>;
+      case "order-and-offer":
+        return OrderAndOffer.create({
+          ...order.props,
+          offer: makeOfferAndDetails(order.offer),
+        }) as OrderEntityOf<T>;
+    }
   }
 
   async update(order: Order): Promise<void> {

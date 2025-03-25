@@ -16,7 +16,7 @@ export class InMemoryUsersRepository implements UsersRepository {
   items: User[] = [];
 
   async find<T extends UserRepositoryReturnType>(
-    type: T,
+    _: T,
     { id, email, phone, cpf, chat, roles }: UsersRepositorySearchRequest
   ): Promise<UserEntityOf<T> | null> {
     const user = this.items.find((item) =>
@@ -36,7 +36,7 @@ export class InMemoryUsersRepository implements UsersRepository {
   }
 
   async list<T extends UserRepositoryReturnType>(
-    type: T,
+    _: T,
     { id, email, phone, cpf, roles, chat }: UsersRepositorySearchRequest,
     page?: number
   ): Promise<UserEntityOf<T>[]> {
