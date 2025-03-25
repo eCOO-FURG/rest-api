@@ -18,7 +18,10 @@ import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper"
 import { PrismaBoxMapper } from "@/infra/database/mappers/prisma-box-mapper";
 import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";
 import { PrismaBagAndDetailsMapper } from "@/infra/database/mappers/prisma-bag-and-details-mapper";
-
+import {
+  PrismaBagAndOrders,
+  PrismaBagAndOrdersMapper,
+} from "@/infra/database/mappers/prisma-bag-and-orders-mapper";
 export class PrismaBagsRepository implements BagsRepository {
   async find<T extends BagRepositoryReturnType>(
     type: T,
@@ -62,14 +65,13 @@ export class PrismaBagsRepository implements BagsRepository {
         },
       },
       include: {
-        customer: type === "bag-and-details",
-        address: type === "bag-and-details",
-        ...(type === "bag-and-details" && {
+        customer: type !== "bag",
+        address: type !== "bag",
+        payment: type !== "bag",
+        ...(type === "bag-and-orders" && {
           orders: {
             include: { offer: { include: { product: true } } },
-            where: {
-              ...(orders?.id && { id: orders.id }),
-            },
+            where: { id: orders?.id },
             ...(orders?.page && {
               skip: (orders.page - 1) * 20,
               take: 20,
@@ -86,6 +88,8 @@ export class PrismaBagsRepository implements BagsRepository {
         return PrismaBagMapper.toDomain<T>(bag);
       case "bag-and-details":
         return PrismaBagAndDetailsMapper.toDomain<T>(bag);
+      case "bag-and-orders":
+        return PrismaBagAndOrdersMapper.toDomain<T>(bag as PrismaBagAndOrders);
     }
   }
 
@@ -124,6 +128,9 @@ export class PrismaBagsRepository implements BagsRepository {
             ],
           }),
         },
+        orders: {
+          some: { id: orders?.id },
+        },
         ...(typeof withdraw === "boolean" &&
           (withdraw ? { address_id: null } : { address_id: { not: null } })),
         created_at: {
@@ -132,17 +139,17 @@ export class PrismaBagsRepository implements BagsRepository {
         },
       },
       include: {
-        customer: type === "bag",
-        address: type === "bag",
+        customer: type !== "bag",
+        address: type !== "bag",
         payment: type !== "bag",
-        ...(type === "bag-and-details" && {
+        ...(type === "bag-and-orders" && {
           orders: {
             include: { offer: { include: { product: true } } },
+            ...(orders?.page && {
+              skip: (orders.page - 1) * 20,
+              take: 20,
+            }),
           },
-          ...(orders?.page && {
-            skip: (orders.page - 1) * 20,
-            take: 20,
-          }),
         }),
       },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
@@ -150,11 +157,13 @@ export class PrismaBagsRepository implements BagsRepository {
 
     switch (type) {
       default:
-        return bags.map((bag) => PrismaBagMapper.toDomain<T>(bag));
+        return bags.map(PrismaBagMapper.toDomain<T>);
       case "bag-and-details":
-        return bags.map((bag) => PrismaBagAndDetailsMapper.toDomain<T>(bag));
+        return bags.map(PrismaBagAndDetailsMapper.toDomain<T>);
       case "bag-and-orders":
-        return bags.map((bag) => PrismaBagAndOrdersMapper.toDomain<T>(bag));
+        return bags.map((bag) =>
+          PrismaBagAndOrdersMapper.toDomain<T>(bag as PrismaBagAndOrders)
+        );
     }
   }
 

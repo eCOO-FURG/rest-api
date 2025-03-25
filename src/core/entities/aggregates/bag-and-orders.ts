@@ -24,6 +24,10 @@ export class BagAndOrders extends Bag<BagAndOrdersProps> {
     return this.props.address;
   }
 
+  get payment() {
+    return this.props.payment;
+  }
+
   static create(props: Optional<BagAndOrdersProps, "orders">) {
     return new BagAndOrders({
       ...props,

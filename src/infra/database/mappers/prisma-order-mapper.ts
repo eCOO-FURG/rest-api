@@ -12,7 +12,7 @@ import {
 } from "@/core/repositories/orders-repository";
 
 export class PrismaOrderMapper {
-  static toDomain<T extends OrderRepositoryReturnType>(
+  static toDomain<T extends OrderRepositoryReturnType = "order">(
     raw: PrismaOrder
   ): OrderEntityOf<T> {
     return Order.create({

@@ -19,7 +19,7 @@ export type PrismaFarmAndAdmin = PrismaFarm & {
 };
 
 export class PrismaFarmAndAdminMapper {
-  static toDomain<T extends FarmRepositoryReturnType>(
+  static toDomain<T extends FarmRepositoryReturnType = "farm-and-admin">(
     raw: PrismaFarmAndAdmin
   ): FarmEntityOf<T> {
     return FarmAndAdmin.create({

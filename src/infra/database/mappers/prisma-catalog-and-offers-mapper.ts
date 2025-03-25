@@ -1,5 +1,5 @@
 // Libraries
-import { Catalog as PrismaCatalog, Farm as PrismaFarm } from "@prisma/client";
+import { Catalog as PrismaCatalog } from "@prisma/client";
 
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
@@ -12,19 +12,22 @@ import {
 } from "@/core/repositories/catalogs-repository";
 
 // Mappers
-import { PrismaFarmMapper } from "@/infra/database/mappers/prisma-farm-mapper";
+import {
+  PrismaFarmAndAdmin,
+  PrismaFarmAndAdminMapper,
+} from "@/infra/database/mappers/prisma-farm-and-admin-mapper";
 import {
   PrismaOfferAndProduct,
   PrismaOfferAndProductMapper,
 } from "@/infra/database/mappers/prisma-offer-and-product-mapper";
 
 export type PrismaCatalogAndOffers = PrismaCatalog & {
-  farm: PrismaFarm;
+  farm: PrismaFarmAndAdmin;
   offers: PrismaOfferAndProduct[];
 };
 
 export class PrismaCatalogAndOffersMapper {
-  static toDomain<T extends CatalogRepositoryReturnType>(
+  static toDomain<T extends CatalogRepositoryReturnType = "catalog-and-offers">(
     raw: PrismaCatalogAndOffers
   ): CatalogEntityOf<T> {
     return CatalogAndOffers.create({
@@ -32,10 +35,8 @@ export class PrismaCatalogAndOffersMapper {
       fee: raw.fee,
       cycle_id: new UUID(raw.cycle_id),
       farm_id: new UUID(raw.farm_id),
-      farm: PrismaFarmMapper.toDomain<"farm-and-admin">(raw.farm),
-      offers: raw.offers.map(
-        PrismaOfferAndProductMapper.toDomain<"offer-and-product">
-      ),
+      farm: PrismaFarmAndAdminMapper.toDomain(raw.farm),
+      offers: raw.offers.map(PrismaOfferAndProductMapper.toDomain),
     }) as CatalogEntityOf<T>;
   }
 }

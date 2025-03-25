@@ -4,7 +4,6 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { Cycle } from "@/core/entities/cycle";
 import { Entity, EntityRequest } from "@/core/entities/entity";
 import { Order } from "@/core/entities/order";
-import { Payment } from "@/core/entities/payment";
 import { User } from "@/core/entities/user";
 
 // Types
@@ -12,48 +11,42 @@ import { Optional } from "@/core/types/optional";
 
 export type BagStatus = (typeof Bag.statuses)[number];
 export interface BagProps extends EntityRequest {
-  user_id: UUID;
-  user?: User;
+  customer_id: UUID;
+  customer?: User;
 
   cycle_id: UUID;
   cycle?: Cycle;
 
   address_id: UUID | null;
-  address?: Address;
+  address?: Address | null;
 
   subtotal: number;
   shipping: number;
   fee: number;
 
   code: string;
-  paid: boolean;
   verified: boolean;
 
   status: BagStatus;
 
   orders: Order[];
-  payments: Payment[];
 }
 
-export class Bag extends Entity<BagProps> {
-  get user() {
-    return this.props.user;
+export class Bag<Props extends BagProps = BagProps> extends Entity<Props> {
+  get customer() {
+    return this.props.customer;
   }
 
   get cycle() {
     return this.props.cycle;
   }
 
-  get status() {
-    return this.props.status;
-  }
-
   get address() {
     return this.props.address;
   }
 
-  set status(value: BagProps["status"]) {
-    this.props.status = value;
+  get status() {
+    return this.props.status;
   }
 
   get code() {
@@ -92,16 +85,8 @@ export class Bag extends Entity<BagProps> {
     this.props.orders = value;
   }
 
-  get payments() {
-    return this.props.payments;
-  }
-
-  set payments(value: Payment[]) {
-    this.props.payments = value;
-  }
-
-  get user_id() {
-    return this.props.user_id;
+  get customer_id() {
+    return this.props.customer_id;
   }
 
   get address_id() {
@@ -112,12 +97,12 @@ export class Bag extends Entity<BagProps> {
     return this.props.cycle_id;
   }
 
-  get paid() {
-    return this.props.paid;
-  }
-
   get verified() {
     return this.props.verified;
+  }
+
+  set status(value: BagStatus) {
+    this.props.status = value;
   }
 
   add(order: Order) {
@@ -131,15 +116,12 @@ export class Bag extends Entity<BagProps> {
     props: Optional<
       BagProps,
       | "status"
-      | "address"
-      | "orders"
-      | "payments"
-      | "address_id"
-      | "paid"
       | "verified"
       | "subtotal"
       | "shipping"
       | "fee"
+      | "orders"
+      | "address_id"
     >
   ) {
     const bag = new Bag({
@@ -148,11 +130,9 @@ export class Bag extends Entity<BagProps> {
       shipping: props.address_id ? 10 : 0,
       subtotal: props.subtotal ?? 0,
       fee: props.fee ?? 0,
-      paid: props.paid ?? false,
       verified: props.verified ?? false,
       status: props.status ?? "PENDING",
       orders: props.orders ?? [],
-      payments: props.payments ?? [],
     });
 
     return bag;

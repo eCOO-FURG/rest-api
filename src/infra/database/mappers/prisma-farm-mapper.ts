@@ -10,7 +10,7 @@ import {
 } from "@/core/repositories/farms-repository";
 
 export class PrismaFarmMapper {
-  static toDomain<T extends FarmRepositoryReturnType>(
+  static toDomain<T extends FarmRepositoryReturnType = "farm">(
     raw: PrismaFarm
   ): FarmEntityOf<T> {
     return Farm.create({

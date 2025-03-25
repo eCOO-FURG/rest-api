@@ -19,7 +19,7 @@ export type PrismaOfferAndProduct = PrismaOffer & {
 };
 
 export class PrismaOfferAndProductMapper {
-  static toDomain<T extends OfferRepositoryReturnType>(
+  static toDomain<T extends OfferRepositoryReturnType = "offer-and-product">(
     raw: PrismaOfferAndProduct
   ): OfferEntityOf<T> {
     return OfferAndProduct.create({

@@ -12,7 +12,7 @@ import { Prisma } from "@prisma/client";
 type PrismaAddress = Prisma.AddressGetPayload<{}>;
 
 export class PrismaAddressMapper {
-  static toDomain<T extends AddressRepositoryReturnType>(
+  static toDomain<T extends AddressRepositoryReturnType = "address">(
     raw: PrismaAddress
   ): AddressEntityOf<T> {
     return Address.create({

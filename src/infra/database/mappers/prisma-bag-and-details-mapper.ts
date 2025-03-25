@@ -1,4 +1,7 @@
+// Entities
 import { BagAndDetails } from "@/core/entities/aggregates/bag-and-details";
+
+// Libraries
 import {
   User as PrismaUser,
   Bag as PrismaBag,
@@ -25,7 +28,7 @@ export type PrismaBagAndDetails = PrismaBag & {
 };
 
 export class PrismaBagAndDetailsMapper {
-  static toDomain<T extends BagRepositoryReturnType>(
+  static toDomain<T extends BagRepositoryReturnType = "bag-and-details">(
     raw: PrismaBagAndDetails
   ): BagEntityOf<T> {
     return BagAndDetails.create({

@@ -13,7 +13,7 @@ import {
 } from "@/core/repositories/bags-repository";
 
 export class PrismaBagMapper {
-  static toDomain<T extends BagRepositoryReturnType>(
+  static toDomain<T extends BagRepositoryReturnType = "bag">(
     raw: PrismaBag
   ): BagEntityOf<T> {
     return Bag.create({

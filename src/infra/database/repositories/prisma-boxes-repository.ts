@@ -5,10 +5,9 @@ import { Box } from "@/core/entities/box";
 import {
   BoxesRepository,
   BoxesRepositorySearchRequest,
+  BoxRepositoryReturnType,
+  BoxEntityOf,
 } from "@/core/repositories/boxes-repository";
-
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
 
 // Services
 import { prisma } from "@/infra/database/prisma-service";
@@ -16,12 +15,16 @@ import { prisma } from "@/infra/database/prisma-service";
 // Mappers
 import { PrismaBoxMapper } from "@/infra/database/mappers/prisma-box-mapper";
 import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
+import {
+  PrismaBoxAndCatalog,
+  PrismaBoxAndCatalogMapper,
+} from "@/infra/database/mappers/prisma-box-and-catalog-mapper";
 
 export class PrismaBoxesRepository implements BoxesRepository {
-  async find(
-    type: RepositoryResponse,
+  async find<T extends BoxRepositoryReturnType>(
+    type: T,
     { id, status, catalog, orders, since, before }: BoxesRepositorySearchRequest
-  ): Promise<Box | null> {
+  ): Promise<BoxEntityOf<T> | null> {
     const box = await prisma.box.findFirst({
       where: {
         id,
@@ -37,10 +40,10 @@ export class PrismaBoxesRepository implements BoxesRepository {
         created_at: { gte: since, lte: before },
       },
       include: {
-        ...(type !== "basic" && {
+        ...(type !== "box" && {
           catalog: { include: { farm: { include: { admin: true } } } },
         }),
-        ...(type === "merge" && {
+        ...(type === "box-and-catalog" && {
           orders: {
             include: { offer: { include: { product: true } } },
             orderBy: { offer: { product: { name: "asc" } } },
@@ -55,11 +58,18 @@ export class PrismaBoxesRepository implements BoxesRepository {
 
     if (!box) return null;
 
-    return PrismaBoxMapper.toDomain(box);
+    switch (type) {
+      default:
+        return PrismaBoxMapper.toDomain<T>(box);
+      case "box-and-catalog":
+        return PrismaBoxAndCatalogMapper.toDomain<T>(
+          box as PrismaBoxAndCatalog
+        );
+    }
   }
 
-  async list(
-    type: RepositoryResponse,
+  async list<T extends BoxRepositoryReturnType>(
+    type: T,
     {
       id,
       status,
@@ -69,7 +79,7 @@ export class PrismaBoxesRepository implements BoxesRepository {
       before,
     }: BoxesRepositorySearchRequest,
     page?: number
-  ): Promise<Box[]> {
+  ): Promise<BoxEntityOf<T>[]> {
     const boxes = await prisma.box.findMany({
       where: {
         id,
@@ -84,10 +94,10 @@ export class PrismaBoxesRepository implements BoxesRepository {
         created_at: { gte: since, lte: before },
       },
       include: {
-        ...(type !== "basic" && {
+        ...(type !== "box" && {
           catalog: { include: { farm: { include: { admin: true } } } },
         }),
-        ...(type === "merge" && {
+        ...(type === "box-and-catalog" && {
           orders: {
             include: { offer: { include: { product: true } } },
             orderBy: { created_at: "asc" },
@@ -101,7 +111,14 @@ export class PrismaBoxesRepository implements BoxesRepository {
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
-    return boxes.map(PrismaBoxMapper.toDomain);
+    switch (type) {
+      default:
+        return boxes.map(PrismaBoxMapper.toDomain<T>);
+      case "box-and-catalog":
+        return boxes.map((box) =>
+          PrismaBoxAndCatalogMapper.toDomain(box as PrismaBoxAndCatalog)
+        );
+    }
   }
 
   async create(box: Box): Promise<void> {
@@ -117,43 +134,9 @@ export class PrismaBoxesRepository implements BoxesRepository {
   }
 
   async update(box: Box): Promise<void> {
-    const data = PrismaBoxMapper.toPrisma(box);
-
-    await prisma.$transaction(async (ctx) => {
-      await ctx.box.update({ where: { id: box.id.value }, data });
-
-      const previous = await ctx.order.findMany({
-        where: { box_id: box.id.value },
-      });
-
-      const created = [];
-
-      for (const order of box.orders.values()) {
-        const existed = previous.find((p) => order.id.equals(p.id));
-
-        if (!existed) {
-          created.push(order);
-          continue;
-        }
-
-        if (existed.updated_at === order.updated_at) continue;
-
-        await ctx.order.update({
-          where: { id: order.id.value },
-          data: PrismaOrderMapper.toPrisma(order),
-        });
-      }
-
-      await ctx.order.createMany({
-        data: created.map(PrismaOrderMapper.toPrisma),
-      });
-
-      const deletedIds = previous
-        .filter((p) => !box.orders.some((o) => o.id.equals(p.id)))
-        .map((order) => order.id);
-
-      if (deletedIds.length)
-        await ctx.order.deleteMany({ where: { id: { in: deletedIds } } });
+    await prisma.box.update({
+      where: { id: box.id.value },
+      data: PrismaBoxMapper.toPrisma(box),
     });
   }
 

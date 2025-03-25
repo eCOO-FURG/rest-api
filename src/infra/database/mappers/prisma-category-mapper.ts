@@ -1,5 +1,5 @@
 // Libs
-import { Prisma } from "@prisma/client";
+import { Prisma, Category as PrismaCategory } from "@prisma/client";
 
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
@@ -11,10 +11,8 @@ import {
   CategoryEntityOf,
 } from "@/core/repositories/categories-repository";
 
-type PrismaCategory = Prisma.CategoryGetPayload<{}>;
-
 export class PrismaCategoryMapper {
-  static toDomain<T extends CategoryRepositoryReturnType>(
+  static toDomain<T extends CategoryRepositoryReturnType = "category">(
     raw: PrismaCategory
   ): CategoryEntityOf<T> {
     return Category.create({

@@ -12,7 +12,7 @@ import {
 import { Prisma, Offer as PrismaOffer } from "@prisma/client";
 
 export class PrismaOfferMapper {
-  static toDomain<T extends OfferRepositoryReturnType>(
+  static toDomain<T extends OfferRepositoryReturnType = "offer">(
     raw: PrismaOffer
   ): OfferEntityOf<T> {
     return Offer.create({

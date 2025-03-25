@@ -25,7 +25,7 @@ import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-map
 import { PrismaPaymentMapper } from "@/infra/database/mappers/prisma-payment-mapper";
 import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
 
-export type PrismaBagAndDetails = PrismaBag & {
+export type PrismaBagAndOrders = PrismaBag & {
   customer: PrismaUser;
   address: PrismaAddress | null;
   payment: PrismaPayment | null;
@@ -33,8 +33,8 @@ export type PrismaBagAndDetails = PrismaBag & {
 };
 
 export class PrismaBagAndOrdersMapper {
-  static toDomain<T extends BagRepositoryReturnType>(
-    raw: PrismaBagAndDetails
+  static toDomain<T extends BagRepositoryReturnType = "bag-and-orders">(
+    raw: PrismaBagAndOrders
   ): BagEntityOf<T> {
     return BagAndOrders.create({
       id: new UUID(raw.id),
