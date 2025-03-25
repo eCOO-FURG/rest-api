@@ -18,14 +18,14 @@ export class ListBoxesUseCase {
   ) {}
 
   async execute({ cycle_id, page, farm }: ListFarmsWithOrdersProps) {
-    const cycle = await this.cyclesRepository.find("basic", {
+    const cycle = await this.cyclesRepository.find("cycle", {
       id: cycle_id,
     });
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
     const boxes = await this.boxesRepository.list(
-      "aggregate",
+      "box-and-catalog",
       {
         catalog: {
           cycle: { id: cycle_id },

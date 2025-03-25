@@ -19,6 +19,8 @@ import {
   PrismaBoxAndCatalog,
   PrismaBoxAndCatalogMapper,
 } from "@/infra/database/mappers/prisma-box-and-catalog-mapper";
+import { PrismaBoxAndOrdersMapper } from "@/infra/database/mappers/prisma-box-and-orders-mapper";
+import { PrismaBoxAndOrders } from "@/infra/database/mappers/prisma-box-and-orders-mapper";
 
 export class PrismaBoxesRepository implements BoxesRepository {
   async find<T extends BoxRepositoryReturnType>(
@@ -39,21 +41,22 @@ export class PrismaBoxesRepository implements BoxesRepository {
         },
         created_at: { gte: since, lte: before },
       },
-      include: {
-        ...(type !== "box" && {
-          catalog: { include: { farm: { include: { admin: true } } } },
-        }),
-        ...(type === "box-and-catalog" && {
-          orders: {
-            include: { offer: { include: { product: true } } },
-            orderBy: { offer: { product: { name: "asc" } } },
-            ...(orders?.page && {
-              skip: (orders.page - 1) * 20,
-              take: 20,
-            }),
-          },
-        }),
-      },
+      include:
+        type === "box-and-catalog"
+          ? { catalog: { include: { farm: { include: { admin: true } } } } }
+          : type === "box-and-orders"
+          ? {
+              catalog: { include: { farm: { include: { admin: true } } } },
+              orders: {
+                include: { offer: { include: { product: true } } },
+                orderBy: { created_at: "asc" },
+                ...(orders?.page && {
+                  skip: (orders.page - 1) * 20,
+                  take: 20,
+                }),
+              },
+            }
+          : null,
     });
 
     if (!box) return null;
@@ -65,6 +68,8 @@ export class PrismaBoxesRepository implements BoxesRepository {
         return PrismaBoxAndCatalogMapper.toDomain<T>(
           box as PrismaBoxAndCatalog
         );
+      case "box-and-orders":
+        return PrismaBoxAndOrdersMapper.toDomain<T>(box as PrismaBoxAndOrders);
     }
   }
 
@@ -93,21 +98,22 @@ export class PrismaBoxesRepository implements BoxesRepository {
         },
         created_at: { gte: since, lte: before },
       },
-      include: {
-        ...(type !== "box" && {
-          catalog: { include: { farm: { include: { admin: true } } } },
-        }),
-        ...(type === "box-and-catalog" && {
-          orders: {
-            include: { offer: { include: { product: true } } },
-            orderBy: { created_at: "asc" },
-            ...(orders?.page && {
-              skip: (orders.page - 1) * 20,
-              take: 20,
-            }),
-          },
-        }),
-      },
+      include:
+        type === "box-and-catalog"
+          ? { catalog: { include: { farm: { include: { admin: true } } } } }
+          : type === "box-and-orders"
+          ? {
+              catalog: { include: { farm: { include: { admin: true } } } },
+              orders: {
+                include: { offer: { include: { product: true } } },
+                orderBy: { created_at: "asc" },
+                ...(orders?.page && {
+                  skip: (orders.page - 1) * 20,
+                  take: 20,
+                }),
+              },
+            }
+          : null,
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
@@ -117,6 +123,10 @@ export class PrismaBoxesRepository implements BoxesRepository {
       case "box-and-catalog":
         return boxes.map((box) =>
           PrismaBoxAndCatalogMapper.toDomain(box as PrismaBoxAndCatalog)
+        );
+      case "box-and-orders":
+        return boxes.map((box) =>
+          PrismaBoxAndOrdersMapper.toDomain(box as PrismaBoxAndOrders)
         );
     }
   }

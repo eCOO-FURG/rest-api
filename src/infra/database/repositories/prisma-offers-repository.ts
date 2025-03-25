@@ -14,7 +14,15 @@ import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
 import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
-import { PrismaOfferAndProductMapper } from "@/infra/database/mappers/prisma-offer-and-product-mapper";
+import {
+  PrismaOfferAndProduct,
+  PrismaOfferAndProductMapper,
+} from "@/infra/database/mappers/prisma-offer-and-product-mapper";
+import {
+  PrismaOfferAndDetails,
+  PrismaOfferAndDetailsMapper,
+} from "@/infra/database/mappers/prisma-offer-and-details-mapper";
+
 export class PrismaOffersRepository implements OffersRepository {
   async find<T extends OfferRepositoryReturnType>(
     type: T,
@@ -32,6 +40,10 @@ export class PrismaOffersRepository implements OffersRepository {
       },
       include: {
         ...(type === "offer-and-product" && { product: true }),
+        ...(type === "offer-and-details" && {
+          product: true,
+          catalog: { include: { farm: true } },
+        }),
       },
     });
 
@@ -42,6 +54,10 @@ export class PrismaOffersRepository implements OffersRepository {
         return PrismaOfferMapper.toDomain<T>(offer);
       case "offer-and-product":
         return PrismaOfferAndProductMapper.toDomain<T>(offer);
+      case "offer-and-details":
+        return PrismaOfferAndDetailsMapper.toDomain<T>(
+          offer as PrismaOfferAndDetails
+        );
     }
   }
 
@@ -60,9 +76,15 @@ export class PrismaOffersRepository implements OffersRepository {
         catalog: { id: catalog?.id },
         created_at: { gte: since, lte: before },
       },
-      include: {
-        ...(type === "offer-and-product" && { product: true }),
-      },
+      include:
+        type === "offer-and-product"
+          ? { product: true }
+          : type === "offer-and-details"
+          ? {
+              product: true,
+              catalog: { include: { farm: true } },
+            }
+          : null,
       orderBy: { created_at: "desc" },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
@@ -71,7 +93,17 @@ export class PrismaOffersRepository implements OffersRepository {
       default:
         return offers.map(PrismaOfferMapper.toDomain<T>);
       case "offer-and-product":
-        return offers.map(PrismaOfferAndProductMapper.toDomain<T>);
+        return offers.map((offer) =>
+          PrismaOfferAndProductMapper.toDomain<T>(
+            offer as PrismaOfferAndProduct
+          )
+        );
+      case "offer-and-details":
+        return offers.map((offer) =>
+          PrismaOfferAndDetailsMapper.toDomain<T>(
+            offer as PrismaOfferAndDetails
+          )
+        );
     }
   }
 

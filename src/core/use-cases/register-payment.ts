@@ -23,7 +23,7 @@ export class RegisterPaymentUseCase {
   ) {}
 
   async execute({ bag_id, method, flag }: RegisterPaymentUseCaseRequest) {
-    const bag = await this.bagsRepository.find("merge", {
+    const bag = await this.bagsRepository.find("bag-and-details", {
       id: bag_id,
     });
 

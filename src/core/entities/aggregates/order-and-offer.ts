@@ -1,9 +1,9 @@
 // Entities
 import { Order, OrderProps } from "@/core/entities/order";
-import { OfferAndProduct } from "@/core/entities/aggregates/offer-and-product";
+import { OfferAndDetails } from "@/core/entities/aggregates/offer-and-details";
 
 export interface OrderAndOfferProps extends OrderProps {
-  offer: OfferAndProduct;
+  offer: OfferAndDetails;
 }
 
 export class OrderAndOffer extends Order {

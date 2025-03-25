@@ -6,7 +6,6 @@ import { Otp } from "@/core/entities/otp";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Repositories
-// Repositories
 import {
   OtpRepositoryReturnType,
   OtpEntityOf,

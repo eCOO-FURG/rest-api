@@ -45,7 +45,7 @@ export class UpdateUserUseCase {
     photo,
     chat,
   }: UpdateUserUseCaseRequest) {
-    const user = await this.usersRepository.find("basic", { id: user_id });
+    const user = await this.usersRepository.find("user", { id: user_id });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 

@@ -30,7 +30,7 @@ export class VerifyUserUsecase {
 
     if (!decoded || !decoded.user_id) throw new WrongCredentialsError();
 
-    const user = await this.usersRepository.find("basic", {
+    const user = await this.usersRepository.find("user", {
       id: decoded.user_id,
     });
 

@@ -1,5 +1,6 @@
 // Repositories
 import { OffersRepository } from "@/core/repositories/offers-repository";
+import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
 
 // Errors
 import { ResourceClosedError } from "@/core/errors/resource-closed";
@@ -19,21 +20,29 @@ interface DeleteOfferUseCaseRequest {
 export class DeleteOfferUseCase {
   constructor(
     private offersRepository: OffersRepository,
+    private catalogsRepository: CatalogsRepository,
     private cyclesRepository: CyclesRepository
   ) {}
 
   async execute({ farm_id, offer_id }: DeleteOfferUseCaseRequest) {
-    const offer = await this.offersRepository.find("aggregate", {
+    const offer = await this.offersRepository.find("offer", {
       id: offer_id,
     });
 
     if (!offer) throw new ResourceNotFoundError("Oferta", offer_id);
 
-    const owner = offer.catalog?.farm?.id.equals(farm_id);
+    const catalog = await this.catalogsRepository.find("catalog", {
+      id: offer.catalog_id.value,
+    });
+
+    if (!catalog)
+      throw new ResourceNotFoundError("Catálogo", offer.catalog_id.value);
+
+    const owner = catalog.farm_id.equals(farm_id);
 
     if (!owner) throw new ResourceNotFoundError("Oferta", offer_id);
 
-    const cycle = await this.cyclesRepository.find("basic", {
+    const cycle = await this.cyclesRepository.find("cycle", {
       id: offer.catalog?.cycle_id.value,
     });
 

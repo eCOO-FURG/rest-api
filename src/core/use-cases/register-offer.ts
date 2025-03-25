@@ -48,13 +48,13 @@ export class RegisterOfferUseCase {
     description,
     expires_at,
   }: RegisterOfferUseCaseRequest) {
-    const farm = await this.farmsRepository.find("basic", { id: farm_id });
+    const farm = await this.farmsRepository.find("farm", { id: farm_id });
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
     if (farm.status !== "ACTIVE") throw new FarmNotActiveError();
 
-    const product = await this.productsRepository.find("basic", {
+    const product = await this.productsRepository.find("product", {
       id: product_id,
     });
 
@@ -65,7 +65,7 @@ export class RegisterOfferUseCase {
 
     if (product.archived) throw new ResourceClosedError("Produto", product_id);
 
-    const cycle = await this.cyclesRepository.find("basic", { id: cycle_id });
+    const cycle = await this.cyclesRepository.find("cycle", { id: cycle_id });
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
@@ -73,15 +73,6 @@ export class RegisterOfferUseCase {
       throw new ResourceClosedError("Ciclo", cycle.id.value);
 
     const { catalog, existed } = await this.useCatalog(farm, cycle);
-
-    if (existed) {
-      const offered = catalog.offers.find(
-        (offer) => offer.product_id.value === product_id
-      );
-
-      if (offered)
-        throw new ResourceAlreadyExistsError("Oferta do produto", product_id);
-    }
 
     if (product.pricing === "WEIGHT" && amount % 1000 !== 0)
       throw new InvalidWeightError("ofertado", product_id);
@@ -103,7 +94,7 @@ export class RegisterOfferUseCase {
   }
 
   private async useCatalog(farm: Farm, cycle: Cycle) {
-    const existent = await this.catalogsRepository.find("merge", {
+    const existent = await this.catalogsRepository.find("catalog", {
       farm: { id: farm.id.value },
       cycle: { id: cycle.id.value },
       since: mostPast(cycle.offer),

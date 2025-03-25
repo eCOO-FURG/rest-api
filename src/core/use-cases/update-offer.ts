@@ -40,25 +40,19 @@ export class UpdateOfferUseCase {
     if (!amount && !price && !description && !expires_at)
       throw new MissingFieldError("amount, price, description, expires_at");
 
-    const offer = await this.offersRepository.find("aggregate", {
+    const offer = await this.offersRepository.find("offer-and-details", {
       id: offer_id,
     });
 
     if (!offer) throw new ResourceNotFoundError("Oferta", offer_id);
 
-    const farm = offer.catalog?.farm;
-
-    if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
-
-    const owner = farm.id.equals(farm_id);
+    const owner = offer.catalog.farm_id.equals(farm_id);
 
     if (!owner) throw new UnauthorizedError();
 
-    const active = farm.status === "ACTIVE";
+    if (offer.catalog.farm.status !== "ACTIVE") throw new FarmNotActiveError();
 
-    if (!active) throw new FarmNotActiveError();
-
-    const cycle = await this.cyclesRepository.find("basic", {
+    const cycle = await this.cyclesRepository.find("cycle", {
       id: offer.catalog?.cycle_id.value,
     });
 
@@ -78,6 +72,7 @@ export class UpdateOfferUseCase {
     offer.price = price ?? offer.price;
     offer.description = description ?? offer.description;
     offer.expires_at = expires_at ?? offer.expires_at;
+    offer.touch();
 
     await this.offersRepository.update(offer);
   }

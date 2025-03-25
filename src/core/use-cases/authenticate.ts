@@ -56,7 +56,7 @@ export class AuthenticateUseCase {
         break;
 
       case "OTP":
-        const otp = await this.otpsRepository.find("basic", {
+        const otp = await this.otpsRepository.find("otp", {
           user: { id: user.id.value },
           value: password,
           used: false,

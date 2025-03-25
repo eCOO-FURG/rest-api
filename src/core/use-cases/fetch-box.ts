@@ -18,17 +18,17 @@ export class FetchBoxUseCase {
   ) {}
 
   async execute({ box_id, user_id, page }: FetchBoxUseCaseRequest) {
-    const box = await this.boxesRepository.find("merge", {
+    const box = await this.boxesRepository.find("box-and-orders", {
       id: box_id,
       orders: { page },
     });
 
     if (!box) throw new ResourceNotFoundError("Caixa", box_id);
 
-    const owner = box.catalog?.farm?.admin_id.equals(user_id);
+    const owner = box.catalog.farm.admin_id.equals(user_id);
 
     if (!owner) {
-      const user = await this.usersRepository.find("basic", { id: user_id });
+      const user = await this.usersRepository.find("user", { id: user_id });
 
       if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 

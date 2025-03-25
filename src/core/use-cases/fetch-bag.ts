@@ -18,18 +18,17 @@ export class FetchBagUseCase {
   ) {}
 
   async execute({ bag_id, user_id, page }: FetchBagUseCaseRequest) {
-    const bag = await this.bagsRepository.find("merge", {
+    const bag = await this.bagsRepository.find("bag-and-orders", {
       id: bag_id,
       orders: { page },
-      payments: { page },
     });
 
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 
-    const owner = bag.user_id.equals(user_id);
+    const owner = bag.customer_id.equals(user_id);
 
     if (!owner) {
-      const user = await this.usersRepository.find("basic", { id: user_id });
+      const user = await this.usersRepository.find("user", { id: user_id });
 
       if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 

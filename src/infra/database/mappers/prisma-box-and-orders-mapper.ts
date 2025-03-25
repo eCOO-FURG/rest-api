@@ -1,13 +1,9 @@
 // Entities
-import { BoxAndCatalog } from "@/core/entities/aggregates/box-and-catalog";
+import { BoxAndOrders } from "@/core/entities/aggregates/box-and-orders";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Libraries
-import {
-  Box as PrismaBox,
-  Order as PrismaOrder,
-  Catalog as PrismaCatalog,
-} from "@prisma/client";
+import { Box as PrismaBox, Order as PrismaOrder } from "@prisma/client";
 
 // Repositories
 import {
@@ -21,15 +17,16 @@ import {
   PrismaCatalogAndFarm,
 } from "@/infra/database/mappers/prisma-catalog-and-farm-mapper";
 
-export type PrismaBoxAndCatalog = PrismaBox & {
+export type PrismaBoxAndOrders = PrismaBox & {
+  orders: PrismaOrder[];
   catalog: PrismaCatalogAndFarm;
 };
 
-export class PrismaBoxAndCatalogMapper {
-  static toDomain<T extends BoxRepositoryReturnType = "box-and-catalog">(
-    raw: PrismaBoxAndCatalog
+export class PrismaBoxAndOrdersMapper {
+  static toDomain<T extends BoxRepositoryReturnType = "box-and-orders">(
+    raw: PrismaBoxAndOrders
   ): BoxEntityOf<T> {
-    return BoxAndCatalog.create({
+    return BoxAndOrders.create({
       id: new UUID(raw.id),
       status: raw.status,
       verified: raw.verified,

@@ -35,21 +35,21 @@ export class FetchSalesReportUseCase {
     withdraw,
   }: FetchSalesReportUseCaseRequest) {
     if (cycle_id) {
-      const cycle = await this.cyclesRepository.find("basic", {
+      const cycle = await this.cyclesRepository.find("cycle", {
         id: cycle_id,
       });
 
       if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
     }
 
-    const bags = await this.bagsRepository.list("merge", {
+    const bags = await this.bagsRepository.list("bag-and-orders", {
       cycle: { id: cycle_id },
       withdraw,
       since,
       before,
     });
 
-    const catalogs = await this.catalogsRepository.list("merge", {
+    const catalogs = await this.catalogsRepository.list("catalog-and-offers", {
       cycle: { id: cycle_id },
       since,
       before,

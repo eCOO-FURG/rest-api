@@ -217,6 +217,25 @@ export class PrismaBagsRepository implements BagsRepository {
         data: PrismaBagMapper.toPrisma(bag),
       });
 
+      for (const order of bag.orders.values()) {
+        if (order.box) {
+          const box = await ctx.box.findFirst({
+            where: { id: order.box_id.value },
+          });
+
+          if (!box) {
+            await ctx.box.create({
+              data: PrismaBoxMapper.toPrisma(order.box),
+            });
+          }
+        }
+
+        await ctx.offer.update({
+          where: { id: order.offer_id.value },
+          data: { amount: { decrement: order.amount } },
+        });
+      }
+
       await ctx.order.createMany({
         data: bag.orders.map(PrismaOrderMapper.toPrisma),
       });

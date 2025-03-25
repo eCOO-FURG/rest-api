@@ -28,7 +28,7 @@ export interface BagsRepositorySearchRequest {
   payment?: {
     status?: PaymentStatus[];
     method?: PaymentMethod[];
-  };
+  } | null;
   since?: Date;
   before?: Date;
 }

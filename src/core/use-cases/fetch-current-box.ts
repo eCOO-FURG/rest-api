@@ -21,11 +21,11 @@ export class FetchCurrentBoxUseCase {
   ) {}
 
   async execute({ farm_id, cycle_id, page }: FetchCurrentBoxUseCaseRequest) {
-    const cycle = await this.cyclesRepository.find("basic", { id: cycle_id });
+    const cycle = await this.cyclesRepository.find("cycle", { id: cycle_id });
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const box = await this.boxesRepository.find("merge", {
+    const box = await this.boxesRepository.find("box-and-orders", {
       catalog: { farm: { id: farm_id }, cycle: { id: cycle_id } },
       orders: { page },
       since: mostPast(cycle.order),

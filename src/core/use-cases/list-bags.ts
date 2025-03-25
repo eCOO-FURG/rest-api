@@ -35,13 +35,13 @@ export class ListBagsUseCase {
     cycle_id,
   }: ListBagsUseCaseRequest) {
     if (user_id) {
-      const user = await this.usersRepository.find("basic", { id: user_id });
+      const user = await this.usersRepository.find("user", { id: user_id });
 
       if (!user) throw new ResourceNotFoundError("Usuário", user_id);
     }
 
     if (cycle_id) {
-      const cycle = await this.cyclesRepository.find("basic", {
+      const cycle = await this.cyclesRepository.find("cycle", {
         id: cycle_id,
       });
 
@@ -49,7 +49,7 @@ export class ListBagsUseCase {
     }
 
     const bags = await this.bagsRepository.list(
-      "aggregate",
+      "bag-and-orders",
       {
         user: { id: user_id },
         cycle: { id: cycle_id },
