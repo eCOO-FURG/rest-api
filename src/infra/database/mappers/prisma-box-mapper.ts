@@ -5,10 +5,6 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 // Libraries
 import { Prisma, Box as PrismaBox } from "@prisma/client";
 
-// Mappers
-import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
-import { PrismaCatalogMapper } from "@/infra/database/mappers/prisma-catalog-mapper";
-
 // Repositories
 import { BoxRepositoryReturnType } from "@/core/repositories/boxes-repository";
 import { BoxEntityOf } from "@/core/repositories/boxes-repository";
