@@ -70,7 +70,14 @@ export class PrismaBagsRepository implements BagsRepository {
         payment: type !== "bag",
         ...(type === "bag-and-orders" && {
           orders: {
-            include: { offer: { include: { product: true } } },
+            include: {
+              offer: {
+                include: {
+                  product: true,
+                  catalog: { include: { farm: { include: { admin: true } } } },
+                },
+              },
+            },
             where: { id: orders?.id },
             ...(orders?.page && {
               skip: (orders.page - 1) * 20,
@@ -144,7 +151,14 @@ export class PrismaBagsRepository implements BagsRepository {
         payment: type !== "bag",
         ...(type === "bag-and-orders" && {
           orders: {
-            include: { offer: { include: { product: true } } },
+            include: {
+              offer: {
+                include: {
+                  product: true,
+                  catalog: { include: { farm: { include: { admin: true } } } },
+                },
+              },
+            },
             ...(orders?.page && {
               skip: (orders.page - 1) * 20,
               take: 20,

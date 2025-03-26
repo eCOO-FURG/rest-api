@@ -24,7 +24,7 @@ export class OpenPaymentUseCase {
   ) {}
 
   async execute({ bag_id }: OpenPaymentUseCaseRequest) {
-    const bag = await this.bagsRepository.find("bag", {
+    const bag = await this.bagsRepository.find("bag-and-details", {
       id: bag_id,
     });
 
@@ -45,7 +45,9 @@ export class OpenPaymentUseCase {
 
     await this.paymentsRepository.create(payment);
 
-    const charge = await this.pixProvider.charge(payment);
+    bag.payment = payment;
+
+    const charge = await this.pixProvider.charge(bag);
 
     return { payment, charge };
   }
