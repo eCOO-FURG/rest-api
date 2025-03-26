@@ -38,23 +38,12 @@ export class VerifyUserUsecase {
 
     const session = Session.create({
       user_id: user.id,
+      user,
       agent,
       ip,
     });
 
-    await this.sessionsRepository.create(session);
-
-    token = await this.hasher.hash({ user_id: user.id.value });
-
-    if (user.verified_at)
-      return {
-        roles: user.roles,
-        refresh: token,
-      };
-
-    user.verify();
-
-    await this.usersRepository.update(user);
+    if (!user.verified_at) user.verify();
 
     await this.sessionsRepository.create(session);
 

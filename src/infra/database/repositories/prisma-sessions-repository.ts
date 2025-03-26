@@ -35,8 +35,17 @@ export class PrismaSessionsRepository implements SessionsRepository {
   }
 
   async create(session: Session): Promise<void> {
-    await prisma.session.create({
-      data: PrismaSessionMapper.toPrisma(session),
+    await prisma.$transaction(async (ctx) => {
+      await ctx.session.create({
+        data: PrismaSessionMapper.toPrisma(session),
+      });
+
+      if (session.user) {
+        await ctx.user.update({
+          where: { id: session.user.id.value },
+          data: { verified_at: new Date() },
+        });
+      }
     });
   }
 }
