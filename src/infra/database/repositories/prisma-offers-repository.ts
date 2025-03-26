@@ -28,7 +28,7 @@ export class PrismaOffersRepository implements OffersRepository {
     type: T,
     { id, product, catalog, since, before }: OffersRepositorySearchRequest
   ): Promise<OfferEntityOf<T> | null> {
-    const offer = await prisma.offer.findUnique({
+    const offer = await prisma.offer.findFirst({
       where: {
         id,
         product: {

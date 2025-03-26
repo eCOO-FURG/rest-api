@@ -24,7 +24,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
     type: T,
     { id, bag, offer, since, before }: OrdersRepositorySearchRequest
   ): Promise<OrderEntityOf<T> | null> {
-    const order = await prisma.order.findUnique({
+    const order = await prisma.order.findFirst({
       where: {
         id,
         bag: { id: bag?.id },
