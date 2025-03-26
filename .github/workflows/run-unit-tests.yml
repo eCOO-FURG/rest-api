@@ -6,20 +6,25 @@ on:
 
 jobs:
   run-unit-tests:
-    name: run unit tests
+    name: Unit tests workflow
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
           version: 10
-      - uses: actions/setup-node@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
         with:
           node-version: 20
           cache: "pnpm"
-      - run: pnpm install
-      - run: pnpm run test
+      - name: Setup dependencies
+        run: pnpm install
+      - name: Run unit tests
+        run: pnpm run test
         env:
           ENVIRONMENT: DEVELOPMENT
           SERVER_PORT: 3333
