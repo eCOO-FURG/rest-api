@@ -1,18 +1,17 @@
 // Entities
-import { Bag } from "@/core/entities/bag";
-import { Box } from "@/core/entities/box";
-
+import { BoxAndOrders } from "@/core/entities/aggregates/box-and-orders";
+import { BagAndOrders } from "@/core/entities/aggregates/bag-and-orders";
 // Types
 import { File } from "@/core/types/file";
 
 export type PDFServiceGenerateRequest =
   | {
       type: "sales-report";
-      props: { bags: Bag[]; withdraw?: boolean };
+      props: { bags: BagAndOrders[]; withdraw?: boolean };
     }
   | {
       type: "inbound-report";
-      props: { boxes: Box[] };
+      props: { boxes: BoxAndOrders[] };
     };
 
 export interface PDFService {

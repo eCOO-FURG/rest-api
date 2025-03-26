@@ -22,12 +22,16 @@ export class BagAndDetails extends Bag<BagAndDetailsProps> {
     return this.props.address;
   }
 
+  get paid() {
+    return this.props.payment?.status === "DONE";
+  }
+
   get payment() {
     return this.props.payment;
   }
 
-  get paid() {
-    return this.props.payment?.status === "DONE";
+  set payment(payment: Payment | null) {
+    this.props.payment = payment;
   }
 
   static create(props: Optional<BagAndDetailsProps, "orders">) {

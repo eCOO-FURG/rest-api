@@ -2,7 +2,7 @@
 import { SpreadsheetColumn } from "@/core/report/spreadsheet-service";
 
 // Entities
-import { Bag } from "@/core/entities/bag";
+import { BagAndOrders } from "@/core/entities/aggregates/bag-and-orders";
 
 // Report
 import { SpreadsheetView } from "@/infra/report/spreadsheet/excel";
@@ -54,7 +54,7 @@ const columns: SpreadsheetColumn[] = [
 ];
 
 interface ProductsSalesReportViewProps {
-  bags: Bag[];
+  bags: BagAndOrders[];
   since?: Date;
   before?: Date;
 }
@@ -78,7 +78,7 @@ export const PRODUCTS_SALES_VIEW: SpreadsheetView = async ({
         bag: bag.code,
         product: order.offer?.product?.name,
         producer: order.offer?.catalog?.farm?.name,
-        user: `${bag.user?.first_name} ${bag.user?.last_name}`,
+        user: `${bag.customer.first_name} ${bag.customer.last_name}`,
         fee: (order.offer?.catalog?.fee ?? 0) / 100,
         offer_price_without_tax: offerPrice,
         offer_price:
