@@ -10,20 +10,15 @@ jobs:
     name: Deploy workflow
     runs-on: self-hosted
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Deploy application
         run: |
-          sudo su
-
           cd /deploy/rest-api
 
-          docker-compose stop
+          sudo docker-compose stop
 
-          docker rm ecoo-server || true
+          sudo docker rm ecoo-server || true
 
-          git pull
+          sudo git pull
 
           pnpm run deploy:build
 
