@@ -21,7 +21,7 @@ export function ensureRole(roles: UserRole[]): RequestHandler {
       const usersRepository =
         container.resolve<UsersRepository>("usersRepository");
 
-      const user = await usersRepository.find("basic", { id: request.user_id });
+      const user = await usersRepository.find("user", { id: request.user_id });
 
       if (!user) throw new ResourceNotFoundError("Usuário", request.user_id);
 
@@ -33,7 +33,7 @@ export function ensureRole(roles: UserRole[]): RequestHandler {
         const farmsRepository =
           container.resolve<FarmsRepository>("farmsRepository");
 
-        const farm = await farmsRepository.find("basic", {
+        const farm = await farmsRepository.find("farm", {
           admin: { id: request.user_id },
         });
 
