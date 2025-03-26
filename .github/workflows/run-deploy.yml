@@ -20,6 +20,6 @@ jobs:
 
           sudo git pull
 
-          pnpm run deploy:build
+          sudo pnpm run deploy:build
 
-          npx prisma migrate deploy
+          sudo npx prisma migrate deploy
