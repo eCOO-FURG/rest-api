@@ -10,18 +10,18 @@ jobs:
     name: Deploy workflow
     runs-on: ecoo-homologacao
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Deploy application
         run: |
-          sudo su
-
           cd /deploy/rest-api
 
-          docker-compose stop
+          docker ps -q | xargs -r docker stop
 
           docker rm -f ecoo-server || true
 
-          git pull
+          git pull origin main
 
           pnpm run deploy:build
-
           npx prisma migrate deploy
