@@ -39,7 +39,7 @@ describe("Register payment", () => {
     });
   });
 
-  it("should not be able to register a payment with a non-existent bag", async () => {
+  it("should not be able to register a payment for a non-existent bag", async () => {
     await expect(() =>
       sut.execute({
         bag_id: "non-existent-bag-id",
@@ -48,7 +48,7 @@ describe("Register payment", () => {
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
-  it("should not be able to register a payment with a bag that is already paid", async () => {
+  it("should not be able to register a payment for a bag that is already paid", async () => {
     const user = makeUser();
 
     const bag = makeBag({ customer_id: user.id, customer: user });

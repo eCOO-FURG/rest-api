@@ -53,7 +53,7 @@ export class UpdateOfferUseCase {
     if (offer.catalog.farm.status !== "ACTIVE") throw new FarmNotActiveError();
 
     const cycle = await this.cyclesRepository.find("cycle", {
-      id: offer.catalog?.cycle_id.value,
+      id: offer.catalog.cycle_id.value,
     });
 
     if (!cycle)

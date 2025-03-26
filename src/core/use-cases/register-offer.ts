@@ -9,15 +9,15 @@ import { CatalogsRepository } from "@/core//repositories/catalogs-repository";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { FarmsRepository } from "@/core/repositories/farms-repository";
 import { ProductsRepository } from "@/core/repositories/products-repository";
+import { OffersRepository } from "@/core/repositories/offers-repository";
 
 // Errors
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { MissingFieldError } from "@/core/errors/missing-field";
-import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-
+import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 // Utils
 import { mostPast } from "@/core/utils/most-past";
 import { today } from "@/core/utils/today";
@@ -36,7 +36,8 @@ export class RegisterOfferUseCase {
     private farmsRepository: FarmsRepository,
     private productsRepository: ProductsRepository,
     private catalogsRepository: CatalogsRepository,
-    private cyclesRepository: CyclesRepository
+    private cyclesRepository: CyclesRepository,
+    private offersRepository: OffersRepository
   ) {}
 
   async execute({
@@ -74,6 +75,15 @@ export class RegisterOfferUseCase {
 
     const { catalog, existed } = await this.useCatalog(farm, cycle);
 
+    if (existed) {
+      const previous = await this.offersRepository.find("offer", {
+        product: { id: product.id.value },
+        catalog: { id: catalog.id.value },
+      });
+
+      if (previous) throw new ResourceAlreadyExistsError("Oferta", product_id);
+    }
+
     if (product.pricing === "WEIGHT" && amount % 1000 !== 0)
       throw new InvalidWeightError("ofertado", product_id);
 
@@ -88,9 +98,9 @@ export class RegisterOfferUseCase {
 
     catalog.offers.push(offer);
 
-    if (existed) return await this.catalogsRepository.update(catalog);
-
-    await this.catalogsRepository.create(catalog);
+    existed
+      ? await this.catalogsRepository.update(catalog)
+      : await this.catalogsRepository.create(catalog);
   }
 
   private async useCatalog(farm: Farm, cycle: Cycle) {

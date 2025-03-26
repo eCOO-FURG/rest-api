@@ -90,6 +90,7 @@ describe("order product", () => {
       product_id: product.id,
       product,
       catalog_id: catalog.id,
+      catalog,
       amount: 10,
     });
 
@@ -112,7 +113,7 @@ describe("order product", () => {
     expect(bagsRepository.items[0].orders.length).toBe(1);
   });
 
-  it("should be add orders to a existing bag if exists", async () => {
+  it("should add orders to a existing bag if exists", async () => {
     const user = makeUser();
     await usersRepository.create(user);
 
@@ -139,6 +140,7 @@ describe("order product", () => {
     const offer = makeOffer({
       product_id: product.id,
       catalog_id: catalog.id,
+      catalog,
       product,
       amount: 10,
     });
@@ -227,9 +229,14 @@ describe("order product", () => {
 
     const product = makeProduct();
 
+    const farm = makeFarm({ admin_id: user.id });
+    const catalog = makeCatalog({ farm_id: farm.id, farm });
+
     const offer = makeOffer({
       product_id: product.id,
       product,
+      catalog_id: catalog.id,
+      catalog,
       amount: 10,
     });
 
@@ -241,7 +248,7 @@ describe("order product", () => {
         cycle_id: cycle.id.value,
         request: [{ offer_id: offer.id.value, amount: 5 }],
       })
-    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+    ).rejects.toBeInstanceOf(ResourceClosedError);
   });
 
   it("should not be able create an order outside the cycle day", async () => {
@@ -301,6 +308,7 @@ describe("order product", () => {
       product_id: product.id,
       product,
       catalog_id: catalog.id,
+      catalog,
       amount: 5,
     });
 
@@ -334,6 +342,7 @@ describe("order product", () => {
       product_id: product.id,
       product,
       catalog_id: catalog.id,
+      catalog,
       amount: 500,
     });
 

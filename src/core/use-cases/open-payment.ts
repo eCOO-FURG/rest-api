@@ -43,6 +43,8 @@ export class OpenPaymentUseCase {
       bag,
     });
 
+    await this.paymentsRepository.create(payment);
+
     const charge = await this.pixProvider.charge(payment);
 
     return { payment, charge };

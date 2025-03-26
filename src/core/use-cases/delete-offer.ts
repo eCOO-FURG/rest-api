@@ -43,7 +43,7 @@ export class DeleteOfferUseCase {
     if (!owner) throw new ResourceNotFoundError("Oferta", offer_id);
 
     const cycle = await this.cyclesRepository.find("cycle", {
-      id: offer.catalog?.cycle_id.value,
+      id: catalog.cycle_id.value,
     });
 
     if (!cycle)

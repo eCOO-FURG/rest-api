@@ -59,8 +59,8 @@ export class InMemoryBagsRepository implements BagsRepository {
           (!since || item.created_at >= since) &&
           (!before || item.created_at <= before) &&
           (!orders?.id || item.orders.some((o) => o.id.equals(orders.id!))) &&
-          !payment?.status && { status: { in: payment!.status } } &&
-          !payment?.method && { method: { in: payment!.method } }
+          (!payment?.status || { status: { in: payment!.status } }) &&
+          (!payment?.method || { method: { in: payment!.method } })
       )
     );
 
@@ -132,8 +132,8 @@ export class InMemoryBagsRepository implements BagsRepository {
           (!since || item.created_at >= since) &&
           (!before || item.created_at <= before) &&
           (!orders?.id || item.orders.some((o) => o.id.equals(orders.id!))) &&
-          !payment?.status && { status: { in: payment!.status } } &&
-          !payment?.method && { method: { in: payment!.method } }
+          (!payment?.status || { status: { in: payment!.status } }) &&
+          (!payment?.method || { method: { in: payment!.method } })
       )
     );
 

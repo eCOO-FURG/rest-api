@@ -39,7 +39,7 @@ describe("update order", () => {
     const bag = makeBag({ customer_id: user.id, customer: user });
     bagsRepository.items.push(bag);
 
-    const order = makeOrder({ bag });
+    const order = makeOrder({ bag, bag_id: bag.id });
     ordersRepository.items.push(order);
 
     await sut.execute({

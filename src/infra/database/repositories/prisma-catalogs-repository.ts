@@ -179,9 +179,15 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
   }
 
   async update(catalog: Catalog): Promise<void> {
-    await prisma.catalog.update({
-      where: { id: catalog.id.value },
-      data: PrismaCatalogMapper.toPrisma(catalog),
+    await prisma.$transaction(async (ctx) => {
+      await ctx.catalog.update({
+        where: { id: catalog.id.value },
+        data: PrismaCatalogMapper.toPrisma(catalog),
+      });
+
+      await ctx.offer.createMany({
+        data: catalog.offers.map(PrismaOfferMapper.toPrisma),
+      });
     });
   }
 }

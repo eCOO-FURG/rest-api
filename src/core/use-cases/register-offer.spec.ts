@@ -12,6 +12,7 @@ import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-r
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
+import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -33,6 +34,7 @@ let farmsRepository: InMemoryFarmsRepository;
 let productsRepository: InMemoryProductsRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
 let cyclesRepository: InMemoryCyclesRepository;
+let offersRepository: InMemoryOffersRepository;
 
 let sut: RegisterOfferUseCase;
 
@@ -42,12 +44,14 @@ describe("offer products", () => {
     productsRepository = new InMemoryProductsRepository();
     farmsRepository = new InMemoryFarmsRepository();
     catalogsRepository = new InMemoryCatalogsRepository();
+    offersRepository = new InMemoryOffersRepository();
 
     sut = new RegisterOfferUseCase(
       farmsRepository,
       productsRepository,
       catalogsRepository,
-      cyclesRepository
+      cyclesRepository,
+      offersRepository
     );
   });
 
@@ -196,6 +200,7 @@ describe("offer products", () => {
     });
 
     catalog.offers.push(offer);
+    offersRepository.items.push(offer);
     await catalogsRepository.create(catalog);
 
     await expect(() =>
