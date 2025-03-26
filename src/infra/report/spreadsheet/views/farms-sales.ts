@@ -2,6 +2,7 @@
 import { SpreadsheetColumn } from "@/core/report/spreadsheet-service";
 
 // Entities
+import { Bag } from "@/core/entities/bag";
 import { Catalog } from "@/core/entities/catalog";
 
 // Report
@@ -47,12 +48,14 @@ const columns: SpreadsheetColumn[] = [
 ];
 
 interface FarmsSalesReportViewProps {
+  bags: Bag[];
   catalogs: Catalog[];
   since?: Date;
   before?: Date;
 }
 
 export const FARMS_PRODUCERS_VIEW: SpreadsheetView = async ({
+  bags,
   catalogs,
   since,
   before,
@@ -61,8 +64,12 @@ export const FARMS_PRODUCERS_VIEW: SpreadsheetView = async ({
 
   for (const catalog of catalogs) {
     for (const offer of catalog.offers) {
+      const orders = bags
+        .flatMap((bag) => bag.orders)
+        .filter((order) => order.offer_id.equals(offer.id));
+
       const amount =
-        offer.orders.reduce((acc, order) => acc + order.amount, 0) /
+        orders.reduce((acc, order) => acc + order.amount, 0) /
         (offer.product?.pricing === "UNIT" ? 1 : 1000);
 
       const fee = offer.price * (catalog.fee / 100);

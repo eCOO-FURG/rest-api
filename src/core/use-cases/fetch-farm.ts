@@ -12,7 +12,9 @@ export class FetchFarmUseCase {
   constructor(private farmsRepository: FarmsRepository) {}
 
   async execute({ farm_id }: FetchFarmUseCaseRequest) {
-    const farm = await this.farmsRepository.find("aggregate", { id: farm_id });
+    const farm = await this.farmsRepository.find("farm-and-admin", {
+      id: farm_id,
+    });
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 

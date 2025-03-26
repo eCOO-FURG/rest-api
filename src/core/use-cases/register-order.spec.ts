@@ -26,8 +26,6 @@ import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-r
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
 import { InMemoryBoxesRepository } from "@/test/repositories/in-memory-boxes-repository";
-import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
-import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
 
 // Cryptography
@@ -41,9 +39,7 @@ import { today } from "@/core/utils/today";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
-let farmsRepository: InMemoryFarmsRepository;
 let offersRepository: InMemoryOffersRepository;
-let catalogsRepository: InMemoryCatalogsRepository;
 let addressesRepository: InMemoryAddressesRepository;
 let bagsRepository: InMemoryBagsRepository;
 let boxesRepository: InMemoryBoxesRepository;
@@ -57,9 +53,7 @@ describe("order product", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
     cyclesRepository = new InMemoryCyclesRepository();
-    farmsRepository = new InMemoryFarmsRepository();
     offersRepository = new InMemoryOffersRepository();
-    catalogsRepository = new InMemoryCatalogsRepository();
     addressesRepository = new InMemoryAddressesRepository();
     bagsRepository = new InMemoryBagsRepository();
     boxesRepository = new InMemoryBoxesRepository();
@@ -71,11 +65,9 @@ describe("order product", () => {
       usersRepository,
       cyclesRepository,
       offersRepository,
-      catalogsRepository,
       bagsRepository,
       boxesRepository,
       addressesRepository,
-      farmsRepository,
       otpProvider,
       mailer
     );
@@ -91,15 +83,14 @@ describe("order product", () => {
     const product = makeProduct({ pricing: "UNIT" });
 
     const farm = makeFarm({ admin_id: user.id });
-    await farmsRepository.create(farm);
 
     const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id });
-    await catalogsRepository.create(catalog);
 
     const offer = makeOffer({
       product_id: product.id,
       product,
       catalog_id: catalog.id,
+      catalog,
       amount: 10,
     });
 
@@ -122,7 +113,7 @@ describe("order product", () => {
     expect(bagsRepository.items[0].orders.length).toBe(1);
   });
 
-  it("should be add orders to a existing bag if exists", async () => {
+  it("should add orders to a existing bag if exists", async () => {
     const user = makeUser();
     await usersRepository.create(user);
 
@@ -135,22 +126,21 @@ describe("order product", () => {
     addressesRepository.items.push(address);
 
     const bag = makeBag({
-      user_id: user.id,
+      customer_id: user.id,
       cycle_id: cycle.id,
       address_id: address.id,
       address: address,
     });
+
     bagsRepository.items.push(bag);
 
     const farm = makeFarm({ admin_id: user.id });
-    await farmsRepository.create(farm);
-
-    const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id });
-    await catalogsRepository.create(catalog);
+    const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id, farm });
 
     const offer = makeOffer({
       product_id: product.id,
       catalog_id: catalog.id,
+      catalog,
       product,
       amount: 10,
     });
@@ -239,9 +229,14 @@ describe("order product", () => {
 
     const product = makeProduct();
 
+    const farm = makeFarm({ admin_id: user.id });
+    const catalog = makeCatalog({ farm_id: farm.id, farm });
+
     const offer = makeOffer({
       product_id: product.id,
       product,
+      catalog_id: catalog.id,
+      catalog,
       amount: 10,
     });
 
@@ -253,7 +248,7 @@ describe("order product", () => {
         cycle_id: cycle.id.value,
         request: [{ offer_id: offer.id.value, amount: 5 }],
       })
-    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+    ).rejects.toBeInstanceOf(ResourceClosedError);
   });
 
   it("should not be able create an order outside the cycle day", async () => {
@@ -271,10 +266,8 @@ describe("order product", () => {
     const product = makeProduct();
 
     const farm = makeFarm({ admin_id: user.id });
-    await farmsRepository.create(farm);
 
-    const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id });
-    catalogsRepository.items.push(catalog);
+    const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id, farm });
 
     const offer = makeOffer({
       product_id: product.id,
@@ -308,15 +301,14 @@ describe("order product", () => {
     const product = makeProduct();
 
     const farm = makeFarm({ admin_id: user.id });
-    await farmsRepository.create(farm);
 
-    const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id });
-    catalogsRepository.items.push(catalog);
+    const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id, farm });
 
     const offer = makeOffer({
       product_id: product.id,
       product,
       catalog_id: catalog.id,
+      catalog,
       amount: 5,
     });
 
@@ -343,15 +335,14 @@ describe("order product", () => {
     });
 
     const farm = makeFarm({ admin_id: user.id });
-    await farmsRepository.create(farm);
 
-    const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id });
-    catalogsRepository.items.push(catalog);
+    const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id, farm });
 
     const offer = makeOffer({
       product_id: product.id,
       product,
       catalog_id: catalog.id,
+      catalog,
       amount: 500,
     });
 

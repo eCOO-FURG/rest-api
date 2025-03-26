@@ -40,11 +40,11 @@ describe("list user bags", () => {
     const user = makeUser();
     usersRepository.create(user);
 
-    const bag = makeBag({ user_id: user.id, created_at: new Date() });
+    const bag = makeBag({ customer_id: user.id, created_at: new Date() });
     await bagsRepository.create(bag);
 
     const bag2 = makeBag({
-      user_id: user.id,
+      customer_id: user.id,
       created_at: new Date(new Date().setDate(new Date().getDate() + 1)),
     });
     await bagsRepository.create(bag2);
@@ -75,13 +75,13 @@ describe("list user bags", () => {
     usersRepository.create(user);
 
     const bagWithinRange = makeBag({
-      user_id: user.id,
+      customer_id: user.id,
       created_at: new Date("2024-10-06"),
     });
     await bagsRepository.create(bagWithinRange);
 
     const bagOutsideRange = makeBag({
-      user_id: user.id,
+      customer_id: user.id,
       created_at: new Date("2024-10-04"),
     });
     await bagsRepository.create(bagOutsideRange);

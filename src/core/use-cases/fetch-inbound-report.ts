@@ -23,14 +23,14 @@ export class FetchInboundReportUseCase {
 
   async execute({ since, before, cycle_id }: FetchInboundReportUseCaseRequest) {
     if (cycle_id) {
-      const cycle = await this.cyclesRepository.find("basic", {
+      const cycle = await this.cyclesRepository.find("cycle", {
         id: cycle_id,
       });
 
       if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
     }
 
-    const boxes = await this.boxesRepository.list("merge", {
+    const boxes = await this.boxesRepository.list("box-and-orders", {
       since,
       before,
       catalog: { cycle: { id: cycle_id } },

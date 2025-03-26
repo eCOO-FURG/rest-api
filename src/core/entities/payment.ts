@@ -1,21 +1,22 @@
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
-import { UUID } from "@/core/entities/aggregates/uuid";
-import { Optional } from "@/core/types/optional";
 import { Bag } from "@/core/entities/bag";
+import { UUID } from "@/core/entities/aggregates/uuid";
+
+// Types
+import { Optional } from "@/core/types/optional";
 
 export type PaymentStatus = (typeof Payment.statuses)[number];
 export type PaymentMethod = (typeof Payment.methods)[number];
 export type PaymentFlag = (typeof Payment.flags)[number];
 
 export interface PaymentProps extends EntityRequest {
+  bag_id: UUID;
+  bag?: Bag;
+
   status: PaymentStatus;
   method: PaymentMethod;
   flag: PaymentFlag | null;
-  expires_at: Date | null;
-
-  bag_id: UUID;
-  bag?: Bag;
 }
 
 export class Payment extends Entity<PaymentProps> {
@@ -51,27 +52,11 @@ export class Payment extends Entity<PaymentProps> {
     this.props.flag = flag;
   }
 
-  get expires_at() {
-    return this.props.expires_at;
-  }
-
-  get expired() {
-    return this.expires_at && this.expires_at < new Date();
-  }
-
-  static create(
-    props: Optional<PaymentProps, "status" | "flag" | "expires_at">
-  ) {
-    const expires_at =
-      props.method === "PIX"
-        ? new Date(Date.now() + 1000 * 60 * 15) // 15 minutes
-        : props.expires_at;
-
+  static create(props: Optional<PaymentProps, "status" | "flag">) {
     const payment = new Payment({
       ...props,
       status: props.status ?? "PENDING",
       flag: props.flag ?? null,
-      expires_at: expires_at ?? null,
     });
 
     return payment;

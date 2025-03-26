@@ -13,7 +13,7 @@ export class FetchSalesStatsUseCase {
   async execute({ since, before, method }: FetchSalesStatsUseCaseRequest) {
     const FIVE_MONTHS_AGO = new Date().setMonth(new Date().getMonth() - 4);
 
-    const bags = await this.bagsRepository.list("basic", {
+    const bags = await this.bagsRepository.list("bag-and-orders", {
       since: new Date(FIVE_MONTHS_AGO),
     });
 
@@ -61,10 +61,10 @@ export class FetchSalesStatsUseCase {
     since,
     before,
   }: FetchSalesStatsUseCaseRequest) {
-    const bags = await this.bagsRepository.list("merge", {
+    const bags = await this.bagsRepository.list("bag-and-orders", {
       since,
       before,
-      payments: { status: "PENDING" },
+      payment: { status: ["PENDING"] },
     });
 
     let totalSum = 0;
@@ -94,10 +94,10 @@ export class FetchSalesStatsUseCase {
     before,
     method,
   }: FetchSalesStatsUseCaseRequest) {
-    const bags = await this.bagsRepository.list("merge", {
+    const bags = await this.bagsRepository.list("bag-and-orders", {
       since,
       before,
-      payments: { method, status: "DONE" },
+      payment: { status: ["DONE"], ...(method && { method: [method] }) },
     });
 
     let totalSum = 0;

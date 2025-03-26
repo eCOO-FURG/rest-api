@@ -3,44 +3,51 @@ import { Bag } from "@/core/entities/bag";
 
 // Repositories
 import {
+  BagEntityOf,
+  BagRepositoryReturnType,
   BagsRepository,
   BagsRepositorySearchRequest,
 } from "@/core/repositories/bags-repository";
 
-// Services
+// Database
 import { prisma } from "@/infra/database/prisma-service";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
-
 // Mappers
-import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";
 import { PrismaBagMapper } from "@/infra/database/mappers/prisma-bag-mapper";
 import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
 import { PrismaBoxMapper } from "@/infra/database/mappers/prisma-box-mapper";
-
+import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";
+import { PrismaBagAndDetailsMapper } from "@/infra/database/mappers/prisma-bag-and-details-mapper";
+import {
+  PrismaBagAndOrders,
+  PrismaBagAndOrdersMapper,
+} from "@/infra/database/mappers/prisma-bag-and-orders-mapper";
 export class PrismaBagsRepository implements BagsRepository {
-  async find(
-    type: RepositoryResponse,
+  async find<T extends BagRepositoryReturnType>(
+    type: T,
     {
       id,
+      withdraw,
       statuses,
-      cycle,
       user,
+      cycle,
       address,
       orders,
-      payments,
-      withdraw,
-      before,
+      payment,
       since,
+      before,
     }: BagsRepositorySearchRequest
-  ): Promise<Bag | null> {
+  ): Promise<BagEntityOf<T> | null> {
     const bag = await prisma.bag.findFirst({
       where: {
         id,
         status: { in: statuses },
         cycle,
         address,
+        payment: {
+          ...(payment?.status && { status: { in: payment.status } }),
+          ...(payment?.method && { method: { in: payment.method } }),
+        },
         customer: {
           id: user?.id,
           ...(user?.name && {
@@ -58,32 +65,15 @@ export class PrismaBagsRepository implements BagsRepository {
         },
       },
       include: {
-        ...(type !== "basic" && {
-          customer: true,
-          address: true,
-        }),
-        ...(type === "merge" && {
+        customer: type !== "bag",
+        address: type !== "bag",
+        payment: type !== "bag",
+        ...(type === "bag-and-orders" && {
           orders: {
-            include: {
-              offer: {
-                include: {
-                  product: true,
-                  catalog: { include: { farm: true } },
-                },
-              },
-            },
+            include: { offer: { include: { product: true } } },
+            where: { id: orders?.id },
             ...(orders?.page && {
               skip: (orders.page - 1) * 20,
-              take: 20,
-            }),
-          },
-          payments: {
-            where: {
-              ...(payments?.status && { status: payments.status }),
-              ...(payments?.method && { method: payments.method }),
-            },
-            ...(payments?.page && {
-              skip: (payments.page - 1) * 20,
               take: 20,
             }),
           },
@@ -93,31 +83,42 @@ export class PrismaBagsRepository implements BagsRepository {
 
     if (!bag) return null;
 
-    return PrismaBagMapper.toDomain(bag);
+    switch (type) {
+      default:
+        return PrismaBagMapper.toDomain<T>(bag);
+      case "bag-and-details":
+        return PrismaBagAndDetailsMapper.toDomain<T>(bag);
+      case "bag-and-orders":
+        return PrismaBagAndOrdersMapper.toDomain<T>(bag as PrismaBagAndOrders);
+    }
   }
 
-  async list(
-    type: RepositoryResponse,
+  async list<T extends BagRepositoryReturnType>(
+    type: T,
     {
       id,
-      address,
-      cycle,
-      user,
-      statuses,
       withdraw,
+      statuses,
+      user,
+      cycle,
+      address,
       orders,
-      payments,
+      payment,
       since,
       before,
     }: BagsRepositorySearchRequest,
     page?: number
-  ): Promise<Bag[]> {
+  ): Promise<BagEntityOf<T>[]> {
     const bags = await prisma.bag.findMany({
       where: {
         id,
         status: { in: statuses },
         cycle,
         address,
+        payment: {
+          ...(payment?.status && { status: { in: payment.status } }),
+          ...(payment?.method && { method: { in: payment.method } }),
+        },
         customer: {
           id: user?.id,
           ...(user?.name && {
@@ -127,14 +128,9 @@ export class PrismaBagsRepository implements BagsRepository {
             ],
           }),
         },
-        ...(payments && {
-          payments: {
-            some: {
-              ...(payments?.status && { status: payments.status }),
-              ...(payments?.method && { method: payments.method }),
-            },
-          },
-        }),
+        orders: {
+          some: { id: orders?.id },
+        },
         ...(typeof withdraw === "boolean" &&
           (withdraw ? { address_id: null } : { address_id: { not: null } })),
         created_at: {
@@ -143,32 +139,14 @@ export class PrismaBagsRepository implements BagsRepository {
         },
       },
       include: {
-        ...(type !== "basic" && {
-          customer: true,
-          address: true,
-        }),
-        ...(type === "merge" && {
+        customer: type !== "bag",
+        address: type !== "bag",
+        payment: type !== "bag",
+        ...(type === "bag-and-orders" && {
           orders: {
-            include: {
-              offer: {
-                include: {
-                  product: true,
-                  catalog: { include: { farm: { include: { admin: true } } } },
-                },
-              },
-            },
+            include: { offer: { include: { product: true } } },
             ...(orders?.page && {
               skip: (orders.page - 1) * 20,
-              take: 20,
-            }),
-          },
-          payments: {
-            where: {
-              ...(payments?.status && { status: payments.status }),
-              ...(payments?.method && { method: payments.method }),
-            },
-            ...(payments?.page && {
-              skip: (payments.page - 1) * 20,
               take: 20,
             }),
           },
@@ -177,7 +155,16 @@ export class PrismaBagsRepository implements BagsRepository {
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
-    return bags.map(PrismaBagMapper.toDomain);
+    switch (type) {
+      default:
+        return bags.map(PrismaBagMapper.toDomain<T>);
+      case "bag-and-details":
+        return bags.map(PrismaBagAndDetailsMapper.toDomain<T>);
+      case "bag-and-orders":
+        return bags.map((bag) =>
+          PrismaBagAndOrdersMapper.toDomain<T>(bag as PrismaBagAndOrders)
+        );
+    }
   }
 
   async create(bag: Bag): Promise<void> {
@@ -225,50 +212,33 @@ export class PrismaBagsRepository implements BagsRepository {
 
   async update(bag: Bag): Promise<void> {
     await prisma.$transaction(async (ctx) => {
-      if (bag.address) {
-        const address = await ctx.address.findFirst({
-          where: { id: bag.address.id.value },
-        });
-
-        if (!address) {
-          await ctx.address.create({
-            data: PrismaAddressMapper.toPrisma(bag.address),
-          });
-        }
-      }
-
-      const data = PrismaBagMapper.toPrisma(bag);
-
-      await ctx.bag.update({ where: { id: bag.id.value }, data });
-
-      const orders = await ctx.order.findMany({
-        where: { bag_id: bag.id.value },
+      await ctx.bag.update({
+        where: { id: bag.id.value },
+        data: PrismaBagMapper.toPrisma(bag),
       });
 
-      for (const order of bag.orders) {
-        const fresh = !orders.find((old) => order.id.equals(old.id));
-
-        if (fresh) {
-          await ctx.offer.update({
-            where: { id: order.offer_id.value },
-            data: { amount: { decrement: order.amount } },
+      for (const order of bag.orders.values()) {
+        if (order.box) {
+          const box = await ctx.box.findFirst({
+            where: { id: order.box_id.value },
           });
 
-          if (order.box) {
-            const box = await ctx.box.findFirst({
-              where: { id: order.box_id.value },
+          if (!box) {
+            await ctx.box.create({
+              data: PrismaBoxMapper.toPrisma(order.box),
             });
-
-            if (!box) {
-              await ctx.box.create({
-                data: PrismaBoxMapper.toPrisma(order.box),
-              });
-            }
           }
-
-          await ctx.order.create({ data: PrismaOrderMapper.toPrisma(order) });
         }
+
+        await ctx.offer.update({
+          where: { id: order.offer_id.value },
+          data: { amount: { decrement: order.amount } },
+        });
       }
+
+      await ctx.order.createMany({
+        data: bag.orders.map(PrismaOrderMapper.toPrisma),
+      });
     });
   }
 }

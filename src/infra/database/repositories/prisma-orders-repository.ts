@@ -5,22 +5,25 @@ import { Order } from "@/core/entities/order";
 import {
   OrdersRepository,
   OrdersRepositorySearchRequest,
+  OrderRepositoryReturnType,
+  OrderEntityOf,
 } from "@/core/repositories/orders-repository";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
-
-// Services
+// Database
 import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
 import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
+import {
+  PrismaOrderAndOffer,
+  PrismaOrderAndOfferMapper,
+} from "@/infra/database/mappers/prisma-order-and-offer-mapper";
 
 export class PrismaOrdersRepository implements OrdersRepository {
-  async find(
-    type: RepositoryResponse,
+  async find<T extends OrderRepositoryReturnType>(
+    type: T,
     { id, bag, offer, since, before }: OrdersRepositorySearchRequest
-  ): Promise<Order | null> {
+  ): Promise<OrderEntityOf<T> | null> {
     const order = await prisma.order.findUnique({
       where: {
         id,
@@ -28,11 +31,23 @@ export class PrismaOrdersRepository implements OrdersRepository {
         offer: { id: offer?.id },
         created_at: { gte: since, lte: before },
       },
+      include: {
+        ...(type === "order-and-offer" && {
+          offer: { include: { product: true } },
+        }),
+      },
     });
 
     if (!order) return null;
 
-    return PrismaOrderMapper.toDomain(order);
+    switch (type) {
+      default:
+        return PrismaOrderMapper.toDomain<T>(order);
+      case "order-and-offer":
+        return PrismaOrderAndOfferMapper.toDomain<T>(
+          order as PrismaOrderAndOffer
+        );
+    }
   }
 
   async update(order: Order): Promise<void> {

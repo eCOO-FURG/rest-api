@@ -1,60 +1,79 @@
 // Entities
 import { Farm } from "@/core/entities/farm";
+import { FarmAndAdmin } from "@/core/entities/aggregates/farm-and-admin";
 
 // Repositories
-import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import {
   FarmsRepository,
   FarmsRepositorySearchRequest,
+  FarmRepositoryReturnType,
+  FarmEntityOf,
 } from "@/core/repositories/farms-repository";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
+// Factories
+import { makeUser } from "@/test/factories/make-user";
 
 // Utils
-import { find } from "@/test/utils/find";
-import { filter } from "@/test/utils/filter";
+import { paginate } from "@/test/utils/paginate";
 
 export class InMemoryFarmsRepository implements FarmsRepository {
   items: Farm[] = [];
 
-  async find(
-    _: RepositoryResponse,
+  async find<T extends FarmRepositoryReturnType>(
+    type: T,
     { id, name, status, tally, admin }: FarmsRepositorySearchRequest
-  ): Promise<Farm | null> {
-    const farm = await find<Farm>(this.items, async (item) => {
-      return (
+  ): Promise<FarmEntityOf<T> | null> {
+    const farm = this.items.find((item) =>
+      Boolean(
         (!id || item.id.equals(id)) &&
-        (!admin?.id || item.admin_id.equals(admin.id)) &&
-        (!name || item.name.includes(name)) &&
-        (!tally || item.tally === tally) &&
-        (!status || item.status === status)
-      );
-    });
+          (!admin?.id || item.admin_id.equals(admin.id)) &&
+          (!name || item.name.includes(name)) &&
+          (!tally || item.tally === tally) &&
+          (!status || item.status === status)
+      )
+    );
 
     if (!farm) return null;
 
-    return farm;
+    switch (type) {
+      default:
+        return farm as FarmEntityOf<T>;
+      case "farm-and-admin":
+        return FarmAndAdmin.create({
+          ...farm.props,
+          admin: farm.admin ?? makeUser(),
+        }) as FarmEntityOf<T>;
+    }
   }
 
-  async list(
-    _: RepositoryResponse,
+  async list<T extends FarmRepositoryReturnType>(
+    type: T,
     { id, admin, name, tally, status }: FarmsRepositorySearchRequest,
     page?: number
-  ): Promise<Farm[]> {
-    let farms = await filter<Farm>(this.items, async (item) => {
-      return (
+  ): Promise<FarmEntityOf<T>[]> {
+    let farms = this.items.filter((item) =>
+      Boolean(
         (!id || item.id.equals(id)) &&
-        (!admin?.id || item.admin_id.equals(admin.id)) &&
-        (!name || item.name.includes(name)) &&
-        (!tally || item.tally === tally) &&
-        (!status || item.status === status)
-      );
-    });
+          (!admin?.id || item.admin_id.equals(admin.id)) &&
+          (!name || item.name.includes(name)) &&
+          (!tally || item.tally === tally) &&
+          (!status || item.status === status)
+      )
+    );
 
-    if (page) farms = this.slice(farms, page);
+    if (page) farms = paginate(farms, page);
 
-    return farms;
+    switch (type) {
+      default:
+        return farms as FarmEntityOf<T>[];
+      case "farm-and-admin":
+        return farms.map((farm) =>
+          FarmAndAdmin.create({
+            ...farm.props,
+            admin: farm.admin ?? makeUser(),
+          })
+        ) as FarmEntityOf<T>[];
+    }
   }
 
   async create(farm: Farm): Promise<void> {
@@ -72,19 +91,13 @@ export class InMemoryFarmsRepository implements FarmsRepository {
     id,
     tally,
   }: FarmsRepositorySearchRequest): Promise<number> {
-    return this.items.filter((item) => {
-      return (
+    return this.items.filter((item) =>
+      Boolean(
         (!status || item.status === status) &&
-        (!admin?.id || item.admin_id.equals(admin.id)) &&
-        (!id || item.id.equals(id)) &&
-        (!tally || item.tally === tally)
-      );
-    }).length;
-  }
-
-  private slice(items: Farm[], page: number, size: number = 20): Farm[] {
-    const start = (page - 1) * size;
-    const end = start + size;
-    return items.slice(start, end);
+          (!admin?.id || item.admin_id.equals(admin.id)) &&
+          (!id || item.id.equals(id)) &&
+          (!tally || item.tally === tally)
+      )
+    ).length;
   }
 }

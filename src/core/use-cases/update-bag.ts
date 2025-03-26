@@ -29,17 +29,18 @@ export class UpdateBagUseCase {
   ) {}
 
   async execute({ bag_id, status }: UpdateBagUseCaseRequest) {
-    const bag = await this.bagsRepository.find("merge", { id: bag_id });
+    const bag = await this.bagsRepository.find("bag", { id: bag_id });
 
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 
-    const user = await this.usersRepository.find("basic", {
-      id: bag.user_id.value,
+    const user = await this.usersRepository.find("user", {
+      id: bag.customer_id.value,
     });
 
-    if (!user) throw new ResourceNotFoundError("Usuário", bag.user_id.value);
+    if (!user)
+      throw new ResourceNotFoundError("Usuário", bag.customer_id.value);
 
-    const cycle = await this.cyclesRepository.find("basic", {
+    const cycle = await this.cyclesRepository.find("cycle", {
       id: bag.cycle_id.value,
     });
 
@@ -51,6 +52,7 @@ export class UpdateBagUseCase {
     if (!bag.verified) throw new ResourceNotVerifiedError("Sacola", bag_id);
 
     bag.status = status ?? bag.status;
+    bag.touch();
 
     await this.bagsRepository.update(bag);
 

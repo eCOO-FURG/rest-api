@@ -12,12 +12,12 @@ export interface UserProps extends EntityRequest {
   first_name: string;
   last_name: string;
   email: string;
-  cpf: CPF;
-  phone: Phone;
   password: string | null;
-  verified_at: Date | null;
   photo: string | null;
   chat: string | null;
+  cpf: CPF;
+  phone: Phone;
+  verified_at: Date | null;
   roles: UserRole[];
 }
 

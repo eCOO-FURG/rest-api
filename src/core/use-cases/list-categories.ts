@@ -10,11 +10,9 @@ export class ListCategoriesUseCase {
   constructor(private categoriesRepository: CategoriesRepository) {}
 
   async execute({ page, name }: ListCategoriesUseCaseRequest) {
-    const categories = await this.categoriesRepository.list(
-      "basic",
-      { name },
-      page
-    );
+    const categories = await this.categoriesRepository.list("category", {
+      name,
+    });
 
     return { categories };
   }

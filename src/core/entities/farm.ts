@@ -14,15 +14,16 @@ export interface FarmProps extends EntityRequest {
 
   name: string;
   tally: string;
-  fee: number;
   description: string | null;
   photo: string | null;
+  fee: number;
+
   status: FarmStatus;
 
   images: string[];
 }
 
-export class Farm extends Entity<FarmProps> {
+export class Farm<Props extends FarmProps = FarmProps> extends Entity<Props> {
   get name() {
     return this.props.name;
   }
@@ -83,13 +84,17 @@ export class Farm extends Entity<FarmProps> {
     this.props.images = value;
   }
 
+  set fee(value: number) {
+    this.props.fee = value;
+  }
+
   static create(
     props: Optional<
       FarmProps,
       "status" | "fee" | "description" | "photo" | "images"
     >
   ) {
-    const farm = new Farm({
+    return new Farm({
       ...props,
       status: props.status ?? "PENDING",
       fee: props.fee ?? 20,
@@ -97,7 +102,6 @@ export class Farm extends Entity<FarmProps> {
       photo: props.photo ?? null,
       images: props.images ?? [],
     });
-    return farm;
   }
 
   static statuses = ["ACTIVE", "INACTIVE", "PENDING"] as const;

@@ -1,26 +1,21 @@
 // Entities
 import { Payment } from "@/core/entities/payment";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
+export type PaymentRepositoryReturnType = "payment";
+
+export type PaymentEntityOf<T extends PaymentRepositoryReturnType> =
+  T extends "payment" ? Payment : never;
 
 export interface PaymentsRepositorySearchRequest {
   id?: string;
-  bag?: {
-    id?: string;
-  };
+  bag_id?: string;
 }
 
 export interface PaymentsRepository {
-  find(
-    type: RepositoryResponse,
+  find<T extends PaymentRepositoryReturnType>(
+    type: T,
     filters: PaymentsRepositorySearchRequest
-  ): Promise<Payment | null>;
-  list(
-    type: RepositoryResponse,
-    filters: PaymentsRepositorySearchRequest,
-    page?: number
-  ): Promise<Payment[]>;
+  ): Promise<PaymentEntityOf<T> | null>;
   create(payment: Payment): Promise<void>;
   update(payment: Payment): Promise<void>;
 }

@@ -1,47 +1,30 @@
 // Entities
 import { Offer } from "@/core/entities/offer";
+import { OfferAndDetails } from "@/core/entities/aggregates/offer-and-details";
+import { OfferAndProduct } from "@/core/entities/aggregates/offer-and-product";
 
 // Repositories
 import {
   OffersRepository,
   OffersRepositorySearchRequest,
+  OfferRepositoryReturnType,
+  OfferEntityOf,
 } from "@/core/repositories/offers-repository";
-import { RepositoryResponse } from "@/core/types/repository-response";
 
 // Utils
-import { filter } from "@/test/utils/filter";
 import { paginate } from "@/test/utils/paginate";
-import { find } from "@/test/utils/find";
 
+// Factories
+import { makeProduct } from "@/test/factories/make-product";
+import { makeCatalogAndFarm } from "@/test/factories/make-farm-and-catalog";
 export class InMemoryOffersRepository implements OffersRepository {
   items: Offer[] = [];
 
-  async list(
-    _: RepositoryResponse,
-    { id, catalog, product, since, before }: OffersRepositorySearchRequest,
-    page?: number
-  ): Promise<Offer[]> {
-    let offers = await filter<Offer>(this.items, async (item) => {
-      return (
-        (!id || item.id.equals(id)) &&
-        (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
-        (!product?.id || item.product_id.equals(product.id)) &&
-        (!product?.name || item.product?.name === product.name) &&
-        (!since || item.created_at >= since) &&
-        (!before || item.created_at <= before)
-      );
-    });
-
-    if (page) offers = paginate(offers, page);
-
-    return offers;
-  }
-
-  async find(
-    _: RepositoryResponse,
+  async find<T extends OfferRepositoryReturnType>(
+    type: T,
     { id, catalog, product, since, before }: OffersRepositorySearchRequest
-  ): Promise<Offer | null> {
-    const offer = await find<Offer>(this.items, async (item) => {
+  ): Promise<OfferEntityOf<T> | null> {
+    const offer = this.items.find((item) => {
       return (
         (!id || item.id.equals(id)) &&
         (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
@@ -53,7 +36,54 @@ export class InMemoryOffersRepository implements OffersRepository {
 
     if (!offer) return null;
 
-    return offer;
+    switch (type) {
+      default:
+        return offer as OfferEntityOf<T>;
+      case "offer-and-product":
+        return OfferAndProduct.create({
+          ...offer.props,
+          product: offer.product ?? makeProduct(),
+        }) as OfferEntityOf<T>;
+      case "offer-and-details":
+        return OfferAndDetails.create({
+          ...offer.props,
+          product: offer.product ?? makeProduct(),
+          catalog: makeCatalogAndFarm(offer.catalog),
+        }) as OfferEntityOf<T>;
+    }
+  }
+
+  async list<T extends OfferRepositoryReturnType>(
+    type: T,
+    { id, ids, catalog, product, since, before }: OffersRepositorySearchRequest,
+    page?: number
+  ): Promise<OfferEntityOf<T>[]> {
+    let offers = this.items.filter((item) => {
+      return (
+        (!id || item.id.equals(id)) &&
+        (!ids || ids.includes(item.id.value)) &&
+        (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
+        (!product?.id || item.product_id.equals(product.id)) &&
+        (!product?.name || item.product?.name === product.name) &&
+        (!since || item.created_at >= since) &&
+        (!before || item.created_at <= before)
+      );
+    });
+
+    if (page) offers = paginate(offers, page);
+
+    switch (type) {
+      default:
+        return offers as OfferEntityOf<T>[];
+      case "offer-and-details":
+        return offers.map((offer) => {
+          return OfferAndDetails.create({
+            ...offer.props,
+            product: offer.product ?? makeProduct(),
+            catalog: makeCatalogAndFarm(offer.catalog),
+          }) as OfferEntityOf<T>;
+        });
+    }
   }
 
   async update(offer: Offer): Promise<void> {

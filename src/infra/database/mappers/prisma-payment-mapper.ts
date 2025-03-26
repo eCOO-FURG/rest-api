@@ -1,24 +1,27 @@
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { Payment } from "@/core/entities/payment";
+import { PaymentEntityOf } from "@/core/repositories/payments-repository";
 
 // Libraries
-import { Prisma } from "@prisma/client";
+import { Prisma, Payment as PrismaPayment } from "@prisma/client";
 
-type PrismaPayment = Prisma.PaymentGetPayload<{}>;
+// Types
+import { PaymentRepositoryReturnType } from "@/core/repositories/payments-repository";
 
 export class PrismaPaymentMapper {
-  static toDomain(raw: PrismaPayment): Payment {
+  static toDomain<T extends PaymentRepositoryReturnType = "payment">(
+    raw: PrismaPayment
+  ): PaymentEntityOf<T> {
     return Payment.create({
       id: new UUID(raw.id),
       status: raw.status,
       method: raw.method,
       flag: raw.flag,
-      expires_at: raw.expires_at,
       bag_id: new UUID(raw.bag_id),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
-    });
+    }) as PaymentEntityOf<T>;
   }
 
   static toPrisma(payment: Payment): Prisma.PaymentUncheckedCreateInput {
@@ -27,7 +30,6 @@ export class PrismaPaymentMapper {
       status: payment.status,
       method: payment.method,
       flag: payment.flag,
-      expires_at: payment.expires_at,
       bag_id: payment.bag_id.value,
       created_at: payment.created_at,
       updated_at: payment.updated_at,

@@ -1,17 +1,20 @@
 // Libraries
-import { Prisma } from "@prisma/client";
+import { Prisma, Product as PrismaProduct } from "@prisma/client";
 
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { Product } from "@/core/entities/product";
-import { PrismaCategoryMapper } from "./prisma-category-mapper";
 
-type PrismaProduct = Prisma.ProductGetPayload<{}> & {
-  category?: Prisma.CategoryGetPayload<{}>;
-};
+// Repositories
+import {
+  ProductRepositoryReturnType,
+  ProductEntityOf,
+} from "@/core/repositories/products-repository";
 
 export class PrismaProductMapper {
-  static toDomain(raw: PrismaProduct): Product {
+  static toDomain<T extends ProductRepositoryReturnType = "product">(
+    raw: PrismaProduct
+  ): ProductEntityOf<T> {
     return Product.create({
       id: new UUID(raw.id),
       name: raw.name,
@@ -19,13 +22,10 @@ export class PrismaProductMapper {
       pricing: raw.pricing,
       archived: raw.archived,
       category_id: new UUID(raw.category_id),
-      ...(raw.category && {
-        category: PrismaCategoryMapper.toDomain(raw.category),
-      }),
       perishable: raw.perishable,
       created_at: raw.created_at,
       updated_at: raw.updated_at,
-    });
+    }) as ProductEntityOf<T>;
   }
 
   static toPrisma(product: Product): Prisma.ProductUncheckedCreateInput {

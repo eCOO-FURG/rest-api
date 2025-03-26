@@ -29,7 +29,7 @@ export class SendNotificationUseCase {
     message,
     files,
   }: SendNotificationUseCaseRequest) {
-    const users = await this.usersRepository.list("basic", { role });
+    const users = await this.usersRepository.list("user", { roles: [role] });
 
     const view = await this.mailer.load({
       view: "notification",

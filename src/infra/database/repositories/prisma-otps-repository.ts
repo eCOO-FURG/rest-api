@@ -5,8 +5,9 @@ import { Otp } from "@/core/entities/otp";
 import {
   OtpsRepository,
   OtpsRepositorySearchRequest,
+  OtpRepositoryReturnType,
+  OtpEntityOf,
 } from "@/core/repositories/otps-repositoy";
-import { RepositoryResponse } from "@/core/types/repository-response";
 
 // Services
 import { prisma } from "@/infra/database/prisma-service";
@@ -15,18 +16,18 @@ import { prisma } from "@/infra/database/prisma-service";
 import { PrismaOtpMapper } from "@/infra/database/mappers/prisma-otp-mapper";
 
 export class PrismaOtpsRepository implements OtpsRepository {
-  async find(
-    type: RepositoryResponse,
+  async find<T extends OtpRepositoryReturnType>(
+    type: T,
     { value, used, user }: OtpsRepositorySearchRequest
-  ): Promise<Otp | null> {
+  ): Promise<OtpEntityOf<T> | null> {
     const otp = await prisma.otp.findFirst({
       where: { user, value, used },
-      include: { user: type !== "basic" },
+      include: { user: type !== "otp" },
     });
 
     if (!otp) return null;
 
-    return PrismaOtpMapper.toDomain(otp);
+    return PrismaOtpMapper.toDomain<T>(otp) as OtpEntityOf<T>;
   }
 
   async create(otp: Otp): Promise<void> {

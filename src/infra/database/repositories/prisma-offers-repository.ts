@@ -5,22 +5,29 @@ import { Offer } from "@/core/entities/offer";
 import {
   OffersRepository,
   OffersRepositorySearchRequest,
+  OfferEntityOf,
+  OfferRepositoryReturnType,
 } from "@/core/repositories/offers-repository";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
-
-// Services
+// Database
 import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
 import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
+import {
+  PrismaOfferAndProduct,
+  PrismaOfferAndProductMapper,
+} from "@/infra/database/mappers/prisma-offer-and-product-mapper";
+import {
+  PrismaOfferAndDetails,
+  PrismaOfferAndDetailsMapper,
+} from "@/infra/database/mappers/prisma-offer-and-details-mapper";
 
 export class PrismaOffersRepository implements OffersRepository {
-  async find(
-    type: RepositoryResponse,
+  async find<T extends OfferRepositoryReturnType>(
+    type: T,
     { id, product, catalog, since, before }: OffersRepositorySearchRequest
-  ): Promise<Offer | null> {
+  ): Promise<OfferEntityOf<T> | null> {
     const offer = await prisma.offer.findUnique({
       where: {
         id,
@@ -32,7 +39,8 @@ export class PrismaOffersRepository implements OffersRepository {
         created_at: { gte: since, lte: before },
       },
       include: {
-        ...(type !== "basic" && {
+        ...(type === "offer-and-product" && { product: true }),
+        ...(type === "offer-and-details" && {
           product: true,
           catalog: { include: { farm: true } },
         }),
@@ -41,14 +49,23 @@ export class PrismaOffersRepository implements OffersRepository {
 
     if (!offer) return null;
 
-    return PrismaOfferMapper.toDomain(offer);
+    switch (type) {
+      default:
+        return PrismaOfferMapper.toDomain<T>(offer);
+      case "offer-and-product":
+        return PrismaOfferAndProductMapper.toDomain<T>(offer);
+      case "offer-and-details":
+        return PrismaOfferAndDetailsMapper.toDomain<T>(
+          offer as PrismaOfferAndDetails
+        );
+    }
   }
 
-  async list(
-    type: RepositoryResponse,
+  async list<T extends OfferRepositoryReturnType>(
+    type: T,
     { id, ids, product, catalog, since, before }: OffersRepositorySearchRequest,
     page?: number
-  ): Promise<Offer[]> {
+  ): Promise<OfferEntityOf<T>[]> {
     const offers = await prisma.offer.findMany({
       where: {
         id: { in: ids, equals: id },
@@ -59,17 +76,35 @@ export class PrismaOffersRepository implements OffersRepository {
         catalog: { id: catalog?.id },
         created_at: { gte: since, lte: before },
       },
-      include: {
-        ...(type !== "basic" && {
-          product: true,
-          catalog: { include: { farm: true } },
-        }),
-      },
+      include:
+        type === "offer-and-product"
+          ? { product: true }
+          : type === "offer-and-details"
+          ? {
+              product: true,
+              catalog: { include: { farm: true } },
+            }
+          : null,
       orderBy: { created_at: "desc" },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
-    return offers.map(PrismaOfferMapper.toDomain);
+    switch (type) {
+      default:
+        return offers.map(PrismaOfferMapper.toDomain<T>);
+      case "offer-and-product":
+        return offers.map((offer) =>
+          PrismaOfferAndProductMapper.toDomain<T>(
+            offer as PrismaOfferAndProduct
+          )
+        );
+      case "offer-and-details":
+        return offers.map((offer) =>
+          PrismaOfferAndDetailsMapper.toDomain<T>(
+            offer as PrismaOfferAndDetails
+          )
+        );
+    }
   }
 
   async update(offer: Offer): Promise<void> {

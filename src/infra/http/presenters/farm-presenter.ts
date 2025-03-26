@@ -23,6 +23,7 @@ export class FarmPresenter {
         status: farm.status,
         tally: farm.tally,
         fee: farm.fee,
+        photo: farm.photo,
         images: farm.images,
         description: farm.description,
         admin_id: farm.admin_id.value,

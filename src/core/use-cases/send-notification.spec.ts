@@ -2,7 +2,7 @@
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
 // Use-cases
-import { SendNotificationUseCase } from "./send-notification";
+import { SendNotificationUseCase } from "@/core/use-cases/send-notification";
 
 // Services
 import { MockedMailer } from "@/test/mail/mocked-mailer";

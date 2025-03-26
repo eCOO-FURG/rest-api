@@ -1,5 +1,7 @@
+// Repositories
 import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
+import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
 
 // Use-cases
 import { UpdateOrderUseCase } from "@/core/use-cases/update-order";
@@ -14,6 +16,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 let ordersRepository: InMemoryOrdersRepository;
 let usersRepository: InMemoryUsersRepository;
+let bagsRepository: InMemoryBagsRepository;
 
 let sut: UpdateOrderUseCase;
 
@@ -21,17 +24,22 @@ describe("update order", () => {
   beforeEach(() => {
     ordersRepository = new InMemoryOrdersRepository();
     usersRepository = new InMemoryUsersRepository();
-
-    sut = new UpdateOrderUseCase(usersRepository, ordersRepository);
+    bagsRepository = new InMemoryBagsRepository();
+    sut = new UpdateOrderUseCase(
+      usersRepository,
+      bagsRepository,
+      ordersRepository
+    );
   });
 
   it("should be able to update an order", async () => {
     const user = makeUser();
     usersRepository.items.push(user);
 
-    const bag = makeBag({ user_id: user.id });
+    const bag = makeBag({ customer_id: user.id, customer: user });
+    bagsRepository.items.push(bag);
 
-    const order = makeOrder({ bag });
+    const order = makeOrder({ bag, bag_id: bag.id });
     ordersRepository.items.push(order);
 
     await sut.execute({

@@ -4,9 +4,6 @@ import { User } from "@/core/entities/user";
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
 
-// Services
-import { Encrypter } from "@/core/cryptography/encrypter";
-
 // Errors
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 
@@ -17,8 +14,9 @@ import { Message } from "@/core/entities/message";
 
 // Cryptography
 import { Hasher } from "@/core/cryptography/hasher";
+import { Encrypter } from "@/core/cryptography/encrypter";
 
-// Mailer
+// Mail
 import { Mailer } from "@/core/mail/mailer";
 
 interface RegisterUseCaseRequest {
@@ -50,27 +48,25 @@ export class RegisterUseCase {
     chat,
     role,
   }: RegisterUseCaseRequest) {
-    const userWithSameEmail = await this.usersRepository.find("basic", {
+    const userWithSameEmail = await this.usersRepository.find("user", {
       email,
     });
 
     if (userWithSameEmail) throw new ResourceAlreadyExistsError("Email", email);
 
-    const userWithSamePhone = await this.usersRepository.find("basic", {
+    const userWithSamePhone = await this.usersRepository.find("user", {
       phone,
     });
 
     if (userWithSamePhone)
       throw new ResourceAlreadyExistsError("Telefone", phone);
 
-    const userWithSameCpf = await this.usersRepository.find("basic", {
-      cpf,
-    });
+    const userWithSameCpf = await this.usersRepository.find("user", { cpf });
 
     if (userWithSameCpf) throw new ResourceAlreadyExistsError("CPF", cpf);
 
     if (chat) {
-      const userWithSameChat = await this.usersRepository.find("basic", {
+      const userWithSameChat = await this.usersRepository.find("user", {
         chat,
       });
 

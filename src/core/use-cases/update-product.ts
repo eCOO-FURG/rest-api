@@ -23,7 +23,7 @@ interface UpdateProductUseCaseRequest {
   pricing?: Product["pricing"];
   category_id?: string;
   archived?: boolean;
-  perishable?: boolean
+  perishable?: boolean;
 }
 
 export class UpdateProductUseCase {
@@ -40,23 +40,23 @@ export class UpdateProductUseCase {
     pricing,
     category_id,
     archived,
-    perishable
+    perishable,
   }: UpdateProductUseCaseRequest) {
-    const product = await this.productsRepository.find("basic", {
+    const product = await this.productsRepository.find("product", {
       id: product_id,
     });
 
     if (!product) throw new ResourceNotFoundError("Produto", product_id);
 
     if (category_id) {
-      const category = await this.categoriesRepository.find("basic", {
+      const category = await this.categoriesRepository.find("category", {
         id: category_id,
       });
 
       if (!category) throw new ResourceNotFoundError("Categoria", category_id);
     }
 
-    const equal = await this.productsRepository.find("basic", {
+    const equal = await this.productsRepository.find("product", {
       name,
       pricing,
     });
@@ -68,7 +68,7 @@ export class UpdateProductUseCase {
     name && (product.name = name);
     pricing && (product.pricing = pricing);
     archived && (product.archived = archived);
-    perishable && (product.perishable = perishable)
+    perishable && (product.perishable = perishable);
     category_id && (product.category_id = new UUID(category_id));
 
     if (image) {

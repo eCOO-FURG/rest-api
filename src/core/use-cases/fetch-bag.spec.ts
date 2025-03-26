@@ -44,7 +44,7 @@ describe("Fetch bag", () => {
 
     const offer = makeOffer({ product_id: product.id, catalog_id: catalog.id });
 
-    const bag = makeBag({ user_id: user.id });
+    const bag = makeBag({ customer_id: user.id });
 
     const order = makeOrder({ bag_id: bag.id, offer_id: offer.id });
 
@@ -82,7 +82,7 @@ describe("Fetch bag", () => {
     const user2 = makeUser();
     await usersRepository.create(user2);
 
-    const bag = makeBag({ user_id: user1.id });
+    const bag = makeBag({ customer_id: user1.id });
     await bagsRepository.create(bag);
 
     await expect(() =>

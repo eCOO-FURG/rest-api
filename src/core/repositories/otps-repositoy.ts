@@ -1,8 +1,11 @@
 // Entities
 import { Otp } from "@/core/entities/otp";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
+export type OtpRepositoryReturnType = "otp";
+
+export type OtpEntityOf<T extends OtpRepositoryReturnType> = T extends "otp"
+  ? Otp
+  : never;
 
 export interface OtpsRepositorySearchRequest {
   value: string;
@@ -11,10 +14,10 @@ export interface OtpsRepositorySearchRequest {
 }
 
 export interface OtpsRepository {
-  find(
-    type: RepositoryResponse,
+  find<T extends OtpRepositoryReturnType>(
+    type: T,
     filters: OtpsRepositorySearchRequest
-  ): Promise<Otp | null>;
+  ): Promise<OtpEntityOf<T> | null>;
   create(otp: Otp): Promise<void>;
   update(otp: Otp): Promise<void>;
 }

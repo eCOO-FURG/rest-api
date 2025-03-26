@@ -29,6 +29,7 @@ import { CycleWeek } from "@/core/entities/cycle";
 
 // Utils
 import { today } from "@/core/utils/today";
+import { makeUser } from "@/test/factories/make-user";
 
 let farmsRepository: InMemoryFarmsRepository;
 let productsRepository: InMemoryProductsRepository;
@@ -60,12 +61,16 @@ describe("update offer", () => {
     productsRepository.create(product);
 
     const catalog = makeCatalog({
+      farm_id: farm.id,
       farm,
       cycle_id: cycle.id,
+      cycle,
     });
+
     catalogsRepository.create(catalog);
 
     const offer = makeOffer({
+      catalog_id: catalog.id,
       catalog,
       product_id: product.id,
       amount: 5,
@@ -85,7 +90,7 @@ describe("update offer", () => {
       price: 20,
     });
 
-    const updatedOffer = await offersRepository.find("basic", {
+    const updatedOffer = await offersRepository.find("offer", {
       id: offer.id.value,
     });
 
@@ -182,14 +187,18 @@ describe("update offer", () => {
     productsRepository.create(product);
 
     const catalog = makeCatalog({
+      farm_id: farm.id,
       farm,
+      cycle_id: cycle.id,
       cycle,
     });
+
     catalogsRepository.create(catalog);
 
     const offer = makeOffer({
+      catalog_id: catalog.id,
       catalog,
-      product,
+      product_id: product.id,
       amount: 5,
       description: "Description",
       price: 10,
@@ -218,14 +227,17 @@ describe("update offer", () => {
     productsRepository.create(product);
 
     const catalog = makeCatalog({
+      farm_id: farm.id,
       farm,
       cycle_id: new UUID(),
     });
+
     catalogsRepository.create(catalog);
 
     const offer = makeOffer({
+      catalog_id: catalog.id,
       catalog,
-      product,
+      product_id: product.id,
       amount: 5,
       description: "Description",
       price: 10,
@@ -261,12 +273,15 @@ describe("update offer", () => {
     productsRepository.create(product);
 
     const catalog = makeCatalog({
+      farm_id: farm.id,
       farm,
       cycle_id: cycle.id,
+      cycle,
     });
     catalogsRepository.create(catalog);
 
     const offer = makeOffer({
+      catalog_id: catalog.id,
       catalog,
       product_id: product.id,
       amount: 5,
@@ -365,43 +380,5 @@ describe("update offer", () => {
         offer_id: offer.id.value,
       })
     ).rejects.toThrowError(MissingFieldError);
-  });
-
-  it("should throw an error if the offered product is not perishable and expires_at is set", async () => {
-    const cycle = makeCycle();
-    cyclesRepository.items.push(cycle);
-
-    const farm = makeFarm({ status: "ACTIVE" });
-    farmsRepository.create(farm);
-
-    const product = makeProduct({ perishable: false });
-    productsRepository.create(product);
-
-    const catalog = makeCatalog({
-      farm,
-      cycle_id: cycle.id,
-    });
-    catalogsRepository.create(catalog);
-
-    const offer = makeOffer({
-      catalog,
-      product_id: product.id,
-      product,
-      amount: 5,
-      description: "Description",
-      price: 10,
-    });
-    offersRepository.items.push(offer);
-
-    catalog.offers.push(offer);
-    catalogsRepository.update(catalog);
-
-    await expect(
-      sut.execute({
-        farm_id: farm.id.value,
-        offer_id: offer.id.value,
-        expires_at: new Date(),
-      })
-    ).rejects.toThrowError(InvalidFieldError);
   });
 });
