@@ -1,36 +1,28 @@
+// Libraries
+import { Prisma, Catalog as PrismaCatalog } from "@prisma/client";
+
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { Catalog } from "@/core/entities/catalog";
 
-// Libraries
-import { Prisma } from "@prisma/client";
-
 // Mappers
-import { PrismaFarmMapper } from "@/infra/database/mappers/prisma-farm-mapper";
-import {
-  PrismaOffer,
-  PrismaOfferMapper,
-} from "@/infra/database/mappers/prisma-offer-mapper";
+import { CatalogEntityOf } from "@/core/repositories/catalogs-repository";
 
-type PrismaCatalog = Prisma.CatalogGetPayload<{}> & {
-  farm?: Prisma.FarmGetPayload<{}>;
-  offers?: PrismaOffer[];
-};
+// Repositories
+import { CatalogRepositoryReturnType } from "@/core/repositories/catalogs-repository";
 
 export class PrismaCatalogMapper {
-  static toDomain(raw: PrismaCatalog): Catalog {
+  static toDomain<T extends CatalogRepositoryReturnType = "catalog">(
+    raw: PrismaCatalog
+  ): CatalogEntityOf<T> {
     return Catalog.create({
       id: new UUID(raw.id),
       fee: raw.fee,
       cycle_id: new UUID(raw.cycle_id),
       farm_id: new UUID(raw.farm_id),
-      ...(raw.farm && {
-        farm: PrismaFarmMapper.toDomain(raw.farm),
-      }),
-      offers: raw.offers?.map((offer) => PrismaOfferMapper.toDomain(offer)),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
-    });
+    }) as CatalogEntityOf<T>;
   }
 
   static toPrisma(catalog: Catalog): Prisma.CatalogUncheckedCreateInput {

@@ -1,10 +1,9 @@
-// Entities
-import { Cycle } from "@/core/entities/cycle";
-
 // Repositories
 import {
   CyclesRepository,
   CyclesRepositorySearchRequest,
+  CycleRepositoryReturnType,
+  CycleEntityOf,
 } from "@/core/repositories/cycles-repository";
 
 // Services
@@ -13,31 +12,27 @@ import { prisma } from "@/infra/database/prisma-service";
 // Mappers
 import { PrismaCycleMapper } from "@/infra/database/mappers/prisma-cycle-mapper";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
-
 export class PrismaCyclesRepository implements CyclesRepository {
-  async find(
-    _: RepositoryResponse,
+  async find<T extends CycleRepositoryReturnType>(
+    _: T,
     { id }: CyclesRepositorySearchRequest
-  ): Promise<Cycle | null> {
-    const cycle = await prisma.cycle.findFirst({ where: { id }, include: {} });
+  ): Promise<CycleEntityOf<T> | null> {
+    const cycle = await prisma.cycle.findFirst({ where: { id } });
 
     if (!cycle) return null;
 
-    return PrismaCycleMapper.toDomain(cycle);
+    return PrismaCycleMapper.toDomain(cycle) as CycleEntityOf<T>;
   }
-  async list(
-    _: RepositoryResponse,
+  async list<T extends CycleRepositoryReturnType>(
+    _: T,
     { id }: CyclesRepositorySearchRequest,
     page?: number
-  ): Promise<Cycle[]> {
+  ): Promise<CycleEntityOf<T>[]> {
     const cycles = await prisma.cycle.findMany({
       where: { id },
-      include: {},
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
-    return cycles.map(PrismaCycleMapper.toDomain);
+    return cycles.map(PrismaCycleMapper.toDomain) as CycleEntityOf<T>[];
   }
 }

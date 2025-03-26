@@ -13,7 +13,6 @@ import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-rep
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
 // Errors
-import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { UnauthorizedError } from "@/core/errors/unauthorized";
 

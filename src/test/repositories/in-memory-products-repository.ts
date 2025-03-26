@@ -1,25 +1,28 @@
 // Entities
 import { Product } from "@/core/entities/product";
+import { ProductAndCategory } from "@/core/entities/aggregates/product-and-category";
 
 // Repositories
 import {
   ProductsRepository,
   ProductsRepositorySearchRequest,
+  ProductRepositoryReturnType,
+  ProductEntityOf,
 } from "@/core/repositories/products-repository";
-import { RepositoryResponse } from "@/core/types/repository-response";
 
 // Utils
-import { filter } from "@/test/utils/filter";
-import { find } from "@/test/utils/find";
+import { paginate } from "@/test/utils/paginate";
 
+// Factories
+import { makeCategory } from "@/test/factories/make-category";
 export class InMemoryProductsRepository implements ProductsRepository {
   items: Product[] = [];
 
-  async find(
-    _: RepositoryResponse,
+  async find<T extends ProductRepositoryReturnType>(
+    type: T,
     { id, name, pricing, archived, category }: ProductsRepositorySearchRequest
-  ): Promise<Product | null> {
-    const product = await find<Product>(this.items, async (item) => {
+  ): Promise<ProductEntityOf<T> | null> {
+    const product = this.items.find((item) => {
       return Boolean(
         (!id || item.id.equals(id)) &&
           (!name || item.name.toLowerCase() === name.toLowerCase()) &&
@@ -32,15 +35,23 @@ export class InMemoryProductsRepository implements ProductsRepository {
 
     if (!product) return null;
 
-    return product;
+    switch (type) {
+      default:
+        return product as ProductEntityOf<T>;
+      case "product-and-category":
+        return ProductAndCategory.create({
+          ...product.props,
+          category: product.category ?? makeCategory(),
+        }) as ProductEntityOf<T>;
+    }
   }
 
-  async list(
-    _: RepositoryResponse,
+  async list<T extends ProductRepositoryReturnType>(
+    type: T,
     { id, name, pricing, archived, category }: ProductsRepositorySearchRequest,
     page: number
-  ): Promise<Product[]> {
-    let products = await filter<Product>(this.items, async (item) => {
+  ): Promise<ProductEntityOf<T>[]> {
+    let products = this.items.filter((item) => {
       return Boolean(
         (!id || item.id.equals(id)) &&
           (!name || item.name.toLowerCase().includes(name.toLowerCase())) &&
@@ -51,9 +62,19 @@ export class InMemoryProductsRepository implements ProductsRepository {
       );
     });
 
-    if (page) products = this.slice(products, page);
+    if (page) products = paginate(products, page);
 
-    return products;
+    switch (type) {
+      default:
+        return products as ProductEntityOf<T>[];
+      case "product-and-category":
+        return products.map((product) => {
+          return ProductAndCategory.create({
+            ...product.props,
+            category: product.category ?? makeCategory(),
+          }) as ProductEntityOf<T>;
+        });
+    }
   }
 
   async create(product: Product): Promise<void> {
@@ -66,11 +87,5 @@ export class InMemoryProductsRepository implements ProductsRepository {
     if (index !== -1) {
       this.items[index] = product;
     }
-  }
-
-  private slice(items: Product[], page: number, size: number = 20): Product[] {
-    const start = (page - 1) * size;
-    const end = start + size;
-    return items.slice(start, end);
   }
 }

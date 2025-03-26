@@ -7,10 +7,18 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { CPF } from "@/core/entities/cpf";
 import { Phone } from "@/core/entities/phone";
 
+// Repositories
+import {
+  UserRepositoryReturnType,
+  UserEntityOf,
+} from "@/core/repositories/users-repository";
+
 type PrismaUser = Prisma.UserGetPayload<{}>;
 
 export class PrismaUserMapper {
-  static toDomain(raw: PrismaUser): User {
+  static toDomain<T extends UserRepositoryReturnType>(
+    raw: PrismaUser
+  ): UserEntityOf<T> {
     return User.create({
       id: new UUID(raw.id),
       first_name: raw.first_name,
@@ -25,7 +33,7 @@ export class PrismaUserMapper {
       roles: raw.roles,
       created_at: raw.created_at,
       updated_at: raw.updated_at,
-    });
+    }) as UserEntityOf<T>;
   }
 
   static toPrisma(user: User): Prisma.UserUncheckedCreateInput {

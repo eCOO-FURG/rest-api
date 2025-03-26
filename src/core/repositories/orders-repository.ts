@@ -1,8 +1,15 @@
 // Entities
-import { Order } from "../entities/order";
+import { Order } from "@/core/entities/order";
+import { OrderAndOffer } from "@/core/entities/aggregates/order-and-offer";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
+export type OrderRepositoryReturnType = "order" | "order-and-offer";
+
+export type OrderEntityOf<T extends OrderRepositoryReturnType> =
+  T extends "order"
+    ? Order
+    : T extends "order-and-offer"
+    ? OrderAndOffer
+    : never;
 
 export interface OrdersRepositorySearchRequest {
   id?: string;
@@ -14,9 +21,9 @@ export interface OrdersRepositorySearchRequest {
 }
 
 export interface OrdersRepository {
-  find(
-    type: RepositoryResponse,
+  find<T extends OrderRepositoryReturnType>(
+    type: T,
     filters: OrdersRepositorySearchRequest
-  ): Promise<Order | null>;
+  ): Promise<OrderEntityOf<T> | null>;
   update(order: Order): Promise<void>;
 }

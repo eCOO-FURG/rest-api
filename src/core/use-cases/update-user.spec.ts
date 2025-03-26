@@ -7,8 +7,10 @@ import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-rep
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
-// Services
+// Cryptography
 import { MockedEncrypter } from "@/test/cryptography/mocked-encrypter";
+
+// Storage
 import { MockedStorage } from "@/test/storage/mocked-storage";
 
 // Factories

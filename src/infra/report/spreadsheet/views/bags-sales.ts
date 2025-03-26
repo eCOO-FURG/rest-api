@@ -2,7 +2,7 @@
 import { SpreadsheetColumn } from "@/core/report/spreadsheet-service";
 
 // Entities
-import { Bag } from "@/core/entities/bag";
+import { BagAndOrders } from "@/core/entities/aggregates/bag-and-orders";
 
 // Report
 import { SpreadsheetView } from "@/infra/report/spreadsheet/excel";
@@ -41,7 +41,7 @@ const columns: SpreadsheetColumn[] = [
 interface BagsSalesReportViewProps {
   since?: Date;
   before?: Date;
-  bags: Bag[];
+  bags: BagAndOrders[];
 }
 
 export const BAGS_SALES_VIEW: SpreadsheetView = async ({
@@ -52,28 +52,18 @@ export const BAGS_SALES_VIEW: SpreadsheetView = async ({
   const rows: Record<string, unknown>[] = [];
 
   for (const bag of bags) {
-    const mostRecentPayment = bag.payments.length
-      ? bag.payments.reduce((acc, payment) => {
-          if (payment.created_at > acc.created_at) {
-            return payment;
-          }
-
-          return acc;
-        })
-      : null;
-
     rows.push({
       bag: bag.code,
-      consumer: `${bag.user?.first_name} ${bag.user?.last_name}`,
-      cpf: bag.user?.cpf.format,
+      consumer: `${bag.customer.first_name} ${bag.customer.last_name}`,
+      cpf: bag.customer.cpf.format,
       address: bag.address?.format,
       bag_price: bag.subtotal + bag.fee,
       shipping_price: bag.shipping,
       total_price: bag.total,
       date: (bag.updated_at ?? bag.created_at).toLocaleDateString("pt-BR"),
-      payment_method: mostRecentPayment?.method ?? "-",
-      flag: mostRecentPayment?.flag ?? "-",
-      payment_date: mostRecentPayment?.created_at?.toLocaleDateString("pt-BR"),
+      payment_method: bag.payment?.method ?? "-",
+      flag: bag.payment?.flag ?? "-",
+      payment_date: bag.payment?.created_at?.toLocaleDateString("pt-BR"),
       since: since?.toLocaleDateString("pt-BR"),
       before: before?.toLocaleDateString("pt-BR"),
     });

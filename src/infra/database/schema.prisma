@@ -75,13 +75,15 @@ enum FARM_STATUS {
 }
 
 model Farm {
-  id          String      @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
-  tally       String      @unique
-  fee         Float
+  tally       String   @unique
   description String?
+  photo       String?
+  fee         Float
   images      String[]
-  status      FARM_STATUS @default(PENDING)
+
+  status FARM_STATUS @default(PENDING)
 
   admin_id String @unique
   admin    User   @relation(fields: [admin_id], references: [id], onDelete: Cascade)
@@ -221,13 +223,12 @@ model Bag {
   shipping Decimal @db.Decimal(10, 2)
   fee      Decimal @db.Decimal(10, 2)
 
-  paid     Boolean @default(false)
   verified Boolean @default(false)
 
   status BAG_STATUS
 
-  user_id  String
-  customer User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  customer_id String
+  customer    User   @relation(fields: [customer_id], references: [id], onDelete: Cascade)
 
   cycle_id String
   cycle    Cycle  @relation(fields: [cycle_id], references: [id], onDelete: Cascade)
@@ -238,8 +239,8 @@ model Bag {
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  orders   Order[]
-  payments Payment[]
+  payment Payment?
+  orders  Order[]
 
   @@map("bags")
 }
@@ -271,9 +272,7 @@ model Payment {
   method PAYMENT_METHOD
   flag   PAYMENT_FLAG?
 
-  expires_at DateTime?
-
-  bag_id String
+  bag_id String @unique
   bag    Bag    @relation(fields: [bag_id], references: [id], onDelete: Cascade)
 
   created_at DateTime  @default(now())

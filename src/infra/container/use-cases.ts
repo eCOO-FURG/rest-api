@@ -86,12 +86,14 @@ export default (container: AwilixContainer) => {
         productsRepository,
         catalogsRepository,
         cyclesRepository,
+        offersRepository,
       }) =>
         new RegisterOfferUseCase(
           farmsRepository,
           productsRepository,
           catalogsRepository,
-          cyclesRepository
+          cyclesRepository,
+          offersRepository
         )
     ),
     updateUserUseCase: asFunction(
@@ -103,11 +105,9 @@ export default (container: AwilixContainer) => {
         usersRepository,
         cyclesRepository,
         offersRepository,
-        catalogsRepository,
         bagsRepository,
         boxesRepository,
         addressesRepository,
-        farmsRepository,
         otpProvider,
         mailer,
       }) =>
@@ -115,18 +115,20 @@ export default (container: AwilixContainer) => {
           usersRepository,
           cyclesRepository,
           offersRepository,
-          catalogsRepository,
           bagsRepository,
           boxesRepository,
           addressesRepository,
-          farmsRepository,
           otpProvider,
           mailer
         )
     ),
     updateOrderUseCase: asFunction(
-      ({ usersRepository, ordersRepository }) =>
-        new UpdateOrderUseCase(usersRepository, ordersRepository)
+      ({ usersRepository, bagsRepository, ordersRepository }) =>
+        new UpdateOrderUseCase(
+          usersRepository,
+          bagsRepository,
+          ordersRepository
+        )
     ),
     fetchProfileUseCase: asFunction(
       ({ usersRepository }) => new FetchProfileUseCase(usersRepository)
@@ -297,8 +299,12 @@ export default (container: AwilixContainer) => {
         new DeleteFarmImageUseCase(farmsRepository, usersRepository, storage)
     ),
     deleteOfferUseCase: asFunction(
-      ({ offersRepository, cyclesRepository }) =>
-        new DeleteOfferUseCase(offersRepository, cyclesRepository)
+      ({ offersRepository, catalogsRepository, cyclesRepository }) =>
+        new DeleteOfferUseCase(
+          offersRepository,
+          catalogsRepository,
+          cyclesRepository
+        )
     ),
     updateOfferUseCase: asFunction(
       ({ offersRepository, cyclesRepository }) =>

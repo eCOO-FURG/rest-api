@@ -5,47 +5,47 @@ import { Category } from "@/core/entities/category";
 import {
   CategoriesRepository,
   CategoriesRepositorySearchRequest,
+  CategoryEntityOf,
+  CategoryRepositoryReturnType,
 } from "@/core/repositories/categories-repository";
-import { RepositoryResponse } from "@/core/types/repository-response";
 
 // Utils
-import { filter } from "@/test/utils/filter";
-import { find } from "@/test/utils/find";
+import { paginate } from "@/test/utils/paginate";
 
 export class InMemoryCategoriesRepository implements CategoriesRepository {
   items: Category[] = [];
 
-  async find(
-    _: RepositoryResponse,
+  async find<T extends CategoryRepositoryReturnType>(
+    _: T,
     { id, name }: CategoriesRepositorySearchRequest
-  ): Promise<Category | null> {
-    const category = await find<Category>(this.items, async (item) => {
-      return (
+  ): Promise<CategoryEntityOf<T> | null> {
+    const category = this.items.find((item) =>
+      Boolean(
         (!id || item.id.equals(id)) &&
-        (!name || item.name.toLowerCase().includes(name.toLowerCase()))
-      );
-    });
+          (!name || item.name.toLowerCase().includes(name.toLowerCase()))
+      )
+    );
 
     if (!category) return null;
 
-    return category;
+    return category as CategoryEntityOf<T>;
   }
 
-  async list(
-    _: RepositoryResponse,
+  async list<T extends CategoryRepositoryReturnType>(
+    _: T,
     { id, name }: CategoriesRepositorySearchRequest,
     page: number
-  ): Promise<Category[]> {
-    let categories = await filter<Category>(this.items, async (item) => {
-      return (
+  ): Promise<CategoryEntityOf<T>[]> {
+    let categories = this.items.filter((item) =>
+      Boolean(
         (!id || item.id.equals(id)) &&
-        (!name || item.name.toLowerCase().includes(name.toLowerCase()))
-      );
-    });
+          (!name || item.name.toLowerCase().includes(name.toLowerCase()))
+      )
+    );
 
-    if (page) categories = this.slice(categories, page);
+    if (page) categories = paginate(categories, page);
 
-    return categories;
+    return categories as CategoryEntityOf<T>[];
   }
 
   async create(category: Category): Promise<void> {
@@ -55,15 +55,5 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
   async update(category: Category): Promise<void> {
     const index = this.items.findIndex((item) => item.id.equals(category.id));
     this.items[index] = category;
-  }
-
-  private slice(
-    items: Category[],
-    page: number,
-    size: number = 20
-  ): Category[] {
-    const start = (page - 1) * size;
-    const end = start + size;
-    return items.slice(start, end);
   }
 }

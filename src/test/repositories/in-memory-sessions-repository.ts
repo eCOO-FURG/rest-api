@@ -5,31 +5,29 @@ import { Session } from "@/core/entities/session";
 import {
   SessionsRepository,
   SessionsRepositorySearchRequest,
+  SessionRepositoryReturnType,
+  SessionEntityOf,
 } from "@/core/repositories/sessions-repository";
-import { RepositoryResponse } from "@/core/types/repository-response";
-
-// Utils
-import { find } from "@/test/utils/find";
 
 export class InMemorySessionsRepository implements SessionsRepository {
   items: Session[] = [];
 
-  async find(
-    _: RepositoryResponse,
+  async find<T extends SessionRepositoryReturnType>(
+    _: T,
     { agent, ip, user, since }: SessionsRepositorySearchRequest
-  ): Promise<Session | null> {
-    const session = await find<Session>(
-      this.items,
-      async (item) =>
+  ): Promise<SessionEntityOf<T> | null> {
+    const session = this.items.find((item) =>
+      Boolean(
         (!agent || item.agent === agent) &&
-        (!ip || item.ip === ip) &&
-        Boolean(!user || item.user?.id.equals(user.id)) &&
-        (!since || item.created_at >= since)
+          (!ip || item.ip === ip) &&
+          (!user?.id || item.user?.id.equals(user.id)) &&
+          (!since || item.created_at >= since)
+      )
     );
 
     if (!session) return null;
 
-    return session;
+    return session as SessionEntityOf<T>;
   }
 
   async create(session: Session): Promise<void> {

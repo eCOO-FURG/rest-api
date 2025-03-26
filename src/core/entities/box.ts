@@ -18,7 +18,7 @@ export interface BoxProps extends EntityRequest {
   orders: Order[];
 }
 
-export class Box extends Entity<BoxProps> {
+export class Box<Props extends BoxProps = BoxProps> extends Entity<Props> {
   get verified() {
     return this.props.verified;
   }

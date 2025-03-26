@@ -20,6 +20,7 @@ interface UpdateFarmUseCaseRequest {
   farm_id: string;
   name?: string;
   tally?: string;
+  fee?: number;
   description?: string;
   status?: Farm["status"];
   photo?: File;
@@ -37,22 +38,23 @@ export class UpdateFarmUseCase {
     farm_id,
     name,
     tally,
+    fee,
     description,
     status,
     photo,
   }: UpdateFarmUseCaseRequest) {
-    const farm = await this.farmsRepository.find("basic", { id: farm_id });
+    const farm = await this.farmsRepository.find("farm", { id: farm_id });
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
-    const user = await this.usersRepository.find("basic", { id: user_id });
+    const user = await this.usersRepository.find("user", { id: user_id });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
     if (!farm.admin_id.equals(user.id) && !user.admin)
       throw new ResourceNotFoundError("Fazenda", farm_id);
 
-    if (!user.admin && status) throw new UnauthorizedError();
+    if (!user.admin && (status || fee)) throw new UnauthorizedError();
 
     farm.tally = tally ?? farm.tally;
     farm.name = name ?? farm.name;

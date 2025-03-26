@@ -3,33 +3,24 @@ import { Box } from "@/core/entities/box";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Libraries
-import { Prisma } from "@prisma/client";
+import { Prisma, Box as PrismaBox } from "@prisma/client";
 
-// Mappers
-import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
-import { PrismaCatalogMapper } from "@/infra/database/mappers/prisma-catalog-mapper";
-
-type PrismaBox = Prisma.BoxGetPayload<{}> & {
-  orders?: Prisma.OrderGetPayload<{}>[];
-  catalog?: Prisma.CatalogGetPayload<{}>;
-};
+// Repositories
+import { BoxRepositoryReturnType } from "@/core/repositories/boxes-repository";
+import { BoxEntityOf } from "@/core/repositories/boxes-repository";
 
 export class PrismaBoxMapper {
-  static toDomain(raw: PrismaBox): Box {
+  static toDomain<T extends BoxRepositoryReturnType = "box">(
+    raw: PrismaBox
+  ): BoxEntityOf<T> {
     return Box.create({
       id: new UUID(raw.id),
       status: raw.status,
       verified: raw.verified,
       catalog_id: new UUID(raw.catalog_id),
-      ...(raw.catalog && {
-        catalog: PrismaCatalogMapper.toDomain(raw.catalog),
-      }),
-      ...(raw.orders && {
-        orders: raw.orders.map((order) => PrismaOrderMapper.toDomain(order)),
-      }),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
-    });
+    }) as BoxEntityOf<T>;
   }
 
   static toPrisma(box: Box): Prisma.BoxUncheckedCreateInput {

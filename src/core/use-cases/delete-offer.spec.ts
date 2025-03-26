@@ -18,8 +18,6 @@ import { InMemoryProductsRepository } from "@/test/repositories/in-memory-produc
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
-let farmsRepository: InMemoryFarmsRepository;
-let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
@@ -29,12 +27,14 @@ let sut: DeleteOfferUseCase;
 describe("delete offer", () => {
   beforeEach(() => {
     cyclesRepository = new InMemoryCyclesRepository();
-    productsRepository = new InMemoryProductsRepository();
-    farmsRepository = new InMemoryFarmsRepository();
     offersRepository = new InMemoryOffersRepository();
     catalogsRepository = new InMemoryCatalogsRepository();
 
-    sut = new DeleteOfferUseCase(offersRepository, cyclesRepository);
+    sut = new DeleteOfferUseCase(
+      offersRepository,
+      catalogsRepository,
+      cyclesRepository
+    );
   });
 
   it("should be able to delete an offer", async () => {
@@ -42,29 +42,26 @@ describe("delete offer", () => {
     cyclesRepository.items.push(cycle);
 
     const farm = makeFarm({ status: "ACTIVE" });
-    farmsRepository.create(farm);
-
-    const product = makeProduct();
-    productsRepository.create(product);
 
     const catalog = makeCatalog({
+      farm_id: farm.id,
       farm,
       cycle_id: cycle.id,
+      cycle,
     });
+
     catalogsRepository.create(catalog);
 
     const offer = makeOffer({
+      catalog_id: catalog.id,
       catalog,
-      product_id: product.id,
     });
-    offersRepository.items.push(offer);
 
-    catalog.offers.push(offer);
-    catalogsRepository.update(catalog);
+    offersRepository.items.push(offer);
 
     await sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value });
 
-    const deletedOffer = await offersRepository.find("basic", {
+    const deletedOffer = await offersRepository.find("offer", {
       id: offer.id.value,
     });
 
@@ -77,7 +74,6 @@ describe("delete offer", () => {
     cyclesRepository.items.push(cycle);
 
     const farm = makeFarm({ status: "ACTIVE" });
-    farmsRepository.create(farm);
 
     await expect(() =>
       sut.execute({ farm_id: farm.id.value, offer_id: "123" })
@@ -86,10 +82,8 @@ describe("delete offer", () => {
 
   it("should not be able to delete an offer from a nonexistent cycle", async () => {
     const farm = makeFarm({ status: "ACTIVE" });
-    farmsRepository.create(farm);
 
     const product = makeProduct();
-    productsRepository.create(product);
 
     const catalog = makeCatalog({
       farm,
@@ -115,13 +109,10 @@ describe("delete offer", () => {
     cyclesRepository.items.push(cycle);
 
     const farm = makeFarm({ status: "ACTIVE" });
-    farmsRepository.create(farm);
 
     const anotherFarm = makeFarm({ status: "ACTIVE" });
-    farmsRepository.create(anotherFarm);
 
     const product = makeProduct();
-    productsRepository.create(product);
 
     const catalog = makeCatalog({
       farm: anotherFarm,

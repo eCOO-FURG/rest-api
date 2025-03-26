@@ -1,75 +1,106 @@
 // Entities
 import { Catalog } from "@/core/entities/catalog";
+import { CatalogAndFarm } from "@/core/entities/aggregates/catalog-and-farm";
 
 // Repositories
 import {
   CatalogsRepository,
   CatalogsRepositorySearchRequest,
+  CatalogRepositoryReturnType,
+  CatalogEntityOf,
 } from "@/core/repositories/catalogs-repository";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
-
 // Utils
-import { find } from "@/test/utils/find";
-import { filter } from "@/test/utils/filter";
 import { paginate } from "@/test/utils/paginate";
+
+// Factories
+import { makeFarmAndAdmin } from "@/test/factories/make-farm-and-admin";
+import { CatalogAndOffers } from "@/core/entities/aggregates/catalog-and-offers";
+import { makeOfferAndDetails } from "@/test/factories/make-offer-and-details";
 
 export class InMemoryCatalogsRepository implements CatalogsRepository {
   items: Catalog[] = [];
 
-  async find(
-    _: RepositoryResponse,
+  async find<T extends CatalogRepositoryReturnType>(
+    type: T,
     { id, before, cycle, farm, offers, since }: CatalogsRepositorySearchRequest
-  ): Promise<Catalog | null> {
-    const catalog = await find<Catalog>(
-      this.items,
-      async (item) =>
+  ): Promise<CatalogEntityOf<T> | null> {
+    const catalog = this.items.find((item) =>
+      Boolean(
         (!id || item.id.equals(id)) &&
-        (!before || item.created_at < before) &&
-        (!since || item.created_at > since) &&
-        (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
-        (!farm?.id || item.farm_id.equals(farm.id)) &&
-        Boolean(!farm?.name || item?.farm?.name.includes(farm.name)) &&
-        (!offers?.id || item.offers.some((o) => o.id.equals(offers.id!))) &&
-        (!offers?.product?.name ||
-          item.offers.some((offer) =>
-            offer.product?.name.includes(offers?.product?.name!)
-          ))
+          (!before || item.created_at < before) &&
+          (!since || item.created_at > since) &&
+          (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
+          (!farm?.id || item.farm_id.equals(farm.id)) &&
+          (!farm?.name || item?.farm?.name.includes(farm.name)) &&
+          (!offers?.id || item.offers.some((o) => o.id.equals(offers.id!))) &&
+          (!offers?.product?.name ||
+            item.offers.some((offer) =>
+              offer.product?.name.includes(offers?.product?.name!)
+            ))
+      )
     );
 
     if (!catalog) return null;
 
-    if (offers?.page) catalog.offers = paginate(catalog.offers, offers.page);
-
-    return catalog;
+    switch (type) {
+      default:
+        return catalog as CatalogEntityOf<T>;
+      case "catalog-and-farm":
+        return CatalogAndFarm.create({
+          ...catalog.props,
+          farm: makeFarmAndAdmin(catalog.farm),
+        }) as CatalogEntityOf<T>;
+      case "catalog-and-offers":
+        return CatalogAndOffers.create({
+          ...catalog.props,
+          farm: makeFarmAndAdmin(catalog.farm),
+          offers: catalog.offers.map((offer) => makeOfferAndDetails(offer)),
+        }) as CatalogEntityOf<T>;
+    }
   }
 
-  async list(
-    _: RepositoryResponse,
+  async list<T extends CatalogRepositoryReturnType>(
+    type: T,
     { before, cycle, farm, offers, since }: CatalogsRepositorySearchRequest,
     page?: number
-  ): Promise<Catalog[]> {
-    let catalogs = await filter<Catalog>(
-      this.items,
-      async (item) =>
+  ): Promise<CatalogEntityOf<T>[]> {
+    let catalogs = this.items.filter((item) =>
+      Boolean(
         (!before || item.created_at < before) &&
-        (!since || item.created_at > since) &&
-        (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
-        (!farm?.id || item.farm_id.equals(farm.id)) &&
-        Boolean(!farm?.name || item?.farm?.name.includes(farm.name)) &&
-        (!offers?.id || item.offers.some((o) => o.id.equals(offers.id!))) &&
-        (!offers?.product?.name ||
-          item.offers.some((offer) =>
-            offer.product?.name.includes(offers?.product?.name!)
-          ))
+          (!since || item.created_at > since) &&
+          (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
+          (!farm?.id || item.farm_id.equals(farm.id)) &&
+          (!farm?.name || item?.farm?.name.includes(farm.name)) &&
+          (!offers?.id || item.offers.some((o) => o.id.equals(offers.id!))) &&
+          (!offers?.product?.name ||
+            item.offers.some((offer) =>
+              offer.product?.name.includes(offers?.product?.name!)
+            ))
+      )
     );
 
     if (page) catalogs = paginate(catalogs, page);
 
-    if (offers?.page) catalogs = paginate(catalogs, offers.page);
-
-    return catalogs;
+    switch (type) {
+      default:
+        return catalogs as CatalogEntityOf<T>[];
+      case "catalog-and-farm":
+        return catalogs.map((catalog) => {
+          return CatalogAndFarm.create({
+            ...catalog.props,
+            farm: makeFarmAndAdmin(catalog.farm),
+          }) as CatalogEntityOf<T>;
+        });
+      case "catalog-and-offers":
+        return catalogs.map((catalog) => {
+          return CatalogAndOffers.create({
+            ...catalog.props,
+            farm: makeFarmAndAdmin(catalog.farm),
+            offers: catalog.offers.map((offer) => makeOfferAndDetails(offer)),
+          }) as CatalogEntityOf<T>;
+        });
+    }
   }
 
   async update(catalog: Catalog): Promise<void> {

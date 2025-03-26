@@ -25,14 +25,14 @@ export class ListCatalogsUseCase {
     page,
     product,
   }: SearchOfferingFarmsUseCaseRequest) {
-    const cycle = await this.cyclesRepository.find("basic", {
+    const cycle = await this.cyclesRepository.find("cycle", {
       id: cycle_id,
     });
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
     const catalogs = await this.catalogsRepository.list(
-      "aggregate",
+      "catalog-and-farm",
       {
         cycle: { id: cycle_id },
         since: mostPast(cycle.offer),

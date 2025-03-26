@@ -1,5 +1,7 @@
 // Entities
+import { BagAndDetails } from "@/core/entities/aggregates/bag-and-details";
 import { Payment } from "@/core/entities/payment";
+
 // Payments
 import { PixProvider } from "@/core/payment/pix-provider";
 
@@ -12,6 +14,8 @@ import { env } from "@/infra/env";
 // Logs
 import { Logger } from "@/infra/logs/logger";
 
+// Entities
+
 type Client = ReturnType<typeof createClient>;
 
 export class OpenPix implements PixProvider {
@@ -21,21 +25,20 @@ export class OpenPix implements PixProvider {
     this.client = createClient({ appId: env.PIX_PROVIDER_API_KEY! });
   }
 
-  async charge(payment: Payment) {
+  async charge(bag: BagAndDetails) {
     try {
-      const name = `${payment.bag!.user!.first_name} ${
-        payment.bag!.user!.last_name
-      }`;
-
       const { charge } = await this.client.charge.create({
-        correlationID: payment.id.value,
-        value: payment.bag!.total,
+        correlationID: bag.payment!.id.value,
+        value: bag.total,
         expiresIn: 60 * 15,
-        customer: { name, phone: payment.bag!.user!.phone.value },
+        customer: {
+          name: `${bag.customer.first_name} ${bag.customer.last_name}`,
+          phone: bag.customer.phone.value,
+        },
         additionalInfo: [
           {
             key: "payment_id",
-            value: payment.id.value,
+            value: bag.payment!.id.value,
           },
         ],
       });

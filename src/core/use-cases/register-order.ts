@@ -12,9 +12,7 @@ import { Message } from "@/core/entities/message";
 import { AddressesRepository } from "@/core/repositories/addresses-repository";
 import { BagsRepository } from "@/core/repositories/bags-repository";
 import { BoxesRepository } from "@/core/repositories/boxes-repository";
-import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
-import { FarmsRepository } from "@/core/repositories/farms-repository";
 import { OffersRepository } from "@/core/repositories/offers-repository";
 import { UsersRepository } from "@/core/repositories/users-repository";
 
@@ -64,11 +62,9 @@ export class RegisterOrderUseCase {
     private usersRepository: UsersRepository,
     private cyclesRepository: CyclesRepository,
     private offersRepository: OffersRepository,
-    private catalogsRepository: CatalogsRepository,
     private bagsRepository: BagsRepository,
     private boxesRepository: BoxesRepository,
     private addressesRepository: AddressesRepository,
-    private farmsRepository: FarmsRepository,
     private otpGenerator: OtpProvider,
     private mailer: Mailer
   ) {}
@@ -80,11 +76,11 @@ export class RegisterOrderUseCase {
     address,
     request,
   }: RegisterOrderUseCaseRequest) {
-    const user = await this.usersRepository.find("basic", { id: user_id });
+    const user = await this.usersRepository.find("user", { id: user_id });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
-    const cycle = await this.cyclesRepository.find("basic", { id: cycle_id });
+    const cycle = await this.cyclesRepository.find("cycle", { id: cycle_id });
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
@@ -93,7 +89,7 @@ export class RegisterOrderUseCase {
 
     const offersIds = request.map((order) => order.offer_id);
 
-    const offers = await this.offersRepository.list("aggregate", {
+    const offers = await this.offersRepository.list("offer-and-details", {
       ids: offersIds,
     });
 
@@ -113,35 +109,22 @@ export class RegisterOrderUseCase {
 
       if (offer.expired) throw new ResourceClosedError("Oferta", item.offer_id);
 
-      const catalog = await this.catalogsRepository.find("basic", {
-        id: offer.catalog?.id.value,
-      });
-
-      if (!catalog) throw new ResourceNotFoundError("Catálogo", item.offer_id);
-
-      if (!catalog.cycle_id.equals(cycle_id))
-        throw new ResourceNotFoundError("Oferta", item.offer_id);
+      if (!offer.catalog.cycle_id.equals(cycle_id))
+        throw new ResourceClosedError("Oferta", item.offer_id);
 
       if (item.amount > offer.amount)
         throw new UnavailableAmountError(offer.id.value);
 
       const invalidAmount =
-        item.amount % 100 != 0 && offer?.product?.pricing === "WEIGHT";
+        item.amount % 100 != 0 && offer.product.pricing === "WEIGHT";
 
       if (invalidAmount)
         throw new InvalidWeightError("solicitado", offer.product.id.value);
 
-      const box = await this.useBox(catalog.id);
-
-      const farm = await this.farmsRepository.find("basic", {
-        id: catalog.farm_id.value,
-      });
-
-      if (!farm)
-        throw new ResourceNotFoundError("Fazenda", catalog.farm_id.value);
+      const box = await this.useBox(offer.catalog.id);
 
       const price =
-        offer.product?.pricing === "WEIGHT"
+        offer.product.pricing === "WEIGHT"
           ? offer.price * (item.amount / 1000)
           : offer.price * item.amount;
 
@@ -152,7 +135,7 @@ export class RegisterOrderUseCase {
         offer_id: offer.id,
         offer,
         amount: item.amount,
-        fee: price * (catalog.fee / 100),
+        fee: price * (offer.catalog.fee / 100),
         price,
       });
 
@@ -184,7 +167,7 @@ export class RegisterOrderUseCase {
   private async useAddress(address: RegisterOrderUseCaseRequest["address"]) {
     if (!address) return;
 
-    const found = await this.addressesRepository.find("basic", {
+    const found = await this.addressesRepository.find("address", {
       street: address.street,
       number: address.number,
       complement: address.complement,
@@ -199,7 +182,7 @@ export class RegisterOrderUseCase {
 
   private async useBag({ bag_id, user, address, cycle }: UseBagRequest) {
     if (bag_id) {
-      const bag = await this.bagsRepository.find("aggregate", {
+      const bag = await this.bagsRepository.find("bag-and-details", {
         id: bag_id,
         statuses: ["PENDING"],
         cycle: { id: cycle.id.value },
@@ -214,7 +197,7 @@ export class RegisterOrderUseCase {
       return { bag, existed: true };
     }
 
-    const found = await this.bagsRepository.find("aggregate", {
+    const found = await this.bagsRepository.find("bag", {
       user: { id: user.id.value },
       cycle: { id: cycle.id.value },
       statuses: ["PENDING"],
@@ -227,19 +210,18 @@ export class RegisterOrderUseCase {
     const code = await this.otpGenerator.generate();
 
     const bag = Bag.create({
-      user_id: user.id,
+      customer_id: user.id,
       cycle_id: cycle.id,
       address_id: address?.id,
-      code,
-      user,
       address,
+      code,
     });
 
     return { bag, existed: false };
   }
 
   private async useBox(catalog_id: UUID) {
-    const found = await this.boxesRepository.find("basic", {
+    const found = await this.boxesRepository.find("box-and-catalog", {
       catalog: { id: catalog_id.value },
     });
 

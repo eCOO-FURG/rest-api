@@ -18,7 +18,7 @@ export class ListProductsUsecase {
     archived,
   }: ListProductsUseCaseRequest) {
     const products = await this.productsRepository.list(
-      "merge",
+      "product-and-category",
       { name, archived, category: { id: category_id } },
       page
     );

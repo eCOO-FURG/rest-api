@@ -1,8 +1,15 @@
 // Entities
 import { Product } from "@/core/entities/product";
+import { ProductAndCategory } from "@/core/entities/aggregates/product-and-category";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
+export type ProductRepositoryReturnType = "product" | "product-and-category";
+
+export type ProductEntityOf<T extends ProductRepositoryReturnType> =
+  T extends "product"
+    ? Product
+    : T extends "product-and-category"
+    ? ProductAndCategory
+    : never;
 
 export interface ProductsRepositorySearchRequest {
   id?: string;
@@ -13,15 +20,15 @@ export interface ProductsRepositorySearchRequest {
 }
 
 export interface ProductsRepository {
-  find(
-    type: RepositoryResponse,
+  find<T extends ProductRepositoryReturnType>(
+    type: T,
     filters: ProductsRepositorySearchRequest
-  ): Promise<Product | null>;
-  list(
-    type: RepositoryResponse,
+  ): Promise<ProductEntityOf<T> | null>;
+  list<T extends ProductRepositoryReturnType>(
+    type: T,
     filters: ProductsRepositorySearchRequest,
     page?: number
-  ): Promise<Product[]>;
+  ): Promise<ProductEntityOf<T>[]>;
   create(product: Product): Promise<void>;
   update(product: Product): Promise<void>;
 }

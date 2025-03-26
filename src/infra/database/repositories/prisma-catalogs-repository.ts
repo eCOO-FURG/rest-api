@@ -3,87 +3,114 @@ import { Catalog } from "@/core/entities/catalog";
 
 // Repositories
 import {
+  CatalogEntityOf,
+  CatalogRepositoryReturnType,
   CatalogsRepository,
   CatalogsRepositorySearchRequest,
 } from "@/core/repositories/catalogs-repository";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
-
-// Services
+// Database
 import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
 import { PrismaCatalogMapper } from "@/infra/database/mappers/prisma-catalog-mapper";
+import {
+  PrismaCatalogAndFarm,
+  PrismaCatalogAndFarmMapper,
+} from "@/infra/database/mappers/prisma-catalog-and-farm-mapper";
 import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
+import {
+  PrismaCatalogAndOffersMapper,
+  PrismaCatalogAndOffers,
+} from "@/infra/database/mappers/prisma-catalog-and-offers-mapper";
 
 export class PrismaCatalogsRepository implements CatalogsRepository {
-  async find(
-    type: RepositoryResponse,
-    { id, cycle, farm, offers, since, before }: CatalogsRepositorySearchRequest
-  ): Promise<Catalog | null> {
+  async find<T extends CatalogRepositoryReturnType>(
+    type: T,
+    { id, since, before, farm, cycle, offers }: CatalogsRepositorySearchRequest
+  ): Promise<CatalogEntityOf<T> | null> {
     const catalog = await prisma.catalog.findFirst({
       where: {
         id,
-        cycle: { id: cycle?.id },
         farm: {
           id: farm?.id,
           name: { contains: farm?.name, mode: "insensitive" },
         },
-        created_at: { lte: before, gte: since },
+        cycle: { id: cycle?.id },
+        created_at: {
+          gte: since,
+          lte: before,
+        },
       },
-      include: {
-        ...(type !== "basic" && {
-          farm: { include: { admin: true } },
-        }),
-        ...(type === "merge" && {
-          offers: {
-            where: {
-              product: {
-                name: { contains: offers?.product?.name, mode: "insensitive" },
+      include:
+        type === "catalog-and-farm"
+          ? { farm: { include: { admin: true } } }
+          : type === "catalog-and-offers"
+          ? {
+              farm: { include: { admin: true } },
+              offers: {
+                include: { product: true },
+                where: {
+                  product: {
+                    name: {
+                      contains: offers?.product?.name,
+                      mode: "insensitive",
+                    },
+                  },
+                  ...(typeof offers?.expired === "boolean" &&
+                    (offers.expired
+                      ? {
+                          AND: [
+                            { expires_at: { lte: new Date() } },
+                            { expires_at: { not: null } },
+                          ],
+                        }
+                      : {
+                          OR: [
+                            { expires_at: { gt: new Date() } },
+                            { expires_at: null },
+                          ],
+                        })),
+                },
+                ...(offers?.page && { skip: (offers.page - 1) * 20, take: 20 }),
               },
-              ...(typeof offers?.expired === "boolean" &&
-                (offers.expired
-                  ? {
-                      AND: [
-                        { expires_at: { lte: new Date() } },
-                        { expires_at: { not: null } },
-                      ],
-                    }
-                  : {
-                      OR: [
-                        { expires_at: { gt: new Date() } },
-                        { expires_at: null },
-                      ],
-                    })),
-            },
-            include: { product: true, orders: true },
-            orderBy: { created_at: "asc" },
-            ...(offers?.page && {
-              skip: (offers.page - 1) * 20,
-              take: 20,
-            }),
-          },
-        }),
-      },
+            }
+          : null,
     });
 
     if (!catalog) return null;
 
-    return PrismaCatalogMapper.toDomain(catalog);
+    switch (type) {
+      default:
+        return PrismaCatalogMapper.toDomain<T>(catalog);
+      case "catalog-and-farm":
+        return PrismaCatalogAndFarmMapper.toDomain<T>(
+          catalog as PrismaCatalogAndFarm
+        );
+      case "catalog-and-offers":
+        return PrismaCatalogAndOffersMapper.toDomain<T>(
+          catalog as PrismaCatalogAndOffers
+        );
+    }
   }
-  async list(
-    type: RepositoryResponse,
-    { cycle, farm, offers, since, before }: CatalogsRepositorySearchRequest,
+
+  async list<T extends CatalogRepositoryReturnType>(
+    type: T,
+    { id, since, before, farm, cycle, offers }: CatalogsRepositorySearchRequest,
     page?: number
-  ): Promise<Catalog[]> {
+  ): Promise<CatalogEntityOf<T>[]> {
     const catalogs = await prisma.catalog.findMany({
       where: {
-        cycle: { id: cycle?.id },
+        id,
+        created_at: {
+          gte: since,
+          lte: before,
+        },
         farm: {
           id: farm?.id,
           name: { contains: farm?.name, mode: "insensitive" },
         },
+        cycle: { id: cycle?.id },
         offers: {
           some: {
             product: {
@@ -105,51 +132,45 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                   })),
           },
         },
-        created_at: { lte: before, gte: since },
       },
-      include: {
-        ...(type !== "basic" && { farm: { include: { admin: true } } }),
-        ...(type === "merge" && {
-          offers: {
-            where: {
-              product: {
-                name: { contains: offers?.product?.name, mode: "insensitive" },
+      include:
+        type === "catalog-and-farm"
+          ? { farm: { include: { admin: true } } }
+          : type === "catalog-and-offers"
+          ? {
+              farm: { include: { admin: true } },
+              offers: {
+                include: { product: true },
+                ...(offers?.page && { skip: (offers.page - 1) * 20, take: 20 }),
               },
-              ...(typeof offers?.expired === "boolean" &&
-                (offers.expired
-                  ? {
-                      AND: [
-                        { expires_at: { lte: new Date() } },
-                        { expires_at: { not: null } },
-                      ],
-                    }
-                  : {
-                      OR: [
-                        { expires_at: { gt: new Date() } },
-                        { expires_at: null },
-                      ],
-                    })),
-            },
-            include: { product: true, orders: true },
-            orderBy: { created_at: "asc" },
-            ...(offers?.page && {
-              skip: (offers.page - 1) * 20,
-              take: 20,
-            }),
-          },
-        }),
-      },
+            }
+          : null,
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
-    return catalogs.map(PrismaCatalogMapper.toDomain);
+    switch (type) {
+      default:
+        return catalogs.map(PrismaCatalogMapper.toDomain<T>);
+      case "catalog-and-farm":
+        return catalogs.map((catalog) =>
+          PrismaCatalogAndFarmMapper.toDomain<T>(
+            catalog as PrismaCatalogAndFarm
+          )
+        );
+      case "catalog-and-offers":
+        return catalogs.map((catalog) =>
+          PrismaCatalogAndOffersMapper.toDomain<T>(
+            catalog as PrismaCatalogAndOffers
+          )
+        );
+    }
   }
 
   async create(catalog: Catalog): Promise<void> {
-    const data = PrismaCatalogMapper.toPrisma(catalog);
-
     await prisma.$transaction(async (ctx) => {
-      await ctx.catalog.create({ data });
+      await ctx.catalog.create({
+        data: PrismaCatalogMapper.toPrisma(catalog),
+      });
 
       await ctx.offer.createMany({
         data: catalog.offers.map(PrismaOfferMapper.toPrisma),
@@ -158,43 +179,15 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
   }
 
   async update(catalog: Catalog): Promise<void> {
-    const data = PrismaCatalogMapper.toPrisma(catalog);
-
     await prisma.$transaction(async (ctx) => {
-      await ctx.catalog.update({ where: { id: catalog.id.value }, data });
-
-      const previous = await ctx.offer.findMany({
-        where: { catalog_id: catalog.id.value },
+      await ctx.catalog.update({
+        where: { id: catalog.id.value },
+        data: PrismaCatalogMapper.toPrisma(catalog),
       });
-
-      const created = [];
-
-      for (const offer of catalog.offers.values()) {
-        const existed = previous.find((p) => offer.id.equals(p.id));
-
-        if (!existed) {
-          created.push(offer);
-          continue;
-        }
-
-        if (existed.updated_at === offer.updated_at) continue;
-
-        await ctx.offer.update({
-          where: { id: offer.id.value },
-          data: PrismaOfferMapper.toPrisma(offer),
-        });
-      }
 
       await ctx.offer.createMany({
-        data: created.map(PrismaOfferMapper.toPrisma),
+        data: catalog.offers.map(PrismaOfferMapper.toPrisma),
       });
-
-      const deletedIds = previous
-        .filter((p) => !catalog.offers.some((o) => o.id.equals(p.id)))
-        .map((offer) => offer.id);
-
-      if (deletedIds.length)
-        await ctx.offer.deleteMany({ where: { id: { in: deletedIds } } });
     });
   }
 }

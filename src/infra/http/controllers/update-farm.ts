@@ -27,6 +27,7 @@ export const updateFarmSchema = Joi.object({
   tally: Joi.string().optional(),
   description: Joi.string().optional(),
   photo: file.optional(),
+  fee: Joi.number().optional(),
   status: Joi.string()
     .valid(...Farm.statuses)
     .optional(),
@@ -40,7 +41,7 @@ export async function updateFarmController(
   try {
     const { farm_id } = parse(updateFarmParams, request.params);
 
-    const { name, tally, description, photo, status } = parse(
+    const { name, tally, description, photo, status, fee } = parse(
       updateFarmSchema,
       request.body
     );
@@ -55,6 +56,7 @@ export async function updateFarmController(
       tally,
       description,
       status,
+      fee,
       photo: toFile(photo),
     });
 

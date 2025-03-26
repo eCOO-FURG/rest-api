@@ -1,15 +1,21 @@
 // Libraries
-import { Prisma } from "@prisma/client";
+import { Prisma, Cycle as PrismaCycle } from "@prisma/client";
 
 // Entities
-import { Cycle, Week } from "@/core/entities/cycle";
+import { Cycle, CycleWeek } from "@/core/entities/cycle";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
-export type PrismaCycle = Prisma.CycleGetPayload<{}>;
+// Repositories
+import {
+  CycleRepositoryReturnType,
+  CycleEntityOf,
+} from "@/core/repositories/cycles-repository";
 
 export class PrismaCycleMapper {
-  static toDomain(raw: PrismaCycle): Cycle {
-    const week = (days: number[]) => days.map((day) => day as Week[0]);
+  static toDomain<T extends CycleRepositoryReturnType = "cycle">(
+    raw: PrismaCycle
+  ): CycleEntityOf<T> {
+    const week = (days: number[]) => days.map((day) => day as CycleWeek[0]);
 
     return Cycle.create({
       id: new UUID(raw.id),
@@ -19,7 +25,7 @@ export class PrismaCycleMapper {
       deliver: week(raw.deliver),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
-    });
+    }) as CycleEntityOf<T>;
   }
 
   static toPrisma(cycle: Cycle): Prisma.CycleUncheckedCreateInput {

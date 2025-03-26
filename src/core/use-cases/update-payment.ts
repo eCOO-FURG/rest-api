@@ -30,7 +30,7 @@ export class UpdatePaymentUseCase {
     status,
     flag,
   }: UpdatePaymentUseCaseRequest) {
-    const payment = await this.paymentsRepository.find("basic", {
+    const payment = await this.paymentsRepository.find("payment", {
       id: payment_id,
     });
 

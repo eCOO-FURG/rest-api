@@ -25,7 +25,7 @@ export class FetchPendingsUseCase {
   ) {}
 
   async execute({ cycle_id }: FetchPendingsUseCaseRequest) {
-    const cycle = await this.cyclesRepository.find("basic", { id: cycle_id });
+    const cycle = await this.cyclesRepository.find("cycle", { id: cycle_id });
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
@@ -56,7 +56,10 @@ export class FetchPendingsUseCase {
     );
 
     if (boxes == null) {
-      boxes = await this.boxesRepository.count({ status: "PENDING" });
+      boxes = await this.boxesRepository.count({
+        status: "PENDING",
+        catalog: { cycle: { id: cycle_id } },
+      });
 
       await this.cacheManager.set(`boxes:pending:${cycle_id}:${date}`, boxes);
     }

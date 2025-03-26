@@ -29,11 +29,11 @@ export class RequestHelpUseCase {
   ) {}
 
   async execute({ user_id, content }: RequestHelpUseCaseRequest) {
-    const user = await this.usersRepository.find("basic", { id: user_id });
+    const user = await this.usersRepository.find("user", { id: user_id });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
-    const farm = await this.farmsRepository.find("aggregate", {
+    const farm = await this.farmsRepository.find("farm", {
       admin: { id: user_id },
     });
 

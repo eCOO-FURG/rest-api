@@ -28,7 +28,7 @@ export class RequestOtpUseCase {
   ) {}
 
   async execute({ email }: RequestOtpUseCaseRequest) {
-    const user = await this.usersRepository.find("basic", {
+    const user = await this.usersRepository.find("user", {
       email,
     });
 

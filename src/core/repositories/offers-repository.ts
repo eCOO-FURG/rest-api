@@ -1,8 +1,21 @@
 // Entities
 import { Offer } from "@/core/entities/offer";
+import { OfferAndProduct } from "@/core/entities/aggregates/offer-and-product";
+import { OfferAndDetails } from "@/core/entities/aggregates/offer-and-details";
 
-// Types
-import { RepositoryResponse } from "@/core/types/repository-response";
+export type OfferRepositoryReturnType =
+  | "offer"
+  | "offer-and-product"
+  | "offer-and-details";
+
+export type OfferEntityOf<T extends OfferRepositoryReturnType> =
+  T extends "offer"
+    ? Offer
+    : T extends "offer-and-product"
+    ? OfferAndProduct
+    : T extends "offer-and-details"
+    ? OfferAndDetails
+    : never;
 
 export interface OffersRepositorySearchRequest {
   id?: string;
@@ -14,15 +27,15 @@ export interface OffersRepositorySearchRequest {
 }
 
 export interface OffersRepository {
-  find(
-    type: RepositoryResponse,
+  find<T extends OfferRepositoryReturnType>(
+    type: T,
     filters: OffersRepositorySearchRequest
-  ): Promise<Offer | null>;
-  list(
-    type: RepositoryResponse,
+  ): Promise<OfferEntityOf<T> | null>;
+  list<T extends OfferRepositoryReturnType>(
+    type: T,
     filters: OffersRepositorySearchRequest,
     page?: number
-  ): Promise<Offer[]>;
+  ): Promise<OfferEntityOf<T>[]>;
   update(offer: Offer): Promise<void>;
   delete(offer: Offer): Promise<void>;
 }

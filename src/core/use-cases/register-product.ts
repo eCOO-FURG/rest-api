@@ -20,7 +20,7 @@ interface RegisterProductUseCaseRequest {
   pricing: Product["pricing"];
   image: File;
   category_id: string;
-  perishable: boolean
+  perishable: boolean;
 }
 
 export class RegisterProductUseCase {
@@ -35,15 +35,15 @@ export class RegisterProductUseCase {
     image,
     pricing,
     perishable,
-    category_id
+    category_id,
   }: RegisterProductUseCaseRequest) {
-    const category = await this.categoriesRepository.find("basic", {
+    const category = await this.categoriesRepository.find("category", {
       id: category_id,
     });
 
     if (!category) throw new ResourceNotFoundError("Categoria", category_id);
 
-    const equal = await this.productsRepository.find("basic", {
+    const equal = await this.productsRepository.find("product", {
       name,
       pricing,
     });

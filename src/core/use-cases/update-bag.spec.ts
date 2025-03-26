@@ -51,7 +51,8 @@ describe("update bag", () => {
     const bag = makeBag({
       status: "PENDING",
       cycle_id: cycle.id,
-      user_id: user.id,
+      customer_id: user.id,
+      customer: user,
       verified: true,
     });
 
@@ -75,7 +76,8 @@ describe("update bag", () => {
     const bag = makeBag({
       status: "PENDING",
       cycle_id: cycle.id,
-      user_id: user.id,
+      customer_id: user.id,
+      customer: user,
       verified: true,
     });
 
@@ -108,7 +110,8 @@ describe("update bag", () => {
     const bag = makeBag({
       status: "PENDING",
       cycle_id: cycle.id,
-      user_id: user.id,
+      customer_id: user.id,
+      customer: user,
     });
 
     await bagsRepository.create(bag);
