@@ -27,7 +27,7 @@ export class PrismaUsersRepository implements UsersRepository {
         cpf,
         phone,
         chat,
-        roles: { hasEvery: roles },
+        ...(roles && { roles: { hasEvery: roles } }),
       },
     });
 
@@ -42,7 +42,14 @@ export class PrismaUsersRepository implements UsersRepository {
     page?: number
   ): Promise<UserEntityOf<T>[]> {
     const users = await prisma.user.findMany({
-      where: { id, email, cpf, phone, chat, roles: { hasEvery: roles } },
+      where: {
+        id,
+        email,
+        cpf,
+        phone,
+        chat,
+        ...(roles && { roles: { hasEvery: roles } }),
+      },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 

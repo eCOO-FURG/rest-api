@@ -32,7 +32,7 @@ export class ListCatalogsUseCase {
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
     const catalogs = await this.catalogsRepository.list(
-      "catalog-and-offers",
+      "catalog-and-farm",
       {
         cycle: { id: cycle_id },
         since: mostPast(cycle.offer),

@@ -49,7 +49,7 @@ export class ListBagsUseCase {
     }
 
     const bags = await this.bagsRepository.list(
-      "bag-and-orders",
+      "bag-and-details",
       {
         user: { id: user_id },
         cycle: { id: cycle_id },
