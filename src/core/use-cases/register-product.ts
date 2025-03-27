@@ -18,9 +18,10 @@ import { File } from "@/core/types/file";
 interface RegisterProductUseCaseRequest {
   name: string;
   pricing: Product["pricing"];
+  perishable: boolean;
+  archived: boolean;
   image: File;
   category_id: string;
-  perishable: boolean;
 }
 
 export class RegisterProductUseCase {
@@ -32,9 +33,10 @@ export class RegisterProductUseCase {
 
   async execute({
     name,
-    image,
     pricing,
     perishable,
+    archived,
+    image,
     category_id,
   }: RegisterProductUseCaseRequest) {
     const category = await this.categoriesRepository.find("category", {
@@ -55,8 +57,8 @@ export class RegisterProductUseCase {
         name,
         pricing,
         perishable,
+        archived,
         image: urls[0],
-        archived: false,
         category_id: category.id,
       });
 
