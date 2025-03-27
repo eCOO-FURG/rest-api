@@ -23,6 +23,7 @@ export class PrismaOfferAndProductMapper {
     raw: PrismaOfferAndProduct
   ): OfferEntityOf<T> {
     return OfferAndProduct.create({
+      id: new UUID(raw.id),
       amount: raw.amount,
       price: raw.price.toNumber(),
       catalog_id: new UUID(raw.catalog_id),
