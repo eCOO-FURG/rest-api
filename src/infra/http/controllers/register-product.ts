@@ -1,6 +1,6 @@
 // Libraries
-import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
+import Joi from "joi";
 
 // Entities
 import { Product } from "@/core/entities/product";
@@ -12,12 +12,12 @@ import { RegisterProductUseCase } from "@/core/use-cases/register-product";
 import container from "@/infra/container";
 
 // Validation
-import { parse } from "@/infra/http/validation/parse";
 import { file } from "@/infra/http/validation/file";
+import { parse } from "@/infra/http/validation/parse";
 
 // Utils
-import { toFile } from "@/infra/utils/to-file";
 import { toBoolean } from "@/infra/utils/to-boolean";
+import { toFile } from "@/infra/utils/to-file";
 
 // Validation
 import { boolean } from "@/infra/http/validation/boolean";
@@ -28,6 +28,7 @@ export const registerProductSchema = Joi.object({
     .valid(...Product.pricings)
     .required(),
   perishable: boolean.required(),
+  archived: boolean.required(),
   image: file.required(),
   category_id: Joi.string().required(),
 });
@@ -38,7 +39,7 @@ export async function registerProductController(
   next: NextFunction
 ) {
   try {
-    const { name, pricing, image, category_id, perishable } = parse(
+    const { name, pricing, perishable, archived, image, category_id } = parse(
       registerProductSchema,
       request.body
     );
@@ -50,8 +51,9 @@ export async function registerProductController(
     await registerProductUseCase.execute({
       name,
       pricing,
-      image: toFile(image),
       perishable: toBoolean(perishable),
+      archived: toBoolean(archived),
+      image: toFile(image),
       category_id,
     });
 
