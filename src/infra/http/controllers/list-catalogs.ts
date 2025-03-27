@@ -1,6 +1,6 @@
 // Libraries
-import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
+import Joi from "joi";
 
 // Use-cases
 import { ListCatalogsUseCase } from "@/core/use-cases/list-catalogs";
@@ -18,6 +18,7 @@ export const listCatalogsQuery = Joi.object({
   cycle_id: Joi.string().uuid().required(),
   page: Joi.number().required(),
   product: Joi.string().optional(),
+  category_id: Joi.string().uuid().optional(),
 });
 
 export async function listCatalogsController(
@@ -26,7 +27,10 @@ export async function listCatalogsController(
   next: NextFunction
 ) {
   try {
-    const { cycle_id, page, product } = parse(listCatalogsQuery, request.query);
+    const { cycle_id, page, product, category_id } = parse(
+      listCatalogsQuery,
+      request.query
+    );
 
     const listCatalogsUseCase = container.resolve<ListCatalogsUseCase>(
       "listCatalogsUseCase"
@@ -34,8 +38,9 @@ export async function listCatalogsController(
 
     const { catalogs } = await listCatalogsUseCase.execute({
       cycle_id,
-      product,
       page,
+      product,
+      category_id,
     });
 
     return response
