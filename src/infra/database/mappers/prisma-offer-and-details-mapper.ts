@@ -27,8 +27,6 @@ export class PrismaOfferAndDetailsMapper {
   static toDomain<T extends OfferRepositoryReturnType = "offer-and-details">(
     raw: PrismaOfferAndDetails
   ): OfferEntityOf<T> {
-    console.log(raw);
-
     return OfferAndDetails.create({
       id: new UUID(raw.id),
       amount: raw.amount,
