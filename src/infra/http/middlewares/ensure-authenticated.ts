@@ -7,7 +7,8 @@ import { sign, verify } from "jsonwebtoken";
 import container from "@/infra/container";
 
 // Repositories
-import { PrismaSessionsRepository } from "@/infra/database/repositories/prisma-sessions-repository";
+import { UsersRepository } from "@/core/repositories/users-repository";
+import { SessionsRepository } from "@/core/repositories/sessions-repository";
 
 // Env
 import { env } from "@/infra/env";
@@ -17,6 +18,9 @@ import { SessionExpiredError } from "@/core/errors/session-expired";
 
 // Validation
 import { parse } from "@/infra/http/validation/parse";
+
+// Errors
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 const jwtPayloadSchema = Joi.object({
   user_id: Joi.string().required(),
@@ -39,22 +43,27 @@ export async function ensureAuthenticated(
 
     const { user_id, iat } = parse(jwtPayloadSchema, payload);
 
-    const now = Date.now() / 1000;
+    const user = await container
+      .resolve<UsersRepository>("usersRepository")
+      .find("user", {
+        id: user_id,
+      });
 
-    const expired = now - iat > 5 * 60;
+    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+
+    const expired = Date.now() / 1000 - iat > 5 * 60;
 
     if (expired) {
-      const sessionsRepository =
-        container.resolve<PrismaSessionsRepository>("sessionsRepository");
-
       const ONE_HOUR_AGO = new Date(Date.now() - 60 * 60 * 1000);
 
-      const session = await sessionsRepository.find("session", {
-        user: { id: user_id },
-        ip: request.ip!,
-        agent: request.headers["user-agent"] ?? "not-identified",
-        since: ONE_HOUR_AGO,
-      });
+      const session = await container
+        .resolve<SessionsRepository>("sessionsRepository")
+        .find("session", {
+          user: { id: user_id },
+          ip: request.ip!,
+          agent: request.headers["user-agent"] ?? "not-identified",
+          since: ONE_HOUR_AGO,
+        });
 
       if (!session) throw new SessionExpiredError();
 
@@ -63,7 +72,8 @@ export async function ensureAuthenticated(
       response.header("set-cookie", `token=${refresh}`);
     }
 
-    request.user_id = user_id;
+    request.user_id = user.id.value;
+    request.admin = user.admin;
 
     next();
   } catch (error) {
