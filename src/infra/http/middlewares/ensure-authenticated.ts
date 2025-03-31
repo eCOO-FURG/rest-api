@@ -74,6 +74,7 @@ export async function ensureAuthenticated(
 
     request.user_id = user.id.value;
     request.admin = user.admin;
+    request.roles = user.roles;
 
     next();
   } catch (error) {
