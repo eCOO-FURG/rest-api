@@ -1,19 +1,37 @@
 // Repositories
+import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { CategoriesRepository } from "@/core/repositories/categories-repository";
+
+// Errors
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+
+// Utils
+import { mostPast } from "@/core/utils/most-past";
 
 interface ListCategoriesUseCaseRequest {
   page: number;
   name?: string;
+  cycle_id?: string;
 }
 
 export class ListCategoriesUseCase {
-  constructor(private categoriesRepository: CategoriesRepository) {}
+  constructor(
+    private readonly cyclesRepository: CyclesRepository,
+    private readonly categoriesRepository: CategoriesRepository
+  ) {}
 
-  async execute({ page, name }: ListCategoriesUseCaseRequest) {
+  async execute({ page, name, cycle_id }: ListCategoriesUseCaseRequest) {
+    const cycle = cycle_id
+      ? await this.cyclesRepository.find("cycle", { id: cycle_id })
+      : null;
+
+    if (cycle_id && !cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+
     const categories = await this.categoriesRepository.list(
       "category",
       {
         name,
+        offers: { cycle_id, ...(cycle && { since: mostPast(cycle.offer) }) },
       },
       page
     );
