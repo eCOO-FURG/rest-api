@@ -14,6 +14,11 @@ export type CategoryEntityOf<T extends CategoryRepositoryReturnType> =
 export interface CategoriesRepositorySearchRequest {
   id?: string;
   name?: string;
+  offers?: {
+    cycle_id?: string;
+    since?: Date;
+    page?: number;
+  };
 }
 
 export interface CategoriesRepository {
