@@ -45,6 +45,7 @@ import { DeleteFarmImageUseCase } from "@/core/use-cases/delete-farm-image";
 import { RegisterFarmImageUseCase } from "@/core/use-cases/register-farm-image";
 import { DeleteOfferUseCase } from "@/core/use-cases/delete-offer";
 import { UpdateOfferUseCase } from "@/core/use-cases/update-offer";
+import { FetchCategoryUseCase } from "@/core/use-cases/fetch-category";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -279,8 +280,8 @@ export default (container: AwilixContainer) => {
         new SendNotificationUseCase(usersRepository, mailer)
     ),
     listCategoriesUseCase: asFunction(
-      ({ categoriesRepository }) =>
-        new ListCategoriesUseCase(categoriesRepository)
+      ({ cyclesRepository, categoriesRepository }) =>
+        new ListCategoriesUseCase(cyclesRepository, categoriesRepository)
     ),
     fetchInboundReportUseCase: asFunction(
       ({ boxesRepository, cyclesRepository, pdfService }) =>
@@ -309,6 +310,10 @@ export default (container: AwilixContainer) => {
     updateOfferUseCase: asFunction(
       ({ offersRepository, cyclesRepository }) =>
         new UpdateOfferUseCase(offersRepository, cyclesRepository)
+    ),
+    fetchCategoryUseCase: asFunction(
+      ({ categoriesRepository, cyclesRepository }) =>
+        new FetchCategoryUseCase(categoriesRepository, cyclesRepository)
     ),
   });
 };

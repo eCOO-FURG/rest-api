@@ -54,6 +54,8 @@ import { sendNotificationSchema } from "@/infra/http/controllers/send-notificati
 import { openPixSchema } from "@/infra/http/webhooks/open-pix";
 import { updateOrderSchema } from "@/infra/http/controllers/update-order";
 import { updateOrderParams } from "@/infra/http/controllers/update-order";
+import { fetchCategoryParams } from "@/infra/http/controllers/fetch-category";
+import { fetchCategoryQuery } from "@/infra/http/controllers/fetch-category";
 
 // Schemas
 const { swagger: authenticateSchemaSwagger } = j2s(authenticateSchema);
@@ -110,6 +112,8 @@ const { swagger: fetchSalesReportQuerySwagger } = j2s(fetchSalesReportQuery);
 const { swagger: fetchInboundReportQuerySwagger } = j2s(
   fetchInboundReportQuery
 );
+const { swagger: fetchCategoryParamsSwagger } = j2s(fetchCategoryParams);
+const { swagger: fetchCategoryQuerySwagger } = j2s(fetchCategoryQuery);
 const { swagger: sendNotificationSchemaSwagger } = j2s(sendNotificationSchema);
 const { swagger: openPixSchemaSwagger } = j2s(openPixSchema);
 const toQueryParams = (query: SwaggerSchema) =>
@@ -766,6 +770,21 @@ export const docs = {
         responses: {
           200: {
             description: "Lista de categorias obtida com sucesso",
+          },
+        },
+      },
+    },
+    "/categories/{category_id}": {
+      get: {
+        tags: ["Categorias"],
+        summary: "Obter categoria específica",
+        parameters: [
+          ...toRouteParams(fetchCategoryParamsSwagger),
+          ...toQueryParams(fetchCategoryQuerySwagger),
+        ],
+        responses: {
+          200: {
+            description: "Categoria obtida com sucesso",
           },
         },
       },
