@@ -22,7 +22,7 @@ import { options } from "@/infra/http/validation/options";
 import { parse } from "@/infra/http/validation/parse";
 
 export const listCurrentBagsQuery = Joi.object({
-  page: Joi.number().required(),
+  page: Joi.number().required().min(1),
   cycle_id: Joi.string().uuid().required(),
   user: Joi.string().optional(),
   statuses: options(Bag.statuses).optional(),

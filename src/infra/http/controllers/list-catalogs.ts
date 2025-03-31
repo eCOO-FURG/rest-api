@@ -16,7 +16,7 @@ import { parse } from "@/infra/http/validation/parse";
 
 export const listCatalogsQuery = Joi.object({
   cycle_id: Joi.string().uuid().required(),
-  page: Joi.number().required(),
+  page: Joi.number().required().min(1),
   product: Joi.string().optional(),
 });
 

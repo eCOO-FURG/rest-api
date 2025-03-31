@@ -24,10 +24,10 @@ export async function fetchFarmController(
   next: NextFunction
 ) {
   try {
+    const { farm_id } = parse(fetchFarmParams, request.params);
+
     const fetchUserFarmUseCase =
       container.resolve<FetchFarmUseCase>("fetchFarmUseCase");
-
-    const { farm_id } = parse(fetchFarmParams, request.params);
 
     const { farm } = await fetchUserFarmUseCase.execute({
       farm_id,

@@ -14,40 +14,140 @@ import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
 import { PrismaCategoryMapper } from "@/infra/database/mappers/prisma-category-mapper";
+import {
+  PrismaCategoryAndOffers,
+  PrismaCategoryAndOffersMapper,
+} from "@/infra/database/mappers/prisma-category-and-offers-mapper";
 
 export class PrismaCategoriesRepository implements CategoriesRepository {
   async find<T extends CategoryRepositoryReturnType>(
-    _: T,
-    { id, name }: CategoriesRepositorySearchRequest
+    type: T,
+    { id, name, offers }: CategoriesRepositorySearchRequest
   ): Promise<CategoryEntityOf<T> | null> {
     const category = await prisma.category.findFirst({
       where: {
         id,
         name: { contains: name, mode: "insensitive" },
       },
+      include:
+        type === "category-and-offers"
+          ? {
+              products: {
+                include: {
+                  offers: {
+                    where: {
+                      catalog: {
+                        cycle: {
+                          id: offers?.cycle_id,
+                        },
+                      },
+                      created_at: {
+                        gte: offers?.since,
+                      },
+                    },
+                    include: {
+                      catalog: {
+                        include: {
+                          farm: {
+                            include: {
+                              admin: true,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+                ...(offers?.page && {
+                  skip: (offers.page - 1) * 20,
+                  take: 20,
+                }),
+              },
+            }
+          : null,
     });
 
     if (!category) return null;
 
-    return PrismaCategoryMapper.toDomain<T>(category);
+    switch (type) {
+      default:
+        return PrismaCategoryMapper.toDomain<T>(category);
+      case "category-and-offers":
+        return PrismaCategoryAndOffersMapper.toDomain<T>(
+          category as PrismaCategoryAndOffers
+        );
+    }
   }
 
   async list<T extends CategoryRepositoryReturnType>(
-    _: T,
-    { name, id }: CategoriesRepositorySearchRequest,
+    type: T,
+    { id, name, offers }: CategoriesRepositorySearchRequest,
     page?: number
   ): Promise<CategoryEntityOf<T>[]> {
     const categories = await prisma.category.findMany({
       where: {
         id,
         name: { contains: name, mode: "insensitive" },
+        ...(offers && {
+          products: {
+            some: {
+              offers: {
+                some: {
+                  catalog: {
+                    cycle: {
+                      id: offers.cycle_id,
+                    },
+                  },
+                  created_at: {
+                    gte: offers.since,
+                  },
+                },
+              },
+            },
+          },
+        }),
       },
+      include:
+        type === "category-and-offers"
+          ? {
+              products: {
+                include: {
+                  offers: {
+                    include: {
+                      catalog: {
+                        include: {
+                          farm: {
+                            include: {
+                              admin: true,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+                ...(offers?.page && {
+                  skip: (offers.page - 1) * 20,
+                  take: 20,
+                }),
+              },
+            }
+          : null,
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
-    return categories.map((category) =>
-      PrismaCategoryMapper.toDomain<T>(category)
-    );
+    switch (type) {
+      default:
+        return categories.map((category) =>
+          PrismaCategoryMapper.toDomain<T>(category)
+        );
+      case "category-and-offers":
+        return categories.map((category) =>
+          PrismaCategoryAndOffersMapper.toDomain<T>(
+            category as PrismaCategoryAndOffers
+          )
+        );
+    }
   }
 
   async create(category: Category): Promise<void> {
