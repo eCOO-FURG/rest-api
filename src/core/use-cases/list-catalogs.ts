@@ -35,11 +35,9 @@ export class ListCatalogsUseCase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const category =
-      category_id &&
-      (await this.categoriesRepository.find("category", {
-        id: category_id,
-      }));
+    const category = category_id
+      ? await this.categoriesRepository.find("category", { id: category_id })
+      : null;
 
     if (category_id && !category)
       throw new ResourceNotFoundError("Categoria", category_id);
@@ -52,7 +50,7 @@ export class ListCatalogsUseCase {
         offers: {
           product: {
             name: product,
-            ...(category && { category: { id: category?.id.value } }),
+            category: { id: category_id },
           },
           expired: false,
           page,

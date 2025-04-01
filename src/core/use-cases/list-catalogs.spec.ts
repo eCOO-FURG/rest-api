@@ -177,8 +177,6 @@ describe("list catalogs", () => {
       category_id: category.id.value,
     });
 
-    console.log(result.catalogs);
-
     expect(result.catalogs.length).toBe(5);
     expect(result.catalogs[0].offers[0].product!.category_id).toEqual(
       category.id

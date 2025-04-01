@@ -56,6 +56,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                       contains: offers?.product?.name,
                       mode: "insensitive",
                     },
+                    category_id: offers?.product?.category?.id,
                   },
                   ...(typeof offers?.expired === "boolean" &&
                     (offers.expired
@@ -120,9 +121,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
           some: {
             product: {
               name: { contains: offers?.product?.name, mode: "insensitive" },
-              ...(offers?.product?.category?.id && {
-                category: { id: offers.product.category.id },
-              }),
+              category_id: offers?.product?.category?.id,
             },
             ...(typeof offers?.expired === "boolean" &&
               (offers.expired
