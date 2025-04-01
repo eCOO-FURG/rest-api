@@ -42,7 +42,7 @@ export class PrismaOffersRepository implements OffersRepository {
         ...(type === "offer-and-product" && { product: true }),
         ...(type === "offer-and-details" && {
           product: true,
-          catalog: { include: { farm: true } },
+          catalog: { include: { farm: { include: { admin: true } } } },
         }),
       },
     });
@@ -82,7 +82,7 @@ export class PrismaOffersRepository implements OffersRepository {
           : type === "offer-and-details"
           ? {
               product: true,
-              catalog: { include: { farm: true } },
+              catalog: { include: { farm: { include: { admin: true } } } },
             }
           : null,
       orderBy: { created_at: "desc" },

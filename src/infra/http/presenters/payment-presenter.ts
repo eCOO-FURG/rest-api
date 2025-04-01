@@ -12,9 +12,7 @@ export class PaymentPresenter {
         method: payment.method,
         flag: payment.flag,
         status: payment.status,
-        expired: payment.expired,
         bag_id: payment.bag_id.value,
-        expires_at: payment.expires_at,
         created_at: payment.created_at,
         updated_at: payment.updated_at,
       };

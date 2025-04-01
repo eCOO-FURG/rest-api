@@ -3,8 +3,8 @@ import { asFunction, AwilixContainer } from "awilix";
 
 // Use-cases
 import { AuthenticateUseCase } from "@/core/use-cases/authenticate";
-import { RegisterOfferUseCase } from "@/core/use-cases/register-offer";
-import { UpdateOrderUseCase } from "@/core/use-cases/update-order";
+import { DeleteFarmImageUseCase } from "@/core/use-cases/delete-farm-image";
+import { DeleteOfferUseCase } from "@/core/use-cases/delete-offer";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 import { FetchBoxUseCase } from "@/core/use-cases/fetch-box";
 import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
@@ -26,9 +26,11 @@ import { ListCyclesUseCase } from "@/core/use-cases/list-cycles";
 import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
 import { ListProductsUsecase } from "@/core/use-cases/list-products";
 import { OpenPaymentUseCase } from "@/core/use-cases/open-payment";
-import { RegisterOrderUseCase } from "@/core/use-cases/register-order";
 import { RegisterUseCase } from "@/core/use-cases/register";
 import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
+import { RegisterFarmImageUseCase } from "@/core/use-cases/register-farm-image";
+import { RegisterOfferUseCase } from "@/core/use-cases/register-offer";
+import { RegisterOrderUseCase } from "@/core/use-cases/register-order";
 import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
 import { RegisterProductUseCase } from "@/core/use-cases/register-product";
 import { RequestHelpUseCase } from "@/core/use-cases/request-help";
@@ -37,14 +39,13 @@ import { ResetPasswordUseCase } from "@/core/use-cases/reset-password";
 import { SendNotificationUseCase } from "@/core/use-cases/send-notification";
 import { UpdateBagUseCase } from "@/core/use-cases/update-bag";
 import { UpdateFarmUseCase } from "@/core/use-cases/update-farm";
+import { UpdateOfferUseCase } from "@/core/use-cases/update-offer";
+import { UpdateOrderUseCase } from "@/core/use-cases/update-order";
 import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
 import { UpdateProductUseCase } from "@/core/use-cases/update-product";
 import { UpdateUserUseCase } from "@/core/use-cases/update-user";
 import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
-import { DeleteFarmImageUseCase } from "@/core/use-cases/delete-farm-image";
-import { RegisterFarmImageUseCase } from "@/core/use-cases/register-farm-image";
-import { DeleteOfferUseCase } from "@/core/use-cases/delete-offer";
-import { UpdateOfferUseCase } from "@/core/use-cases/update-offer";
+import { FetchCategoryUseCase } from "@/core/use-cases/fetch-category";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -153,8 +154,12 @@ export default (container: AwilixContainer) => {
       ({ cyclesRepository }) => new ListCyclesUseCase(cyclesRepository)
     ),
     listCatalogsUseCase: asFunction(
-      ({ cyclesRepository, catalogsRepository }) =>
-        new ListCatalogsUseCase(cyclesRepository, catalogsRepository)
+      ({ cyclesRepository, catalogsRepository, categoriesRepository }) =>
+        new ListCatalogsUseCase(
+          cyclesRepository,
+          catalogsRepository,
+          categoriesRepository
+        )
     ),
     fetchBoxUseCase: asFunction(
       ({ usersRepository, boxesRepository }) =>
@@ -279,8 +284,8 @@ export default (container: AwilixContainer) => {
         new SendNotificationUseCase(usersRepository, mailer)
     ),
     listCategoriesUseCase: asFunction(
-      ({ categoriesRepository }) =>
-        new ListCategoriesUseCase(categoriesRepository)
+      ({ cyclesRepository, categoriesRepository }) =>
+        new ListCategoriesUseCase(cyclesRepository, categoriesRepository)
     ),
     fetchInboundReportUseCase: asFunction(
       ({ boxesRepository, cyclesRepository, pdfService }) =>
@@ -309,6 +314,10 @@ export default (container: AwilixContainer) => {
     updateOfferUseCase: asFunction(
       ({ offersRepository, cyclesRepository }) =>
         new UpdateOfferUseCase(offersRepository, cyclesRepository)
+    ),
+    fetchCategoryUseCase: asFunction(
+      ({ categoriesRepository, cyclesRepository }) =>
+        new FetchCategoryUseCase(categoriesRepository, cyclesRepository)
     ),
   });
 };

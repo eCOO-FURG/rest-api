@@ -1,21 +1,21 @@
 // Entities
-import { Catalog } from "@/core/entities/catalog";
 import { CatalogAndFarm } from "@/core/entities/aggregates/catalog-and-farm";
+import { Catalog } from "@/core/entities/catalog";
 
 // Repositories
 import {
+  CatalogEntityOf,
+  CatalogRepositoryReturnType,
   CatalogsRepository,
   CatalogsRepositorySearchRequest,
-  CatalogRepositoryReturnType,
-  CatalogEntityOf,
 } from "@/core/repositories/catalogs-repository";
 
 // Utils
 import { paginate } from "@/test/utils/paginate";
 
 // Factories
-import { makeFarmAndAdmin } from "@/test/factories/make-farm-and-admin";
 import { CatalogAndOffers } from "@/core/entities/aggregates/catalog-and-offers";
+import { makeFarmAndAdmin } from "@/test/factories/make-farm-and-admin";
 import { makeOfferAndDetails } from "@/test/factories/make-offer-and-details";
 
 export class InMemoryCatalogsRepository implements CatalogsRepository {
@@ -76,7 +76,16 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
           (!offers?.product?.name ||
             item.offers.some((offer) =>
               offer.product?.name.includes(offers?.product?.name!)
-            ))
+            )) &&
+          (!offers?.product?.category?.id ||
+            item.offers.some((offer) =>
+              offer.product?.category?.id.equals(offers?.product?.category?.id!)
+            )) &&
+          (!offers?.expired ||
+            (typeof offers?.expired === "boolean" &&
+              (offers.expired
+                ? item.offers.some((offer) => offer.expires_at! <= new Date())
+                : item.offers.some((offer) => offer.expires_at! > new Date()))))
       )
     );
 

@@ -15,7 +15,7 @@ import { FarmPresenter } from "@/infra/http/presenters/farm-presenter";
 import { parse } from "@/infra/http/validation/parse";
 
 export const listFarmsQuery = Joi.object({
-  page: Joi.number().required(),
+  page: Joi.number().required().min(1),
   farm: Joi.string().optional(),
 });
 
