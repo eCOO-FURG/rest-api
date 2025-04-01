@@ -13,16 +13,16 @@ import {
 import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
-import { PrismaCatalogMapper } from "@/infra/database/mappers/prisma-catalog-mapper";
 import {
   PrismaCatalogAndFarm,
   PrismaCatalogAndFarmMapper,
 } from "@/infra/database/mappers/prisma-catalog-and-farm-mapper";
-import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
 import {
-  PrismaCatalogAndOffersMapper,
   PrismaCatalogAndOffers,
+  PrismaCatalogAndOffersMapper,
 } from "@/infra/database/mappers/prisma-catalog-and-offers-mapper";
+import { PrismaCatalogMapper } from "@/infra/database/mappers/prisma-catalog-mapper";
+import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
 
 export class PrismaCatalogsRepository implements CatalogsRepository {
   async find<T extends CatalogRepositoryReturnType>(
@@ -56,6 +56,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                       contains: offers?.product?.name,
                       mode: "insensitive",
                     },
+                    category_id: offers?.product?.category?.id,
                   },
                   ...(typeof offers?.expired === "boolean" &&
                     (offers.expired
@@ -120,6 +121,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
           some: {
             product: {
               name: { contains: offers?.product?.name, mode: "insensitive" },
+              category_id: offers?.product?.category?.id,
             },
             ...(typeof offers?.expired === "boolean" &&
               (offers.expired

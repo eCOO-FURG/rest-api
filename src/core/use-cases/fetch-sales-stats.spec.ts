@@ -73,7 +73,7 @@ describe("Fetch sales stats", () => {
     });
 
     expect(revenue).toBe(1100);
-    expect(Object.keys(monthly).length).toBe(4);
-    expect(Object.keys(daily).length).toBe(4);
+    expect(Object.keys(monthly).length).toBe(5);
+    expect(Object.keys(daily).length).toBe(5);
   });
 });

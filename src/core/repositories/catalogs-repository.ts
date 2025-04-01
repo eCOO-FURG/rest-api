@@ -1,7 +1,7 @@
 // Entities
-import { Catalog } from "@/core/entities/catalog";
 import { CatalogAndFarm } from "@/core/entities/aggregates/catalog-and-farm";
 import { CatalogAndOffers } from "@/core/entities/aggregates/catalog-and-offers";
+import { Catalog } from "@/core/entities/catalog";
 
 export type CatalogRepositoryReturnType =
   | "catalog"
@@ -23,7 +23,7 @@ export interface CatalogsRepositorySearchRequest {
   cycle?: { id?: string };
   offers?: {
     id?: string;
-    product?: { name?: string };
+    product?: { name?: string; category?: { id?: string } };
     page?: number;
     expired?: boolean;
   };
