@@ -13,8 +13,8 @@ import { makeCategory } from "@/test/factories/make-category";
 import { MockedStorage } from "@/test/storage/mocked-storage";
 
 // Factories
-import { makeProduct } from "@/test/factories/make-product";
 import { makeFile } from "@/test/factories/make-file";
+import { makeProduct } from "@/test/factories/make-product";
 
 let productsRepository: InMemoryProductsRepository;
 let categoriesRepository: InMemoryCategoriesRepository;
@@ -45,6 +45,7 @@ describe("register product", () => {
       image: makeFile(),
       pricing: "UNIT",
       perishable: true,
+      archived: false,
       category_id: category.id.value,
     });
 
@@ -91,6 +92,7 @@ describe("register product", () => {
         image: makeFile(),
         pricing: "UNIT",
         perishable: true,
+        archived: false,
         category_id: category.id.value,
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
@@ -114,6 +116,7 @@ describe("register product", () => {
       image: makeFile(),
       pricing: "UNIT",
       perishable: false,
+      archived: true,
       category_id: category.id.value,
     });
 
@@ -135,6 +138,7 @@ describe("register product", () => {
       image: makeFile(),
       pricing: "UNIT",
       perishable: false,
+      archived: false,
       category_id: category.id.value,
     });
 

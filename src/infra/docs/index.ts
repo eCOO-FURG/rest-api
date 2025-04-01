@@ -3,57 +3,71 @@ import j2s, { SwaggerSchema } from "joi-to-swagger";
 
 // Controllers
 import { authenticateSchema } from "@/infra/http/controllers/authenticate";
-import { requestOtpSchema } from "@/infra/http/controllers/request-otp";
-import { resetPasswordSchema } from "@/infra/http/controllers/reset-password";
-import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
-import { registerSchema } from "@/infra/http/controllers/register";
-import { updateUserSchema } from "@/infra/http/controllers/update-user";
-import { requestHelpSchema } from "@/infra/http/controllers/request-help";
-import { listFarmsQuery } from "@/infra/http/controllers/list-farms";
-import { registerFarmSchema } from "@/infra/http/controllers/register-farm";
-import { registerFarmImageSchema } from "@/infra/http/controllers/register-farm-image";
-import { updateFarmSchema } from "@/infra/http/controllers/update-farm";
 import { deleteFarmImageParams } from "@/infra/http/controllers/delete-farm-image";
-import { fetchFarmParams } from "@/infra/http/controllers/fetch-farm";
-import { updateFarmParams } from "@/infra/http/controllers/update-farm";
-import { registerOrderSchema } from "@/infra/http/controllers/register-order";
-import { listBoxesQuery } from "@/infra/http/controllers/list-boxes";
-import { fetchCurrentBoxQuery } from "@/infra/http/controllers/fetch-current-box";
+import { deleteOfferParams } from "@/infra/http/controllers/delete-offer";
+import {
+  fetchBagParams,
+  fetchBagQuery,
+} from "@/infra/http/controllers/fetch-bag";
 import {
   fetchBoxParams,
   fetchBoxQuery,
 } from "@/infra/http/controllers/fetch-box";
-import { registerOfferSchema } from "@/infra/http/controllers/register-offer";
-import { updateOfferSchema } from "@/infra/http/controllers/update-offer";
-import { updateOfferParams } from "@/infra/http/controllers/update-offer";
-import { deleteOfferParams } from "@/infra/http/controllers/delete-offer";
-import { listCatalogsQuery } from "@/infra/http/controllers/list-catalogs";
+import {
+  fetchCatalogParams,
+  fetchCatalogQuery,
+} from "@/infra/http/controllers/fetch-catalog";
+import { fetchCurrentBoxQuery } from "@/infra/http/controllers/fetch-current-box";
 import { fetchCurrentCatalogQuery } from "@/infra/http/controllers/fetch-current-catalog";
-import { fetchLastCatalogQuery } from "@/infra/http/controllers/fetch-last-catalog";
-import { fetchCatalogParams } from "@/infra/http/controllers/fetch-catalog";
-import { fetchCatalogQuery } from "@/infra/http/controllers/fetch-catalog";
-import { listBagsQuery } from "@/infra/http/controllers/list-bags";
-import { listCurrentBagsQuery } from "@/infra/http/controllers/list-current-bags";
-import { fetchBagParams } from "@/infra/http/controllers/fetch-bag";
-import { fetchBagQuery } from "@/infra/http/controllers/fetch-bag";
-import { updateBagSchema } from "@/infra/http/controllers/update-bag";
-import { registerPaymentSchema } from "@/infra/http/controllers/register-payment";
-import { openPaymentSchema } from "@/infra/http/controllers/open-payment";
-import { updatePaymentParams } from "@/infra/http/controllers/update-payment";
-import { updatePaymentSchema } from "@/infra/http/controllers/update-payment";
-import { listProductsQuery } from "@/infra/http/controllers/list-products";
-import { registerProductSchema } from "@/infra/http/controllers/register-product";
-import { updateProductParams } from "@/infra/http/controllers/update-product";
-import { updateProductSchema } from "@/infra/http/controllers/update-product";
-import { listCategoriesQuery } from "@/infra/http/controllers/list-categories";
-import { fetchPendingsQuery } from "@/infra/http/controllers/fetch-pendings";
-import { fetchSalesStatsQuery } from "@/infra/http/controllers/fetch-sales-stats";
-import { fetchSalesReportQuery } from "@/infra/http/controllers/fetch-sales-report";
+import { fetchFarmParams } from "@/infra/http/controllers/fetch-farm";
 import { fetchInboundReportQuery } from "@/infra/http/controllers/fetch-inbound-report";
+import { fetchLastCatalogQuery } from "@/infra/http/controllers/fetch-last-catalog";
+import { fetchPendingsQuery } from "@/infra/http/controllers/fetch-pendings";
+import { fetchSalesReportQuery } from "@/infra/http/controllers/fetch-sales-report";
+import { fetchSalesStatsQuery } from "@/infra/http/controllers/fetch-sales-stats";
+import { listBagsQuery } from "@/infra/http/controllers/list-bags";
+import { listBoxesQuery } from "@/infra/http/controllers/list-boxes";
+import { listCatalogsQuery } from "@/infra/http/controllers/list-catalogs";
+import { listCategoriesQuery } from "@/infra/http/controllers/list-categories";
+import { listCurrentBagsQuery } from "@/infra/http/controllers/list-current-bags";
+import { listFarmsQuery } from "@/infra/http/controllers/list-farms";
+import { listProductsQuery } from "@/infra/http/controllers/list-products";
+import { openPaymentSchema } from "@/infra/http/controllers/open-payment";
+import { registerSchema } from "@/infra/http/controllers/register";
+import { registerFarmSchema } from "@/infra/http/controllers/register-farm";
+import { registerFarmImageSchema } from "@/infra/http/controllers/register-farm-image";
+import { registerOfferSchema } from "@/infra/http/controllers/register-offer";
+import { registerOrderSchema } from "@/infra/http/controllers/register-order";
+import { registerPaymentSchema } from "@/infra/http/controllers/register-payment";
+import { registerProductSchema } from "@/infra/http/controllers/register-product";
+import { requestHelpSchema } from "@/infra/http/controllers/request-help";
+import { requestOtpSchema } from "@/infra/http/controllers/request-otp";
+import { resetPasswordSchema } from "@/infra/http/controllers/reset-password";
 import { sendNotificationSchema } from "@/infra/http/controllers/send-notification";
+import { updateBagSchema } from "@/infra/http/controllers/update-bag";
+import {
+  updateFarmParams,
+  updateFarmSchema,
+} from "@/infra/http/controllers/update-farm";
+import {
+  updateOfferParams,
+  updateOfferSchema,
+} from "@/infra/http/controllers/update-offer";
+import {
+  updateOrderParams,
+  updateOrderSchema,
+} from "@/infra/http/controllers/update-order";
+import {
+  updatePaymentParams,
+  updatePaymentSchema,
+} from "@/infra/http/controllers/update-payment";
+import {
+  updateProductParams,
+  updateProductSchema,
+} from "@/infra/http/controllers/update-product";
+import { updateUserSchema } from "@/infra/http/controllers/update-user";
+import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
 import { openPixSchema } from "@/infra/http/webhooks/open-pix";
-import { updateOrderSchema } from "@/infra/http/controllers/update-order";
-import { updateOrderParams } from "@/infra/http/controllers/update-order";
 import { fetchCategoryParams } from "@/infra/http/controllers/fetch-category";
 import { fetchCategoryQuery } from "@/infra/http/controllers/fetch-category";
 
@@ -913,4 +927,12 @@ export const docs = {
       },
     },
   },
+  security: [
+    {
+      bearerAuth: [],
+    },
+    {
+      apiKey: [],
+    },
+  ],
 };
