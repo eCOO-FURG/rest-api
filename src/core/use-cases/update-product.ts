@@ -67,8 +67,8 @@ export class UpdateProductUseCase {
 
     name && (product.name = name);
     pricing && (product.pricing = pricing);
-    archived && (product.archived = archived);
-    perishable && (product.perishable = perishable);
+    typeof archived === "boolean" && (product.archived = archived);
+    typeof perishable === "boolean" && (product.perishable = perishable);
     category_id && (product.category_id = new UUID(category_id));
 
     if (image) {
