@@ -70,6 +70,6 @@ export class RegisterProductUseCase {
 
     equal.unarchive();
 
-    return await this.productsRepository.update(equal);
+    await this.productsRepository.update(equal);
   }
 }
