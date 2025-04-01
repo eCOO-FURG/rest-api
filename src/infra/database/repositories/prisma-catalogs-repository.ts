@@ -73,6 +73,11 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                         })),
                 },
                 ...(offers?.page && { skip: (offers.page - 1) * 20, take: 20 }),
+                orderBy: {
+                  product: {
+                    name: "asc",
+                  },
+                },
               },
             }
           : null,
@@ -145,6 +150,11 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
               offers: {
                 include: { product: true },
                 ...(offers?.page && { skip: (offers.page - 1) * 20, take: 20 }),
+                orderBy: {
+                  product: {
+                    name: "asc",
+                  },
+                },
               },
             }
           : null,

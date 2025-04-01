@@ -9,7 +9,7 @@ import container from "@/infra/container";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 
 // Presenters
-import { BagAndDetailsPresenter } from "@/infra/http/presenters/bag-presenter";
+import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 
 // Validation
 import { parse } from "@/infra/http/validation/parse";
@@ -40,7 +40,7 @@ export async function fetchBagController(
       page,
     });
 
-    return response.status(200).send(BagAndDetailsPresenter.toHttp(bag));
+    return response.status(200).send(BagPresenter.toHttp(bag));
   } catch (error) {
     next(error);
   }

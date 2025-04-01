@@ -14,10 +14,7 @@ export class OfferAndProduct extends Offer<OfferAndProductProps> {
     return this.props.product;
   }
 
-  static create(props: Optional<OfferAndProductProps, "orders">) {
-    return new OfferAndProduct({
-      ...props,
-      orders: props.orders ?? [],
-    });
+  static create(props: OfferAndProductProps) {
+    return new OfferAndProduct(props);
   }
 }

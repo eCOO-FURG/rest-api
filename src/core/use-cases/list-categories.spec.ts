@@ -1,5 +1,6 @@
 // Repositories
 import { InMemoryCategoriesRepository } from "@/test/repositories/in-memory-categories-repository";
+import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 
 // Use-cases
 import { ListCategoriesUseCase } from "@/core/use-cases/list-categories";
@@ -8,13 +9,15 @@ import { ListCategoriesUseCase } from "@/core/use-cases/list-categories";
 import { makeCategory } from "@/test/factories/make-category";
 
 let categoriesRepository: InMemoryCategoriesRepository;
+let cyclesRepository: InMemoryCyclesRepository;
 
 let sut: ListCategoriesUseCase;
 
 describe("list categories", () => {
   beforeEach(() => {
+    cyclesRepository = new InMemoryCyclesRepository();
     categoriesRepository = new InMemoryCategoriesRepository();
-    sut = new ListCategoriesUseCase(categoriesRepository);
+    sut = new ListCategoriesUseCase(cyclesRepository, categoriesRepository);
   });
 
   it("should be able to list categories", async () => {

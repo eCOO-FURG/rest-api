@@ -21,7 +21,7 @@ import { boolean } from "@/infra/http/validation/boolean";
 import { toBoolean } from "@/infra/utils/to-boolean";
 
 export const listProductsQuery = Joi.object({
-  page: Joi.number().required(),
+  page: Joi.number().required().min(1),
   name: Joi.string().optional(),
   category_id: Joi.string().uuid().optional(),
   archived: boolean.optional(),
