@@ -16,7 +16,7 @@ import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-rep
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Utils
-import { mostPast } from "@/core/utils/most-past";
+import { first } from "@/core/utils/first";
 
 let cyclesRepository: InMemoryCyclesRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
@@ -51,12 +51,12 @@ describe("Fetch last catalog", () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
-    const lastCycle = new Date(mostPast(cycle.offer).getTime() - 1 * 60 * 1000);
+    const lastCycle = new Date(first(cycle.offer).getTime() - 1 * 60 * 1000);
 
     const catalog = makeCatalog({
       cycle_id: cycle.id,
       farm_id: farm.id,
-      created_at: mostPast(cycle.offer),
+      created_at: first(cycle.offer),
     });
     await catalogsRepository.create(catalog);
 

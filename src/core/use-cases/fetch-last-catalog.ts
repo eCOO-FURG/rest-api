@@ -7,7 +7,7 @@ import { FarmsRepository } from "@/core/repositories/farms-repository";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Utils
-import { mostPast } from "@/core/utils/most-past";
+import { first } from "@/core/utils/first";
 
 interface FetchLastCatalogUseCaseRequest {
   cycle_id: string;
@@ -35,7 +35,7 @@ export class FetchLastCatalogUseCase {
       cycle: { id: cycle_id },
       farm: { id: farm_id },
       offers: { page },
-      before: mostPast(cycle.offer),
+      before: first(cycle.offer),
     });
 
     if (!catalog)

@@ -10,7 +10,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
 
 // Utils
-import { mostPast } from "@/core/utils/most-past";
+import { first } from "@/core/utils/first";
 
 interface DeleteOfferUseCaseRequest {
   farm_id: string;
@@ -49,7 +49,7 @@ export class DeleteOfferUseCase {
     if (!cycle)
       throw new ResourceNotFoundError("Ciclo", offer.catalog!.cycle_id.value);
 
-    if (offer.created_at < mostPast(cycle.order))
+    if (offer.created_at < first(cycle.order))
       throw new ResourceClosedError("Oferta", offer.id.value);
 
     await this.offersRepository.delete(offer);

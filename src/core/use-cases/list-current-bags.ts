@@ -6,7 +6,7 @@ import { BagsRepository } from "@/core/repositories/bags-repository";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Utils
-import { mostPast } from "@/core/utils/most-past";
+import { first } from "@/core/utils/first";
 
 // Entities
 import { BagStatus } from "@/core/entities/bag";
@@ -42,7 +42,7 @@ export class ListCurrentBagsUseCase {
         user: { name: user },
         statuses,
         cycle: { id: cycle_id },
-        since: mostPast(cycle.order),
+        since: first(cycle.order),
       },
       page
     );

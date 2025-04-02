@@ -10,7 +10,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { CacheManager } from "@/core/cache/cache-manager";
 
 // Utils
-import { mostPast } from "@/core/utils/most-past";
+import { first } from "@/core/utils/first";
 
 interface FetchPendingsUseCaseRequest {
   cycle_id: string;
@@ -31,7 +31,7 @@ export class FetchPendingsUseCase {
 
     const farms = await this.countFarms();
 
-    const boxes = await this.countBoxes(cycle_id, mostPast(cycle.order));
+    const boxes = await this.countBoxes(cycle_id, first(cycle.order));
 
     return { farms, boxes };
   }

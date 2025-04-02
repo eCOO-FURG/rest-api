@@ -7,7 +7,7 @@ import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Utils
-import { mostPast } from "@/core/utils/most-past";
+import { first } from "@/core/utils/first";
 
 interface ListCatalogsUseCaseRequest {
   cycle_id: string;
@@ -46,7 +46,7 @@ export class ListCatalogsUseCase {
       "catalog-and-farm",
       {
         cycle: { id: cycle_id },
-        since: mostPast(cycle.offer),
+        since: first(cycle.offer),
         offers: {
           product: {
             name: product,

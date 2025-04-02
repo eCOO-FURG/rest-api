@@ -23,7 +23,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 
 // Utils
-import { mostPast } from "@/core/utils/most-past";
+import { first } from "@/core/utils/first";
 
 // Cryptography
 import { OtpProvider } from "@/core/cryptography/otp-provider";
@@ -186,12 +186,12 @@ export class RegisterOrderUseCase {
         id: bag_id,
         statuses: ["PENDING"],
         cycle: { id: cycle.id.value },
-        since: mostPast(cycle.order),
+        since: first(cycle.order),
       });
 
       if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 
-      if (bag.status !== "PENDING" || bag.created_at < mostPast(cycle.order))
+      if (bag.status !== "PENDING" || bag.created_at < first(cycle.order))
         throw new ResourceClosedError("Sacola", bag_id);
 
       return { bag, existed: true };
@@ -202,7 +202,7 @@ export class RegisterOrderUseCase {
       cycle: { id: cycle.id.value },
       statuses: ["PENDING"],
       address: address ? { id: address.id.value } : null,
-      since: mostPast(cycle.order),
+      since: first(cycle.order),
     });
 
     if (found) return { bag: found, existed: true };

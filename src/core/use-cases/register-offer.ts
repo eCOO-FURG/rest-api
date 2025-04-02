@@ -18,8 +18,9 @@ import { MissingFieldError } from "@/core/errors/missing-field";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
+
 // Utils
-import { mostPast } from "@/core/utils/most-past";
+import { first } from "@/core/utils/first";
 import { today } from "@/core/utils/today";
 interface RegisterOfferUseCaseRequest {
   farm_id: string;
@@ -107,7 +108,7 @@ export class RegisterOfferUseCase {
     const existent = await this.catalogsRepository.find("catalog", {
       farm: { id: farm.id.value },
       cycle: { id: cycle.id.value },
-      since: mostPast(cycle.offer),
+      since: first(cycle.offer),
     });
 
     if (existent) return { catalog: existent, existed: true };
