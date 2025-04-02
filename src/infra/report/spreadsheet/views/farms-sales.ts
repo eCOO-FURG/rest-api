@@ -82,8 +82,8 @@ export const FARMS_PRODUCERS_VIEW: SpreadsheetView = async ({
         offer_price: offer.price + (offer.price * catalog.fee) / 100,
         fee: catalog.fee / 100,
         total_amount: amount,
-        total_price: amount * (offer.price + fee),
-        warehouse_price: amount * fee,
+        farm_income: amount * offer.price,
+        warehouse_income: amount * fee,
         since: since?.toLocaleDateString("pt-BR"),
         before: before?.toLocaleDateString("pt-BR"),
       });
