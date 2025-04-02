@@ -6,7 +6,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
 
 // Utils
-import { mostPast } from "@/core/utils/most-past";
+import { first } from "@/core/utils/first";
 
 interface FetchCurrentBoxUseCaseRequest {
   farm_id: string;
@@ -28,7 +28,7 @@ export class FetchCurrentBoxUseCase {
     const box = await this.boxesRepository.find("box-and-orders", {
       catalog: { farm: { id: farm_id }, cycle: { id: cycle_id } },
       orders: { page },
-      since: mostPast(cycle.order),
+      since: first(cycle.order),
     });
 
     if (!box) throw new ResourceNotFoundError("Caixa da fazenda", farm_id);

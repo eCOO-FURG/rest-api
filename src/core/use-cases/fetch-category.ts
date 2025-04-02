@@ -6,7 +6,7 @@ import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Utils
-import { mostPast } from "@/core/utils/most-past";
+import { first } from "@/core/utils/first";
 
 interface FetchCategoryUseCaseRequest {
   id: string;
@@ -34,7 +34,7 @@ export class FetchCategoryUseCase {
         offers: {
           page,
           cycle_id,
-          ...(cycle && { since: mostPast(cycle.offer) }),
+          ...(cycle && { since: first(cycle.offer) }),
         },
       }
     );

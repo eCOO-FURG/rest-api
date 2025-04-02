@@ -11,7 +11,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { UnauthorizedError } from "@/core/errors/unauthorized";
 
 // Utils
-import { mostPast } from "@/core/utils/most-past";
+import { first } from "@/core/utils/first";
 import { today } from "@/core/utils/today";
 
 interface UpdateOfferUseCaseRequest {
@@ -59,7 +59,7 @@ export class UpdateOfferUseCase {
     if (!cycle)
       throw new ResourceNotFoundError("Ciclo", offer.catalog!.cycle_id.value);
 
-    if (offer.created_at < mostPast(cycle.order))
+    if (offer.created_at < first(cycle.order))
       throw new ResourceClosedError("Oferta", offer.id.value);
 
     if (!cycle.offer.includes(today()))

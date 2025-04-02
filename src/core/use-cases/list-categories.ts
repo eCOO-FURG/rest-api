@@ -6,7 +6,7 @@ import { CategoriesRepository } from "@/core/repositories/categories-repository"
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Utils
-import { mostPast } from "@/core/utils/most-past";
+import { first } from "@/core/utils/first";
 
 interface ListCategoriesUseCaseRequest {
   page: number;
@@ -31,7 +31,7 @@ export class ListCategoriesUseCase {
       "category",
       {
         name,
-        offers: { cycle_id, ...(cycle && { since: mostPast(cycle.offer) }) },
+        offers: { cycle_id, ...(cycle && { since: first(cycle.offer) }) },
       },
       page
     );
