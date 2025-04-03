@@ -64,10 +64,18 @@ export class PrismaOrdersRepository implements OrdersRepository {
 
       const verified = bag.orders.every((order) => order.status !== "PENDING");
 
-      if (verified) {
+      const refund =
+        order.status === "CANCELLED" || order.status === "REJECTED";
+
+      if (verified != bag.verified || refund) {
         await ctx.bag.update({
           where: { id: bag.id },
-          data: { verified: true },
+          data: {
+            verified,
+            ...(refund && {
+              subtotal: bag.subtotal.minus(order.total),
+            }),
+          },
         });
       }
     });
