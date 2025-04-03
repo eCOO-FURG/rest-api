@@ -1,0 +1,25 @@
+name: run production deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  run-deploy:
+    name: Production deploy workflow
+    runs-on: ecoo-producao
+    steps:
+      - name: Deploy application to production
+        run: |
+          cd /deploy/rest-api
+
+          sudo docker-compose stop
+
+          sudo docker rm ecoo-server || true
+
+          sudo git pull
+
+          sudo pnpm run deploy:build
+
+          sudo npx prisma migrate deploy
