@@ -1,22 +1,22 @@
-name: run deploy
+name: run staging deploy
 
 on:
   push:
     branches:
-      - main
+      - staging
 
 jobs:
-  run-deploy:
-    name: Deploy workflow
-    runs-on: self-hosted
+  run-deploy-staging:
+    name: Staging deploy workflow
+    runs-on: ecoo-homologacao
     steps:
-      - name: Deploy application
+      - name: Deploy application to staging
         run: |
           cd /deploy/rest-api
 
           sudo docker-compose stop
 
-          sudo docker rm ecoo-server || true
+          sudo docker rm ecoo-server-homolog || true
 
           sudo git pull
 

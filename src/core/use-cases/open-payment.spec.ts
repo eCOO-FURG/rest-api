@@ -12,6 +12,7 @@ import { MockedPixProvider } from "@/test/payment/mocked-pix-provider";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
+import { ResourceNotVerifiedError } from "@/core/errors/resource-not-verified";
 
 // Factories
 import { makeUser } from "@/test/factories/make-user";
@@ -40,12 +41,28 @@ describe("open payment", () => {
   it("be able to open a payment", async () => {
     const user = makeUser();
 
-    const bag = makeBag({ customer_id: user.id, customer: user });
+    const bag = makeBag({
+      customer_id: user.id,
+      customer: user,
+      verified: true,
+    });
     bagsRepository.items.push(bag);
 
     await sut.execute({ bag_id: bag.id.value });
 
     expect(paymentsRepository.items[0].status).toBe("PENDING");
+  });
+
+  it("should not be able to open a payment from a non verified bag", async () => {
+    const user = makeUser();
+
+    const bag = makeBag({ customer_id: user.id, customer: user });
+
+    bagsRepository.items.push(bag);
+
+    await expect(() =>
+      sut.execute({ bag_id: bag.id.value })
+    ).rejects.toBeInstanceOf(ResourceNotVerifiedError);
   });
 
   it("should not be able to open a payment from a non existing bag", async () => {
@@ -57,7 +74,11 @@ describe("open payment", () => {
   it("should not be able to open a payment from a paid bag", async () => {
     const user = makeUser();
 
-    const bag = makeBag({ customer_id: user.id, customer: user });
+    const bag = makeBag({
+      customer_id: user.id,
+      customer: user,
+      verified: true,
+    });
 
     bagsRepository.items.push(bag);
 

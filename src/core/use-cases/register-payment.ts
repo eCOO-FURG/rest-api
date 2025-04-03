@@ -9,6 +9,7 @@ import { PaymentsRepository } from "@/core/repositories/payments-repository";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
+import { ResourceNotVerifiedError } from "@/core/errors/resource-not-verified";
 
 interface RegisterPaymentUseCaseRequest {
   bag_id: string;
@@ -28,6 +29,8 @@ export class RegisterPaymentUseCase {
     });
 
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
+
+    if (!bag.verified) throw new ResourceNotVerifiedError("Sacola", bag_id);
 
     const previous = await this.paymentsRepository.find("payment", {
       bag_id: bag.id.value,

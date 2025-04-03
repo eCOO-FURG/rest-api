@@ -5,14 +5,15 @@ import { InMemoryPaymentsRepository } from "@/test/repositories/in-memory-paymen
 // Use-cases
 import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
 
-// Services
-import { makeBag } from "@/test/factories/make-bag";
-import { makeUser } from "@/test/factories/make-user";
-
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
+import { ResourceNotVerifiedError } from "@/core/errors/resource-not-verified";
+
+// Factories
 import { makePayment } from "@/test/factories/make-payment";
+import { makeBag } from "@/test/factories/make-bag";
+import { makeUser } from "@/test/factories/make-user";
 
 let bagsRepository: InMemoryBagsRepository;
 let paymentsRepository: InMemoryPaymentsRepository;
@@ -30,13 +31,31 @@ describe("Register payment", () => {
   it("should be able to register a payment", async () => {
     const user = makeUser();
 
-    const bag = makeBag({ customer_id: user.id, customer: user });
+    const bag = makeBag({
+      customer_id: user.id,
+      customer: user,
+      verified: true,
+    });
     await bagsRepository.create(bag);
 
     await sut.execute({
       bag_id: bag.id.value,
       method: "CREDIT",
     });
+  });
+
+  it("should not be able to register a payment for a non verified bag", async () => {
+    const user = makeUser();
+
+    const bag = makeBag({ customer_id: user.id, customer: user });
+    await bagsRepository.create(bag);
+
+    await expect(() =>
+      sut.execute({
+        bag_id: bag.id.value,
+        method: "CREDIT",
+      })
+    ).rejects.toBeInstanceOf(ResourceNotVerifiedError);
   });
 
   it("should not be able to register a payment for a non-existent bag", async () => {
@@ -51,7 +70,11 @@ describe("Register payment", () => {
   it("should not be able to register a payment for a bag that is already paid", async () => {
     const user = makeUser();
 
-    const bag = makeBag({ customer_id: user.id, customer: user });
+    const bag = makeBag({
+      customer_id: user.id,
+      customer: user,
+      verified: true,
+    });
     await bagsRepository.create(bag);
 
     const payment = makePayment({ bag_id: bag.id, status: "DONE" });
