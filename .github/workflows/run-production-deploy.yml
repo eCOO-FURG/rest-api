@@ -1,4 +1,4 @@
-name: run deploy production
+name: run production deploy
 
 on:
   push:
@@ -6,9 +6,9 @@ on:
       - main
 
 jobs:
-  run-deploy:
-    name: Deploy workflow production
-    runs-on: self-hosted
+  run-deploy-production:
+    name: Production deploy workflow
+    runs-on: ecoo-producao
     steps:
       - name: Deploy application to production
         run: |
