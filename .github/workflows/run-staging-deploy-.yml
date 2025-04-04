@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Deploy application to staging
         run: |
+          sudo su - << 'EOF'
+
           cd /deploy/rest-api
 
           sudo docker-compose stop
@@ -23,3 +25,5 @@ jobs:
           sudo pnpm run deploy:build
 
           sudo npx prisma migrate deploy
+
+          EOF

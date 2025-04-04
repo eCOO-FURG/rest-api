@@ -1,4 +1,4 @@
-name: run production deploy
+name: run deploy production
 
 on:
   push:
@@ -7,19 +7,23 @@ on:
 
 jobs:
   run-deploy:
-    name: Production deploy workflow
-    runs-on: ecoo-producao
+    name: Deploy workflow production
+    runs-on: self-hosted
     steps:
       - name: Deploy application to production
         run: |
+          sudo su - << 'EOF'
+
           cd /deploy/rest-api
 
-          sudo -i docker-compose stop
+          docker-compose stop
 
-          sudo -i docker rm ecoo-server || true
+          docker rm ecoo-server || true
 
-          sudo -i git pull
+          git pull
 
-          sudo -i pnpm run deploy:build
+          pnpm run deploy:build
 
-          sudo -i npx prisma migrate deploy
+          npx prisma migrate deploy
+
+          EOF
