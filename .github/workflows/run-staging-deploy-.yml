@@ -18,7 +18,7 @@ jobs:
 
           docker-compose stop
 
-          docker rm ecoo-server-homolog || true
+          docker rm ecoo-server || true
 
           git pull
 
