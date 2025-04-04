@@ -14,12 +14,12 @@ jobs:
         run: |
           cd /deploy/rest-api
 
-          sudo docker-compose stop
+          sudo -i docker-compose stop
 
-          sudo docker rm ecoo-server || true
+          sudo -i docker rm ecoo-server || true
 
-          sudo git pull
+          sudo -i git pull
 
-          sudo pnpm run deploy:build
+          sudo -i pnpm run deploy:build
 
-          sudo npx prisma migrate deploy
+          sudo -i npx prisma migrate deploy
