@@ -13,12 +13,12 @@ import {
 
 // Mappers
 import {
-  PrismaOfferAndDetailsMapper,
-  PrismaOfferAndDetails,
-} from "@/infra/database/mappers/prisma-offer-and-details-mapper";
+  PrismaOfferAndProductMapper,
+  PrismaOfferAndProduct,
+} from "@/infra/database/mappers/prisma-offer-and-product-mapper";
 
 export type PrismaOrderAndOffer = PrismaOrder & {
-  offer: PrismaOfferAndDetails;
+  offer: PrismaOfferAndProduct;
 };
 
 export class PrismaOrderAndOfferMapper {
@@ -28,7 +28,7 @@ export class PrismaOrderAndOfferMapper {
     return OrderAndOffer.create({
       id: new UUID(raw.id),
       offer_id: new UUID(raw.offer_id),
-      offer: PrismaOfferAndDetailsMapper.toDomain(raw.offer),
+      offer: PrismaOfferAndProductMapper.toDomain(raw.offer),
       bag_id: new UUID(raw.bag_id),
       box_id: new UUID(raw.box_id),
       amount: raw.amount,

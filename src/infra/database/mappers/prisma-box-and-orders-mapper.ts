@@ -16,9 +16,10 @@ import {
   PrismaCatalogAndFarmMapper,
   PrismaCatalogAndFarm,
 } from "@/infra/database/mappers/prisma-catalog-and-farm-mapper";
+import { PrismaOrderAndOfferMapper, PrismaOrderAndOffer } from "@/infra/database/mappers/prisma-order-and-offer-mapper";
 
 export type PrismaBoxAndOrders = PrismaBox & {
-  orders: PrismaOrder[];
+  orders: PrismaOrderAndOffer[];
   catalog: PrismaCatalogAndFarm;
 };
 
@@ -32,6 +33,9 @@ export class PrismaBoxAndOrdersMapper {
       verified: raw.verified,
       catalog_id: new UUID(raw.catalog_id),
       catalog: PrismaCatalogAndFarmMapper.toDomain(raw.catalog),
+      orders: raw.orders.map((order) =>
+        PrismaOrderAndOfferMapper.toDomain(order)
+      ),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
     }) as BoxEntityOf<T>;
