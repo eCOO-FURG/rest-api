@@ -30,6 +30,7 @@ export class Nodemailer implements Mailer {
 
       try {
         await this.transporter.sendMail({
+          from: env.EMAIL_ACCOUNT,
           to: message.to,
           subject: message.subject,
           html: message.content,
@@ -37,9 +38,11 @@ export class Nodemailer implements Mailer {
         });
       } catch (error) {
         Logger.log(error);
+
         if (this.fallback) {
           try {
             await this.fallback.sendMail({
+              from: env.FALLBACK_EMAIL_ACCOUNT,
               to: message.to,
               subject: message.subject,
               html: message.content,
