@@ -33,16 +33,15 @@ export default (container: AwilixContainer) => {
       const transporter = createTransport({
         host: env.SMTP_HOST,
         port: env.SMTP_PORT,
-      });
-
-      if (deploy) {
-        Object.assign(transporter, {
+        ...(deploy && {
           auth: {
             user: env.EMAIL_ACCOUNT,
             pass: env.EMAIL_PASSWORD,
           },
-        });
+        }),
+      });
 
+      if (deploy) {
         const fallback = createTransport({
           host: env.FALLBACK_SMTP_HOST,
           port: env.SMTP_PORT,

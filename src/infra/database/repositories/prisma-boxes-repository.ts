@@ -57,6 +57,9 @@ export class PrismaBoxesRepository implements BoxesRepository {
               },
             }
           : null,
+      orderBy: {
+        created_at: "desc",
+      },
     });
 
     if (!box) return null;
@@ -115,6 +118,9 @@ export class PrismaBoxesRepository implements BoxesRepository {
             }
           : null,
       ...(page && { skip: (page - 1) * 20, take: 20 }),
+      orderBy: {
+        created_at: "desc",
+      },
     });
 
     switch (type) {
