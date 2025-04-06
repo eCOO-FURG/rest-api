@@ -82,6 +82,9 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
               },
             }
           : null,
+      orderBy: {
+        created_at: "desc",
+      },
     });
 
     if (!catalog) return null;
@@ -158,6 +161,9 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
             }
           : null,
       ...(page && { skip: (page - 1) * 20, take: 20 }),
+      orderBy: {
+        created_at: "desc",
+      },
     });
 
     switch (type) {

@@ -86,6 +86,9 @@ export class PrismaBagsRepository implements BagsRepository {
           },
         }),
       },
+      orderBy: {
+        created_at: "desc",
+      },
     });
 
     if (!bag) return null;
@@ -167,6 +170,9 @@ export class PrismaBagsRepository implements BagsRepository {
         }),
       },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
+      orderBy: {
+        created_at: "desc",
+      },
     });
 
     switch (type) {
