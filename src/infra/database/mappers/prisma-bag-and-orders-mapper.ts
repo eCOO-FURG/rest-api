@@ -17,19 +17,19 @@ import {
 } from "@/core/repositories/bags-repository";
 
 // Mappers
-import {
-  PrismaOrderAndOffer,
-  PrismaOrderAndOfferMapper,
-} from "@/infra/database/mappers/prisma-order-and-offer-mapper";
 import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";
 import { PrismaPaymentMapper } from "@/infra/database/mappers/prisma-payment-mapper";
 import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
+import {
+  PrismaOrderAndDetails,
+  PrismaOrderAndDetailsMapper,
+} from "@/infra/database/mappers/prisma-order-and-details-mapper";
 
 export type PrismaBagAndOrders = PrismaBag & {
   customer: PrismaUser;
   address: PrismaAddress | null;
   payment: PrismaPayment | null;
-  orders: PrismaOrderAndOffer[];
+  orders: PrismaOrderAndDetails[];
 };
 
 export class PrismaBagAndOrdersMapper {
@@ -51,7 +51,7 @@ export class PrismaBagAndOrdersMapper {
       address: raw.address ? PrismaAddressMapper.toDomain(raw.address) : null,
       payment: raw.payment ? PrismaPaymentMapper.toDomain(raw.payment) : null,
       orders: raw.orders.map((order) =>
-        PrismaOrderAndOfferMapper.toDomain<"order-and-offer">(order)
+        PrismaOrderAndDetailsMapper.toDomain<"order-and-details">(order)
       ),
       created_at: raw.created_at,
       updated_at: raw.updated_at,

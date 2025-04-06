@@ -1,10 +1,10 @@
 // Entities
 import { Box, BoxProps } from "@/core/entities/box";
 import { CatalogAndFarm } from "@/core/entities/aggregates/catalog-and-farm";
+import { OrderAndOffer } from "@/core/entities/aggregates/order-and-offer";
 
 // Types
 import { Optional } from "@/core/types/optional";
-import { OrderAndOffer } from "@/core/entities/aggregates/order-and-offer";
 
 export interface BoxAndOrdersProps extends BoxProps {
   catalog: CatalogAndFarm;

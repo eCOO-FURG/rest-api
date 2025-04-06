@@ -1,6 +1,6 @@
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
-import { OrderAndOffer } from "@/core/entities/aggregates/order-and-offer";
+import { OrderAndDetails } from "@/core/entities/aggregates/order-and-details";
 
 // Libraries
 import { Order as PrismaOrder } from "@prisma/client";
@@ -13,22 +13,22 @@ import {
 
 // Mappers
 import {
-  PrismaOfferAndProductMapper,
-  PrismaOfferAndProduct,
-} from "@/infra/database/mappers/prisma-offer-and-product-mapper";
+  PrismaOfferAndDetailsMapper,
+  PrismaOfferAndDetails,
+} from "@/infra/database/mappers/prisma-offer-and-details-mapper";
 
-export type PrismaOrderAndOffer = PrismaOrder & {
-  offer: PrismaOfferAndProduct;
+export type PrismaOrderAndDetails = PrismaOrder & {
+  offer: PrismaOfferAndDetails;
 };
 
-export class PrismaOrderAndOfferMapper {
-  static toDomain<T extends OrderRepositoryReturnType = "order-and-offer">(
-    raw: PrismaOrderAndOffer
+export class PrismaOrderAndDetailsMapper {
+  static toDomain<T extends OrderRepositoryReturnType = "order-and-details">(
+    raw: PrismaOrderAndDetails
   ): OrderEntityOf<T> {
-    return OrderAndOffer.create({
+    return OrderAndDetails.create({
       id: new UUID(raw.id),
       offer_id: new UUID(raw.offer_id),
-      offer: PrismaOfferAndProductMapper.toDomain(raw.offer),
+      offer: PrismaOfferAndDetailsMapper.toDomain(raw.offer),
       bag_id: new UUID(raw.bag_id),
       box_id: new UUID(raw.box_id),
       amount: raw.amount,
