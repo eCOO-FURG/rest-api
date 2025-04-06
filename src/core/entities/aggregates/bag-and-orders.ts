@@ -3,7 +3,7 @@ import { User } from "@/core/entities/user";
 import { Bag, BagProps } from "@/core/entities/bag";
 import { Address } from "@/core/entities/address";
 import { Payment } from "@/core/entities/payment";
-import { OrderAndOffer } from "@/core/entities/aggregates/order-and-offer";
+import { OrderAndDetails } from "@/core/entities/aggregates/order-and-details";
 
 // Types
 import { Optional } from "@/core/types/optional";
@@ -12,7 +12,7 @@ export interface BagAndOrdersProps extends BagProps {
   customer: User;
   address: Address | null;
   payment: Payment | null;
-  orders: OrderAndOffer[];
+  orders: OrderAndDetails[];
 }
 
 export class BagAndOrders extends Bag<BagAndOrdersProps> {
