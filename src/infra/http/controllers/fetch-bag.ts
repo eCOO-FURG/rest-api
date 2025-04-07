@@ -1,6 +1,6 @@
 // Libraries
-import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
+import Joi from "joi";
 
 // Container
 import container from "@/infra/container";
@@ -11,7 +11,14 @@ import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 // Presenters
 import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 
+// Entities
+import { Order } from "@/core/entities/order";
+
+// Utils
+import { toArray } from "@/infra/utils/to-array";
+
 // Validation
+import { options } from "@/infra/http/validation/options";
 import { parse } from "@/infra/http/validation/parse";
 
 export const fetchBagParams = Joi.object({
@@ -20,6 +27,7 @@ export const fetchBagParams = Joi.object({
 
 export const fetchBagQuery = Joi.object({
   page: Joi.number().integer().min(1).required(),
+  statuses: options(Order.statuses).optional(),
 });
 
 export async function fetchBagController(
@@ -29,7 +37,7 @@ export async function fetchBagController(
 ) {
   try {
     const { bag_id } = parse(fetchBagParams, request.params);
-    const { page } = parse(fetchBagQuery, request.query);
+    const { page, statuses } = parse(fetchBagQuery, request.query);
 
     const fetchBagUseCase =
       container.resolve<FetchBagUseCase>("fetchBagUseCase");
@@ -38,6 +46,7 @@ export async function fetchBagController(
       bag_id,
       user_id: request.user_id,
       page,
+      statuses: toArray(statuses),
     });
 
     return response.status(200).send(BagPresenter.toHttp(bag));
