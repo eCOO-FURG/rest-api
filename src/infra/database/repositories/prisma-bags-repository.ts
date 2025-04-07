@@ -13,15 +13,15 @@ import {
 import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
-import { PrismaBagMapper } from "@/infra/database/mappers/prisma-bag-mapper";
-import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
-import { PrismaBoxMapper } from "@/infra/database/mappers/prisma-box-mapper";
 import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";
 import { PrismaBagAndDetailsMapper } from "@/infra/database/mappers/prisma-bag-and-details-mapper";
 import {
   PrismaBagAndOrders,
   PrismaBagAndOrdersMapper,
 } from "@/infra/database/mappers/prisma-bag-and-orders-mapper";
+import { PrismaBagMapper } from "@/infra/database/mappers/prisma-bag-mapper";
+import { PrismaBoxMapper } from "@/infra/database/mappers/prisma-box-mapper";
+import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
 export class PrismaBagsRepository implements BagsRepository {
   async find<T extends BagRepositoryReturnType>(
     type: T,
@@ -29,6 +29,7 @@ export class PrismaBagsRepository implements BagsRepository {
       id,
       withdraw,
       statuses,
+      orderStatuses,
       user,
       cycle,
       address,
@@ -78,7 +79,10 @@ export class PrismaBagsRepository implements BagsRepository {
                 },
               },
             },
-            where: { id: orders?.id },
+            where: {
+              id: orders?.id,
+              ...(orderStatuses && { status: { in: orderStatuses } }),
+            },
             ...(orders?.page && {
               skip: (orders.page - 1) * 20,
               take: 20,
