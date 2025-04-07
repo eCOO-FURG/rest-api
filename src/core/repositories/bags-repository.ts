@@ -1,8 +1,9 @@
 // Entities
-import { Bag } from "@/core/entities/bag";
-import { PaymentMethod, PaymentStatus } from "@/core/entities/payment";
 import { BagAndDetails } from "@/core/entities/aggregates/bag-and-details";
 import { BagAndOrders } from "@/core/entities/aggregates/bag-and-orders";
+import { Bag } from "@/core/entities/bag";
+import { Order } from "@/core/entities/order";
+import { PaymentMethod, PaymentStatus } from "@/core/entities/payment";
 
 export type BagRepositoryReturnType =
   | "bag"
@@ -21,6 +22,7 @@ export interface BagsRepositorySearchRequest {
   id?: string;
   withdraw?: boolean;
   statuses?: Bag["status"][];
+  orderStatuses?: Order["status"][];
   user?: { id?: string; name?: string };
   cycle?: { id?: string };
   address?: { id?: string } | null;
