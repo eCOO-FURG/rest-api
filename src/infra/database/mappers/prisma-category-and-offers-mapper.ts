@@ -21,10 +21,9 @@ import {
 } from "@/core/repositories/categories-repository";
 
 export type PrismaCategoryAndOffers = PrismaCategory & {
-  products: PrismaProduct &
-    {
-      offers: PrismaOfferAndDetails[];
-    }[];
+  products: (PrismaProduct & {
+    offers: PrismaOfferAndDetails[];
+  })[];
 };
 
 export class PrismaCategoryAndOffersMapper {
@@ -40,7 +39,7 @@ export class PrismaCategoryAndOffersMapper {
         product.offers.map((offer) =>
           PrismaOfferAndDetailsMapper.toDomain({
             ...offer,
-            product: { ...offer.product },
+            product: { ...product },
           })
         )
       ),
