@@ -56,20 +56,23 @@ export class UpdateProductUseCase {
       if (!category) throw new ResourceNotFoundError("Categoria", category_id);
     }
 
-    const equal = await this.productsRepository.find("product", {
-      name,
-      pricing,
-    });
+    if (name || pricing) {
+      const equal = await this.productsRepository.find("product", {
+        name,
+        pricing,
+      });
 
-    if (equal && !(equal.archived != archived)) {
-      throw new ResourceAlreadyExistsError("Produto", `${name}, ${pricing}`);
+      if (equal && equal.archived == archived) {
+        throw new ResourceAlreadyExistsError("Produto", `${name}, ${pricing}`);
+      }
     }
 
     name && (product.name = name);
     pricing && (product.pricing = pricing);
+    category_id && (product.category_id = new UUID(category_id));
+
     typeof archived === "boolean" && (product.archived = archived);
     typeof perishable === "boolean" && (product.perishable = perishable);
-    category_id && (product.category_id = new UUID(category_id));
 
     if (image) {
       const urls = await this.storage.upload([image], "products");
