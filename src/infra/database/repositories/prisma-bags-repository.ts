@@ -208,7 +208,7 @@ export class PrismaBagsRepository implements BagsRepository {
       for (const order of bag.orders.values()) {
         if (order.box) {
           const box = await ctx.box.findFirst({
-            where: { id: order.box_id.value },
+            where: { catalog_id: order.box.catalog_id.value },
           });
 
           if (!box) {
@@ -240,7 +240,7 @@ export class PrismaBagsRepository implements BagsRepository {
       for (const order of bag.orders.values()) {
         if (order.box) {
           const box = await ctx.box.findFirst({
-            where: { id: order.box_id.value },
+            where: { catalog_id: order.box.catalog_id.value },
           });
 
           if (!box) {
