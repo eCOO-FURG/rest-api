@@ -162,7 +162,6 @@ export class RegisterOrderUseCase {
     });
 
     this.mailer.send([email]);
-    this.boxes.clear();
 
     return { bag };
   }
