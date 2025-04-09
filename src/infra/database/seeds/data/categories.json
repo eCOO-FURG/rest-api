@@ -1,1512 +1,1524 @@
 [
   {
     "name": "Hortaliças e Legumes",
+    "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/categories/hortalicas_e_legumes.jpg",
     "products": [
       {
         "name": "Abóbora Cabotiá",
         "pricing": "WEIGHT",
-        "image": "abobora_cabotia.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/abobora_cabotia.jpg",
         "perishable": true
       },
       {
         "name": "Abóbora Cabotiá",
         "pricing": "UNIT",
-        "image": "abobora_cabotia.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/abobora_cabotia.jpg",
         "perishable": true
       },
       {
         "name": "Abóbora Moranga",
         "pricing": "WEIGHT",
-        "image": "abobora_moranga.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/abobora_moranga.jpg",
         "perishable": true
       },
       {
         "name": "Abóbora Moranga",
         "pricing": "UNIT",
-        "image": "abobora_moranga.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/abobora_moranga.jpg",
         "perishable": true
       },
       {
         "name": "Abóbora Paulista",
         "pricing": "WEIGHT",
-        "image": "abobora_paulista.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/abobora_paulista.jpg",
         "perishable": true
       },
       {
         "name": "Abóbora Paulista",
         "pricing": "UNIT",
-        "image": "abobora_paulista.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/abobora_paulista.jpg",
         "perishable": true
       },
       {
         "name": "Abobrinha Brasileira",
         "pricing": "WEIGHT",
-        "image": "abobrinha_brasileira.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/abobrinha_brasileira.jpg",
         "perishable": true
       },
       {
         "name": "Abobrinha Brasileira",
         "pricing": "UNIT",
-        "image": "abobrinha_brasileira.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/abobrinha_brasileira.jpg",
         "perishable": true
       },
       {
         "name": "Abobrinha Italiana",
         "pricing": "WEIGHT",
-        "image": "abobrinha_italiana.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/abobrinha_italiana.jpg",
         "perishable": true
       },
       {
         "name": "Abobrinha Italiana",
         "pricing": "UNIT",
-        "image": "abobrinha_italiana.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/abobrinha_italiana.jpg",
         "perishable": true
       },
       {
         "name": "Aipim",
         "pricing": "WEIGHT",
-        "image": "aipim.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/aipim.jpg",
         "perishable": true
       },
       {
         "name": "Alcachofra",
         "pricing": "UNIT",
-        "image": "alcachofra.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/alcachofra.jpg",
         "perishable": true
       },
       {
         "name": "Batata Baroa",
         "pricing": "WEIGHT",
-        "image": "batata_baroa.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/batata_baroa.jpg",
         "perishable": true
       },
       {
         "name": "Batata Branca",
         "pricing": "WEIGHT",
-        "image": "batata_branca.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/batata_branca.jpg",
         "perishable": true
       },
       {
         "name": "Batata Doce Abóbora",
         "pricing": "WEIGHT",
-        "image": "batata_doce_abobora.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/batata_doce_abobora.jpg",
         "perishable": true
       },
       {
         "name": "Batata Doce Amarela",
         "pricing": "WEIGHT",
-        "image": "batata_doce_amarela.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/batata_doce_amarela.jpg",
         "perishable": true
       },
       {
         "name": "Batata Doce Branca",
         "pricing": "WEIGHT",
-        "image": "batata_doce_branca.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/batata_doce_branca.jpg",
         "perishable": true
       },
       {
         "name": "Batata Doce Rosada",
         "pricing": "WEIGHT",
-        "image": "batata_doce_rosada.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/batata_doce_rosada.jpg",
         "perishable": true
       },
       {
         "name": "Batata Rosa",
         "pricing": "WEIGHT",
-        "image": "batata_rosa.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/batata_rosa.jpg",
         "perishable": true
       },
       {
         "name": "Berinjela Comum",
         "pricing": "WEIGHT",
-        "image": "berinjela_comum.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/berinjela_comum.jpg",
         "perishable": true
       },
       {
         "name": "Berinjela Comum",
         "pricing": "UNIT",
-        "image": "berinjela_comum.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/berinjela_comum.jpg",
         "perishable": true
       },
       {
         "name": "Berinjela Japonesa",
         "pricing": "WEIGHT",
-        "image": "berinjela_japonesa.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/berinjela_japonesa.jpg",
         "perishable": true
       },
       {
         "name": "Berinjela Japonesa",
         "pricing": "UNIT",
-        "image": "berinjela_japonesa.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/berinjela_japonesa.jpg",
         "perishable": true
       },
       {
         "name": "Beterraba",
         "pricing": "WEIGHT",
-        "image": "beterraba.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/beterraba.jpg",
         "perishable": true
       },
       {
         "name": "Brócolis",
         "pricing": "WEIGHT",
-        "image": "brocolis.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/brocolis.jpg",
         "perishable": true
       },
       {
         "name": "Brócolis",
         "pricing": "UNIT",
-        "image": "brocolis.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/brocolis.jpg",
         "perishable": true
       },
       {
         "name": "Cebola",
         "pricing": "WEIGHT",
-        "image": "cebola.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/cebola.jpg",
         "perishable": true
       },
       {
         "name": "Cebola Roxa",
         "pricing": "WEIGHT",
-        "image": "cebola_roxa.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/cebola_roxa.jpg",
         "perishable": true
       },
       {
         "name": "Cebolinha",
         "pricing": "UNIT",
-        "image": "cebolinha.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/cebolinha.jpg",
         "perishable": true
       },
       {
         "name": "Cenoura",
         "pricing": "WEIGHT",
-        "image": "cenoura.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/cenoura.jpg",
         "perishable": true
       },
       {
         "name": "Chuchu",
         "pricing": "WEIGHT",
-        "image": "chuchu.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/chuchu.jpg",
         "perishable": true
       },
       {
         "name": "Couve",
         "pricing": "UNIT",
-        "image": "couve.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/couve.jpg",
         "perishable": true
       },
       {
         "name": "Couve Bruxelas",
         "pricing": "UNIT",
-        "image": "couve_bruxelas.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/couve_bruxelas.jpg",
         "perishable": true
       },
       {
         "name": "Couve-Flor",
         "pricing": "UNIT",
-        "image": "couve_flor.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/couve_flor.jpg",
         "perishable": true
       },
       {
         "name": "Ervilha Comum",
         "pricing": "WEIGHT",
-        "image": "ervilha_comum.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ervilha_comum.jpg",
         "perishable": true
       },
       {
         "name": "Ervilha Torta",
         "pricing": "WEIGHT",
-        "image": "ervilha_torta.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ervilha_torta.jpg",
         "perishable": true
       },
       {
         "name": "Favas",
         "pricing": "WEIGHT",
-        "image": "fava.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/fava.jpg",
         "perishable": true
       },
       {
         "name": "Hortelã",
         "pricing": "UNIT",
-        "image": "hortela.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/hortela.jpg",
         "perishable": true
       },
       {
         "name": "Inhame",
         "pricing": "WEIGHT",
-        "image": "inhame.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/inhame.jpg",
         "perishable": true
       },
       {
         "name": "Louro",
         "pricing": "UNIT",
-        "image": "louro.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/louro.jpg",
         "perishable": true
       },
       {
         "name": "Mostarda",
         "pricing": "UNIT",
-        "image": "mostarda.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/mostarda.jpg",
         "perishable": true
       },
       {
         "name": "Nabo",
         "pricing": "UNIT",
-        "image": "nabo.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/nabo.jpg",
         "perishable": true
       },
       {
         "name": "Palmito",
         "pricing": "WEIGHT",
-        "image": "palmito.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/palmito.jpg",
         "perishable": true
       },
       {
         "name": "Pepino",
         "pricing": "WEIGHT",
-        "image": "pepino.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/pepino.jpg",
         "perishable": true
       },
       {
         "name": "Pepino",
         "pricing": "UNIT",
-        "image": "pepino.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/pepino.jpg",
         "perishable": true
       },
       {
         "name": "Pimentão Amarelo",
         "pricing": "WEIGHT",
-        "image": "pimentao_amarelo.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/pimentao_amarelo.jpg",
         "perishable": true
       },
       {
         "name": "Pimentão Amarelo",
         "pricing": "UNIT",
-        "image": "pimentao_amarelo.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/pimentao_amarelo.jpg",
         "perishable": true
       },
       {
         "name": "Pimentão Verde",
         "pricing": "WEIGHT",
-        "image": "pimentao_verde.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/pimentao_verde.jpg",
         "perishable": true
       },
       {
         "name": "Pimentão Verde",
         "pricing": "UNIT",
-        "image": "pimentao_verde.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/pimentao_verde.jpg",
         "perishable": true
       },
       {
         "name": "Pimentão Vermelho",
         "pricing": "WEIGHT",
-        "image": "pimentao_vermelho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/pimentao_vermelho.jpg",
         "perishable": true
       },
       {
         "name": "Pimentão Vermelho",
         "pricing": "UNIT",
-        "image": "pimentao_vermelho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/pimentao_vermelho.jpg",
         "perishable": true
       },
       {
         "name": "Quiabo",
         "pricing": "WEIGHT",
-        "image": "quiabo.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/quiabo.jpg",
         "perishable": true
       },
       {
         "name": "Rabanete",
         "pricing": "WEIGHT",
-        "image": "rabanete.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/rabanete.jpg",
         "perishable": true
       },
       {
         "name": "Repolho",
         "pricing": "WEIGHT",
-        "image": "repolho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/repolho.jpg",
         "perishable": true
       },
       {
         "name": "Repolho",
         "pricing": "UNIT",
-        "image": "repolho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/repolho.jpg",
         "perishable": true
       },
       {
         "name": "Rúcula",
         "pricing": "UNIT",
-        "image": "rucula.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/rucula.jpg",
         "perishable": true
       },
       {
         "name": "Tomate Cereja",
         "pricing": "WEIGHT",
-        "image": "tomate_cereja.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/tomate_cereja.jpg",
         "perishable": true
       },
       {
         "name": "Tomate Gaúcho",
         "pricing": "WEIGHT",
-        "image": "tomate_gaucho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/tomate_gaucho.jpg",
         "perishable": true
       },
       {
         "name": "Tomate Italiano",
         "pricing": "WEIGHT",
-        "image": "tomate_italiano.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/tomate_italiano.jpg",
         "perishable": true
       },
       {
         "name": "Tomate Longa Vida",
         "pricing": "WEIGHT",
-        "image": "tomate_longa_vida.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/tomate_longa_vida.jpg",
         "perishable": true
       },
       {
         "name": "Tomate Xepa",
         "pricing": "WEIGHT",
-        "image": "tomate_xepa.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/tomate_xepa.jpg",
         "perishable": true
       },
       {
         "name": "Vagem",
         "pricing": "WEIGHT",
-        "image": "vagem.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/vagem.jpg",
         "perishable": true
       }
     ]
   },
   {
     "name": "Folhas e Verduras",
+    "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/categories/folhas_e_verduras.jpg",
     "products": [
       {
         "name": "Acelga",
         "pricing": "UNIT",
-        "image": "acelga.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/acelga.jpg",
         "perishable": true
       },
       {
         "name": "Agrião",
         "pricing": "UNIT",
-        "image": "agriao.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/agriao.jpg",
         "perishable": true
       },
       {
         "name": "Alface Americana",
         "pricing": "UNIT",
-        "image": "alface_americana.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/alface_americana.jpg",
         "perishable": true
       },
       {
         "name": "Alface Crespa",
         "pricing": "UNIT",
-        "image": "alface_crespa.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/alface_crespa.jpg",
         "perishable": true
       },
       {
         "name": "Alface Lisa",
         "pricing": "UNIT",
-        "image": "alface_lisa.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/alface_lisa.jpg",
         "perishable": true
       },
       {
         "name": "Alface Mimosa",
         "pricing": "UNIT",
-        "image": "alface_mimosa.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/alface_mimosa.jpg",
         "perishable": true
       },
       {
         "name": "Alface Quatro Estações",
         "pricing": "UNIT",
-        "image": "alface_quatro_estacoes.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/alface_quatro_estacoes.jpg",
         "perishable": true
       },
       {
         "name": "Alface Roxa",
         "pricing": "UNIT",
-        "image": "alface_roxa.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/alface_roxa.jpg",
         "perishable": true
       },
       {
         "name": "Espinafre",
         "pricing": "UNIT",
-        "image": "espinafre.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/espinafre.jpg",
         "perishable": true
       },
       {
         "name": "Microverdes",
         "pricing": "UNIT",
-        "image": "microverdes.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/microverdes.jpg",
         "perishable": true
       },
       {
         "name": "Microverdes Amaranto",
         "pricing": "UNIT",
-        "image": "microverde_amaranto.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/microverde_amaranto.jpg",
         "perishable": true
       },
       {
         "name": "Microverdes Beterraba",
         "pricing": "UNIT",
-        "image": "microverde_beterraba.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/microverde_beterraba.jpg",
         "perishable": true
       },
       {
         "name": "Microverdes Couve",
         "pricing": "UNIT",
-        "image": "microverde_couve.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/microverde_couve.jpg",
         "perishable": true
       },
       {
         "name": "Microverdes Mostarda",
         "pricing": "UNIT",
-        "image": "microverde_mostarda.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/microverde_mostarda.jpg",
         "perishable": true
       },
       {
         "name": "Microverdes Repolho",
         "pricing": "UNIT",
-        "image": "microverde_repolho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/microverde_repolho.jpg",
         "perishable": true
       },
       {
         "name": "Microverdes Rúcula",
         "pricing": "UNIT",
-        "image": "microverde_rucula.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/microverde_rucula.jpg",
         "perishable": true
       }
     ]
   },
   {
     "name": "Temperos e Ervas",
+    "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/categories/temperos_e_ervas.jpg",
     "products": [
       {
         "name": "Alecrim",
         "pricing": "UNIT",
-        "image": "alecrim.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/alecrim.jpg",
         "perishable": true
       },
       {
         "name": "Alho",
         "pricing": "WEIGHT",
-        "image": "alho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/alho.jpg",
         "perishable": true
       },
       {
         "name": "Alho",
         "pricing": "UNIT",
-        "image": "alho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/alho.jpg",
         "perishable": true
       },
       {
         "name": "Alho Poró",
         "pricing": "UNIT",
-        "image": "alho_poro.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/alho_poro.jpg",
         "perishable": true
       },
       {
         "name": "Coentro",
         "pricing": "UNIT",
-        "image": "coentro.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/coentro.jpg",
         "perishable": true
       },
       {
         "name": "Erva-Doce",
         "pricing": "UNIT",
-        "image": "erva_doce.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/erva_doce.jpg",
         "perishable": true
       },
       {
         "name": "Gengibre",
         "pricing": "WEIGHT",
-        "image": "gengibre.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/gengibre.jpg",
         "perishable": true
       },
       {
         "name": "Gengibre",
         "pricing": "UNIT",
-        "image": "gengibre.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/gengibre.jpg",
         "perishable": true
       },
       {
         "name": "Manjericão",
         "pricing": "UNIT",
-        "image": "manjericao.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/manjericao.jpg",
         "perishable": true
       },
       {
         "name": "Pimenta Cambuci",
         "pricing": "WEIGHT",
-        "image": "pimenta_cambuci.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/pimenta_cambuci.jpg",
         "perishable": true
       },
       {
         "name": "Pimenta Dedo-de-moça",
         "pricing": "WEIGHT",
-        "image": "pimenta_dedo_de_moca.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/pimenta_dedo_de_moca.jpg",
         "perishable": true
       },
       {
         "name": "Pimenta Malagueta",
         "pricing": "WEIGHT",
-        "image": "pimenta_malagueta.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/pimenta_malagueta.jpg",
         "perishable": true
       },
       {
         "name": "Pimenta Vermelha",
         "pricing": "WEIGHT",
-        "image": "pimenta_vermelha.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/pimenta_vermelha.jpg",
         "perishable": true
       },
       {
         "name": "Salsa",
         "pricing": "UNIT",
-        "image": "salsa.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/salsa.jpg",
         "perishable": true
       },
       {
         "name": "Salsão",
         "pricing": "UNIT",
-        "image": "salsao.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/salsao.jpg",
         "perishable": true
       },
       {
         "name": "Semente de Funcho",
         "pricing": "WEIGHT",
-        "image": "semente_de_funcho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/semente_de_funcho.jpg",
         "perishable": true
       },
       {
         "name": "Semente de Girassol",
         "pricing": "WEIGHT",
-        "image": "sementes_de_girassol.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/sementes_de_girassol.jpg",
         "perishable": true
       },
       {
         "name": "Tempero Verde",
         "pricing": "UNIT",
-        "image": "tempero_verde.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/tempero_verde.jpg",
         "perishable": true
       },
       {
         "name": "Tomilho",
         "pricing": "UNIT",
-        "image": "tomilho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/tomilho.jpg",
         "perishable": true
       }
     ]
   },
   {
     "name": "Fungos",
+    "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/categories/fungos.jpg",
     "products": [
       {
         "name": "Cogumelo",
         "pricing": "UNIT",
-        "image": "cogumelo.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/cogumelo.jpg",
         "perishable": true
       },
       {
         "name": "Cogumelo Paris",
         "pricing": "UNIT",
-        "image": "cogumelo_paris.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/cogumelo_paris.jpg",
         "perishable": true
       },
       {
         "name": "Cogumelo Portobello",
         "pricing": "UNIT",
-        "image": "cogumelo_portobello.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/cogumelo_portobello.jpg",
         "perishable": true
       }
     ]
   },
   {
     "name": "Frutas",
+    "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/categories/frutas.jpg",
     "products": [
       {
         "name": "Abacate",
         "pricing": "WEIGHT",
-        "image": "abacate.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/abacate.jpg",
         "perishable": true
       },
       {
         "name": "Abacaxi",
         "pricing": "WEIGHT",
-        "image": "abacaxi.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/abacaxi.jpg",
         "perishable": true
       },
       {
         "name": "Acerola",
         "pricing": "WEIGHT",
-        "image": "acerola.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/acerola.jpg",
         "perishable": true
       },
       {
         "name": "Ameixa",
         "pricing": "WEIGHT",
-        "image": "ameixa.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ameixa.jpg",
         "perishable": true
       },
       {
         "name": "Amora",
         "pricing": "WEIGHT",
-        "image": "amora.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/amora.jpg",
         "perishable": true
       },
       {
         "name": "Araçá",
         "pricing": "WEIGHT",
-        "image": "araca.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/araca.jpg",
         "perishable": true
       },
       {
         "name": "Banana Caturra",
         "pricing": "WEIGHT",
-        "image": "banana_caturra.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/banana_caturra.jpg",
         "perishable": true
       },
       {
         "name": "Banana Maçã",
         "pricing": "WEIGHT",
-        "image": "banana_maca.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/banana_maca.jpg",
         "perishable": true
       },
       {
         "name": "Banana Nanica",
         "pricing": "WEIGHT",
-        "image": "banana_nanica.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/banana_nanica.jpg",
         "perishable": true
       },
       {
         "name": "Banana Prata",
         "pricing": "WEIGHT",
-        "image": "banana_prata.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/banana_prata.jpg",
         "perishable": true
       },
       {
         "name": "Bergamota",
         "pricing": "WEIGHT",
-        "image": "bergamota.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/bergamota.jpg",
         "perishable": true
       },
       {
         "name": "Butiá",
         "pricing": "WEIGHT",
-        "image": "butia.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/butia.jpg",
         "perishable": true
       },
       {
         "name": "Caqui",
         "pricing": "WEIGHT",
-        "image": "caqui.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/caqui.jpg",
         "perishable": true
       },
       {
         "name": "Carambola",
         "pricing": "WEIGHT",
-        "image": "carambola.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/carambola.jpg",
         "perishable": true
       },
       {
         "name": "Cereja",
         "pricing": "WEIGHT",
-        "image": "cereja.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/cereja.jpg",
         "perishable": true
       },
       {
         "name": "Figo",
         "pricing": "WEIGHT",
-        "image": "figo.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/figo.jpg",
         "perishable": true
       },
       {
         "name": "Framboesa",
         "pricing": "WEIGHT",
-        "image": "framboesa.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/framboesa.jpg",
         "perishable": true
       },
       {
         "name": "Goiaba",
         "pricing": "WEIGHT",
-        "image": "goiaba.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/goiaba.jpg",
         "perishable": true
       },
       {
         "name": "Jabuticaba",
         "pricing": "WEIGHT",
-        "image": "jabuticaba.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/jabuticaba.jpg",
         "perishable": false
       },
       {
         "name": "Laranja do Céu",
         "pricing": "WEIGHT",
-        "image": "laranja_do_ceu.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/laranja_do_ceu.jpg",
         "perishable": true
       },
       {
         "name": "Laranja Pera",
         "pricing": "WEIGHT",
-        "image": "laranja_pera.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/laranja_pera.jpg",
         "perishable": true
       },
       {
         "name": "Laranja Umbigo",
         "pricing": "WEIGHT",
-        "image": "laranja_umbigo.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/laranja_umbigo.jpg",
         "perishable": true
       },
       {
         "name": "Limão Bergamota",
         "pricing": "WEIGHT",
-        "image": "limao_bergamota.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/limao_bergamota.jpg",
         "perishable": true
       },
       {
         "name": "Limão Taiti",
         "pricing": "WEIGHT",
-        "image": "limao_taiti.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/limao_taiti.jpg",
         "perishable": true
       },
       {
         "name": "Maçã Nacional Fuji",
         "pricing": "WEIGHT",
-        "image": "maca_fuji.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/maca_fuji.jpg",
         "perishable": true
       },
       {
         "name": "Maçã Nacional Gala",
         "pricing": "WEIGHT",
-        "image": "maca_gala.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/maca_gala.jpg",
         "perishable": true
       },
       {
         "name": "Mamão Formosa",
         "pricing": "WEIGHT",
-        "image": "mamao_formosa.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/mamao_formosa.jpg",
         "perishable": true
       },
       {
         "name": "Mamão Formosa",
         "pricing": "UNIT",
-        "image": "mamao_formosa.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/mamao_formosa.jpg",
         "perishable": true
       },
       {
         "name": "Mamão Papaya",
         "pricing": "WEIGHT",
-        "image": "mamao_papaya.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/mamao_papaya.jpg",
         "perishable": true
       },
       {
         "name": "Mamão Papaya",
         "pricing": "UNIT",
-        "image": "mamao_papaya.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/mamao_papaya.jpg",
         "perishable": true
       },
       {
         "name": "Manga",
         "pricing": "WEIGHT",
-        "image": "manga.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/manga.jpg",
         "perishable": true
       },
       {
         "name": "Maracujá Azedo",
         "pricing": "WEIGHT",
-        "image": "maracuja_azedo.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/maracuja_azedo.jpg",
         "perishable": true
       },
       {
         "name": "Maracujá Doce",
         "pricing": "WEIGHT",
-        "image": "maracuja_doce.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/maracuja_doce.jpg",
         "perishable": true
       },
       {
         "name": "Melancia",
         "pricing": "WEIGHT",
-        "image": "melancia.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/melancia.jpg",
         "perishable": true
       },
       {
         "name": "Melancia",
         "pricing": "UNIT",
-        "image": "melancia.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/melancia.jpg",
         "perishable": true
       },
       {
         "name": "Morango",
         "pricing": "WEIGHT",
-        "image": "morango.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/morango.jpg",
         "perishable": true
       },
       {
         "name": "Pera",
         "pricing": "WEIGHT",
-        "image": "pera.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/pera.jpg",
         "perishable": true
       },
       {
         "name": "Uva",
         "pricing": "WEIGHT",
-        "image": "uva.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/uva.jpg",
         "perishable": true
       }
     ]
   },
   {
     "name": "Cereais e grãos",
+    "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/categories/cereais_e_graos.jpg",
     "products": [
       {
         "name": "Amendoim",
         "pricing": "WEIGHT",
-        "image": "amendoim.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/amendoim.jpg",
         "perishable": false
       },
       {
         "name": "Arroz Branco",
         "pricing": "WEIGHT",
-        "image": "arroz_branco.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/arroz_branco.jpg",
         "perishable": false
       },
       {
         "name": "Arroz Cateto",
         "pricing": "WEIGHT",
-        "image": "arroz_cateto.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/arroz_cateto.jpg",
         "perishable": false
       },
       {
         "name": "Arroz Integral",
         "pricing": "WEIGHT",
-        "image": "arroz_integral.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/arroz_integral.jpg",
         "perishable": false
       },
       {
         "name": "Arroz Parboilizado",
         "pricing": "WEIGHT",
-        "image": "arroz_parboilizado.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/arroz_parboilizado.jpg",
         "perishable": false
       },
       {
         "name": "Arroz Polido",
         "pricing": "WEIGHT",
-        "image": "arroz_polido.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/arroz_polido.jpg",
         "perishable": false
       },
       {
         "name": "Chia",
         "pricing": "WEIGHT",
-        "image": "chia.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/chia.jpg",
         "perishable": true
       },
       {
         "name": "Feijão Azuki",
         "pricing": "WEIGHT",
-        "image": "feijao_azuki.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/feijao_azuki.jpg",
         "perishable": false
       },
       {
         "name": "Feijão Branco",
         "pricing": "WEIGHT",
-        "image": "feijao_azuki.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/feijao_azuki.jpg",
         "perishable": false
       },
       {
         "name": "Feijão Carioca",
         "pricing": "WEIGHT",
-        "image": "feijao_carioca.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/feijao_carioca.jpg",
         "perishable": false
       },
       {
         "name": "Feijão Fradinho",
         "pricing": "WEIGHT",
-        "image": "feijao_fradinho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/feijao_fradinho.jpg",
         "perishable": false
       },
       {
         "name": "Feijão Preto",
         "pricing": "WEIGHT",
-        "image": "feijao_preto.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/feijao_preto.jpg",
         "perishable": false
       },
       {
         "name": "Feijão Vermelho",
         "pricing": "WEIGHT",
-        "image": "feijao_vermelho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/feijao_vermelho.jpg",
         "perishable": false
       },
       {
         "name": "Flocos de Aveia Fino",
         "pricing": "WEIGHT",
-        "image": "flocos_de_aveia_fino.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/flocos_de_aveia_fino.jpg",
         "perishable": false
       },
       {
         "name": "Flocos de Aveia Grosso",
         "pricing": "WEIGHT",
-        "image": "flocos_de_aveia_grosso.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/flocos_de_aveia_grosso.jpg",
         "perishable": false
       },
       {
         "name": "Grão de Bico",
         "pricing": "WEIGHT",
-        "image": "grao_de_bico.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/grao_de_bico.jpg",
         "perishable": true
       },
       {
         "name": "Lentilha",
         "pricing": "WEIGHT",
-        "image": "lentilha.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/lentilha.jpg",
         "perishable": false
       },
       {
         "name": "Linhaça Dourada",
         "pricing": "WEIGHT",
-        "image": "linhaca_dourada.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/linhaca_dourada.jpg",
         "perishable": true
       },
       {
         "name": "Milho",
         "pricing": "WEIGHT",
-        "image": "milho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/milho.jpg",
         "perishable": true
       },
       {
         "name": "Soja",
         "pricing": "WEIGHT",
-        "image": "soja.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/soja.jpg",
         "perishable": false
       }
     ]
   },
   {
     "name": "Origem animal",
+    "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/categories/origem_animal.jpg",
     "products": [
       {
         "name": "Banha",
         "pricing": "WEIGHT",
-        "image": "banha.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/banha.jpg",
         "perishable": true
       },
       {
         "name": "Leite",
         "pricing": "UNIT",
-        "image": "leite.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/leite.jpg",
         "perishable": true
       },
       {
         "name": "Mel",
         "pricing": "WEIGHT",
-        "image": "mel.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/mel.jpg",
         "perishable": false
       },
       {
         "name": "Ovelha",
         "pricing": "WEIGHT",
-        "image": "ovelha.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ovelha.jpg",
         "perishable": true
       },
       {
         "name": "Ovo Branco (6 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_branco.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ovo_branco.jpg",
         "perishable": true
       },
       {
         "name": "Ovo Branco (12 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_branco.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ovo_branco.jpg",
         "perishable": true
       },
       {
         "name": "Ovo Branco (24 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_branco.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ovo_branco.jpg",
         "perishable": true
       },
       {
         "name": "Ovo Branco (30 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_branco.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ovo_branco.jpg",
         "perishable": true
       },
       {
         "name": "Ovo Colonial (6 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_colonial.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ovo_colonial.jpg",
         "perishable": true
       },
       {
         "name": "Ovo Colonial (12 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_colonial.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ovo_colonial.jpg",
         "perishable": true
       },
       {
         "name": "Ovo Colonial (24 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_colonial.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ovo_colonial.jpg",
         "perishable": true
       },
       {
         "name": "Ovo Colonial (30 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_colonial.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ovo_colonial.jpg",
         "perishable": true
       },
       {
         "name": "Ovo de Codorna (6 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_codorna.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ovo_codorna.jpg",
         "perishable": true
       },
       {
         "name": "Ovo de Codorna (12 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_codorna.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ovo_codorna.jpg",
         "perishable": true
       },
       {
         "name": "Ovo de Codorna (24 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_codorna.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ovo_codorna.jpg",
         "perishable": true
       },
       {
         "name": "Ovo de Codorna (30 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_codorna.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ovo_codorna.jpg",
         "perishable": true
       },
       {
         "name": "Ovo vermelho (6 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_vermelho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ovo_vermelho.jpg",
         "perishable": true
       },
       {
         "name": "Ovo vermelho (12 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_vermelho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ovo_vermelho.jpg",
         "perishable": true
       },
       {
         "name": "Ovo vermelho (24 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_vermelho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ovo_vermelho.jpg",
         "perishable": true
       },
       {
         "name": "Ovo vermelho (30 Unid.)",
         "pricing": "UNIT",
-        "image": "ovo_vermelho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ovo_vermelho.jpg",
         "perishable": true
       },
       {
         "name": "Porco",
         "pricing": "WEIGHT",
-        "image": "porco.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/porco.jpg",
         "perishable": true
       },
       {
         "name": "Queijo Colonial",
         "pricing": "WEIGHT",
-        "image": "queijo_colonial.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/queijo_colonial.jpg",
         "perishable": false
       },
       {
         "name": "Queijo Colonial",
         "pricing": "UNIT",
-        "image": "queijo_colonial.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/queijo_colonial.jpg",
         "perishable": false
       },
       {
         "name": "Queijo Gouda",
         "pricing": "WEIGHT",
-        "image": "queijo_gouda.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/queijo_gouda.jpg",
         "perishable": false
       },
       {
         "name": "Queijo Gouda",
         "pricing": "UNIT",
-        "image": "queijo_gouda.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/queijo_gouda.jpg",
         "perishable": false
       },
       {
         "name": "Queijo Mussarela Fatiado",
         "pricing": "WEIGHT",
-        "image": "queijo_mussarela_fatiado.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/queijo_mussarela_fatiado.jpg",
         "perishable": false
       },
       {
         "name": "Queijo Prato Fatiado",
         "pricing": "WEIGHT",
-        "image": "queijo_prato_fatiado.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/queijo_prato_fatiado.jpg",
         "perishable": false
       },
       {
         "name": "Ricota",
         "pricing": "WEIGHT",
-        "image": "ricota.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/ricota.jpg",
         "perishable": true
       }
     ]
   },
   {
     "name": "Produtos Artesanais",
+    "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/categories/produtos_artesanais.jpg",
     "products": [
       {
         "name": "Bala de Banana",
         "pricing": "WEIGHT",
-        "image": "bala_de_banana.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/bala_de_banana.jpg",
         "perishable": false
       },
       {
         "name": "Bala de Banana",
         "pricing": "UNIT",
-        "image": "bala_de_banana.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/bala_de_banana.jpg",
         "perishable": false
       },
       {
         "name": "Barra de Banana",
         "pricing": "WEIGHT",
-        "image": "barra_de_banana.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/barra_de_banana.jpg",
         "perishable": false
       },
       {
         "name": "Barra de Banana",
         "pricing": "UNIT",
-        "image": "barra_de_banana.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/barra_de_banana.jpg",
         "perishable": false
       },
       {
         "name": "Café Torrado e Moido",
         "pricing": "WEIGHT",
-        "image": "cafe_torrado_e_moido.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/cafe_torrado_e_moido.jpg",
         "perishable": false
       },
       {
         "name": "Café Torrado e Moido",
         "pricing": "UNIT",
-        "image": "cafe_torrado_e_moido.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/cafe_torrado_e_moido.jpg",
         "perishable": false
       },
       {
         "name": "Cookies",
         "pricing": "WEIGHT",
-        "image": "cookies.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/cookies.jpg",
         "perishable": false
       },
       {
         "name": "Cookies",
         "pricing": "UNIT",
-        "image": "cookies.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/cookies.jpg",
         "perishable": false
       },
       {
         "name": "Extrato de Tomate",
         "pricing": "WEIGHT",
-        "image": "extrato_de_tomate.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/extrato_de_tomate.jpg",
         "perishable": false
       },
       {
         "name": "Extrato de Tomate",
         "pricing": "UNIT",
-        "image": "extrato_de_tomate.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/extrato_de_tomate.jpg",
         "perishable": false
       },
       {
         "name": "Geleia de Abacaxi com Gengibre",
         "pricing": "UNIT",
-        "image": "geleia_abacaxi_com_gengibre.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/geleia_abacaxi_com_gengibre.jpg",
         "perishable": false
       },
       {
         "name": "Geleia de Abacaxi com Pimenta",
         "pricing": "UNIT",
-        "image": "geleia_abacaxi_com_pimenta.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/geleia_abacaxi_com_pimenta.jpg",
         "perishable": false
       },
       {
         "name": "Geleia de Banana com Rum",
         "pricing": "UNIT",
-        "image": "geleia_banana_com_rum.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/geleia_banana_com_rum.jpg",
         "perishable": false
       },
       {
         "name": "Geleia de Laranja com Damasco",
         "pricing": "UNIT",
-        "image": "geleia_laranja_com_damasco.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/geleia_laranja_com_damasco.jpg",
         "perishable": false
       },
       {
         "name": "Geleia de Laranja com Especiarias",
         "pricing": "UNIT",
-        "image": "geleia_laranja_com_especiarias.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/geleia_laranja_com_especiarias.jpg",
         "perishable": false
       },
       {
         "name": "Geleia de Maçã com Canela",
         "pricing": "UNIT",
-        "image": "geleia_maca_com_canela.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/geleia_maca_com_canela.jpg",
         "perishable": false
       },
       {
         "name": "Geleia de Manga com Maracujá",
         "pricing": "UNIT",
-        "image": "geleia_manga_com_maracuja.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/geleia_manga_com_maracuja.jpg",
         "perishable": false
       },
       {
         "name": "Geleia de Manga com Maracujá e Pimenta",
         "pricing": "UNIT",
-        "image": "geleia_manga_com_maracuja_e_pimenta.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/geleia_manga_com_maracuja_e_pimenta.jpg",
         "perishable": false
       },
       {
         "name": "Geleia de Morango",
         "pricing": "UNIT",
-        "image": "geleia_morango.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/geleia_morango.jpg",
         "perishable": false
       },
       {
         "name": "Geleia de Morango com Chia",
         "pricing": "UNIT",
-        "image": "geleia_morango_com_chia.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/geleia_morango_com_chia.jpg",
         "perishable": false
       },
       {
         "name": "Geleia de Morango com Pimenta",
         "pricing": "UNIT",
-        "image": "geleia_morango_com_pimenta.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/geleia_morango_com_pimenta.jpg",
         "perishable": false
       },
       {
         "name": "Geleia de Morango com Vinho",
         "pricing": "UNIT",
-        "image": "geleia_morango_com_vinho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/geleia_morango_com_vinho.jpg",
         "perishable": false
       },
       {
         "name": "Geleia de Morango com Jeropiga",
         "pricing": "UNIT",
-        "image": "geleia_morango_com_jeropiga.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/geleia_morango_com_jeropiga.jpg",
         "perishable": false
       },
       {
         "name": "Geleia de Morango com Maracujá",
         "pricing": "UNIT",
-        "image": "geleia_morango_com_maracuja.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/geleia_morango_com_maracuja.jpg",
         "perishable": false
       },
       {
         "name": "Geleia de Tomate com Manjericão",
         "pricing": "UNIT",
-        "image": "geleia_tomate_com_manjericao.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/geleia_tomate_com_manjericao.jpg",
         "perishable": false
       },
       {
         "name": "Húmus",
         "pricing": "WEIGHT",
-        "image": "humus.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/humus.jpg",
         "perishable": false
       },
       {
         "name": "Molho de Tomate",
         "pricing": "WEIGHT",
-        "image": "molho_de_tomate.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/molho_de_tomate.jpg",
         "perishable": false
       },
       {
         "name": "Pão Caseiro",
         "pricing": "UNIT",
-        "image": "pao_caseiro.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/pao_caseiro.jpg",
         "perishable": true
       },
       {
         "name": "Patê de Alho",
         "pricing": "UNIT",
-        "image": "pate_de_alho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/pate_de_alho.jpg",
         "perishable": false
       },
       {
         "name": "Patê de Beterraba",
         "pricing": "UNIT",
-        "image": "pate_de_beterraba.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/pate_de_beterraba.jpg",
         "perishable": false
       },
       {
         "name": "Patê de Brócolis",
         "pricing": "UNIT",
-        "image": "pate_de_brocolis.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/pate_de_brocolis.jpg",
         "perishable": false
       },
       {
         "name": "Vinagre de Maçã",
         "pricing": "UNIT",
-        "image": "vinagre_de_maca.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/vinagre_de_maca.jpg",
         "perishable": false
       },
       {
         "name": "Vinagre de Uva",
         "pricing": "UNIT",
-        "image": "vinagre_de_uva.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/vinagre_de_uva.jpg",
         "perishable": false
       }
     ]
   },
   {
     "name": "Não Perecíveis",
+    "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/categories/nao_pereciveis.jpg",
     "products": [
       {
         "name": "Erva Mate",
         "pricing": "WEIGHT",
-        "image": "erva_mate.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/erva_mate.jpg",
         "perishable": false
       },
       {
         "name": "Erva Mate",
         "pricing": "UNIT",
-        "image": "erva_mate.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/erva_mate.jpg",
         "perishable": false
       },
       {
         "name": "Farinha de Centeio",
         "pricing": "WEIGHT",
-        "image": "farinha_de_centeio.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/farinha_de_centeio.jpg",
         "perishable": false
       },
       {
         "name": "Farinha de Milho",
         "pricing": "WEIGHT",
-        "image": "farinha_de_milho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/farinha_de_milho.jpg",
         "perishable": false
       },
       {
         "name": "Farinha de Trigo Branca",
         "pricing": "WEIGHT",
-        "image": "farinha_de_trigo_branca.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/farinha_de_trigo_branca.jpg",
         "perishable": false
       },
       {
         "name": "Farinha de Trigo Integral",
         "pricing": "WEIGHT",
-        "image": "farinha_de_trigo_integral.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/farinha_de_trigo_integral.jpg",
         "perishable": false
       },
       {
         "name": "Sal Marinho",
         "pricing": "WEIGHT",
-        "image": "sal_marinho.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/sal_marinho.jpg",
         "perishable": false
       }
     ]
   },
   {
     "name": "Bebidas",
+    "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/categories/bebidas.jpg",
     "products": [
       {
         "name": "Jurupiga Especial",
         "pricing": "UNIT",
-        "image": "jurupiga_especial.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/jurupiga_especial.jpg",
         "perishable": false
       },
       {
         "name": "Jurupiga Tradicional",
         "pricing": "UNIT",
-        "image": "jurupiga_tradicional.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/jurupiga_tradicional.jpg",
         "perishable": false
       }
     ]
   },
   {
     "name": "Peixes",
+    "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/categories/peixes.jpg",
     "products": [
       {
         "name": "Bagre",
         "pricing": "WEIGHT",
-        "image": "bagre.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/bagre.jpg",
         "perishable": true
       },
       {
         "name": "Burriquete",
         "pricing": "WEIGHT",
-        "image": "burriquete.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/burriquete.jpg",
         "perishable": true
       },
       {
         "name": "Camarão",
         "pricing": "WEIGHT",
-        "image": "camarao.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/camarao.jpg",
         "perishable": true
       },
       {
         "name": "Corvina",
         "pricing": "WEIGHT",
-        "image": "corvina.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/corvina.jpg",
         "perishable": true
       },
       {
         "name": "Jundiá",
         "pricing": "WEIGHT",
-        "image": "jundia.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/jundia.jpg",
         "perishable": false
       },
       {
         "name": "Linguado",
         "pricing": "WEIGHT",
-        "image": "linguado.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/linguado.jpg",
         "perishable": true
       },
       {
         "name": "Miraguaia",
         "pricing": "WEIGHT",
-        "image": "miraguaia.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/miraguaia.jpg",
         "perishable": true
       },
       {
         "name": "Peixe Rei",
         "pricing": "WEIGHT",
-        "image": "peixe_rei.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/peixe_rei.jpg",
         "perishable": true
       },
       {
         "name": "Pintado",
         "pricing": "WEIGHT",
-        "image": "pintado.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/pintado.jpg",
         "perishable": true
       },
       {
         "name": "Siri",
         "pricing": "WEIGHT",
-        "image": "siri.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/siri.jpg",
         "perishable": true
       },
       {
         "name": "Tainha",
         "pricing": "WEIGHT",
-        "image": "tainha.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/tainha.jpg",
         "perishable": true
       },
       {
         "name": "Traíra",
         "pricing": "WEIGHT",
-        "image": "traira.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/traira.jpg",
         "perishable": true
       }
     ]
   },
   {
     "name": "Carnes",
+    "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/categories/carnes.jpg",
     "products": [
       {
         "name": "Boi",
         "pricing": "WEIGHT",
-        "image": "boi.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/boi.jpg",
         "perishable": true
       },
       {
         "name": "Galinha",
         "pricing": "WEIGHT",
-        "image": "galinha.jpg",
+        "image": "https://res.cloudinary.com/dwm7zdljf/image/upload/v1744200166/products/galinha.jpg",
         "perishable": true
       }
     ]

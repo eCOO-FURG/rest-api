@@ -3,6 +3,7 @@ import { Entity, EntityRequest } from "@/core/entities/entity";
 
 export interface CategoryProps extends EntityRequest {
   name: string;
+  image: string;
 }
 
 export class Category<
@@ -14,6 +15,14 @@ export class Category<
 
   set name(value: string) {
     this.props.name = value;
+  }
+
+  get image() {
+    return this.props.image;
+  }
+
+  set image(value: string) {
+    this.props.image = value;
   }
 
   static create(props: CategoryProps) {

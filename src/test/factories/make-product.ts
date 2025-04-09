@@ -9,7 +9,7 @@ export function makeProduct(props: Partial<ProductProps> = {}) {
   return Product.create({
     ...props,
     name: props.name ?? faker.animal.fish(),
-    image: props.image ?? faker.internet.emoji(),
+    image: props.image ?? faker.image.url(),
     pricing: props.pricing ?? "UNIT",
     category_id: props.category_id ?? new UUID(),
   });

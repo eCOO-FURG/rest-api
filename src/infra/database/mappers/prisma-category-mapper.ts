@@ -7,8 +7,8 @@ import { Category } from "@/core/entities/category";
 
 // Repositories
 import {
-  CategoryRepositoryReturnType,
   CategoryEntityOf,
+  CategoryRepositoryReturnType,
 } from "@/core/repositories/categories-repository";
 
 export class PrismaCategoryMapper {
@@ -18,6 +18,7 @@ export class PrismaCategoryMapper {
     return Category.create({
       id: new UUID(raw.id),
       name: raw.name,
+      image: raw.image,
       created_at: raw.created_at,
       updated_at: raw.updated_at,
     }) as CategoryEntityOf<T>;
@@ -27,6 +28,7 @@ export class PrismaCategoryMapper {
     return {
       id: category.id.value,
       name: category.name,
+      image: category.image,
       created_at: category.created_at,
       updated_at: category.updated_at,
     };

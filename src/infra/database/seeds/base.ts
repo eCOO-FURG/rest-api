@@ -43,10 +43,11 @@ async function seedBase() {
     },
   });
 
-  for (const { name, products } of categories) {
+  for (const { name, image, products } of categories) {
     await prisma.category.create({
       data: {
         name,
+        image,
         products: {
           create: products.map((product) => ({
             ...product,
