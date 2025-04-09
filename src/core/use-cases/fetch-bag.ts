@@ -22,15 +22,9 @@ export class FetchBagUseCase {
   ) {}
 
   async execute({ bag_id, user_id, page, statuses }: FetchBagUseCaseRequest) {
-    console.log("Fetching bag...");
-    console.log("Bag ID:", bag_id);
-    console.log("User ID:", user_id);
-    console.log("Page:", page);
-    console.log("Statuses:", statuses);
     const bag = await this.bagsRepository.find("bag-and-orders", {
       id: bag_id,
-      orders: { page },
-      orderStatuses: statuses,
+      orders: { statuses, page },
     });
 
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
