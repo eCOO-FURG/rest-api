@@ -29,7 +29,6 @@ export class PrismaBagsRepository implements BagsRepository {
       id,
       withdraw,
       statuses,
-      orderStatuses,
       user,
       cycle,
       address,
@@ -81,7 +80,7 @@ export class PrismaBagsRepository implements BagsRepository {
             },
             where: {
               id: orders?.id,
-              ...(orderStatuses && { status: { in: orderStatuses } }),
+              ...(orders?.statuses && { status: { in: orders.statuses } }),
             },
             ...(orders?.page && {
               skip: (orders.page - 1) * 20,
@@ -144,6 +143,7 @@ export class PrismaBagsRepository implements BagsRepository {
         },
         orders: {
           some: { id: orders?.id },
+          ...(orders?.statuses && { status: { in: orders.statuses } }),
         },
         ...(typeof withdraw === "boolean" &&
           (withdraw ? { address_id: null } : { address_id: { not: null } })),
