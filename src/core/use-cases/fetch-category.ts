@@ -11,7 +11,7 @@ import { first } from "@/core/utils/first";
 interface FetchCategoryUseCaseRequest {
   id: string;
   page: number;
-  cycle_id: string;
+  cycle_id?: string;
 }
 
 export class FetchCategoryUseCase {

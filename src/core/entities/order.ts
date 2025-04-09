@@ -8,6 +8,9 @@ import { Entity, EntityRequest } from "@/core/entities/entity";
 import { Offer } from "@/core/entities/offer";
 import { Optional } from "@/core/types/optional";
 
+// Utils
+import { fixed } from "@/core/utils/fixed";
+
 export type OrderStatus = (typeof Order.statuses)[number];
 
 export interface OrderProps extends EntityRequest {
@@ -67,7 +70,7 @@ export class Order<
   }
 
   get total() {
-    return this.props.price + this.props.fee;
+    return fixed(this.props.price + this.props.fee);
   }
 
   set price(value: number) {

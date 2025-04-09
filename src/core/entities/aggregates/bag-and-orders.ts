@@ -28,6 +28,10 @@ export class BagAndOrders extends Bag<BagAndOrdersProps> {
     return this.props.payment;
   }
 
+  get paid() {
+    return this.props.payment?.status === "DONE";
+  }
+
   static create(props: Optional<BagAndOrdersProps, "orders">) {
     return new BagAndOrders({
       ...props,

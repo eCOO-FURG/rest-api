@@ -20,7 +20,7 @@ export const fetchCategoryParams = Joi.object({
 
 export const fetchCategoryQuery = Joi.object({
   page: Joi.number().required().min(1),
-  cycle_id: Joi.string().uuid().required(),
+  cycle_id: Joi.string().uuid().optional(),
 });
 
 export async function fetchCategoryController(

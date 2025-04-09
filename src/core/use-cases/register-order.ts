@@ -58,6 +58,8 @@ interface UseBagRequest {
 }
 
 export class RegisterOrderUseCase {
+  private boxes: Map<string, Box> = new Map();
+
   constructor(
     private usersRepository: UsersRepository,
     private cyclesRepository: CyclesRepository,
@@ -221,12 +223,23 @@ export class RegisterOrderUseCase {
   }
 
   private async useBox(catalog_id: UUID) {
+    const memorized = this.boxes.get(catalog_id.value);
+
+    if (memorized) return memorized;
+
     const found = await this.boxesRepository.find("box-and-catalog", {
       catalog: { id: catalog_id.value },
     });
 
-    if (found) return found;
+    if (found) {
+      this.boxes.set(catalog_id.value, found);
+      return found;
+    }
 
-    return Box.create({ catalog_id });
+    const box = Box.create({ catalog_id });
+
+    this.boxes.set(catalog_id.value, box);
+
+    return box;
   }
 }

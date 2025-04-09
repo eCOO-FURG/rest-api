@@ -122,7 +122,7 @@ export default (container: AwilixContainer) => {
           otpProvider,
           mailer
         )
-    ),
+    ).transient(),
     updateOrderUseCase: asFunction(
       ({ usersRepository, bagsRepository, ordersRepository }) =>
         new UpdateOrderUseCase(

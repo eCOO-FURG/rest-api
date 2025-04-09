@@ -27,7 +27,7 @@ export const updateFarmSchema = Joi.object({
   tally: Joi.string().optional(),
   description: Joi.string().optional(),
   photo: file.optional(),
-  fee: Joi.number().optional(),
+  fee: Joi.number().min(0).max(100).optional(),
   status: Joi.string()
     .valid(...Farm.statuses)
     .optional(),
