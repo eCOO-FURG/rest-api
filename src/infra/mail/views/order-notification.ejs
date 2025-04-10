@@ -169,8 +169,13 @@
         <strong
           ><%= formattedFirstDay %>/<%= formattedMonth %> a <%= formattedLastDay
           %>/<%= formattedMonth %></strong
-        >
-        <% } %>
+          >
+          <% } %>
+        <p>
+          <% if (props.existed) { %>
+            <p>*Os itens deste pedido foram adicionados a uma sacola já existente</p>
+          <% } %>
+        </p>
       </div>
 
       <div class="footer">
