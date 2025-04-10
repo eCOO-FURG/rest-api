@@ -152,7 +152,7 @@ export class RegisterOrderUseCase {
 
     const view = await this.mailer.load({
       view: "order-notification",
-      props: { first_name: user.first_name, bag, cycle, existed},
+      props: { first_name: user.first_name, bag, cycle, existed },
     });
 
     const email = Message.create({
