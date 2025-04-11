@@ -216,7 +216,19 @@
       }
 
       .bag-info--conteudo {
-        width: 40%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        width: 250px;
+      }
+
+      .bag-info--conteudo p {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
       }
 
       .bag-info--pagamento {
@@ -237,8 +249,9 @@
   <body>
     <div class="header" style="font-family: 'Poppins'">
       <h1>
-        <%= typeof withdraw === "boolean" ? withdraw ? "Relatório de retiradas"
-        : "Relatório de entregas" : "Relatório de vendas" %>
+        <% if (typeof props.withdraw === 'boolean') { %> <%= props.withdraw ?
+        "Relatório de retiradas" : "Relatório de entregas" %> <% } else { %>
+        Relatório de vendas <% } %>
       </h1>
       <!-- <p>
       Página <span class="pageNumber">1</span> de
@@ -246,7 +259,10 @@
     </p> -->
     </div>
 
-    <% props.bags.forEach((bag)=> { %>
+    <% const STATUSES = { PENDING: "PENDENTE", CANCELLED: "CANCELADO", RECEIVED:
+    "RECEBIDO", REJECTED: "RECUSADO" }; const statusOrder = { PENDING: 0,
+    RECEIVED: 1, REJECTED: 2, CANCELLED: 3 }; %> <% props.bags.forEach((bag)=> {
+    %>
     <div class="section">
       <!-- <div class="bairro-title" style="page-break-inside: avoid">
         <h2>Passo d'Areia</h2>
@@ -275,17 +291,18 @@
           <div class="bag-info bag-info--conteudo">
             <p>Conteúdo:</p>
             <h5>
-              <% bag.orders.forEach((order)=> { %> <% if
-              (order.offer.product.pricing==='UNIT' ) { %> <%= order.amount %>
-              <%= order.offer.product.name %> <% } else if
+              <% const orders = bag.orders.sort((a, b) => statusOrder[a.status]
+              - statusOrder[b.status]); %> <% orders.forEach((order)=> { %> <%
+              if (order.offer.product.pricing==='UNIT' ) { %> <%= order.amount
+              %> unidades de <%= order.offer.product.name %> <% } else if
               (order.offer.product.pricing==='WEIGHT' ) { %> <% if (order.amount
               >= 1000) { %> <%= (order.amount/1000).toLocaleString("pt-BR", {
               minimumFractionDigits: order.amount % 1000 === 0 ? 0 : 1 }) %>kg
               de <%= order.offer.product.name %> <% } else { %> <%= order.amount
               %>g de <%= order.offer.product.name %> <% } %> <% } %>
               <br />
-              R$<%= order.price.toLocaleString("pt-BR", { minimumFractionDigits:
-              2 }) %>
+              R$<%= order.total.toLocaleString("pt-BR", { minimumFractionDigits:
+              2 }) %> - <%= STATUSES[order.status] %>
               <br />
               <br />
               <% }); %>
