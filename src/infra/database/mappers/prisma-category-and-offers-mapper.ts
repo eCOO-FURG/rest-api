@@ -1,6 +1,6 @@
 // Entities
-import { UUID } from "@/core/entities/aggregates/uuid";
 import { CategoryAndOffers } from "@/core/entities/aggregates/category-and-offers";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Libraries
 import {
@@ -16,8 +16,8 @@ import {
 
 // Repositories
 import {
-  CategoryRepositoryReturnType,
   CategoryEntityOf,
+  CategoryRepositoryReturnType,
 } from "@/core/repositories/categories-repository";
 
 export type PrismaCategoryAndOffers = PrismaCategory & {
@@ -33,6 +33,7 @@ export class PrismaCategoryAndOffersMapper {
     return CategoryAndOffers.create({
       id: new UUID(raw.id),
       name: raw.name,
+      image: raw.image,
       created_at: raw.created_at,
       updated_at: raw.updated_at,
       offers: raw.products.flatMap((product) =>

@@ -49,6 +49,7 @@ export type MailerLoadRequest =
         first_name: string;
         bag: Bag;
         cycle: Cycle;
+        existed: boolean;
       };
     };
 

@@ -121,8 +121,9 @@ model Product {
 }
 
 model Category {
-  id   String @id @default(uuid())
-  name String
+  id    String @id @default(uuid())
+  name  String
+  image String
 
   created_at DateTime  @default(now())
   updated_at DateTime?

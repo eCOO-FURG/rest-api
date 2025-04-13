@@ -124,7 +124,8 @@
       <h1>Lista de Caixas Pendentes</h1>
     </div>
 
-    <% if (props.boxes.length === 0) { %>
+    <% const STATUSES = { PENDING: "PENDENTE", CANCELLED: "CANCELADO", RECEIVED:
+    "RECEBIDO", REJECTED: "RECUSADO" }; %> <% if (props.boxes.length === 0) { %>
     <p class="no-boxes-message">Nenhuma caixa pendente encontrada.</p>
     <% } else { %> <% props.boxes.forEach(function(box) { const ordersArray =
     box.orders; let recebidos = ordersArray.filter(order => order.status ===
@@ -156,7 +157,7 @@
             <span
               class="order-status <%= order.status === 'RECEBIDO' ? 'received-status' : '' %>"
             >
-              <%= order.status %>
+              <%= STATUSES[order.status] %>
             </span>
           </li>
           <% }); %> <% } else { %>
