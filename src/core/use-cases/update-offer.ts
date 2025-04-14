@@ -65,7 +65,7 @@ export class UpdateOfferUseCase {
     if (!cycle.offer.includes(today()))
       throw new ResourceClosedError("Ciclo", cycle.id.value);
 
-    if (expires_at && !offer.product?.perishable)
+    if (expires_at && offer.product?.perishable)
       throw new InvalidFieldError("expires_at");
 
     offer.amount = amount ?? offer.amount;
