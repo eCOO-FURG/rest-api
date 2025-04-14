@@ -62,7 +62,7 @@ export class RegisterOfferUseCase {
 
     if (!product) throw new ResourceNotFoundError("Produto", product_id);
 
-    if (product.perishable && !expires_at)
+    if (!product.perishable && !expires_at)
       throw new MissingFieldError("expires_at");
 
     if (product.archived) throw new ResourceClosedError("Produto", product_id);
