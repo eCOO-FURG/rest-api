@@ -55,7 +55,7 @@ describe("offer products", () => {
     );
   });
 
-  it("should be able to offer products", async () => {
+  it("should be able to offer a product", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
@@ -69,6 +69,7 @@ describe("offer products", () => {
       product_id: product.id.value,
       cycle_id: cycle.id.value,
       farm_id: farm.id.value,
+      expires_at: new Date(),
       amount: 10,
       price: 10,
       description: "Novo.",
@@ -111,6 +112,7 @@ describe("offer products", () => {
         product_id: product.id.value,
         cycle_id: cycle.id.value,
         farm_id: farm.id.value,
+        expires_at: new Date(),
         amount: 10,
         price: 10,
       })
@@ -132,6 +134,8 @@ describe("offer products", () => {
         product_id: product.id.value,
         cycle_id: cycle.id.value,
         farm_id: farm.id.value,
+        expires_at: new Date(),
+
         amount: 10,
         price: 10,
       })
@@ -150,6 +154,7 @@ describe("offer products", () => {
         product_id: "123",
         cycle_id: cycle.id.value,
         farm_id: farm.id.value,
+        expires_at: new Date(),
         amount: 10,
         price: 10,
       })
@@ -168,6 +173,7 @@ describe("offer products", () => {
         product_id: product.id.value,
         cycle_id: "123",
         farm_id: farm.id.value,
+        expires_at: new Date(),
         amount: 10,
         price: 10,
       })
@@ -210,6 +216,7 @@ describe("offer products", () => {
         farm_id: farm.id.value,
         amount: 10,
         price: 10,
+        expires_at: new Date(),
       })
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
@@ -231,6 +238,7 @@ describe("offer products", () => {
         farm_id: farm.id.value,
         amount: 10,
         price: 10,
+        expires_at: new Date(),
       })
     ).rejects.toBeInstanceOf(InvalidWeightError);
   });
@@ -257,15 +265,16 @@ describe("offer products", () => {
         farm_id: farm.id.value,
         amount: 10,
         price: 10,
+        expires_at: new Date(),
       })
     ).rejects.toBeInstanceOf(ResourceClosedError);
   });
 
-  it("should not be able to offer a perishable product without expires_at", async () => {
+  it("should not be able to offer a non perishable product without expires_at", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
-    const product = makeProduct({ perishable: true });
+    const product = makeProduct();
     await productsRepository.create(product);
 
     const farm = makeFarm({ status: "ACTIVE" });
