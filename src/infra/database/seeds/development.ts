@@ -65,6 +65,7 @@ export async function seedDevelopment() {
             createMany: {
               data: products.map((product) => ({
                 product_id: product.id,
+                fee: Math.floor(Math.random() * 20 + 1),
                 price: Math.floor(Math.random() * 20 + 1),
                 amount:
                   product.pricing === "UNIT"
@@ -117,7 +118,7 @@ export async function seedDevelopment() {
                 box_id: boxId.value,
                 offer_id: offer.id,
                 amount: offer.amount,
-                price:
+                subtotal:
                   offer.product.pricing === "UNIT"
                     ? Number(offer.price) * offer.amount
                     : Number(offer.price) * (offer.amount / 1000),
