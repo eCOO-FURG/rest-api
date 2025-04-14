@@ -7,15 +7,15 @@
 
 */
 -- AlterTable
-ALTER TABLE "offers" ADD COLUMN "fee" DECIMAL(10,2) NULL;
+ALTER TABLE "offers" ADD COLUMN IF NOT EXISTS "fee" DECIMAL(10,2) NULL;
 
 -- AlterTable
-ALTER TABLE "orders" ADD COLUMN "subtotal" DECIMAL(10,2) NULL;
+ALTER TABLE "orders" ADD COLUMN IF NOT EXISTS "subtotal" DECIMAL(10,2) NULL;
 
 -- Update values
-UPDATE "offers" SET "fee" = "offer"."price" * ("catalog"."fee" / 100)
-FROM "catalog"
-WHERE "offers"."catalog_id" = "catalog"."id";
+UPDATE "offers" SET "fee" = "offers"."price" * ("catalogs"."fee" / 100)
+FROM "catalogs"
+WHERE "offers"."catalog_id" = "catalogs"."id";
 
 UPDATE "orders" SET "subtotal" = "price";
 
@@ -25,4 +25,4 @@ ALTER TABLE "offers" ALTER COLUMN "fee" SET NOT NULL;
 -- AlterTable
 ALTER TABLE "orders" ALTER COLUMN "subtotal" SET NOT NULL;
 
-
+ALTER TABLE "offers" DROP COLUMN "price";
