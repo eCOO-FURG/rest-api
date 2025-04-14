@@ -31,6 +31,7 @@ export class PrismaOfferAndDetailsMapper {
       id: new UUID(raw.id),
       amount: raw.amount,
       price: raw.price.toNumber(),
+      fee: raw.fee.toNumber(),
       catalog_id: new UUID(raw.catalog_id),
       catalog: PrismaCatalogAndFarmMapper.toDomain(raw.catalog),
       product_id: new UUID(raw.product_id),

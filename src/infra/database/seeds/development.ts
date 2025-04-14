@@ -63,17 +63,21 @@ export async function seedDevelopment() {
           },
           offers: {
             createMany: {
-              data: products.map((product) => ({
-                product_id: product.id,
-                price: Math.floor(Math.random() * 20 + 1),
-                amount:
-                  product.pricing === "UNIT"
-                    ? Math.floor(Math.random() * 20 + 1)
-                    : Math.floor(Math.random() * 20 + 1) * 100,
-                expires_at: product.perishable
-                  ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-                  : null,
-              })),
+              data: products.map((product) => {
+								const price = Math.floor(Math.random() * 20 + 1);
+								return {
+									product_id: product.id,
+									fee: price * (20 / 100),
+									price: price,
+									amount:
+										product.pricing === "UNIT"
+											? Math.floor(Math.random() * 20 + 1)
+											: Math.floor(Math.random() * 20 + 1) * 100,
+									expires_at: product.perishable
+										? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+										: null,
+								}
+              }),
             },
           },
         },
@@ -117,7 +121,7 @@ export async function seedDevelopment() {
                 box_id: boxId.value,
                 offer_id: offer.id,
                 amount: offer.amount,
-                price:
+                subtotal:
                   offer.product.pricing === "UNIT"
                     ? Number(offer.price) * offer.amount
                     : Number(offer.price) * (offer.amount / 1000),

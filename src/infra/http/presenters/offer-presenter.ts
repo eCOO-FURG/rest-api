@@ -15,6 +15,8 @@ export class OfferPresenter {
         id: offer.id.value,
         amount: offer.amount,
         price: offer.price,
+        fee: offer.fee,
+        total: offer.total,
         description: offer.description,
         expires_at: offer.expires_at,
         catalog_id: offer.catalog_id.value,

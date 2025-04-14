@@ -12,5 +12,6 @@ export function makeOffer(props: Partial<OfferProps> = {}) {
     catalog_id: props.catalog_id ?? new UUID(),
     amount: props.amount ?? faker.number.int({ min: 10, max: 12 }),
     price: props.price ?? faker.number.int({ min: 5, max: 50 }),
+    fee: props.fee ?? faker.number.int({ min: 1, max: 10 }),
   });
 }

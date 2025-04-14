@@ -7,6 +7,7 @@ import { Cycle } from "@/core/entities/cycle";
 import { Order } from "@/core/entities/order";
 import { User } from "@/core/entities/user";
 import { Message } from "@/core/entities/message";
+import { ProductPricing } from "@/core/entities/product";
 
 // Repositories
 import { AddressesRepository } from "@/core/repositories/addresses-repository";
@@ -33,6 +34,7 @@ import { Mailer } from "@/core/mail/mailer";
 
 // Utils
 import { today } from "@/core/utils/today";
+
 interface RegisterOrderUseCaseRequest {
   user_id: string;
   cycle_id: string;
@@ -125,10 +127,11 @@ export class RegisterOrderUseCase {
 
       const box = await this.useBox(offer.catalog.id);
 
-      const price =
-        offer.product.pricing === "WEIGHT"
-          ? offer.price * (item.amount / 1000)
-          : offer.price * item.amount;
+      const subtotal = this.useSubtotal(
+        offer.product.pricing,
+        offer.price,
+        item.amount
+      );
 
       const order = Order.create({
         box_id: box.id,
@@ -137,8 +140,8 @@ export class RegisterOrderUseCase {
         offer_id: offer.id,
         offer,
         amount: item.amount,
-        fee: price * (offer.catalog.fee / 100),
-        price,
+        fee: offer.catalog.fee,
+        subtotal,
       });
 
       bag.add(order);
@@ -241,5 +244,9 @@ export class RegisterOrderUseCase {
     this.boxes.set(catalog_id.value, box);
 
     return box;
+  }
+
+  private useSubtotal(pricing: ProductPricing, price: number, amount: number) {
+    return pricing === "WEIGHT" ? price * (amount / 1000) : price * amount;
   }
 }

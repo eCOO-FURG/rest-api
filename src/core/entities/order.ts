@@ -23,9 +23,9 @@ export interface OrderProps extends EntityRequest {
   box_id: UUID;
   box?: Box;
 
-  amount: number;
-  price: number;
+  subtotal: number;
   fee: number;
+  amount: number;
 
   status: OrderStatus;
 }
@@ -61,8 +61,8 @@ export class Order<
     return this.props.amount;
   }
 
-  get price() {
-    return this.props.price;
+  get subtotal() {
+    return this.props.subtotal;
   }
 
   get fee() {
@@ -70,11 +70,11 @@ export class Order<
   }
 
   get total() {
-    return fixed(this.props.price + this.props.fee);
+    return fixed(this.props.subtotal + this.props.fee);
   }
 
-  set price(value: number) {
-    this.props.price = value;
+  set subtotal(value: number) {
+    this.props.subtotal = value;
   }
 
   set amount(value: number) {

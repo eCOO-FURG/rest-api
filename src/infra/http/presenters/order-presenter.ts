@@ -15,7 +15,7 @@ export class OrderPresenter {
         status: order.status,
         fee: order.fee,
         amount: order.amount,
-        price: order.price,
+        subtotal: order.subtotal,
         total: order.total,
         bag_id: order.bag_id.value,
         box_id: order.box_id.value,

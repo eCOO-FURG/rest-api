@@ -95,6 +95,7 @@ export class RegisterOfferUseCase {
       price,
       description,
       expires_at,
+      fee: price * (catalog.fee / 100),
     });
 
     catalog.offers.push(offer);
