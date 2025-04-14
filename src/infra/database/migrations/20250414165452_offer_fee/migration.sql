@@ -25,4 +25,4 @@ ALTER TABLE "offers" ALTER COLUMN "fee" SET NOT NULL;
 -- AlterTable
 ALTER TABLE "orders" ALTER COLUMN "subtotal" SET NOT NULL;
 
-ALTER TABLE "offers" DROP COLUMN "price";
+ALTER TABLE "orders" DROP COLUMN "price";
