@@ -5,6 +5,9 @@ import { Product } from "@/core/entities/product";
 import { Catalog } from "@/core/entities/catalog";
 import { Optional } from "@/core/types/optional";
 
+// Utils
+import { fixed } from "@/core/utils/fixed";
+
 export interface OfferProps extends EntityRequest {
   catalog_id: UUID;
   catalog?: Catalog;
@@ -13,7 +16,9 @@ export interface OfferProps extends EntityRequest {
   product?: Product;
 
   price: number;
+  fee: number;
   amount: number;
+
   description: string | null;
   expires_at: Date | null;
 }
@@ -27,6 +32,14 @@ export class Offer<
 
   get amount() {
     return this.props.amount;
+  }
+
+  get fee() {
+    return this.props.fee;
+  }
+
+  get total() {
+    return fixed(this.props.price + this.props.fee);
   }
 
   get description() {

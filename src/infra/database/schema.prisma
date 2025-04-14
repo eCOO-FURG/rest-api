@@ -172,6 +172,7 @@ model Offer {
   id          String    @id @default(uuid())
   amount      Int
   price       Decimal   @db.Decimal(10, 2)
+  fee         Decimal   @db.Decimal(10, 2)
   description String?   @db.VarChar(240)
   expires_at  DateTime?
 
@@ -312,10 +313,10 @@ enum ORDER_STATUS {
 }
 
 model Order {
-  id     String  @id @default(uuid())
-  amount Int
-  price  Decimal @db.Decimal(10, 2)
-  fee    Decimal @db.Decimal(10, 2)
+  id       String  @id @default(uuid())
+  amount   Int
+  subtotal Decimal @db.Decimal(10, 2)
+  fee      Decimal @db.Decimal(10, 2)
 
   status ORDER_STATUS
 

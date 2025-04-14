@@ -111,7 +111,7 @@ export class Bag<Props extends BagProps = BagProps> extends Entity<Props> {
   add(order: Order) {
     this.props.orders.push(order);
 
-    this.props.subtotal = fixed(this.props.subtotal + order.price);
+    this.props.subtotal = fixed(this.props.subtotal + order.subtotal);
     this.props.fee = fixed(this.props.fee + order.fee);
 
     this.touch();

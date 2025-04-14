@@ -203,6 +203,7 @@ describe("offer products", () => {
       product,
       amount: 20,
       price: 30,
+      fee: 10,
     });
 
     catalog.offers.push(offer);

@@ -32,7 +32,7 @@ export class PrismaOrderAndDetailsMapper {
       bag_id: new UUID(raw.bag_id),
       box_id: new UUID(raw.box_id),
       amount: raw.amount,
-      price: raw.price.toNumber(),
+      subtotal: raw.subtotal.toNumber(),
       fee: raw.fee.toNumber(),
       status: raw.status,
       created_at: raw.created_at,

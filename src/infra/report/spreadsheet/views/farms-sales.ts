@@ -72,8 +72,6 @@ export const FARMS_PRODUCERS_VIEW: SpreadsheetView = async ({
         orders.reduce((acc, order) => acc + order.amount, 0) /
         (offer.product?.pricing === "UNIT" ? 1 : 1000);
 
-      const fee = offer.price * (catalog.fee / 100);
-
       rows.push({
         producer: `${catalog.farm.admin.first_name} ${catalog.farm.admin.last_name}`,
         product: offer.product?.name,
@@ -83,7 +81,7 @@ export const FARMS_PRODUCERS_VIEW: SpreadsheetView = async ({
         fee: catalog.fee / 100,
         total_amount: amount,
         farm_income: amount * offer.price,
-        warehouse_income: amount * fee,
+        warehouse_income: amount * offer.fee,
         since: since?.toLocaleDateString("pt-BR"),
         before: before?.toLocaleDateString("pt-BR"),
       });
