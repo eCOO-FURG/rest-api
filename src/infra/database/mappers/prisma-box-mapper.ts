@@ -10,9 +10,7 @@ import { BoxRepositoryReturnType } from "@/core/repositories/boxes-repository";
 import { BoxEntityOf } from "@/core/repositories/boxes-repository";
 
 export class PrismaBoxMapper {
-  static toDomain<T extends BoxRepositoryReturnType = "box">(
-    raw: PrismaBox
-  ): BoxEntityOf<T> {
+  static toDomain<T extends BoxRepositoryReturnType = "box">(raw: PrismaBox): BoxEntityOf<T> {
     return Box.create({
       id: new UUID(raw.id),
       status: raw.status,

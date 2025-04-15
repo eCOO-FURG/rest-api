@@ -2,18 +2,10 @@
 import { BagAndDetails } from "@/core/entities/aggregates/bag-and-details";
 
 // Libraries
-import {
-  User as PrismaUser,
-  Bag as PrismaBag,
-  Address as PrismaAddress,
-  Payment as PrismaPayment,
-} from "@prisma/client";
+import { User as PrismaUser, Bag as PrismaBag, Address as PrismaAddress, Payment as PrismaPayment } from "@prisma/client";
 
 // Repositories
-import {
-  BagEntityOf,
-  BagRepositoryReturnType,
-} from "@/core/repositories/bags-repository";
+import { BagEntityOf, BagRepositoryReturnType } from "@/core/repositories/bags-repository";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Mappers
@@ -28,9 +20,7 @@ export type PrismaBagAndDetails = PrismaBag & {
 };
 
 export class PrismaBagAndDetailsMapper {
-  static toDomain<T extends BagRepositoryReturnType = "bag-and-details">(
-    raw: PrismaBagAndDetails
-  ): BagEntityOf<T> {
+  static toDomain<T extends BagRepositoryReturnType = "bag-and-details">(raw: PrismaBagAndDetails): BagEntityOf<T> {
     return BagAndDetails.create({
       id: new UUID(raw.id),
       code: raw.code,

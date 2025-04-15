@@ -34,11 +34,7 @@ describe("register farm image", () => {
     usersRepository = new InMemoryUsersRepository();
     storage = new MockedStorage();
 
-    sut = new RegisterFarmImageUseCase(
-      farmsRepository,
-      usersRepository,
-      storage
-    );
+    sut = new RegisterFarmImageUseCase(farmsRepository, usersRepository, storage);
   });
 
   it("should be able to register a farm image", async () => {
@@ -81,7 +77,7 @@ describe("register farm image", () => {
         user_id: user.id.value,
         farm_id: new UUID().value,
         image: mockedImage,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
@@ -108,7 +104,7 @@ describe("register farm image", () => {
         user_id: user.id.value,
         farm_id: anotherFarm.id.value,
         image: mockedImage,
-      })
+      }),
     ).rejects.toBeInstanceOf(UnauthorizedError);
   });
 
@@ -153,7 +149,7 @@ describe("register farm image", () => {
         user_id: user.id.value,
         farm_id: farm.id.value,
         image: mockedImage,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceReachedLimitError);
     expect(farm.images.length).toBe(4);
   });

@@ -10,9 +10,7 @@ import { Prisma, Payment as PrismaPayment } from "@prisma/client";
 import { PaymentRepositoryReturnType } from "@/core/repositories/payments-repository";
 
 export class PrismaPaymentMapper {
-  static toDomain<T extends PaymentRepositoryReturnType = "payment">(
-    raw: PrismaPayment
-  ): PaymentEntityOf<T> {
+  static toDomain<T extends PaymentRepositoryReturnType = "payment">(raw: PrismaPayment): PaymentEntityOf<T> {
     return Payment.create({
       id: new UUID(raw.id),
       status: raw.status,

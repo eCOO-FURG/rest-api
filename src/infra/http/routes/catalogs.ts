@@ -14,16 +14,6 @@ import { fetchLastCatalogController } from "@/infra/http/controllers/fetch-last-
 export const catalogs = Router();
 
 catalogs.get("/", listCatalogsController);
-catalogs.get(
-  "/current",
-  ensureAuthenticated,
-  ensureRole(["PRODUCER"]),
-  fetchCurrentCatalogController
-);
-catalogs.get(
-  "/last",
-  ensureAuthenticated,
-  ensureRole(["PRODUCER"]),
-  fetchLastCatalogController
-);
+catalogs.get("/current", ensureAuthenticated, ensureRole(["PRODUCER"]), fetchCurrentCatalogController);
+catalogs.get("/last", ensureAuthenticated, ensureRole(["PRODUCER"]), fetchLastCatalogController);
 catalogs.get("/:catalog_id", fetchCatalogController);

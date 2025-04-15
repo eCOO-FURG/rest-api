@@ -7,9 +7,7 @@ export function first(days: CycleWeek) {
 
   const merge = max === 7 && min === 1;
 
-  const oldest = merge
-    ? days.reverse().find((day, index) => day - 1 !== days.at(index + 1))!
-    : min;
+  const oldest = merge ? days.reverse().find((day, index) => day - 1 !== days.at(index + 1))! : min;
 
   const today = new Date();
 

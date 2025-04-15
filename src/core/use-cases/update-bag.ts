@@ -25,7 +25,7 @@ export class UpdateBagUseCase {
     private bagsRepository: BagsRepository,
     private usersRepository: UsersRepository,
     private cyclesRepository: CyclesRepository,
-    private chat: Chat
+    private chat: Chat,
   ) {}
 
   async execute({ bag_id, status }: UpdateBagUseCaseRequest) {
@@ -37,8 +37,7 @@ export class UpdateBagUseCase {
       id: bag.customer_id.value,
     });
 
-    if (!user)
-      throw new ResourceNotFoundError("Usuário", bag.customer_id.value);
+    if (!user) throw new ResourceNotFoundError("Usuário", bag.customer_id.value);
 
     const cycle = await this.cyclesRepository.find("cycle", {
       id: bag.cycle_id.value,
@@ -46,8 +45,7 @@ export class UpdateBagUseCase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", bag.cycle_id.value);
 
-    if (bag.status === "CANCELLED")
-      throw new ResourceClosedError("Sacola", bag_id);
+    if (bag.status === "CANCELLED") throw new ResourceClosedError("Sacola", bag_id);
 
     if (!bag.verified) throw new ResourceNotVerifiedError("Sacola", bag_id);
 
@@ -60,9 +58,7 @@ export class UpdateBagUseCase {
       const message = Message.create({
         to: user.chat,
         subject: "Sacola atualizada",
-        content: `A sacola ${bag.code} foi atualizada para ${
-          STATUSES[bag.status]
-        }.`,
+        content: `A sacola ${bag.code} foi atualizada para ${STATUSES[bag.status]}.`,
       });
 
       await this.chat.send(message);

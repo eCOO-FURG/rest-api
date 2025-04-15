@@ -34,19 +34,13 @@ export const updatePaymentSchema = Joi.object({
   }),
 });
 
-export async function updatePaymentController(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export async function updatePaymentController(request: Request, response: Response, next: NextFunction) {
   try {
     const { payment_id } = parse(updatePaymentParams, request.params);
 
     const { status, method, flag } = parse(updatePaymentSchema, request.body);
 
-    const updatePaymentUseCase = container.resolve<UpdatePaymentUseCase>(
-      "updatePaymentUseCase"
-    );
+    const updatePaymentUseCase = container.resolve<UpdatePaymentUseCase>("updatePaymentUseCase");
 
     await updatePaymentUseCase.execute({
       payment_id,

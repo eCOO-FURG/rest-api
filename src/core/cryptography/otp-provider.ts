@@ -1,3 +1,3 @@
 export interface OtpProvider {
-  generate(): Promise<string>
+  generate(): Promise<string>;
 }

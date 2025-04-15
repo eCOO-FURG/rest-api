@@ -56,7 +56,7 @@ describe("RequestHelpUseCase", () => {
       sut.execute({
         user_id: "232",
         content: "HELP ME!",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

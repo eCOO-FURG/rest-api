@@ -42,12 +42,7 @@ describe("register", () => {
       mailer: new MockedMailer(),
     };
 
-    sut = new RegisterUseCase(
-      repositories.users,
-      mocks.encrypter,
-      mocks.hasher,
-      mocks.mailer
-    );
+    sut = new RegisterUseCase(repositories.users, mocks.encrypter, mocks.hasher, mocks.mailer);
   });
 
   it("should be able to register", async () => {
@@ -94,7 +89,7 @@ describe("register", () => {
         last_name: "Goes",
         cpf: "523.065.281-02",
         role: "USER",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 
@@ -114,7 +109,7 @@ describe("register", () => {
         last_name: "Goes",
         cpf: "523.065.281-02",
         role: "USER",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 
@@ -134,7 +129,7 @@ describe("register", () => {
         last_name: "Goes",
         cpf: cpf.value,
         role: "USER",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 
@@ -151,6 +146,6 @@ describe("register", () => {
       role: "USER",
     });
 
-    expect(repositories.users.items[0].password === password).toBeFalsy;
+    expect(repositories.users.items[0].password).not.toBe(password);
   });
 });

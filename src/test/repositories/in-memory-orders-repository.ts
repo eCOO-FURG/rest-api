@@ -18,7 +18,7 @@ export class InMemoryOrdersRepository implements OrdersRepository {
 
   async find<T extends OrderRepositoryReturnType>(
     type: T,
-    { id, bag, offer, since, before }: OrdersRepositorySearchRequest
+    { id, bag, offer, since, before }: OrdersRepositorySearchRequest,
   ): Promise<OrderEntityOf<T> | null> {
     const order = this.items.find((item) => {
       return (

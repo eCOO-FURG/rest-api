@@ -65,7 +65,7 @@ describe("fetch catalog", () => {
         catalog_id: "123456",
         product: "App",
         page: 1,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

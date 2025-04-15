@@ -20,16 +20,11 @@ export const listBoxesQuery = Joi.object({
   farm: Joi.string().optional(),
 });
 
-export async function listBoxesController(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export async function listBoxesController(request: Request, response: Response, next: NextFunction) {
   try {
     const { cycle_id, page, farm } = parse(listBoxesQuery, request.query);
 
-    const listBoxesUseCase =
-      container.resolve<ListBoxesUseCase>("listBoxesUseCase");
+    const listBoxesUseCase = container.resolve<ListBoxesUseCase>("listBoxesUseCase");
 
     const { boxes } = await listBoxesUseCase.execute({
       cycle_id,
@@ -37,9 +32,7 @@ export async function listBoxesController(
       farm,
     });
 
-    return response
-      .status(200)
-      .send(boxes.map((farm) => BoxPresenter.toHttp(farm)));
+    return response.status(200).send(boxes.map((farm) => BoxPresenter.toHttp(farm)));
   } catch (error) {
     next(error);
   }

@@ -24,16 +24,13 @@ function config(fields: FieldConfig[]): multer.Options {
 
       if (!config) return callback(new MulterError("LIMIT_UNEXPECTED_FILE"));
 
-      const files =
-        (req.files?.[file.fieldname] as Express.Multer.File[]) || [];
+      const files = (req.files?.[file.fieldname] as Express.Multer.File[]) || [];
 
       if (files.length > (config.options.max ?? 1)) {
         return callback(new MulterError("LIMIT_FILE_COUNT", file.fieldname));
       }
 
-      const ok =
-        !config.options.allowed ||
-        config.options.allowed.includes(file.mimetype);
+      const ok = !config.options.allowed || config.options.allowed.includes(file.mimetype);
 
       if (ok) return callback(null, true);
 
@@ -53,7 +50,7 @@ export function processFiles(fields: FieldConfig[]) {
       fields.map(({ name, options }) => ({
         name,
         maxCount: options.max ?? 1,
-      }))
+      })),
     ),
     (req: Request, _: Response, next: NextFunction) => {
       if (req.files) {

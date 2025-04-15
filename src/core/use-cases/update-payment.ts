@@ -21,23 +21,17 @@ interface UpdatePaymentUseCaseRequest {
 export class UpdatePaymentUseCase {
   constructor(
     private paymentsRepository: PaymentsRepository,
-    private pixProvider: PixProvider
+    private pixProvider: PixProvider,
   ) {}
 
-  async execute({
-    payment_id,
-    method,
-    status,
-    flag,
-  }: UpdatePaymentUseCaseRequest) {
+  async execute({ payment_id, method, status, flag }: UpdatePaymentUseCaseRequest) {
     const payment = await this.paymentsRepository.find("payment", {
       id: payment_id,
     });
 
     if (!payment) throw new ResourceNotFoundError("Pagamento", payment_id);
 
-    if (payment.status === "REFUNDED")
-      throw new ResourceAlreadyExistsError("Reembolso", payment_id);
+    if (payment.status === "REFUNDED") throw new ResourceAlreadyExistsError("Reembolso", payment_id);
 
     if (status === "REFUNDED") await this.pixProvider.refund(payment);
 

@@ -4,12 +4,7 @@ import { BoxAndOrders } from "@/core/entities/aggregates/box-and-orders";
 import { OrderAndOffer } from "@/core/entities/aggregates/order-and-offer";
 
 // Repositories
-import {
-  BoxesRepository,
-  BoxesRepositorySearchRequest,
-  BoxRepositoryReturnType,
-  BoxEntityOf,
-} from "@/core/repositories/boxes-repository";
+import { BoxesRepository, BoxesRepositorySearchRequest, BoxRepositoryReturnType, BoxEntityOf } from "@/core/repositories/boxes-repository";
 
 // Utils
 import { paginate } from "@/test/utils/paginate";
@@ -23,19 +18,17 @@ export class InMemoryBoxesRepository implements BoxesRepository {
 
   async find<T extends BoxRepositoryReturnType>(
     type: T,
-    { id, catalog, orders, since, status }: BoxesRepositorySearchRequest
+    { id, catalog, orders, since, status }: BoxesRepositorySearchRequest,
   ): Promise<BoxEntityOf<T> | null> {
     const box = this.items.find((item) =>
       Boolean(
         (!id || item.id.equals(id)) &&
           (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
-          (!catalog?.farm?.id ||
-            item.catalog?.farm_id.equals(catalog.farm.id)) &&
-          (!catalog?.farm?.name ||
-            item.catalog?.farm?.name.includes(catalog.farm.name!)) &&
+          (!catalog?.farm?.id || item.catalog?.farm_id.equals(catalog.farm.id)) &&
+          (!catalog?.farm?.name || item.catalog?.farm?.name.includes(catalog.farm.name!)) &&
           (!since || item.created_at >= since) &&
-          (!status || item.status === status)
-      )
+          (!status || item.status === status),
+      ),
     );
 
     if (!box) return null;
@@ -58,7 +51,7 @@ export class InMemoryBoxesRepository implements BoxesRepository {
             OrderAndOffer.create({
               ...order.props,
               offer: makeOfferAndDetails(order.offer),
-            })
+            }),
           ),
         }) as BoxEntityOf<T>;
     }
@@ -66,18 +59,16 @@ export class InMemoryBoxesRepository implements BoxesRepository {
   async list<T extends BoxRepositoryReturnType>(
     type: T,
     { catalog, orders, since, status }: BoxesRepositorySearchRequest,
-    page?: number
+    page?: number,
   ): Promise<BoxEntityOf<T>[]> {
     let boxes = this.items.filter((item) =>
       Boolean(
         (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
-          (!catalog?.farm?.id ||
-            item.catalog?.farm_id.equals(catalog.farm.id)) &&
-          (!catalog?.farm?.name ||
-            item.catalog?.farm?.name.includes(catalog.farm.name!)) &&
+          (!catalog?.farm?.id || item.catalog?.farm_id.equals(catalog.farm.id)) &&
+          (!catalog?.farm?.name || item.catalog?.farm?.name.includes(catalog.farm.name!)) &&
           (!since || item.created_at >= since) &&
-          (!status || item.status === status)
-      )
+          (!status || item.status === status),
+      ),
     );
 
     if (orders?.page) {
@@ -95,7 +86,7 @@ export class InMemoryBoxesRepository implements BoxesRepository {
             BoxAndOrders.create({
               ...box.props,
               catalog: makeCatalogAndFarm(box.catalog),
-            }) as BoxEntityOf<T>
+            }) as BoxEntityOf<T>,
         );
       case "box-and-catalog":
         return boxes.map(
@@ -107,9 +98,9 @@ export class InMemoryBoxesRepository implements BoxesRepository {
                 OrderAndOffer.create({
                   ...order.props,
                   offer: makeOfferAndDetails(order.offer),
-                })
+                }),
               ),
-            }) as BoxEntityOf<T>
+            }) as BoxEntityOf<T>,
         );
     }
   }

@@ -24,23 +24,19 @@ describe("Fetch inbound report", () => {
   beforeEach(() => {
     cyclesRepository = new InMemoryCyclesRepository();
     boxesRepository = new InMemoryBoxesRepository();
-    
+
     pdfService = new MockedPDFService();
 
-    sut = new FetchInboundReportUseCase(
-      boxesRepository,
-      cyclesRepository,
-      pdfService
-    );
+    sut = new FetchInboundReportUseCase(boxesRepository, cyclesRepository, pdfService);
   });
   it("should be able to fetch the cycle inbound report", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
-    const catalog = makeCatalog({ cycle_id: cycle.id })
+    const catalog = makeCatalog({ cycle_id: cycle.id });
 
-    const box = makeBox({ 
-      catalog
+    const box = makeBox({
+      catalog,
     });
     boxesRepository.items.push(box);
 
@@ -55,7 +51,7 @@ describe("Fetch inbound report", () => {
     await expect(() =>
       sut.execute({
         cycle_id: "123",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

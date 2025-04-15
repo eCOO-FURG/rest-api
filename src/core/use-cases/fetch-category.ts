@@ -17,27 +17,22 @@ interface FetchCategoryUseCaseRequest {
 export class FetchCategoryUseCase {
   constructor(
     private categoriesRepository: CategoriesRepository,
-    private cyclesRepository: CyclesRepository
+    private cyclesRepository: CyclesRepository,
   ) {}
 
   async execute({ id, page, cycle_id }: FetchCategoryUseCaseRequest) {
-    const cycle = cycle_id
-      ? await this.cyclesRepository.find("cycle", { id: cycle_id })
-      : null;
+    const cycle = cycle_id ? await this.cyclesRepository.find("cycle", { id: cycle_id }) : null;
 
     if (cycle_id && !cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const category = await this.categoriesRepository.find(
-      "category-and-offers",
-      {
-        id,
-        offers: {
-          page,
-          cycle_id,
-          ...(cycle && { since: first(cycle.offer) }),
-        },
-      }
-    );
+    const category = await this.categoriesRepository.find("category-and-offers", {
+      id,
+      offers: {
+        page,
+        cycle_id,
+        ...(cycle && { since: first(cycle.offer) }),
+      },
+    });
 
     if (!category) throw new ResourceNotFoundError("Categoria", id);
 

@@ -18,16 +18,11 @@ export const verifyUserSchema = Joi.object({
   token: Joi.string().required(),
 });
 
-export async function verifyUserController(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export async function verifyUserController(request: Request, response: Response, next: NextFunction) {
   try {
     const { token } = parse(verifyUserSchema, request.query);
 
-    const verifyUserUseCase =
-      container.resolve<VerifyUserUsecase>("verifyUserUseCase");
+    const verifyUserUseCase = container.resolve<VerifyUserUsecase>("verifyUserUseCase");
 
     const ip = request.ip || request.socket.remoteAddress || "unknown";
 
@@ -39,9 +34,7 @@ export async function verifyUserController(
 
     const path = roles.includes("PRODUCER") ? "login" : "telegram";
 
-    return response
-      .status(301)
-      .redirect(`${env.APP_URL}/${path}?token=${refresh}`);
+    return response.status(301).redirect(`${env.APP_URL}/${path}?token=${refresh}`);
   } catch (error) {
     next(error);
   }

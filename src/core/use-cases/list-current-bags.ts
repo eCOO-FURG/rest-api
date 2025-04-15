@@ -21,15 +21,10 @@ interface ListCurrentBagsUseCaseRequest {
 export class ListCurrentBagsUseCase {
   constructor(
     private cyclesRepository: CyclesRepository,
-    private bagsRepository: BagsRepository
+    private bagsRepository: BagsRepository,
   ) {}
 
-  async execute({
-    cycle_id,
-    statuses,
-    user,
-    page,
-  }: ListCurrentBagsUseCaseRequest) {
+  async execute({ cycle_id, statuses, user, page }: ListCurrentBagsUseCaseRequest) {
     const cycle = await this.cyclesRepository.find("cycle", {
       id: cycle_id,
     });
@@ -44,7 +39,7 @@ export class ListCurrentBagsUseCase {
         cycle: { id: cycle_id },
         since: first(cycle.order),
       },
-      page
+      page,
     );
 
     return { bags };

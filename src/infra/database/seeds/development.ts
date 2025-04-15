@@ -64,19 +64,14 @@ export async function seedDevelopment() {
           offers: {
             createMany: {
               data: products.map((product) => {
-								const price = Math.floor(Math.random() * 20 + 1);
-								return {
-									product_id: product.id,
-									fee: price * (20 / 100),
-									price: price,
-									amount:
-										product.pricing === "UNIT"
-											? Math.floor(Math.random() * 20 + 1)
-											: Math.floor(Math.random() * 20 + 1) * 100,
-									expires_at: product.perishable
-										? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-										: null,
-								}
+                const price = Math.floor(Math.random() * 20 + 1);
+                return {
+                  product_id: product.id,
+                  fee: price * (20 / 100),
+                  price: price,
+                  amount: product.pricing === "UNIT" ? Math.floor(Math.random() * 20 + 1) : Math.floor(Math.random() * 20 + 1) * 100,
+                  expires_at: product.perishable ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) : null,
+                };
               }),
             },
           },
@@ -88,12 +83,7 @@ export async function seedDevelopment() {
   const offers = await prisma.offer.findMany({ include: { product: true } });
 
   const price = offers.reduce((acc, offer) => {
-    return (
-      acc +
-      (offer.product.pricing === "UNIT"
-        ? Number(offer.price)
-        : Number(offer.price) / 1000)
-    );
+    return acc + (offer.product.pricing === "UNIT" ? Number(offer.price) : Number(offer.price) / 1000);
   }, 0);
 
   await prisma.user.create({
@@ -122,9 +112,7 @@ export async function seedDevelopment() {
                 offer_id: offer.id,
                 amount: offer.amount,
                 subtotal:
-                  offer.product.pricing === "UNIT"
-                    ? Number(offer.price) * offer.amount
-                    : Number(offer.price) * (offer.amount / 1000),
+                  offer.product.pricing === "UNIT" ? Number(offer.price) * offer.amount : Number(offer.price) * (offer.amount / 1000),
                 fee:
                   offer.product.pricing === "UNIT"
                     ? Number(offer.price) * offer.amount * (20 / 100)

@@ -20,27 +20,19 @@ export class ListCatalogsUseCase {
   constructor(
     private cyclesRepository: CyclesRepository,
     private catalogsRepository: CatalogsRepository,
-    private categoriesRepository: CategoriesRepository
+    private categoriesRepository: CategoriesRepository,
   ) {}
 
-  async execute({
-    cycle_id,
-    page,
-    product,
-    category_id,
-  }: ListCatalogsUseCaseRequest) {
+  async execute({ cycle_id, page, product, category_id }: ListCatalogsUseCaseRequest) {
     const cycle = await this.cyclesRepository.find("cycle", {
       id: cycle_id,
     });
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const category = category_id
-      ? await this.categoriesRepository.find("category", { id: category_id })
-      : null;
+    const category = category_id ? await this.categoriesRepository.find("category", { id: category_id }) : null;
 
-    if (category_id && !category)
-      throw new ResourceNotFoundError("Categoria", category_id);
+    if (category_id && !category) throw new ResourceNotFoundError("Categoria", category_id);
 
     const catalogs = await this.catalogsRepository.list(
       "catalog-and-farm",
@@ -56,7 +48,7 @@ export class ListCatalogsUseCase {
           page,
         },
       },
-      page
+      page,
     );
 
     return { catalogs };

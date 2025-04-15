@@ -30,19 +30,10 @@ export class UpdateFarmUseCase {
   constructor(
     private farmsRepository: FarmsRepository,
     private usersRepository: UsersRepository,
-    private storage: Storage
+    private storage: Storage,
   ) {}
 
-  async execute({
-    user_id,
-    farm_id,
-    name,
-    tally,
-    fee,
-    description,
-    status,
-    photo,
-  }: UpdateFarmUseCaseRequest) {
+  async execute({ user_id, farm_id, name, tally, fee, description, status, photo }: UpdateFarmUseCaseRequest) {
     const farm = await this.farmsRepository.find("farm", { id: farm_id });
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
@@ -51,8 +42,7 @@ export class UpdateFarmUseCase {
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
-    if (!farm.admin_id.equals(user.id) && !user.admin)
-      throw new ResourceNotFoundError("Fazenda", farm_id);
+    if (!farm.admin_id.equals(user.id) && !user.admin) throw new ResourceNotFoundError("Fazenda", farm_id);
 
     if (!user.admin && (status || fee)) throw new UnauthorizedError();
 

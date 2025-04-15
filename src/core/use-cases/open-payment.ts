@@ -21,7 +21,7 @@ export class OpenPaymentUseCase {
   constructor(
     private bagsRepository: BagsRepository,
     private paymentsRepository: PaymentsRepository,
-    private pixProvider: PixProvider
+    private pixProvider: PixProvider,
   ) {}
 
   async execute({ bag_id }: OpenPaymentUseCaseRequest) {
@@ -37,8 +37,7 @@ export class OpenPaymentUseCase {
       bag_id: bag.id.value,
     });
 
-    if (previous && previous.status === "DONE")
-      throw new ResourceAlreadyExistsError("Pagamento da sacola", bag_id);
+    if (previous && previous.status === "DONE") throw new ResourceAlreadyExistsError("Pagamento da sacola", bag_id);
 
     const payment = Payment.create({
       method: "PIX",

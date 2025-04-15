@@ -31,11 +31,7 @@ describe("open payment", () => {
     pixProvider = new MockedPixProvider();
     paymentsRepository = new InMemoryPaymentsRepository();
 
-    sut = new OpenPaymentUseCase(
-      bagsRepository,
-      paymentsRepository,
-      pixProvider
-    );
+    sut = new OpenPaymentUseCase(bagsRepository, paymentsRepository, pixProvider);
   });
 
   it("be able to open a payment", async () => {
@@ -60,15 +56,11 @@ describe("open payment", () => {
 
     bagsRepository.items.push(bag);
 
-    await expect(() =>
-      sut.execute({ bag_id: bag.id.value })
-    ).rejects.toBeInstanceOf(ResourceNotVerifiedError);
+    await expect(() => sut.execute({ bag_id: bag.id.value })).rejects.toBeInstanceOf(ResourceNotVerifiedError);
   });
 
   it("should not be able to open a payment from a non existing bag", async () => {
-    await expect(() => sut.execute({ bag_id: "1234" })).rejects.toBeInstanceOf(
-      ResourceNotFoundError
-    );
+    await expect(() => sut.execute({ bag_id: "1234" })).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
   it("should not be able to open a payment from a paid bag", async () => {
@@ -85,8 +77,6 @@ describe("open payment", () => {
     const payment = makePayment({ bag_id: bag.id, bag, status: "DONE" });
     paymentsRepository.items.push(payment);
 
-    await expect(() =>
-      sut.execute({ bag_id: bag.id.value })
-    ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
+    await expect(() => sut.execute({ bag_id: bag.id.value })).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 });

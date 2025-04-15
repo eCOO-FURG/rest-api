@@ -6,25 +6,17 @@ import { OrderAndDetails } from "@/core/entities/aggregates/order-and-details";
 import { Order as PrismaOrder } from "@prisma/client";
 
 // Repositories
-import {
-  OrderRepositoryReturnType,
-  OrderEntityOf,
-} from "@/core/repositories/orders-repository";
+import { OrderRepositoryReturnType, OrderEntityOf } from "@/core/repositories/orders-repository";
 
 // Mappers
-import {
-  PrismaOfferAndDetailsMapper,
-  PrismaOfferAndDetails,
-} from "@/infra/database/mappers/prisma-offer-and-details-mapper";
+import { PrismaOfferAndDetailsMapper, PrismaOfferAndDetails } from "@/infra/database/mappers/prisma-offer-and-details-mapper";
 
 export type PrismaOrderAndDetails = PrismaOrder & {
   offer: PrismaOfferAndDetails;
 };
 
 export class PrismaOrderAndDetailsMapper {
-  static toDomain<T extends OrderRepositoryReturnType = "order-and-details">(
-    raw: PrismaOrderAndDetails
-  ): OrderEntityOf<T> {
+  static toDomain<T extends OrderRepositoryReturnType = "order-and-details">(raw: PrismaOrderAndDetails): OrderEntityOf<T> {
     return OrderAndDetails.create({
       id: new UUID(raw.id),
       offer_id: new UUID(raw.offer_id),

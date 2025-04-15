@@ -14,7 +14,7 @@ interface ListFarmsWithOrdersProps {
 export class ListBoxesUseCase {
   constructor(
     private cyclesRepository: CyclesRepository,
-    private boxesRepository: BoxesRepository
+    private boxesRepository: BoxesRepository,
   ) {}
 
   async execute({ cycle_id, page, farm }: ListFarmsWithOrdersProps) {
@@ -32,7 +32,7 @@ export class ListBoxesUseCase {
           farm: { name: farm },
         },
       },
-      page
+      page,
     );
 
     return { boxes };

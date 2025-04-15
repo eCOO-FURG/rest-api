@@ -13,21 +13,15 @@ import {
 import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
-import {
-  PrismaCatalogAndFarm,
-  PrismaCatalogAndFarmMapper,
-} from "@/infra/database/mappers/prisma-catalog-and-farm-mapper";
-import {
-  PrismaCatalogAndOffers,
-  PrismaCatalogAndOffersMapper,
-} from "@/infra/database/mappers/prisma-catalog-and-offers-mapper";
+import { PrismaCatalogAndFarm, PrismaCatalogAndFarmMapper } from "@/infra/database/mappers/prisma-catalog-and-farm-mapper";
+import { PrismaCatalogAndOffers, PrismaCatalogAndOffersMapper } from "@/infra/database/mappers/prisma-catalog-and-offers-mapper";
 import { PrismaCatalogMapper } from "@/infra/database/mappers/prisma-catalog-mapper";
 import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
 
 export class PrismaCatalogsRepository implements CatalogsRepository {
   async find<T extends CatalogRepositoryReturnType>(
     type: T,
-    { id, since, before, farm, cycle, offers }: CatalogsRepositorySearchRequest
+    { id, since, before, farm, cycle, offers }: CatalogsRepositorySearchRequest,
   ): Promise<CatalogEntityOf<T> | null> {
     const catalog = await prisma.catalog.findFirst({
       where: {
@@ -46,42 +40,36 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
         type === "catalog-and-farm"
           ? { farm: { include: { admin: true } } }
           : type === "catalog-and-offers"
-          ? {
-              farm: { include: { admin: true } },
-              offers: {
-                include: { product: true },
-                where: {
-                  product: {
-                    name: {
-                      contains: offers?.product?.name,
-                      mode: "insensitive",
+            ? {
+                farm: { include: { admin: true } },
+                offers: {
+                  include: { product: true },
+                  where: {
+                    product: {
+                      name: {
+                        contains: offers?.product?.name,
+                        mode: "insensitive",
+                      },
+                      category_id: offers?.product?.category?.id,
                     },
-                    category_id: offers?.product?.category?.id,
+                    ...(typeof offers?.expired === "boolean" &&
+                      (offers.expired
+                        ? {
+                            AND: [{ expires_at: { lte: new Date() } }, { expires_at: { not: null } }],
+                          }
+                        : {
+                            OR: [{ expires_at: { gt: new Date() } }, { expires_at: null }],
+                          })),
                   },
-                  ...(typeof offers?.expired === "boolean" &&
-                    (offers.expired
-                      ? {
-                          AND: [
-                            { expires_at: { lte: new Date() } },
-                            { expires_at: { not: null } },
-                          ],
-                        }
-                      : {
-                          OR: [
-                            { expires_at: { gt: new Date() } },
-                            { expires_at: null },
-                          ],
-                        })),
-                },
-                ...(offers?.page && { skip: (offers.page - 1) * 20, take: 20 }),
-                orderBy: {
-                  product: {
-                    name: "asc",
+                  ...(offers?.page && { skip: (offers.page - 1) * 20, take: 20 }),
+                  orderBy: {
+                    product: {
+                      name: "asc",
+                    },
                   },
                 },
-              },
-            }
-          : null,
+              }
+            : null,
       orderBy: {
         created_at: "desc",
       },
@@ -93,20 +81,16 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
       default:
         return PrismaCatalogMapper.toDomain<T>(catalog);
       case "catalog-and-farm":
-        return PrismaCatalogAndFarmMapper.toDomain<T>(
-          catalog as PrismaCatalogAndFarm
-        );
+        return PrismaCatalogAndFarmMapper.toDomain<T>(catalog as PrismaCatalogAndFarm);
       case "catalog-and-offers":
-        return PrismaCatalogAndOffersMapper.toDomain<T>(
-          catalog as PrismaCatalogAndOffers
-        );
+        return PrismaCatalogAndOffersMapper.toDomain<T>(catalog as PrismaCatalogAndOffers);
     }
   }
 
   async list<T extends CatalogRepositoryReturnType>(
     type: T,
     { id, since, before, farm, cycle, offers }: CatalogsRepositorySearchRequest,
-    page?: number
+    page?: number,
   ): Promise<CatalogEntityOf<T>[]> {
     const catalogs = await prisma.catalog.findMany({
       where: {
@@ -129,16 +113,10 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
             ...(typeof offers?.expired === "boolean" &&
               (offers.expired
                 ? {
-                    AND: [
-                      { expires_at: { lte: new Date() } },
-                      { expires_at: { not: null } },
-                    ],
+                    AND: [{ expires_at: { lte: new Date() } }, { expires_at: { not: null } }],
                   }
                 : {
-                    OR: [
-                      { expires_at: { gt: new Date() } },
-                      { expires_at: null },
-                    ],
+                    OR: [{ expires_at: { gt: new Date() } }, { expires_at: null }],
                   })),
           },
         },
@@ -147,19 +125,19 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
         type === "catalog-and-farm"
           ? { farm: { include: { admin: true } } }
           : type === "catalog-and-offers"
-          ? {
-              farm: { include: { admin: true } },
-              offers: {
-                include: { product: true },
-                ...(offers?.page && { skip: (offers.page - 1) * 20, take: 20 }),
-                orderBy: {
-                  product: {
-                    name: "asc",
+            ? {
+                farm: { include: { admin: true } },
+                offers: {
+                  include: { product: true },
+                  ...(offers?.page && { skip: (offers.page - 1) * 20, take: 20 }),
+                  orderBy: {
+                    product: {
+                      name: "asc",
+                    },
                   },
                 },
-              },
-            }
-          : null,
+              }
+            : null,
       ...(page && { skip: (page - 1) * 20, take: 20 }),
       orderBy: {
         created_at: "desc",
@@ -170,17 +148,9 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
       default:
         return catalogs.map(PrismaCatalogMapper.toDomain<T>);
       case "catalog-and-farm":
-        return catalogs.map((catalog) =>
-          PrismaCatalogAndFarmMapper.toDomain<T>(
-            catalog as PrismaCatalogAndFarm
-          )
-        );
+        return catalogs.map((catalog) => PrismaCatalogAndFarmMapper.toDomain<T>(catalog as PrismaCatalogAndFarm));
       case "catalog-and-offers":
-        return catalogs.map((catalog) =>
-          PrismaCatalogAndOffersMapper.toDomain<T>(
-            catalog as PrismaCatalogAndOffers
-          )
-        );
+        return catalogs.map((catalog) => PrismaCatalogAndOffersMapper.toDomain<T>(catalog as PrismaCatalogAndOffers));
     }
   }
 

@@ -2,10 +2,7 @@
 import { Product } from "@/core/entities/product";
 
 // Repositories
-import {
-  ProductsRepository,
-  ProductsRepositorySearchRequest,
-} from "@/core/repositories/products-repository";
+import { ProductsRepository, ProductsRepositorySearchRequest } from "@/core/repositories/products-repository";
 
 // Services
 import { prisma } from "@/infra/database/prisma-service";
@@ -15,15 +12,12 @@ import { PrismaProductMapper } from "@/infra/database/mappers/prisma-product-map
 import { PrismaProductAndCategoryMapper } from "@/infra/database/mappers/prisma-product-and-category-mapper";
 
 // Types
-import {
-  ProductRepositoryReturnType,
-  ProductEntityOf,
-} from "@/core/repositories/products-repository";
+import { ProductRepositoryReturnType, ProductEntityOf } from "@/core/repositories/products-repository";
 
 export class PrismaProductRepository implements ProductsRepository {
   async find<T extends ProductRepositoryReturnType>(
     type: T,
-    { id, name, pricing, archived, category }: ProductsRepositorySearchRequest
+    { id, name, pricing, archived, category }: ProductsRepositorySearchRequest,
   ): Promise<ProductEntityOf<T> | null> {
     const product = await prisma.product.findFirst({
       where: {
@@ -56,7 +50,7 @@ export class PrismaProductRepository implements ProductsRepository {
   async list<T extends ProductRepositoryReturnType>(
     type: T,
     { name, id, archived, pricing, category }: ProductsRepositorySearchRequest,
-    page?: number
+    page?: number,
   ): Promise<ProductEntityOf<T>[]> {
     const products = await prisma.product.findMany({
       where: {

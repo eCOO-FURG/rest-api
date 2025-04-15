@@ -18,7 +18,7 @@ interface RegisterFarmUseCaseRequest {
 export class RegisterFarmUseCase {
   constructor(
     private usersRepository: UsersRepository,
-    private farmsRepository: FarmsRepository
+    private farmsRepository: FarmsRepository,
   ) {}
 
   async execute({ user_id, tally, name }: RegisterFarmUseCaseRequest) {
@@ -30,15 +30,13 @@ export class RegisterFarmUseCase {
       tally,
     });
 
-    if (farmWithSameTally)
-      throw new ResourceAlreadyExistsError("Número do Talão", tally);
+    if (farmWithSameTally) throw new ResourceAlreadyExistsError("Número do Talão", tally);
 
     const farmWithSameAdmin = await this.farmsRepository.find("farm", {
       admin: { id: user_id },
     });
 
-    if (farmWithSameAdmin)
-      throw new ResourceAlreadyExistsError("Agronegócio de", user_id);
+    if (farmWithSameAdmin) throw new ResourceAlreadyExistsError("Agronegócio de", user_id);
 
     const farm = Farm.create({ admin_id: user.id, admin: user, tally, name });
 

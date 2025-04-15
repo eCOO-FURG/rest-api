@@ -17,7 +17,7 @@ interface FetchCurrentBoxUseCaseRequest {
 export class FetchCurrentBoxUseCase {
   constructor(
     private readonly boxesRepository: BoxesRepository,
-    private readonly cyclesRepository: CyclesRepository
+    private readonly cyclesRepository: CyclesRepository,
   ) {}
 
   async execute({ farm_id, cycle_id, page }: FetchCurrentBoxUseCaseRequest) {

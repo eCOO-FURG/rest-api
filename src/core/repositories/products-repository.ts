@@ -4,10 +4,9 @@ import { ProductAndCategory } from "@/core/entities/aggregates/product-and-categ
 
 export type ProductRepositoryReturnType = "product" | "product-and-category";
 
-export type ProductEntityOf<T extends ProductRepositoryReturnType> =
-  T extends "product"
-    ? Product
-    : T extends "product-and-category"
+export type ProductEntityOf<T extends ProductRepositoryReturnType> = T extends "product"
+  ? Product
+  : T extends "product-and-category"
     ? ProductAndCategory
     : never;
 
@@ -20,14 +19,11 @@ export interface ProductsRepositorySearchRequest {
 }
 
 export interface ProductsRepository {
-  find<T extends ProductRepositoryReturnType>(
-    type: T,
-    filters: ProductsRepositorySearchRequest
-  ): Promise<ProductEntityOf<T> | null>;
+  find<T extends ProductRepositoryReturnType>(type: T, filters: ProductsRepositorySearchRequest): Promise<ProductEntityOf<T> | null>;
   list<T extends ProductRepositoryReturnType>(
     type: T,
     filters: ProductsRepositorySearchRequest,
-    page?: number
+    page?: number,
   ): Promise<ProductEntityOf<T>[]>;
   create(product: Product): Promise<void>;
   update(product: Product): Promise<void>;

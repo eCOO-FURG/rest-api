@@ -25,11 +25,7 @@ describe("update order", () => {
     ordersRepository = new InMemoryOrdersRepository();
     usersRepository = new InMemoryUsersRepository();
     bagsRepository = new InMemoryBagsRepository();
-    sut = new UpdateOrderUseCase(
-      usersRepository,
-      bagsRepository,
-      ordersRepository
-    );
+    sut = new UpdateOrderUseCase(usersRepository, bagsRepository, ordersRepository);
   });
 
   it("should be able to update an order", async () => {
@@ -63,7 +59,7 @@ describe("update order", () => {
         user_id: user.id.value,
         order_id: order.id.value,
         status: "RECEIVED",
-      })
+      }),
     ).rejects.toThrow(ResourceNotFoundError);
   });
 });

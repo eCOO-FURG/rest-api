@@ -73,7 +73,7 @@ describe("list farm sales", () => {
         box_id: "",
         user_id: user.id.value,
         page: 1,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

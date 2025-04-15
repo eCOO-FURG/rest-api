@@ -30,9 +30,7 @@ export interface OrderProps extends EntityRequest {
   status: OrderStatus;
 }
 
-export class Order<
-  Props extends OrderProps = OrderProps
-> extends Entity<Props> {
+export class Order<Props extends OrderProps = OrderProps> extends Entity<Props> {
   get offer_id() {
     return this.props.offer_id;
   }

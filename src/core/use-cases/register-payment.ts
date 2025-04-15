@@ -20,7 +20,7 @@ interface RegisterPaymentUseCaseRequest {
 export class RegisterPaymentUseCase {
   constructor(
     private bagsRepository: BagsRepository,
-    private paymentsRepository: PaymentsRepository
+    private paymentsRepository: PaymentsRepository,
   ) {}
 
   async execute({ bag_id, method, flag }: RegisterPaymentUseCaseRequest) {
@@ -36,8 +36,7 @@ export class RegisterPaymentUseCase {
       bag_id: bag.id.value,
     });
 
-    if (previous && previous.status === "DONE")
-      throw new ResourceAlreadyExistsError("Pagamento da sacola", bag_id);
+    if (previous && previous.status === "DONE") throw new ResourceAlreadyExistsError("Pagamento da sacola", bag_id);
 
     const payment = Payment.create({
       bag_id: new UUID(bag_id),

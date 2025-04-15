@@ -18,5 +18,5 @@ me.patch(
       options: { allowed: ["image/jpeg", "image/png"], size: 1 },
     },
   ]),
-  updateUserController
+  updateUserController,
 );

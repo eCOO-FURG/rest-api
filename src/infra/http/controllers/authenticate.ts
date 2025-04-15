@@ -17,23 +17,14 @@ import { parse } from "@/infra/http/validation/parse";
 export const authenticateSchema = Joi.object({
   email: Joi.string().email().required().example("user@example.com"),
   password: Joi.string().required(),
-  type: Joi.string()
-    .valid("BASIC", "OTP")
-    .required()
-    .description("BASIC or OTP"),
+  type: Joi.string().valid("BASIC", "OTP").required().description("BASIC or OTP"),
 });
 
-export async function authenticateController(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export async function authenticateController(request: Request, response: Response, next: NextFunction) {
   try {
     const { email, password, type } = parse(authenticateSchema, request.body);
 
-    const authenticateUseCase = container.resolve<AuthenticateUseCase>(
-      "authenticateUseCase"
-    );
+    const authenticateUseCase = container.resolve<AuthenticateUseCase>("authenticateUseCase");
 
     const { token, user } = await authenticateUseCase.execute({
       email,
@@ -43,9 +34,7 @@ export async function authenticateController(
       agent: request.headers["user-agent"] ?? "not-identified",
     });
 
-    return response
-      .status(201)
-      .send({ token, user: UserPresenter.toHttp(user) });
+    return response.status(201).send({ token, user: UserPresenter.toHttp(user) });
   } catch (error) {
     next(error);
   }

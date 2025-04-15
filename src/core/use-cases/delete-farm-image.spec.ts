@@ -94,7 +94,7 @@ describe("delete farm image", () => {
         user_id: user.id.value,
         farm_id: farm.id.value,
         image_url: "nonexistent-image",
-      })
+      }),
     ).rejects.toThrow(ResourceNotFoundError);
   });
 
@@ -103,19 +103,12 @@ describe("delete farm image", () => {
     user.verify();
     usersRepository.create(user);
 
-    const mockedImage: File = {
-      name: "image.jpg",
-      mimetype: "image/jpeg",
-      size: 100,
-      content: Buffer.from("image"),
-    };
-
     await expect(
       sut.execute({
         user_id: user.id.value,
         farm_id: new UUID().value,
         image_url: "nonexistent-image",
-      })
+      }),
     ).rejects.toThrow(ResourceNotFoundError);
   });
 
@@ -148,7 +141,7 @@ describe("delete farm image", () => {
         user_id: user.id.value,
         farm_id: anotherFarm.id.value,
         image_url: url[0],
-      })
+      }),
     ).rejects.toThrow(UnauthorizedError);
   });
   it("should not be able to delete an image without a user", async () => {
@@ -173,7 +166,7 @@ describe("delete farm image", () => {
         user_id: new UUID().value,
         farm_id: farm.id.value,
         image_url: url[0],
-      })
+      }),
     ).rejects.toThrow(ResourceNotFoundError);
   });
 });

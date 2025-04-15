@@ -62,7 +62,7 @@ describe("list bags", () => {
         cycle_id: "1234",
         user: user.first_name,
         page: 1,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

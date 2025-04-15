@@ -21,7 +21,7 @@ export class DeleteOfferUseCase {
   constructor(
     private offersRepository: OffersRepository,
     private catalogsRepository: CatalogsRepository,
-    private cyclesRepository: CyclesRepository
+    private cyclesRepository: CyclesRepository,
   ) {}
 
   async execute({ farm_id, offer_id }: DeleteOfferUseCaseRequest) {
@@ -35,8 +35,7 @@ export class DeleteOfferUseCase {
       id: offer.catalog_id.value,
     });
 
-    if (!catalog)
-      throw new ResourceNotFoundError("Catálogo", offer.catalog_id.value);
+    if (!catalog) throw new ResourceNotFoundError("Catálogo", offer.catalog_id.value);
 
     const owner = catalog.farm_id.equals(farm_id);
 
@@ -46,11 +45,9 @@ export class DeleteOfferUseCase {
       id: catalog.cycle_id.value,
     });
 
-    if (!cycle)
-      throw new ResourceNotFoundError("Ciclo", offer.catalog!.cycle_id.value);
+    if (!cycle) throw new ResourceNotFoundError("Ciclo", offer.catalog!.cycle_id.value);
 
-    if (offer.created_at < first(cycle.order))
-      throw new ResourceClosedError("Oferta", offer.id.value);
+    if (offer.created_at < first(cycle.order)) throw new ResourceClosedError("Oferta", offer.id.value);
 
     await this.offersRepository.delete(offer);
   }

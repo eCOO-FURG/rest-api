@@ -50,7 +50,7 @@ describe("fetch category", () => {
         id: "non-existent-id",
         page: 1,
         cycle_id: "non-existent-id",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
@@ -63,7 +63,7 @@ describe("fetch category", () => {
         id: category.id.value,
         page: 1,
         cycle_id: "non-existent-id",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

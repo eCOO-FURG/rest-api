@@ -60,7 +60,7 @@ describe("create farm", () => {
         user_id: user2.id.value,
         tally,
         name: "Fazenda Melancólica",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 
@@ -81,7 +81,7 @@ describe("create farm", () => {
         user_id: user.id.value,
         tally: "34567890",
         name: "Fazenda Alegre",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 });

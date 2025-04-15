@@ -14,7 +14,7 @@ interface FetchBoxUseCaseRequest {
 export class FetchBoxUseCase {
   constructor(
     private usersRepository: UsersRepository,
-    private boxesRepository: BoxesRepository
+    private boxesRepository: BoxesRepository,
   ) {}
 
   async execute({ box_id, user_id, page }: FetchBoxUseCaseRequest) {

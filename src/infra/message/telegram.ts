@@ -37,7 +37,7 @@ export class Telegram implements Chat {
           files: message.files,
           created_at: message.created_at,
           updated_at: message.updated_at,
-        })
+        }),
       );
     } catch (error) {
       Logger.log(error);

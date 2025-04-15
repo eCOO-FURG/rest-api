@@ -14,15 +14,12 @@ import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
 import { PrismaCategoryMapper } from "@/infra/database/mappers/prisma-category-mapper";
-import {
-  PrismaCategoryAndOffers,
-  PrismaCategoryAndOffersMapper,
-} from "@/infra/database/mappers/prisma-category-and-offers-mapper";
+import { PrismaCategoryAndOffers, PrismaCategoryAndOffersMapper } from "@/infra/database/mappers/prisma-category-and-offers-mapper";
 
 export class PrismaCategoriesRepository implements CategoriesRepository {
   async find<T extends CategoryRepositoryReturnType>(
     type: T,
-    { id, name, offers }: CategoriesRepositorySearchRequest
+    { id, name, offers }: CategoriesRepositorySearchRequest,
   ): Promise<CategoryEntityOf<T> | null> {
     const category = await prisma.category.findFirst({
       where: {
@@ -73,16 +70,14 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
       default:
         return PrismaCategoryMapper.toDomain<T>(category);
       case "category-and-offers":
-        return PrismaCategoryAndOffersMapper.toDomain<T>(
-          category as PrismaCategoryAndOffers
-        );
+        return PrismaCategoryAndOffersMapper.toDomain<T>(category as PrismaCategoryAndOffers);
     }
   }
 
   async list<T extends CategoryRepositoryReturnType>(
     type: T,
     { id, name, offers }: CategoriesRepositorySearchRequest,
-    page?: number
+    page?: number,
   ): Promise<CategoryEntityOf<T>[]> {
     const categories = await prisma.category.findMany({
       where: {
@@ -138,15 +133,9 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
 
     switch (type) {
       default:
-        return categories.map((category) =>
-          PrismaCategoryMapper.toDomain<T>(category)
-        );
+        return categories.map((category) => PrismaCategoryMapper.toDomain<T>(category));
       case "category-and-offers":
-        return categories.map((category) =>
-          PrismaCategoryAndOffersMapper.toDomain<T>(
-            category as PrismaCategoryAndOffers
-          )
-        );
+        return categories.map((category) => PrismaCategoryAndOffersMapper.toDomain<T>(category as PrismaCategoryAndOffers));
     }
   }
 

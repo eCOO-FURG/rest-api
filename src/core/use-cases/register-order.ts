@@ -70,16 +70,10 @@ export class RegisterOrderUseCase {
     private boxesRepository: BoxesRepository,
     private addressesRepository: AddressesRepository,
     private otpGenerator: OtpProvider,
-    private mailer: Mailer
+    private mailer: Mailer,
   ) {}
 
-  async execute({
-    user_id,
-    cycle_id,
-    bag_id,
-    address,
-    request,
-  }: RegisterOrderUseCaseRequest) {
+  async execute({ user_id, cycle_id, bag_id, address, request }: RegisterOrderUseCaseRequest) {
     const user = await this.usersRepository.find("user", { id: user_id });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
@@ -88,8 +82,7 @@ export class RegisterOrderUseCase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    if (!cycle.order.includes(today()))
-      throw new ResourceClosedError("Ciclo", cycle_id);
+    if (!cycle.order.includes(today())) throw new ResourceClosedError("Ciclo", cycle_id);
 
     const offersIds = request.map((order) => order.offer_id);
 
@@ -113,25 +106,17 @@ export class RegisterOrderUseCase {
 
       if (offer.expired) throw new ResourceClosedError("Oferta", item.offer_id);
 
-      if (!offer.catalog.cycle_id.equals(cycle_id))
-        throw new ResourceClosedError("Oferta", item.offer_id);
+      if (!offer.catalog.cycle_id.equals(cycle_id)) throw new ResourceClosedError("Oferta", item.offer_id);
 
-      if (item.amount > offer.amount)
-        throw new UnavailableAmountError(offer.id.value);
+      if (item.amount > offer.amount) throw new UnavailableAmountError(offer.id.value);
 
-      const invalidAmount =
-        item.amount % 100 != 0 && offer.product.pricing === "WEIGHT";
+      const invalidAmount = item.amount % 100 != 0 && offer.product.pricing === "WEIGHT";
 
-      if (invalidAmount)
-        throw new InvalidWeightError("solicitado", offer.product.id.value);
+      if (invalidAmount) throw new InvalidWeightError("solicitado", offer.product.id.value);
 
       const box = await this.useBox(offer.catalog.id);
 
-      const subtotal = this.useSubtotal(
-        offer.product.pricing,
-        offer.price,
-        item.amount
-      );
+      const subtotal = this.useSubtotal(offer.product.pricing, offer.price, item.amount);
 
       const order = Order.create({
         box_id: box.id,
@@ -196,8 +181,7 @@ export class RegisterOrderUseCase {
 
       if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 
-      if (bag.status !== "PENDING" || bag.created_at < first(cycle.order))
-        throw new ResourceClosedError("Sacola", bag_id);
+      if (bag.status !== "PENDING" || bag.created_at < first(cycle.order)) throw new ResourceClosedError("Sacola", bag_id);
 
       return { bag, existed: true };
     }

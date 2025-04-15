@@ -23,7 +23,7 @@ export class RegisterFarmImageUseCase {
   constructor(
     private farmsRepository: FarmsRepository,
     private usersRepository: UsersRepository,
-    private storage: Storage
+    private storage: Storage,
   ) {}
 
   async execute({ user_id, farm_id, image }: RegisterFarmImageUseCaseRequest) {
@@ -37,8 +37,7 @@ export class RegisterFarmImageUseCase {
 
     if (!farm.admin_id.equals(user.id)) throw new UnauthorizedError();
 
-    if (farm.images.length >= 4)
-      throw new ResourceReachedLimitError("Fazenda", farm_id, "images");
+    if (farm.images.length >= 4) throw new ResourceReachedLimitError("Fazenda", farm_id, "images");
 
     const url = await this.storage.upload([image], "farms");
 
