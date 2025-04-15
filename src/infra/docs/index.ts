@@ -5,18 +5,9 @@ import j2s, { SwaggerSchema } from "joi-to-swagger";
 import { authenticateSchema } from "@/infra/http/controllers/authenticate";
 import { deleteFarmImageParams } from "@/infra/http/controllers/delete-farm-image";
 import { deleteOfferParams } from "@/infra/http/controllers/delete-offer";
-import {
-  fetchBagParams,
-  fetchBagQuery,
-} from "@/infra/http/controllers/fetch-bag";
-import {
-  fetchBoxParams,
-  fetchBoxQuery,
-} from "@/infra/http/controllers/fetch-box";
-import {
-  fetchCatalogParams,
-  fetchCatalogQuery,
-} from "@/infra/http/controllers/fetch-catalog";
+import { fetchBagParams, fetchBagQuery } from "@/infra/http/controllers/fetch-bag";
+import { fetchBoxParams, fetchBoxQuery } from "@/infra/http/controllers/fetch-box";
+import { fetchCatalogParams, fetchCatalogQuery } from "@/infra/http/controllers/fetch-catalog";
 import { fetchCurrentBoxQuery } from "@/infra/http/controllers/fetch-current-box";
 import { fetchCurrentCatalogQuery } from "@/infra/http/controllers/fetch-current-catalog";
 import { fetchFarmParams } from "@/infra/http/controllers/fetch-farm";
@@ -45,26 +36,11 @@ import { requestOtpSchema } from "@/infra/http/controllers/request-otp";
 import { resetPasswordSchema } from "@/infra/http/controllers/reset-password";
 import { sendNotificationSchema } from "@/infra/http/controllers/send-notification";
 import { updateBagSchema } from "@/infra/http/controllers/update-bag";
-import {
-  updateFarmParams,
-  updateFarmSchema,
-} from "@/infra/http/controllers/update-farm";
-import {
-  updateOfferParams,
-  updateOfferSchema,
-} from "@/infra/http/controllers/update-offer";
-import {
-  updateOrderParams,
-  updateOrderSchema,
-} from "@/infra/http/controllers/update-order";
-import {
-  updatePaymentParams,
-  updatePaymentSchema,
-} from "@/infra/http/controllers/update-payment";
-import {
-  updateProductParams,
-  updateProductSchema,
-} from "@/infra/http/controllers/update-product";
+import { updateFarmParams, updateFarmSchema } from "@/infra/http/controllers/update-farm";
+import { updateOfferParams, updateOfferSchema } from "@/infra/http/controllers/update-offer";
+import { updateOrderParams, updateOrderSchema } from "@/infra/http/controllers/update-order";
+import { updatePaymentParams, updatePaymentSchema } from "@/infra/http/controllers/update-payment";
+import { updateProductParams, updateProductSchema } from "@/infra/http/controllers/update-product";
 import { updateUserSchema } from "@/infra/http/controllers/update-user";
 import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
 import { openPixSchema } from "@/infra/http/webhooks/open-pix";
@@ -82,9 +58,7 @@ const { swagger: requestHelpSchemaSwagger } = j2s(requestHelpSchema);
 const { swagger: listFarmsQuerySwagger } = j2s(listFarmsQuery);
 const { swagger: registerFarmSchemaSwagger } = j2s(registerFarmSchema);
 const { swagger: updateFarmSchemaSwagger } = j2s(updateFarmSchema);
-const { swagger: registerFarmImageSchemaSwagger } = j2s(
-  registerFarmImageSchema
-);
+const { swagger: registerFarmImageSchemaSwagger } = j2s(registerFarmImageSchema);
 const { swagger: deleteFarmImageParamsSwagger } = j2s(deleteFarmImageParams);
 const { swagger: fetchFarmParamsSwagger } = j2s(fetchFarmParams);
 const { swagger: updateFarmParamsSwagger } = j2s(updateFarmParams);
@@ -100,9 +74,7 @@ const { swagger: updateOfferParamsSwagger } = j2s(updateOfferParams);
 const { swagger: updateOfferSchemaSwagger } = j2s(updateOfferSchema);
 const { swagger: deleteOfferParamsSwagger } = j2s(deleteOfferParams);
 const { swagger: listCatalogsQuerySwagger } = j2s(listCatalogsQuery);
-const { swagger: fetchCurrentCatalogQuerySwagger } = j2s(
-  fetchCurrentCatalogQuery
-);
+const { swagger: fetchCurrentCatalogQuerySwagger } = j2s(fetchCurrentCatalogQuery);
 const { swagger: fetchLastCatalogQuerySwagger } = j2s(fetchLastCatalogQuery);
 const { swagger: fetchCatalogParamsSwagger } = j2s(fetchCatalogParams);
 const { swagger: fetchCatalogQuerySwagger } = j2s(fetchCatalogQuery);
@@ -123,9 +95,7 @@ const { swagger: listCategoriesQuerySwagger } = j2s(listCategoriesQuery);
 const { swagger: fetchPendingsQuerySwagger } = j2s(fetchPendingsQuery);
 const { swagger: fetchSalesStatsQuerySwagger } = j2s(fetchSalesStatsQuery);
 const { swagger: fetchSalesReportQuerySwagger } = j2s(fetchSalesReportQuery);
-const { swagger: fetchInboundReportQuerySwagger } = j2s(
-  fetchInboundReportQuery
-);
+const { swagger: fetchInboundReportQuerySwagger } = j2s(fetchInboundReportQuery);
 const { swagger: fetchCategoryParamsSwagger } = j2s(fetchCategoryParams);
 const { swagger: fetchCategoryQuerySwagger } = j2s(fetchCategoryQuery);
 const { swagger: sendNotificationSchemaSwagger } = j2s(sendNotificationSchema);
@@ -454,10 +424,7 @@ export const docs = {
       patch: {
         tags: ["Pedidos"],
         summary: "Atualizar pedido",
-        parameters: [
-          ...toRouteParams(updateOrderParamsSwagger),
-          ...toQueryParams(updateOrderSchemaSwagger),
-        ],
+        parameters: [...toRouteParams(updateOrderParamsSwagger), ...toQueryParams(updateOrderSchemaSwagger)],
       },
     },
     "/boxes": {
@@ -488,10 +455,7 @@ export const docs = {
       get: {
         tags: ["Caixas"],
         summary: "Obter caixa específica",
-        parameters: [
-          ...toRouteParams(fetchBoxParamsSwagger),
-          ...toQueryParams(fetchBoxQuerySwagger),
-        ],
+        parameters: [...toRouteParams(fetchBoxParamsSwagger), ...toQueryParams(fetchBoxQuerySwagger)],
         responses: {
           200: {
             description: "Caixa obtida com sucesso",
@@ -590,10 +554,7 @@ export const docs = {
       get: {
         tags: ["Catálogos"],
         summary: "Obter catálogo específico",
-        parameters: [
-          ...toRouteParams(fetchCatalogParamsSwagger),
-          ...toQueryParams(fetchCatalogQuerySwagger),
-        ],
+        parameters: [...toRouteParams(fetchCatalogParamsSwagger), ...toQueryParams(fetchCatalogQuerySwagger)],
         responses: {
           200: {
             description: "Catálogo obtido com sucesso",
@@ -629,10 +590,7 @@ export const docs = {
       get: {
         tags: ["Sacolas"],
         summary: "Obter sacola específica",
-        parameters: [
-          ...toRouteParams(fetchBagParamsSwagger),
-          ...toQueryParams(fetchBagQuerySwagger),
-        ],
+        parameters: [...toRouteParams(fetchBagParamsSwagger), ...toQueryParams(fetchBagQuerySwagger)],
         responses: {
           200: {
             description: "Sacola obtida com sucesso",
@@ -792,10 +750,7 @@ export const docs = {
       get: {
         tags: ["Categorias"],
         summary: "Obter categoria específica",
-        parameters: [
-          ...toRouteParams(fetchCategoryParamsSwagger),
-          ...toQueryParams(fetchCategoryQuerySwagger),
-        ],
+        parameters: [...toRouteParams(fetchCategoryParamsSwagger), ...toQueryParams(fetchCategoryQuerySwagger)],
         responses: {
           200: {
             description: "Categoria obtida com sucesso",
@@ -880,13 +835,12 @@ export const docs = {
                   format: "binary",
                 },
               },
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-                {
-                  schema: {
-                    type: "string",
-                    format: "binary",
-                  },
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                schema: {
+                  type: "string",
+                  format: "binary",
                 },
+              },
             },
           },
         },

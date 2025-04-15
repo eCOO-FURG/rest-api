@@ -6,15 +6,10 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { Category } from "@/core/entities/category";
 
 // Repositories
-import {
-  CategoryEntityOf,
-  CategoryRepositoryReturnType,
-} from "@/core/repositories/categories-repository";
+import { CategoryEntityOf, CategoryRepositoryReturnType } from "@/core/repositories/categories-repository";
 
 export class PrismaCategoryMapper {
-  static toDomain<T extends CategoryRepositoryReturnType = "category">(
-    raw: PrismaCategory
-  ): CategoryEntityOf<T> {
+  static toDomain<T extends CategoryRepositoryReturnType = "category">(raw: PrismaCategory): CategoryEntityOf<T> {
     return Category.create({
       id: new UUID(raw.id),
       name: raw.name,

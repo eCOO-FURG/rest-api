@@ -9,9 +9,7 @@ export const options = (values: readonly string[] | string[]) =>
       for (const status of splitted) {
         if (!values.includes(status)) {
           return helpers.error("any.invalid", {
-            message: `Invalid value: "${status}". Allowed values are: ${values.join(
-              ", "
-            )}`,
+            message: `Invalid value: "${status}". Allowed values are: ${values.join(", ")}`,
           });
         }
       }

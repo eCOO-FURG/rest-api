@@ -5,18 +5,15 @@ import { Bag } from "@/core/entities/bag";
 import { OrderStatus } from "@/core/entities/order";
 import { PaymentMethod, PaymentStatus } from "@/core/entities/payment";
 
-export type BagRepositoryReturnType =
-  | "bag"
-  | "bag-and-details"
-  | "bag-and-orders";
+export type BagRepositoryReturnType = "bag" | "bag-and-details" | "bag-and-orders";
 
 export type BagEntityOf<T extends BagRepositoryReturnType> = T extends "bag"
   ? Bag
   : T extends "bag-and-details"
-  ? BagAndDetails
-  : T extends "bag-and-orders"
-  ? BagAndOrders
-  : never;
+    ? BagAndDetails
+    : T extends "bag-and-orders"
+      ? BagAndOrders
+      : never;
 
 export interface BagsRepositorySearchRequest {
   id?: string;
@@ -35,15 +32,8 @@ export interface BagsRepositorySearchRequest {
 }
 
 export interface BagsRepository {
-  find<T extends BagRepositoryReturnType>(
-    type: T,
-    filters: BagsRepositorySearchRequest
-  ): Promise<BagEntityOf<T> | null>;
-  list<T extends BagRepositoryReturnType>(
-    type: T,
-    filters: BagsRepositorySearchRequest,
-    page?: number
-  ): Promise<BagEntityOf<T>[]>;
+  find<T extends BagRepositoryReturnType>(type: T, filters: BagsRepositorySearchRequest): Promise<BagEntityOf<T> | null>;
+  list<T extends BagRepositoryReturnType>(type: T, filters: BagsRepositorySearchRequest, page?: number): Promise<BagEntityOf<T>[]>;
   create(bag: Bag): Promise<void>;
   update(bag: Bag): Promise<void>;
 }

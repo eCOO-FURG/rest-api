@@ -33,13 +33,7 @@ describe("print bags report", () => {
     pdfService = new MockedPDFService();
     spreadsheetService = new MockedSpreadsheetService();
 
-    sut = new FetchSalesReportUseCase(
-      cyclesRepository,
-      bagsRepository,
-      catalogsRepository,
-      pdfService,
-      spreadsheetService
-    );
+    sut = new FetchSalesReportUseCase(cyclesRepository, bagsRepository, catalogsRepository, pdfService, spreadsheetService);
   });
 
   it("should be able to print the cycle bags report", async () => {
@@ -66,7 +60,7 @@ describe("print bags report", () => {
         cycle_id: "none",
         withdraw: false,
         type: "pdf",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

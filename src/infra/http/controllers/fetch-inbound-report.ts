@@ -24,19 +24,11 @@ export const fetchInboundReportQuery = Joi.object({
     .optional(),
 });
 
-export async function fetchInboundReportController(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export async function fetchInboundReportController(request: Request, response: Response, next: NextFunction) {
   try {
-    const { cycle_id, since, before } = parse(
-      fetchInboundReportQuery,
-      request.query
-    );
+    const { cycle_id, since, before } = parse(fetchInboundReportQuery, request.query);
 
-    const fetchInboundReportUseCase =
-      container.resolve<FetchInboundReportUseCase>("fetchInboundReportUseCase");
+    const fetchInboundReportUseCase = container.resolve<FetchInboundReportUseCase>("fetchInboundReportUseCase");
 
     const { file } = await fetchInboundReportUseCase.execute({
       cycle_id,

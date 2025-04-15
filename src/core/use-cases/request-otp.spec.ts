@@ -36,12 +36,7 @@ describe("request otp", async () => {
     otpGenerator = new MockedOtpProvider();
     mailer = new MockedMailer();
 
-    sut = new RequestOtpUseCase(
-      usersRepository,
-      otpGenerator,
-      otpsRepository,
-      mailer
-    );
+    sut = new RequestOtpUseCase(usersRepository, otpGenerator, otpsRepository, mailer);
   });
 
   it("should be able to request a otp", async () => {
@@ -59,7 +54,7 @@ describe("request otp", async () => {
     await expect(() =>
       sut.execute({
         email: "t@test.com",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

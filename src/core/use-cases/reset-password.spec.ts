@@ -43,11 +43,7 @@ describe("request password update", () => {
       hasher: new MockedHasher(),
     };
 
-    sut = new ResetPasswordUseCase(
-      repositories.users,
-      mocks.hasher,
-      mocks.mailer
-    );
+    sut = new ResetPasswordUseCase(repositories.users, mocks.hasher, mocks.mailer);
 
     spy = vi.spyOn(mocks.mailer, "send");
   });
@@ -69,7 +65,7 @@ describe("request password update", () => {
     await expect(
       sut.execute({
         email: "eduardo@email.com",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

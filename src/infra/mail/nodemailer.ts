@@ -17,7 +17,7 @@ import { Logger } from "@/infra/logs/logger";
 export class Nodemailer implements Mailer {
   constructor(
     private transporter: Transporter,
-    private fallback?: Transporter
+    private fallback?: Transporter,
   ) {}
 
   async send(messages: Message[]): Promise<void> {

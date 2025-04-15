@@ -18,16 +18,11 @@ export const openPaymentSchema = Joi.object({
   bag_id: Joi.string().uuid().required(),
 });
 
-export async function openPaymentController(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export async function openPaymentController(request: Request, response: Response, next: NextFunction) {
   try {
     const { bag_id } = parse(openPaymentSchema, request.body);
 
-    const openPaymentUseCase =
-      container.resolve<OpenPaymentUseCase>("openPaymentUseCase");
+    const openPaymentUseCase = container.resolve<OpenPaymentUseCase>("openPaymentUseCase");
 
     const { payment, charge } = await openPaymentUseCase.execute({ bag_id });
 

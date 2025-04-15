@@ -54,7 +54,7 @@ describe("Register payment", () => {
       sut.execute({
         bag_id: bag.id.value,
         method: "CREDIT",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotVerifiedError);
   });
 
@@ -63,7 +63,7 @@ describe("Register payment", () => {
       sut.execute({
         bag_id: "non-existent-bag-id",
         method: "CREDIT",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
@@ -84,7 +84,7 @@ describe("Register payment", () => {
       sut.execute({
         bag_id: bag.id.value,
         method: "CREDIT",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 });

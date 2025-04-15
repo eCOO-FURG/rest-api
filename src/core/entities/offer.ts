@@ -23,9 +23,7 @@ export interface OfferProps extends EntityRequest {
   expires_at: Date | null;
 }
 
-export class Offer<
-  Props extends OfferProps = OfferProps
-> extends Entity<Props> {
+export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> {
   get price() {
     return this.props.price;
   }

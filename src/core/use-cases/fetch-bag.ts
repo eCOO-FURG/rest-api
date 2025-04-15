@@ -18,7 +18,7 @@ interface FetchBagUseCaseRequest {
 export class FetchBagUseCase {
   constructor(
     private bagsRepository: BagsRepository,
-    private usersRepository: UsersRepository
+    private usersRepository: UsersRepository,
   ) {}
 
   async execute({ bag_id, user_id, page, statuses }: FetchBagUseCaseRequest) {

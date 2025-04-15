@@ -50,7 +50,7 @@ describe("Verify user", () => {
         token: "123",
         agent: "browser",
         ip: "0.0.0.0",
-      })
+      }),
     ).rejects.toBeInstanceOf(WrongCredentialsError);
   });
 
@@ -62,7 +62,7 @@ describe("Verify user", () => {
         token,
         agent: "browser",
         ip: "0.0.0.0",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

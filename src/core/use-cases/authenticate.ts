@@ -29,16 +29,10 @@ export class AuthenticateUseCase {
     private otpsRepository: OtpsRepository,
     private sessionsRepository: SessionsRepository,
     private encrypter: Encrypter,
-    private hasher: Hasher
+    private hasher: Hasher,
   ) {}
 
-  async execute({
-    email,
-    password,
-    agent,
-    ip,
-    type,
-  }: AuthenticateUseCaseRequest) {
+  async execute({ email, password, agent, ip, type }: AuthenticateUseCaseRequest) {
     const user = await this.usersRepository.find("user", { email });
 
     if (!user) throw new WrongCredentialsError();
@@ -47,10 +41,7 @@ export class AuthenticateUseCase {
       case "BASIC":
         if (!user.password) throw new MissingFieldError("senha");
 
-        const isPasswordValid = await this.encrypter.compare(
-          password,
-          user.password
-        );
+        const isPasswordValid = await this.encrypter.compare(password, user.password);
 
         if (!isPasswordValid) throw new WrongCredentialsError();
         break;

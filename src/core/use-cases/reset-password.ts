@@ -22,7 +22,7 @@ export class ResetPasswordUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private hasher: Hasher,
-    private mailer: Mailer
+    private mailer: Mailer,
   ) {}
 
   async execute({ email }: ResetPasswordUseCaseRequest) {

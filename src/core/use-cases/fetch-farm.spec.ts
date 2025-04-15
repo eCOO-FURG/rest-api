@@ -43,7 +43,7 @@ describe("Fetch farm", () => {
     await expect(() =>
       sut.execute({
         farm_id: "1234",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

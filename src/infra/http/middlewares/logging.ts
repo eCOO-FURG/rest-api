@@ -25,32 +25,25 @@ export function logging() {
       const took = Date.now() - start;
       const time = new Date().toISOString();
 
-      console.log(
-        "%s \x1b[32m%s\x1b[0m (%s): \x1b[36m%s\x1b[0m",
-        `\n[${time}]`,
-        "INFO",
-        `${++count}`,
-        "request completed",
-        {
-          id: new UUID().value,
-          ...(request.user_id && { user_id: request.user_id }),
-          request: {
-            method: request.method,
-            url: request.url,
-            ...(!isEmpty(request.query) && { query: request.query }),
-            ...(!isEmpty(request.body) && {
-              body: JSON.parse(JSON.stringify(request.body)),
-            }),
-          },
-          response: {
-            status: response.statusCode,
-            ...(!isEmpty(responseBody) && {
-              body: JSON.parse(JSON.stringify(responseBody)),
-            }),
-          },
-          took: `${took}ms`,
-        }
-      );
+      console.log("%s \x1b[32m%s\x1b[0m (%s): \x1b[36m%s\x1b[0m", `\n[${time}]`, "INFO", `${++count}`, "request completed", {
+        id: new UUID().value,
+        ...(request.user_id && { user_id: request.user_id }),
+        request: {
+          method: request.method,
+          url: request.url,
+          ...(!isEmpty(request.query) && { query: request.query }),
+          ...(!isEmpty(request.body) && {
+            body: JSON.parse(JSON.stringify(request.body)),
+          }),
+        },
+        response: {
+          status: response.statusCode,
+          ...(!isEmpty(responseBody) && {
+            body: JSON.parse(JSON.stringify(responseBody)),
+          }),
+        },
+        took: `${took}ms`,
+      });
     });
 
     next();

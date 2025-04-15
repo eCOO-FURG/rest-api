@@ -21,8 +21,7 @@ import { MockedStorage } from "@/test/storage/mocked-storage";
 // Env
 import { env } from "@/infra/env";
 
-const deploy =
-  env.ENVIRONMENT === "PRODUCTION" || env.ENVIRONMENT === "STAGING";
+const deploy = env.ENVIRONMENT === "PRODUCTION" || env.ENVIRONMENT === "STAGING";
 
 export default (container: AwilixContainer) => {
   container.register({

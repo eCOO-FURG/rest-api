@@ -57,10 +57,7 @@ export class FetchSalesStatsUseCase {
     };
   }
 
-  private async openPaymentsTotal({
-    since,
-    before,
-  }: FetchSalesStatsUseCaseRequest) {
+  private async openPaymentsTotal({ since, before }: FetchSalesStatsUseCaseRequest) {
     const bags = await this.bagsRepository.list("bag-and-orders", {
       since,
       before,
@@ -89,11 +86,7 @@ export class FetchSalesStatsUseCase {
     };
   }
 
-  private async revenueByMethod({
-    since,
-    before,
-    method,
-  }: FetchSalesStatsUseCaseRequest) {
+  private async revenueByMethod({ since, before, method }: FetchSalesStatsUseCaseRequest) {
     const bags = await this.bagsRepository.list("bag-and-orders", {
       since,
       before,

@@ -21,20 +21,11 @@ export const listCatalogsQuery = Joi.object({
   category_id: Joi.string().uuid().optional(),
 });
 
-export async function listCatalogsController(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export async function listCatalogsController(request: Request, response: Response, next: NextFunction) {
   try {
-    const { cycle_id, page, product, category_id } = parse(
-      listCatalogsQuery,
-      request.query
-    );
+    const { cycle_id, page, product, category_id } = parse(listCatalogsQuery, request.query);
 
-    const listCatalogsUseCase = container.resolve<ListCatalogsUseCase>(
-      "listCatalogsUseCase"
-    );
+    const listCatalogsUseCase = container.resolve<ListCatalogsUseCase>("listCatalogsUseCase");
 
     const { catalogs } = await listCatalogsUseCase.execute({
       cycle_id,
@@ -43,9 +34,7 @@ export async function listCatalogsController(
       category_id,
     });
 
-    return response
-      .status(200)
-      .send(catalogs.map((catalog) => CatalogPresenter.toHttp(catalog)));
+    return response.status(200).send(catalogs.map((catalog) => CatalogPresenter.toHttp(catalog)));
   } catch (error) {
     next(error);
   }

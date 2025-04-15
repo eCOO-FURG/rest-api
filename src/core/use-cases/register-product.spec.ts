@@ -29,11 +29,7 @@ describe("register product", () => {
     categoriesRepository = new InMemoryCategoriesRepository();
     storage = new MockedStorage();
 
-    sut = new RegisterProductUseCase(
-      productsRepository,
-      categoriesRepository,
-      storage
-    );
+    sut = new RegisterProductUseCase(productsRepository, categoriesRepository, storage);
   });
 
   it("should be able to register a new product", async () => {
@@ -94,7 +90,7 @@ describe("register product", () => {
         perishable: true,
         archived: false,
         category_id: category.id.value,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 

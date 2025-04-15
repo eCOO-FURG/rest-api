@@ -27,11 +27,7 @@ const jwtPayloadSchema = Joi.object({
   iat: Joi.number().required(),
 });
 
-export async function ensureAuthenticated(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export async function ensureAuthenticated(request: Request, response: Response, next: NextFunction) {
   try {
     const authHeader = request.headers.authorization;
 
@@ -43,11 +39,9 @@ export async function ensureAuthenticated(
 
     const { user_id, iat } = parse(jwtPayloadSchema, payload);
 
-    const user = await container
-      .resolve<UsersRepository>("usersRepository")
-      .find("user", {
-        id: user_id,
-      });
+    const user = await container.resolve<UsersRepository>("usersRepository").find("user", {
+      id: user_id,
+    });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
@@ -56,14 +50,12 @@ export async function ensureAuthenticated(
     if (expired) {
       const ONE_HOUR_AGO = new Date(Date.now() - 60 * 60 * 1000);
 
-      const session = await container
-        .resolve<SessionsRepository>("sessionsRepository")
-        .find("session", {
-          user: { id: user_id },
-          ip: request.ip!,
-          agent: request.headers["user-agent"] ?? "not-identified",
-          since: ONE_HOUR_AGO,
-        });
+      const session = await container.resolve<SessionsRepository>("sessionsRepository").find("session", {
+        user: { id: user_id },
+        ip: request.ip!,
+        agent: request.headers["user-agent"] ?? "not-identified",
+        since: ONE_HOUR_AGO,
+      });
 
       if (!session) throw new SessionExpiredError();
 

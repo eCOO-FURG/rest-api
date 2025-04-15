@@ -133,7 +133,7 @@ describe("update offer", () => {
         amount: 10,
         description: "Updated description",
         price: 20,
-      })
+      }),
     ).rejects.toThrowError(ResourceNotFoundError);
   });
 
@@ -172,7 +172,7 @@ describe("update offer", () => {
         amount: 10,
         description: "Updated description",
         price: 20,
-      })
+      }),
     ).rejects.toThrowError(UnauthorizedError);
   });
 
@@ -215,7 +215,7 @@ describe("update offer", () => {
         amount: 10,
         description: "Updated description",
         price: 20,
-      })
+      }),
     ).rejects.toThrowError(FarmNotActiveError);
   });
 
@@ -254,7 +254,7 @@ describe("update offer", () => {
         amount: 10,
         description: "Updated description",
         price: 20,
-      })
+      }),
     ).rejects.toThrowError(ResourceNotFoundError);
   });
 
@@ -300,7 +300,7 @@ describe("update offer", () => {
         amount: 10,
         description: "Updated description",
         price: 20,
-      })
+      }),
     ).rejects.toThrowError(ResourceClosedError);
   });
 
@@ -342,7 +342,7 @@ describe("update offer", () => {
         amount: 10,
         description: "Updated description",
         price: 20,
-      })
+      }),
     ).rejects.toThrowError(UnauthorizedError);
   });
 
@@ -378,7 +378,7 @@ describe("update offer", () => {
       sut.execute({
         farm_id: farm.id.value,
         offer_id: offer.id.value,
-      })
+      }),
     ).rejects.toThrowError(MissingFieldError);
   });
 });

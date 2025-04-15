@@ -71,7 +71,7 @@ describe("Fetch bag", () => {
         bag_id: "1234",
         user_id: user.id.value,
         page: 1,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
@@ -90,7 +90,7 @@ describe("Fetch bag", () => {
         bag_id: bag.id.value,
         user_id: user2.id.value,
         page: 1,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

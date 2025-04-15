@@ -11,7 +11,8 @@
     "dev:build": "docker-compose --profile development up --build",
     "deploy": "docker-compose --profile deploy up -d",
     "deploy:build": "docker-compose --profile deploy up -d --build",
-    "lint": "eslint . --fix --ext .ts"
+    "lint": "eslint . --fix --ext .ts",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
@@ -38,6 +39,7 @@
     "multer": "1.4.5-lts.1",
     "nodemailer": "^6.9.14",
     "otp-generator": "^4.0.1",
+    "prettier": "^3.5.3",
     "puppeteer": "^22.14.0",
     "redis": "^4.7.0",
     "swagger-ui-express": "^5.0.1",

@@ -24,12 +24,7 @@ export const mappedDomainErrors: {
   },
   {
     status: 400,
-    errors: [
-      WrongCredentialsError,
-      InvalidWeightError,
-      MissingFieldError,
-      InvalidFieldError,
-    ],
+    errors: [WrongCredentialsError, InvalidWeightError, MissingFieldError, InvalidFieldError],
   },
   {
     status: 403,
@@ -54,9 +49,7 @@ export const mappedDomainErrors: {
 
 export class HttpErrorMapper {
   static find(error: DomainError) {
-    const found = mappedDomainErrors.find((item) =>
-      item.errors.find((constructor) => error instanceof constructor)
-    );
+    const found = mappedDomainErrors.find((item) => item.errors.find((constructor) => error instanceof constructor));
 
     if (!found) return null;
 

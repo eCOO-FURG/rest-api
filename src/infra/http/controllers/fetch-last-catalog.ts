@@ -19,17 +19,11 @@ export const fetchLastCatalogQuery = Joi.object({
   page: Joi.number().required().min(1),
 });
 
-export async function fetchLastCatalogController(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export async function fetchLastCatalogController(request: Request, response: Response, next: NextFunction) {
   try {
     const { page, cycle_id } = parse(fetchLastCatalogQuery, request.query);
 
-    const fetchLastCatalogUseCase = container.resolve<FetchLastCatalogUseCase>(
-      "fetchLastCatalogUseCase"
-    );
+    const fetchLastCatalogUseCase = container.resolve<FetchLastCatalogUseCase>("fetchLastCatalogUseCase");
 
     const { catalog } = await fetchLastCatalogUseCase.execute({
       farm_id: request.farm_id,

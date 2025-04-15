@@ -26,19 +26,11 @@ interface UpdateOfferUseCaseRequest {
 export class UpdateOfferUseCase {
   constructor(
     private offersRepository: OffersRepository,
-    private cyclesRepository: CyclesRepository
+    private cyclesRepository: CyclesRepository,
   ) {}
 
-  async execute({
-    farm_id,
-    offer_id,
-    amount,
-    price,
-    description,
-    expires_at,
-  }: UpdateOfferUseCaseRequest) {
-    if (!amount && !price && !description && !expires_at)
-      throw new MissingFieldError("amount, price, description, expires_at");
+  async execute({ farm_id, offer_id, amount, price, description, expires_at }: UpdateOfferUseCaseRequest) {
+    if (!amount && !price && !description && !expires_at) throw new MissingFieldError("amount, price, description, expires_at");
 
     const offer = await this.offersRepository.find("offer-and-details", {
       id: offer_id,
@@ -56,17 +48,13 @@ export class UpdateOfferUseCase {
       id: offer.catalog.cycle_id.value,
     });
 
-    if (!cycle)
-      throw new ResourceNotFoundError("Ciclo", offer.catalog!.cycle_id.value);
+    if (!cycle) throw new ResourceNotFoundError("Ciclo", offer.catalog!.cycle_id.value);
 
-    if (offer.created_at < first(cycle.order))
-      throw new ResourceClosedError("Oferta", offer.id.value);
+    if (offer.created_at < first(cycle.order)) throw new ResourceClosedError("Oferta", offer.id.value);
 
-    if (!cycle.offer.includes(today()))
-      throw new ResourceClosedError("Ciclo", cycle.id.value);
+    if (!cycle.offer.includes(today())) throw new ResourceClosedError("Ciclo", cycle.id.value);
 
-    if (expires_at && offer.product?.perishable)
-      throw new InvalidFieldError("expires_at");
+    if (expires_at && offer.product?.perishable) throw new InvalidFieldError("expires_at");
 
     offer.amount = amount ?? offer.amount;
     offer.price = price ?? offer.price;

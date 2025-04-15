@@ -22,7 +22,7 @@ export class InMemoryOffersRepository implements OffersRepository {
 
   async find<T extends OfferRepositoryReturnType>(
     type: T,
-    { id, catalog, product, since, before }: OffersRepositorySearchRequest
+    { id, catalog, product, since, before }: OffersRepositorySearchRequest,
   ): Promise<OfferEntityOf<T> | null> {
     const offer = this.items.find((item) => {
       return (
@@ -56,7 +56,7 @@ export class InMemoryOffersRepository implements OffersRepository {
   async list<T extends OfferRepositoryReturnType>(
     type: T,
     { id, ids, catalog, product, since, before }: OffersRepositorySearchRequest,
-    page?: number
+    page?: number,
   ): Promise<OfferEntityOf<T>[]> {
     let offers = this.items.filter((item) => {
       return (

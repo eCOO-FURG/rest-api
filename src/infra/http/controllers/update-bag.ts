@@ -22,17 +22,12 @@ export const updateBagSchema = Joi.object({
     .optional(),
 });
 
-export async function updateBagController(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function updateBagController(req: Request, res: Response, next: NextFunction) {
   try {
     const { bag_id } = parse(updateBagParams, req.params);
     const { status } = parse(updateBagSchema, req.body);
 
-    const updateBagUseCase =
-      container.resolve<UpdateBagUseCase>("updateBagUseCase");
+    const updateBagUseCase = container.resolve<UpdateBagUseCase>("updateBagUseCase");
 
     await updateBagUseCase.execute({
       bag_id,

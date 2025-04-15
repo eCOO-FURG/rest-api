@@ -20,7 +20,7 @@ export class InMemoryProductsRepository implements ProductsRepository {
 
   async find<T extends ProductRepositoryReturnType>(
     type: T,
-    { id, name, pricing, archived, category }: ProductsRepositorySearchRequest
+    { id, name, pricing, archived, category }: ProductsRepositorySearchRequest,
   ): Promise<ProductEntityOf<T> | null> {
     const product = this.items.find((item) => {
       return Boolean(
@@ -29,7 +29,7 @@ export class InMemoryProductsRepository implements ProductsRepository {
           (!pricing || item.pricing === pricing) &&
           (!archived || item.archived === archived) &&
           (!category?.id || item.category_id?.equals(category.id)) &&
-          (!category?.name || item.category?.name === category.name)
+          (!category?.name || item.category?.name === category.name),
       );
     });
 
@@ -49,7 +49,7 @@ export class InMemoryProductsRepository implements ProductsRepository {
   async list<T extends ProductRepositoryReturnType>(
     type: T,
     { id, name, pricing, archived, category }: ProductsRepositorySearchRequest,
-    page: number
+    page: number,
   ): Promise<ProductEntityOf<T>[]> {
     let products = this.items.filter((item) => {
       return Boolean(
@@ -58,7 +58,7 @@ export class InMemoryProductsRepository implements ProductsRepository {
           (!pricing || item.pricing === pricing) &&
           (!archived || item.archived === archived) &&
           (!category?.id || item.category_id?.equals(category.id)) &&
-          (!category?.name || item.category?.name === category.name)
+          (!category?.name || item.category?.name === category.name),
       );
     });
 

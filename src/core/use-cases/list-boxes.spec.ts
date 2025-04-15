@@ -36,7 +36,7 @@ describe("list farms with orders", () => {
       sut.execute({
         cycle_id: "123",
         page: 1,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 

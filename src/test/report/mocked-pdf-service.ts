@@ -1,8 +1,5 @@
 // Services
-import {
-  PDFService,
-  PDFServiceGenerateRequest,
-} from "@/core/report/pdf-service";
+import { PDFService, PDFServiceGenerateRequest } from "@/core/report/pdf-service";
 
 // Types
 import { File } from "@/core/types/file";

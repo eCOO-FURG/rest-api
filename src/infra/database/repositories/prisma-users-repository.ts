@@ -18,7 +18,7 @@ import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
 export class PrismaUsersRepository implements UsersRepository {
   async find<T extends UserRepositoryReturnType>(
     _: T,
-    { id, email, cpf, phone, chat, roles }: UsersRepositorySearchRequest
+    { id, email, cpf, phone, chat, roles }: UsersRepositorySearchRequest,
   ): Promise<UserEntityOf<T> | null> {
     const user = await prisma.user.findFirst({
       where: {
@@ -39,7 +39,7 @@ export class PrismaUsersRepository implements UsersRepository {
   async list<T extends UserRepositoryReturnType>(
     _: T,
     { id, email, cpf, phone, chat, roles }: UsersRepositorySearchRequest,
-    page?: number
+    page?: number,
   ): Promise<UserEntityOf<T>[]> {
     const users = await prisma.user.findMany({
       where: {

@@ -9,19 +9,14 @@ import { FarmAndAdmin } from "@/core/entities/aggregates/farm-and-admin";
 import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
 
 // Repositories
-import {
-  FarmEntityOf,
-  FarmRepositoryReturnType,
-} from "@/core/repositories/farms-repository";
+import { FarmEntityOf, FarmRepositoryReturnType } from "@/core/repositories/farms-repository";
 
 export type PrismaFarmAndAdmin = PrismaFarm & {
   admin: PrismaUser;
 };
 
 export class PrismaFarmAndAdminMapper {
-  static toDomain<T extends FarmRepositoryReturnType = "farm-and-admin">(
-    raw: PrismaFarmAndAdmin
-  ): FarmEntityOf<T> {
+  static toDomain<T extends FarmRepositoryReturnType = "farm-and-admin">(raw: PrismaFarmAndAdmin): FarmEntityOf<T> {
     return FarmAndAdmin.create({
       id: new UUID(raw.id),
       status: raw.status,

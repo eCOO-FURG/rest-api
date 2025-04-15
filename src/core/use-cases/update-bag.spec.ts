@@ -33,12 +33,7 @@ describe("update bag", () => {
     cyclesRepository = new InMemoryCyclesRepository();
     chat = new MockedChat();
 
-    sut = new UpdateBagUseCase(
-      bagsRepository,
-      usersRepository,
-      cyclesRepository,
-      chat
-    );
+    sut = new UpdateBagUseCase(bagsRepository, usersRepository, cyclesRepository, chat);
   });
 
   it("should be able to update a bag", async () => {
@@ -96,7 +91,7 @@ describe("update bag", () => {
       sut.execute({
         bag_id: "invalid-id",
         status: "SEPARATED",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
@@ -120,7 +115,7 @@ describe("update bag", () => {
       sut.execute({
         bag_id: bag.id.value,
         status: "SEPARATED",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotVerifiedError);
   });
 });

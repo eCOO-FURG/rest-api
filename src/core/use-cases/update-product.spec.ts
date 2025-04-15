@@ -30,11 +30,7 @@ describe("Update Product UseCase", () => {
     categoriesRepository = new InMemoryCategoriesRepository();
     storage = new MockedStorage();
 
-    sut = new UpdateProductUseCase(
-      productsRepository,
-      categoriesRepository,
-      storage
-    );
+    sut = new UpdateProductUseCase(productsRepository, categoriesRepository, storage);
   });
 
   it("should update a product successfully", async () => {
@@ -71,7 +67,7 @@ describe("Update Product UseCase", () => {
         image: makeFile(),
         pricing: "UNIT",
         archived: false,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
@@ -89,7 +85,7 @@ describe("Update Product UseCase", () => {
         image: makeFile(),
         pricing: "UNIT",
         archived: false,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 

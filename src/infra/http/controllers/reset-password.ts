@@ -15,17 +15,11 @@ export const resetPasswordSchema = Joi.object({
   email: Joi.string().email().required(),
 });
 
-export async function resetPasswordController(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export async function resetPasswordController(request: Request, response: Response, next: NextFunction) {
   try {
     const { email } = parse(resetPasswordSchema, request.body);
 
-    const resetPasswordUseCase = container.resolve<ResetPasswordUseCase>(
-      "resetPasswordUseCase"
-    );
+    const resetPasswordUseCase = container.resolve<ResetPasswordUseCase>("resetPasswordUseCase");
 
     await resetPasswordUseCase.execute({
       email,

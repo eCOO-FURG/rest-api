@@ -8,17 +8,12 @@ import { CPF } from "@/core/entities/cpf";
 import { Phone } from "@/core/entities/phone";
 
 // Repositories
-import {
-  UserRepositoryReturnType,
-  UserEntityOf,
-} from "@/core/repositories/users-repository";
+import { UserRepositoryReturnType, UserEntityOf } from "@/core/repositories/users-repository";
 
 type PrismaUser = Prisma.UserGetPayload<{}>;
 
 export class PrismaUserMapper {
-  static toDomain<T extends UserRepositoryReturnType>(
-    raw: PrismaUser
-  ): UserEntityOf<T> {
+  static toDomain<T extends UserRepositoryReturnType>(raw: PrismaUser): UserEntityOf<T> {
     return User.create({
       id: new UUID(raw.id),
       first_name: raw.first_name,

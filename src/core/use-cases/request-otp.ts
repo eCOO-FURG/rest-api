@@ -24,7 +24,7 @@ export class RequestOtpUseCase {
     private usersRepository: UsersRepository,
     private otpGenerator: OtpProvider,
     private otpsRepository: OtpsRepository,
-    private mailer: Mailer
+    private mailer: Mailer,
   ) {}
 
   async execute({ email }: RequestOtpUseCaseRequest) {
