@@ -17,7 +17,6 @@ import { InMemoryProductsRepository } from "@/test/repositories/in-memory-produc
 
 // Errors
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
-import { InvalidFieldError } from "@/core/errors/invalid-field";
 import { MissingFieldError } from "@/core/errors/missing-field";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -29,7 +28,6 @@ import { CycleWeek } from "@/core/entities/cycle";
 
 // Utils
 import { today } from "@/core/utils/today";
-import { makeUser } from "@/test/factories/make-user";
 
 let farmsRepository: InMemoryFarmsRepository;
 let productsRepository: InMemoryProductsRepository;

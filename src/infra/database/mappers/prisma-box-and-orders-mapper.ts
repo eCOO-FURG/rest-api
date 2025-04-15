@@ -3,7 +3,7 @@ import { BoxAndOrders } from "@/core/entities/aggregates/box-and-orders";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Libraries
-import { Box as PrismaBox, Order as PrismaOrder } from "@prisma/client";
+import { Box as PrismaBox } from "@prisma/client";
 
 // Repositories
 import { BoxRepositoryReturnType, BoxEntityOf } from "@/core/repositories/boxes-repository";

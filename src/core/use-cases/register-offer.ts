@@ -89,7 +89,9 @@ export class RegisterOfferUseCase {
 
     catalog.offers.push(offer);
 
-    existed ? await this.catalogsRepository.update(catalog) : await this.catalogsRepository.create(catalog);
+    if (existed) return await this.catalogsRepository.update(catalog);
+
+    return await this.catalogsRepository.create(catalog);
   }
 
   private async useCatalog(farm: Farm, cycle: Cycle) {

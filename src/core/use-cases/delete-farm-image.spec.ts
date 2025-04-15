@@ -103,13 +103,6 @@ describe("delete farm image", () => {
     user.verify();
     usersRepository.create(user);
 
-    const mockedImage: File = {
-      name: "image.jpg",
-      mimetype: "image/jpeg",
-      size: 100,
-      content: Buffer.from("image"),
-    };
-
     await expect(
       sut.execute({
         user_id: user.id.value,

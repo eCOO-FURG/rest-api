@@ -15,7 +15,7 @@ export const options = (values: readonly string[] | string[]) =>
       }
 
       return splitted;
-    } catch (error) {
+    } catch {
       return helpers.error("any.invalid");
     }
   });

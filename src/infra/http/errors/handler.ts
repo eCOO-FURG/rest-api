@@ -1,6 +1,6 @@
 // Libraries
 import Joi from "joi";
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { MulterError } from "multer";
 import { JsonWebTokenError } from "jsonwebtoken";
 
@@ -17,7 +17,7 @@ const FILE_ERRORS: Record<string, string> = {
   LIMIT_UNEXPECTED_FILE: "Campo de arquivo inesperado.",
 };
 
-export const handler = (error: Error, _: Request, response: Response, __: NextFunction) => {
+export const handler = (error: Error, _: Request, response: Response) => {
   if (error instanceof Joi.ValidationError) {
     const info = error.details[0].context?.message ?? "";
 

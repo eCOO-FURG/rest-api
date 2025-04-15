@@ -59,12 +59,12 @@ export class UpdateProductUseCase {
       }
     }
 
-    name && (product.name = name);
-    pricing && (product.pricing = pricing);
-    category_id && (product.category_id = new UUID(category_id));
+    if (name) product.name = name;
+    if (pricing) product.pricing = pricing;
+    if (category_id) product.category_id = new UUID(category_id);
 
-    typeof archived === "boolean" && (product.archived = archived);
-    typeof perishable === "boolean" && (product.perishable = perishable);
+    if (typeof archived === "boolean") product.archived = archived;
+    if (typeof perishable === "boolean") product.perishable = perishable;
 
     if (image) {
       const urls = await this.storage.upload([image], "products");

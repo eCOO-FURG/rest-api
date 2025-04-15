@@ -38,15 +38,17 @@ export class AuthenticateUseCase {
     if (!user) throw new WrongCredentialsError();
 
     switch (type) {
-      case "BASIC":
+      case "BASIC": {
         if (!user.password) throw new MissingFieldError("senha");
 
         const isPasswordValid = await this.encrypter.compare(password, user.password);
 
         if (!isPasswordValid) throw new WrongCredentialsError();
-        break;
 
-      case "OTP":
+        break;
+      }
+
+      case "OTP": {
         const otp = await this.otpsRepository.find("otp", {
           user: { id: user.id.value },
           value: password,
@@ -59,6 +61,7 @@ export class AuthenticateUseCase {
 
         await this.otpsRepository.update(otp);
         break;
+      }
     }
 
     if (!user.verified_at) throw new UserNotVerifiedError();

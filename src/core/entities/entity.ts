@@ -4,7 +4,7 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 // Types
 import { Optional } from "@/core/types/optional";
 
-export interface EntityRequest extends Optional<EntityProps, "id" | "created_at" | "updated_at"> {}
+export type EntityRequest = Optional<EntityProps, "id" | "created_at" | "updated_at">;
 
 export interface EntityProps {
   id: UUID;
@@ -43,7 +43,7 @@ export abstract class Entity<Props> {
     this.props.updated_at = new Date();
   }
 
-  protected constructor(props: Props & Optional<EntityProps, "id" | "created_at" | "updated_at">) {
+  protected constructor(props: Props & EntityRequest) {
     this._props = {
       ...props,
       id: props.id ?? new UUID(),

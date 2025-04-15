@@ -146,6 +146,6 @@ describe("register", () => {
       role: "USER",
     });
 
-    expect(repositories.users.items[0].password === password).toBeFalsy;
+    expect(repositories.users.items[0].password).not.toBe(password);
   });
 });
