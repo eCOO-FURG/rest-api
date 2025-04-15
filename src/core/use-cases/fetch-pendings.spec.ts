@@ -32,12 +32,7 @@ describe("Fetch pendings", () => {
 
     cacheManager = new MockedCacheManager();
 
-    sut = new FetchPendingsUseCase(
-      cyclesRepository,
-      farmsRepository,
-      boxesRepository,
-      cacheManager
-    );
+    sut = new FetchPendingsUseCase(cyclesRepository, farmsRepository, boxesRepository, cacheManager);
   });
 
   it("should be able to fetch pending farms and boxes in a cycle", async () => {

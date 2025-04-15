@@ -37,13 +37,7 @@ describe("authenticate", () => {
     mockedEncrypter = new MockedEncrypter();
     mockedHasher = new MockedHasher();
 
-    sut = new AuthenticateUseCase(
-      usersRepository,
-      otpsRepository,
-      sessionsRepository,
-      mockedEncrypter,
-      mockedHasher
-    );
+    sut = new AuthenticateUseCase(usersRepository, otpsRepository, sessionsRepository, mockedEncrypter, mockedHasher);
   });
 
   it("should be able to authenticate via basic auth", async () => {
@@ -100,7 +94,7 @@ describe("authenticate", () => {
         agent: "browser",
         ip: "0.0.0.0",
         type: "BASIC",
-      })
+      }),
     ).rejects.toBeInstanceOf(WrongCredentialsError);
   });
 
@@ -116,7 +110,7 @@ describe("authenticate", () => {
         agent: "browser",
         ip: "0.0.0.0",
         type: "OTP",
-      })
+      }),
     ).rejects.toBeInstanceOf(WrongCredentialsError);
   });
 
@@ -134,7 +128,7 @@ describe("authenticate", () => {
         agent: "browser",
         ip: "0.0.0.0",
         type: "BASIC",
-      })
+      }),
     ).rejects.toBeInstanceOf(UserNotVerifiedError);
   });
 
@@ -146,7 +140,7 @@ describe("authenticate", () => {
         agent: "browser",
         ip: "0.0.0.0",
         type: "BASIC",
-      })
+      }),
     ).rejects.toBeInstanceOf(WrongCredentialsError);
   });
 });

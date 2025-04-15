@@ -14,19 +14,13 @@ import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
 import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
-import {
-  PrismaOfferAndProduct,
-  PrismaOfferAndProductMapper,
-} from "@/infra/database/mappers/prisma-offer-and-product-mapper";
-import {
-  PrismaOfferAndDetails,
-  PrismaOfferAndDetailsMapper,
-} from "@/infra/database/mappers/prisma-offer-and-details-mapper";
+import { PrismaOfferAndProduct, PrismaOfferAndProductMapper } from "@/infra/database/mappers/prisma-offer-and-product-mapper";
+import { PrismaOfferAndDetails, PrismaOfferAndDetailsMapper } from "@/infra/database/mappers/prisma-offer-and-details-mapper";
 
 export class PrismaOffersRepository implements OffersRepository {
   async find<T extends OfferRepositoryReturnType>(
     type: T,
-    { id, product, catalog, since, before }: OffersRepositorySearchRequest
+    { id, product, catalog, since, before }: OffersRepositorySearchRequest,
   ): Promise<OfferEntityOf<T> | null> {
     const offer = await prisma.offer.findFirst({
       where: {
@@ -55,16 +49,14 @@ export class PrismaOffersRepository implements OffersRepository {
       case "offer-and-product":
         return PrismaOfferAndProductMapper.toDomain<T>(offer);
       case "offer-and-details":
-        return PrismaOfferAndDetailsMapper.toDomain<T>(
-          offer as PrismaOfferAndDetails
-        );
+        return PrismaOfferAndDetailsMapper.toDomain<T>(offer as PrismaOfferAndDetails);
     }
   }
 
   async list<T extends OfferRepositoryReturnType>(
     type: T,
     { id, ids, product, catalog, since, before }: OffersRepositorySearchRequest,
-    page?: number
+    page?: number,
   ): Promise<OfferEntityOf<T>[]> {
     const offers = await prisma.offer.findMany({
       where: {
@@ -80,11 +72,11 @@ export class PrismaOffersRepository implements OffersRepository {
         type === "offer-and-product"
           ? { product: true }
           : type === "offer-and-details"
-          ? {
-              product: true,
-              catalog: { include: { farm: { include: { admin: true } } } },
-            }
-          : null,
+            ? {
+                product: true,
+                catalog: { include: { farm: { include: { admin: true } } } },
+              }
+            : null,
       orderBy: { created_at: "desc" },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
@@ -93,17 +85,9 @@ export class PrismaOffersRepository implements OffersRepository {
       default:
         return offers.map(PrismaOfferMapper.toDomain<T>);
       case "offer-and-product":
-        return offers.map((offer) =>
-          PrismaOfferAndProductMapper.toDomain<T>(
-            offer as PrismaOfferAndProduct
-          )
-        );
+        return offers.map((offer) => PrismaOfferAndProductMapper.toDomain<T>(offer as PrismaOfferAndProduct));
       case "offer-and-details":
-        return offers.map((offer) =>
-          PrismaOfferAndDetailsMapper.toDomain<T>(
-            offer as PrismaOfferAndDetails
-          )
-        );
+        return offers.map((offer) => PrismaOfferAndDetailsMapper.toDomain<T>(offer as PrismaOfferAndDetails));
     }
   }
 

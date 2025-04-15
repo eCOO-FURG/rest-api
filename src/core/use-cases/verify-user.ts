@@ -22,7 +22,7 @@ export class VerifyUserUsecase {
   constructor(
     private usersRepository: UsersRepository,
     private sessionsRepository: SessionsRepository,
-    private hasher: Hasher
+    private hasher: Hasher,
   ) {}
 
   async execute({ token, ip, agent }: VerifyUserUsecaseRequest) {

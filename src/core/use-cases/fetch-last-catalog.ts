@@ -19,7 +19,7 @@ export class FetchLastCatalogUseCase {
   constructor(
     private cyclesRepository: CyclesRepository,
     private farmsRepository: FarmsRepository,
-    private catalogsRepository: CatalogsRepository
+    private catalogsRepository: CatalogsRepository,
   ) {}
 
   async execute({ cycle_id, farm_id, page }: FetchLastCatalogUseCaseRequest) {
@@ -38,8 +38,7 @@ export class FetchLastCatalogUseCase {
       before: first(cycle.offer),
     });
 
-    if (!catalog)
-      throw new ResourceNotFoundError("Catálogo no ciclo", cycle_id);
+    if (!catalog) throw new ResourceNotFoundError("Catálogo no ciclo", cycle_id);
 
     return { catalog };
   }

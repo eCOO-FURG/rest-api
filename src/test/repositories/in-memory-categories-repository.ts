@@ -17,13 +17,10 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
 
   async find<T extends CategoryRepositoryReturnType>(
     _: T,
-    { id, name }: CategoriesRepositorySearchRequest
+    { id, name }: CategoriesRepositorySearchRequest,
   ): Promise<CategoryEntityOf<T> | null> {
     const category = this.items.find((item) =>
-      Boolean(
-        (!id || item.id.equals(id)) &&
-          (!name || item.name.toLowerCase().includes(name.toLowerCase()))
-      )
+      Boolean((!id || item.id.equals(id)) && (!name || item.name.toLowerCase().includes(name.toLowerCase()))),
     );
 
     if (!category) return null;
@@ -34,13 +31,10 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
   async list<T extends CategoryRepositoryReturnType>(
     _: T,
     { id, name }: CategoriesRepositorySearchRequest,
-    page: number
+    page: number,
   ): Promise<CategoryEntityOf<T>[]> {
     let categories = this.items.filter((item) =>
-      Boolean(
-        (!id || item.id.equals(id)) &&
-          (!name || item.name.toLowerCase().includes(name.toLowerCase()))
-      )
+      Boolean((!id || item.id.equals(id)) && (!name || item.name.toLowerCase().includes(name.toLowerCase()))),
     );
 
     if (page) categories = paginate(categories, page);

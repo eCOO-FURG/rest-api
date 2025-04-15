@@ -117,18 +117,7 @@ export class Bag<Props extends BagProps = BagProps> extends Entity<Props> {
     this.touch();
   }
 
-  static create(
-    props: Optional<
-      BagProps,
-      | "status"
-      | "verified"
-      | "subtotal"
-      | "shipping"
-      | "fee"
-      | "orders"
-      | "address_id"
-    >
-  ) {
+  static create(props: Optional<BagProps, "status" | "verified" | "subtotal" | "shipping" | "fee" | "orders" | "address_id">) {
     const bag = new Bag({
       ...props,
       address_id: props.address_id ?? null,
@@ -143,12 +132,5 @@ export class Bag<Props extends BagProps = BagProps> extends Entity<Props> {
     return bag;
   }
 
-  static statuses = [
-    "PENDING",
-    "SEPARATED",
-    "DISPATCHED",
-    "RECEIVED",
-    "CANCELLED",
-    "DEFERRED",
-  ] as const;
+  static statuses = ["PENDING", "SEPARATED", "DISPATCHED", "RECEIVED", "CANCELLED", "DEFERRED"] as const;
 }

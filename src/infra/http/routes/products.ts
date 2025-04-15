@@ -23,7 +23,7 @@ products.post(
       options: { allowed: ["image/jpeg", "image/png"], size: 1 },
     },
   ]),
-  registerProductController
+  registerProductController,
 );
 
 products.patch(
@@ -35,5 +35,5 @@ products.patch(
       options: { allowed: ["image/jpeg", "image/png"], size: 1 },
     },
   ]),
-  updateProductController
+  updateProductController,
 );

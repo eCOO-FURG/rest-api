@@ -17,13 +17,11 @@ interface ListCategoriesUseCaseRequest {
 export class ListCategoriesUseCase {
   constructor(
     private readonly cyclesRepository: CyclesRepository,
-    private readonly categoriesRepository: CategoriesRepository
+    private readonly categoriesRepository: CategoriesRepository,
   ) {}
 
   async execute({ page, name, cycle_id }: ListCategoriesUseCaseRequest) {
-    const cycle = cycle_id
-      ? await this.cyclesRepository.find("cycle", { id: cycle_id })
-      : null;
+    const cycle = cycle_id ? await this.cyclesRepository.find("cycle", { id: cycle_id }) : null;
 
     if (cycle_id && !cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
@@ -33,7 +31,7 @@ export class ListCategoriesUseCase {
         name,
         offers: { cycle_id, ...(cycle && { since: first(cycle.offer) }) },
       },
-      page
+      page,
     );
 
     return { categories };

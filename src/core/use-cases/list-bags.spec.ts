@@ -29,11 +29,7 @@ describe("list user bags", () => {
 
     bagsRepository = new InMemoryBagsRepository();
 
-    sut = new ListBagsUseCase(
-      bagsRepository,
-      usersRepository,
-      cyclesRepository
-    );
+    sut = new ListBagsUseCase(bagsRepository, usersRepository, cyclesRepository);
   });
 
   it("should return a list of bags from an user", async () => {
@@ -67,7 +63,7 @@ describe("list user bags", () => {
         user_id: "1234",
         since: new Date("2024-10-05"),
         page: 1,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
   it("should return only bags within the specified date range", async () => {

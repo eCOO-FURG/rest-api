@@ -19,14 +19,10 @@ export class FetchCurrentCatalogUseCase {
   constructor(
     private cyclesRepository: CyclesRepository,
     private farmsRepository: FarmsRepository,
-    private catalogsRepository: CatalogsRepository
+    private catalogsRepository: CatalogsRepository,
   ) {}
 
-  async execute({
-    cycle_id,
-    farm_id,
-    page,
-  }: FetchCurrentCatalogUseCaseRequest) {
+  async execute({ cycle_id, farm_id, page }: FetchCurrentCatalogUseCaseRequest) {
     const cycle = await this.cyclesRepository.find("cycle", { id: cycle_id });
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
@@ -42,8 +38,7 @@ export class FetchCurrentCatalogUseCase {
       since: first(cycle.offer),
     });
 
-    if (!catalog)
-      throw new ResourceNotFoundError("Catálogo no ciclo", cycle_id);
+    if (!catalog) throw new ResourceNotFoundError("Catálogo no ciclo", cycle_id);
 
     return { catalog };
   }

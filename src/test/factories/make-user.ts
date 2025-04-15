@@ -7,8 +7,7 @@ import { Phone } from "@/core/entities/phone";
 import { faker } from "@faker-js/faker";
 
 export function makeUser(props: Partial<UserProps> = {}) {
-  const cpf =
-    props.cpf ?? new CPF(faker.number.bigInt({ min: 11, max: 11 }).toString());
+  const cpf = props.cpf ?? new CPF(faker.number.bigInt({ min: 11, max: 11 }).toString());
 
   return User.create({
     ...props,

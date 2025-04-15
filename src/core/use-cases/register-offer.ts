@@ -38,18 +38,10 @@ export class RegisterOfferUseCase {
     private productsRepository: ProductsRepository,
     private catalogsRepository: CatalogsRepository,
     private cyclesRepository: CyclesRepository,
-    private offersRepository: OffersRepository
+    private offersRepository: OffersRepository,
   ) {}
 
-  async execute({
-    farm_id,
-    product_id,
-    cycle_id,
-    amount,
-    price,
-    description,
-    expires_at,
-  }: RegisterOfferUseCaseRequest) {
+  async execute({ farm_id, product_id, cycle_id, amount, price, description, expires_at }: RegisterOfferUseCaseRequest) {
     const farm = await this.farmsRepository.find("farm", { id: farm_id });
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
@@ -62,8 +54,7 @@ export class RegisterOfferUseCase {
 
     if (!product) throw new ResourceNotFoundError("Produto", product_id);
 
-    if (!product.perishable && !expires_at)
-      throw new MissingFieldError("expires_at");
+    if (!product.perishable && !expires_at) throw new MissingFieldError("expires_at");
 
     if (product.archived) throw new ResourceClosedError("Produto", product_id);
 
@@ -71,8 +62,7 @@ export class RegisterOfferUseCase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    if (!cycle.offer.includes(today()))
-      throw new ResourceClosedError("Ciclo", cycle.id.value);
+    if (!cycle.offer.includes(today())) throw new ResourceClosedError("Ciclo", cycle.id.value);
 
     const { catalog, existed } = await this.useCatalog(farm, cycle);
 
@@ -85,8 +75,7 @@ export class RegisterOfferUseCase {
       if (previous) throw new ResourceAlreadyExistsError("Oferta", product_id);
     }
 
-    if (product.pricing === "WEIGHT" && amount % 1000 !== 0)
-      throw new InvalidWeightError("ofertado", product_id);
+    if (product.pricing === "WEIGHT" && amount % 1000 !== 0) throw new InvalidWeightError("ofertado", product_id);
 
     const offer = Offer.create({
       catalog_id: catalog.id,
@@ -100,9 +89,9 @@ export class RegisterOfferUseCase {
 
     catalog.offers.push(offer);
 
-    existed
-      ? await this.catalogsRepository.update(catalog)
-      : await this.catalogsRepository.create(catalog);
+    if (existed) return await this.catalogsRepository.update(catalog);
+
+    return await this.catalogsRepository.create(catalog);
   }
 
   private async useCatalog(farm: Farm, cycle: Cycle) {

@@ -18,7 +18,7 @@ export class FetchInboundReportUseCase {
   constructor(
     private boxesRepository: BoxesRepository,
     private cyclesRepository: CyclesRepository,
-    private pdfService: PDFService
+    private pdfService: PDFService,
   ) {}
 
   async execute({ since, before, cycle_id }: FetchInboundReportUseCaseRequest) {

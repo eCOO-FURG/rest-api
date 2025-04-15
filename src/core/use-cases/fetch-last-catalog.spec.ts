@@ -34,11 +34,7 @@ describe("Fetch last catalog", () => {
 
     cyclesRepository = new InMemoryCyclesRepository();
 
-    sut = new FetchLastCatalogUseCase(
-      cyclesRepository,
-      farmsRepository,
-      catalogsRepository
-    );
+    sut = new FetchLastCatalogUseCase(cyclesRepository, farmsRepository, catalogsRepository);
   });
 
   it("should be able to fetch the last catalog from a farm in a cycle", async () => {
@@ -91,7 +87,7 @@ describe("Fetch last catalog", () => {
         cycle_id: cycle.id.value,
         farm_id: farm.id.value,
         page: 1,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
@@ -107,7 +103,7 @@ describe("Fetch last catalog", () => {
         cycle_id: "non-existent-cycle",
         farm_id: farm.id.value,
         page: 1,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
@@ -120,7 +116,7 @@ describe("Fetch last catalog", () => {
         cycle_id: cycle.id.value,
         farm_id: "non-existent-farm",
         page: 1,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
@@ -130,7 +126,7 @@ describe("Fetch last catalog", () => {
         cycle_id: "non-existent-cycle",
         farm_id: "non-existent-farm",
         page: 1,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

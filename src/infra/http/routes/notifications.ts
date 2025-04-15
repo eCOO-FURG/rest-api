@@ -21,5 +21,5 @@ notifications.post(
       },
     },
   ]),
-  sendNotificationController
+  sendNotificationController,
 );

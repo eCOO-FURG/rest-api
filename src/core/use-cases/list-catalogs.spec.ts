@@ -30,11 +30,7 @@ describe("list catalogs", () => {
     catalogsRepository = new InMemoryCatalogsRepository();
     categoriesRepository = new InMemoryCategoriesRepository();
 
-    sut = new ListCatalogsUseCase(
-      cyclesRepository,
-      catalogsRepository,
-      categoriesRepository
-    );
+    sut = new ListCatalogsUseCase(cyclesRepository, catalogsRepository, categoriesRepository);
   });
 
   it("should be able to list catalogs", async () => {
@@ -82,7 +78,7 @@ describe("list catalogs", () => {
       sut.execute({
         cycle_id: "123",
         page: 1,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
@@ -95,7 +91,7 @@ describe("list catalogs", () => {
         cycle_id: cycle.id.value,
         page: 1,
         category_id: "123",
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
@@ -178,8 +174,6 @@ describe("list catalogs", () => {
     });
 
     expect(result.catalogs.length).toBe(5);
-    expect(result.catalogs[0].offers[0].product!.category_id).toEqual(
-      category.id
-    );
+    expect(result.catalogs[0].offers[0].product!.category_id).toEqual(category.id);
   });
 });

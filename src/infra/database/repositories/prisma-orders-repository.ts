@@ -14,15 +14,12 @@ import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
 import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
-import {
-  PrismaOrderAndOffer,
-  PrismaOrderAndOfferMapper,
-} from "@/infra/database/mappers/prisma-order-and-offer-mapper";
+import { PrismaOrderAndOffer, PrismaOrderAndOfferMapper } from "@/infra/database/mappers/prisma-order-and-offer-mapper";
 
 export class PrismaOrdersRepository implements OrdersRepository {
   async find<T extends OrderRepositoryReturnType>(
     type: T,
-    { id, bag, offer, since, before }: OrdersRepositorySearchRequest
+    { id, bag, offer, since, before }: OrdersRepositorySearchRequest,
   ): Promise<OrderEntityOf<T> | null> {
     const order = await prisma.order.findFirst({
       where: {
@@ -44,9 +41,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
       default:
         return PrismaOrderMapper.toDomain<T>(order);
       case "order-and-offer":
-        return PrismaOrderAndOfferMapper.toDomain<T>(
-          order as PrismaOrderAndOffer
-        );
+        return PrismaOrderAndOfferMapper.toDomain<T>(order as PrismaOrderAndOffer);
     }
   }
 
@@ -64,8 +59,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
 
       const verified = bag.orders.every((order) => order.status !== "PENDING");
 
-      const refund =
-        order.status === "CANCELLED" || order.status === "REJECTED";
+      const refund = order.status === "CANCELLED" || order.status === "REJECTED";
 
       if (verified != bag.verified || refund) {
         await ctx.bag.update({

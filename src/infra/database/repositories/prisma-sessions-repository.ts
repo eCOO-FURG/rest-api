@@ -18,7 +18,7 @@ import { PrismaSessionMapper } from "@/infra/database/mappers/prisma-session-map
 export class PrismaSessionsRepository implements SessionsRepository {
   async find<T extends SessionRepositoryReturnType>(
     _: T,
-    { ip, agent, user, since }: SessionsRepositorySearchRequest
+    { ip, agent, user, since }: SessionsRepositorySearchRequest,
   ): Promise<SessionEntityOf<T> | null> {
     const session = await prisma.session.findFirst({
       where: {

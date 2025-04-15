@@ -46,13 +46,7 @@ describe("offer products", () => {
     catalogsRepository = new InMemoryCatalogsRepository();
     offersRepository = new InMemoryOffersRepository();
 
-    sut = new RegisterOfferUseCase(
-      farmsRepository,
-      productsRepository,
-      catalogsRepository,
-      cyclesRepository,
-      offersRepository
-    );
+    sut = new RegisterOfferUseCase(farmsRepository, productsRepository, catalogsRepository, cyclesRepository, offersRepository);
   });
 
   it("should be able to offer a product", async () => {
@@ -93,7 +87,7 @@ describe("offer products", () => {
         farm_id: "123",
         amount: 10,
         price: 10,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
@@ -115,7 +109,7 @@ describe("offer products", () => {
         expires_at: new Date(),
         amount: 10,
         price: 10,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceClosedError);
   });
 
@@ -138,7 +132,7 @@ describe("offer products", () => {
 
         amount: 10,
         price: 10,
-      })
+      }),
     ).rejects.toBeInstanceOf(FarmNotActiveError);
   });
 
@@ -157,7 +151,7 @@ describe("offer products", () => {
         expires_at: new Date(),
         amount: 10,
         price: 10,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
@@ -176,7 +170,7 @@ describe("offer products", () => {
         expires_at: new Date(),
         amount: 10,
         price: 10,
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
@@ -218,7 +212,7 @@ describe("offer products", () => {
         amount: 10,
         price: 10,
         expires_at: new Date(),
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 
@@ -240,7 +234,7 @@ describe("offer products", () => {
         amount: 10,
         price: 10,
         expires_at: new Date(),
-      })
+      }),
     ).rejects.toBeInstanceOf(InvalidWeightError);
   });
 
@@ -267,7 +261,7 @@ describe("offer products", () => {
         amount: 10,
         price: 10,
         expires_at: new Date(),
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceClosedError);
   });
 
@@ -289,7 +283,7 @@ describe("offer products", () => {
         amount: 10,
         price: 10,
         description: "Novo.",
-      })
+      }),
     ).rejects.toBeInstanceOf(MissingFieldError);
   });
 });

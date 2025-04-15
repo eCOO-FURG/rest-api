@@ -19,7 +19,7 @@ import { PrismaFarmAndAdminMapper } from "@/infra/database/mappers/prisma-farm-a
 export class PrismaFarmsRepository implements FarmsRepository {
   async find<T extends FarmRepositoryReturnType>(
     type: T,
-    { id, name, status, tally, admin }: FarmsRepositorySearchRequest
+    { id, name, status, tally, admin }: FarmsRepositorySearchRequest,
   ): Promise<FarmEntityOf<T> | null> {
     const farm = await prisma.farm.findFirst({
       where: {
@@ -47,7 +47,7 @@ export class PrismaFarmsRepository implements FarmsRepository {
   async list<T extends FarmRepositoryReturnType>(
     type: T,
     { id, name, status, tally, admin }: FarmsRepositorySearchRequest,
-    page?: number
+    page?: number,
   ): Promise<FarmEntityOf<T>[]> {
     const farms = await prisma.farm.findMany({
       where: {
@@ -91,13 +91,7 @@ export class PrismaFarmsRepository implements FarmsRepository {
     });
   }
 
-  async count({
-    id,
-    name,
-    status,
-    tally,
-    admin,
-  }: FarmsRepositorySearchRequest): Promise<number> {
+  async count({ id, name, status, tally, admin }: FarmsRepositorySearchRequest): Promise<number> {
     return await prisma.farm.count({
       where: {
         id,

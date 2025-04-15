@@ -23,7 +23,7 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
 
   async find<T extends CatalogRepositoryReturnType>(
     type: T,
-    { id, before, cycle, farm, offers, since }: CatalogsRepositorySearchRequest
+    { id, before, cycle, farm, offers, since }: CatalogsRepositorySearchRequest,
   ): Promise<CatalogEntityOf<T> | null> {
     const catalog = this.items.find((item) =>
       Boolean(
@@ -34,11 +34,9 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
           (!farm?.id || item.farm_id.equals(farm.id)) &&
           (!farm?.name || item?.farm?.name.includes(farm.name)) &&
           (!offers?.id || item.offers.some((o) => o.id.equals(offers.id!))) &&
-          (!offers?.product?.name ||
-            item.offers.some((offer) =>
-              offer.product?.name.includes(offers?.product?.name!)
-            ))
-      )
+          // @ts-expect-error: ensure non nullable value
+          (!offers?.product?.name || item.offers.some((offer) => offer.product?.name.includes(offers?.product?.name))),
+      ),
     );
 
     if (!catalog) return null;
@@ -63,7 +61,7 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
   async list<T extends CatalogRepositoryReturnType>(
     type: T,
     { before, cycle, farm, offers, since }: CatalogsRepositorySearchRequest,
-    page?: number
+    page?: number,
   ): Promise<CatalogEntityOf<T>[]> {
     let catalogs = this.items.filter((item) =>
       Boolean(
@@ -73,20 +71,17 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
           (!farm?.id || item.farm_id.equals(farm.id)) &&
           (!farm?.name || item?.farm?.name.includes(farm.name)) &&
           (!offers?.id || item.offers.some((o) => o.id.equals(offers.id!))) &&
-          (!offers?.product?.name ||
-            item.offers.some((offer) =>
-              offer.product?.name.includes(offers?.product?.name!)
-            )) &&
+          // @ts-expect-error: ensure non nullable value
+          (!offers?.product?.name || item.offers.some((offer) => offer.product?.name.includes(offers?.product?.name))) &&
           (!offers?.product?.category?.id ||
-            item.offers.some((offer) =>
-              offer.product?.category?.id.equals(offers?.product?.category?.id!)
-            )) &&
+            // @ts-expect-error: ensure non nullable value
+            item.offers.some((offer) => offer.product?.category?.id.equals(offers?.product?.category?.id))) &&
           (!offers?.expired ||
             (typeof offers?.expired === "boolean" &&
               (offers.expired
                 ? item.offers.some((offer) => offer.expires_at! <= new Date())
-                : item.offers.some((offer) => offer.expires_at! > new Date()))))
-      )
+                : item.offers.some((offer) => offer.expires_at! > new Date())))),
+      ),
     );
 
     if (page) catalogs = paginate(catalogs, page);

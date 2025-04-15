@@ -17,7 +17,7 @@ export class InMemoryUsersRepository implements UsersRepository {
 
   async find<T extends UserRepositoryReturnType>(
     _: T,
-    { id, email, phone, cpf, chat, roles }: UsersRepositorySearchRequest
+    { id, email, phone, cpf, chat, roles }: UsersRepositorySearchRequest,
   ): Promise<UserEntityOf<T> | null> {
     const user = this.items.find((item) =>
       Boolean(
@@ -26,8 +26,8 @@ export class InMemoryUsersRepository implements UsersRepository {
           (!phone || item.phone.equals(phone)) &&
           (!cpf || item.cpf.equals(cpf)) &&
           (!chat || item.chat === chat) &&
-          (!roles || roles.every((role) => item.roles.includes(role)))
-      )
+          (!roles || roles.every((role) => item.roles.includes(role))),
+      ),
     );
 
     if (!user) return null;
@@ -38,7 +38,7 @@ export class InMemoryUsersRepository implements UsersRepository {
   async list<T extends UserRepositoryReturnType>(
     _: T,
     { id, email, phone, cpf, roles, chat }: UsersRepositorySearchRequest,
-    page?: number
+    page?: number,
   ): Promise<UserEntityOf<T>[]> {
     let users = this.items.filter((item) =>
       Boolean(
@@ -47,8 +47,8 @@ export class InMemoryUsersRepository implements UsersRepository {
           (!phone || item.phone.equals(phone)) &&
           (!cpf || item.cpf.equals(cpf)) &&
           (!chat || item.chat === chat) &&
-          (!roles || roles.every((role) => item.roles.includes(role)))
-      )
+          (!roles || roles.every((role) => item.roles.includes(role))),
+      ),
     );
 
     if (page) users = paginate(users, page);

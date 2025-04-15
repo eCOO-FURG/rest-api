@@ -25,7 +25,7 @@ export class RequestHelpUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private farmsRepository: FarmsRepository,
-    private mailer: Mailer
+    private mailer: Mailer,
   ) {}
 
   async execute({ user_id, content }: RequestHelpUseCaseRequest) {

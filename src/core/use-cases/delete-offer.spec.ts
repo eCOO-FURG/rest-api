@@ -11,9 +11,7 @@ import { makeProduct } from "@/test/factories/make-product";
 // Repositories
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
-import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -30,11 +28,7 @@ describe("delete offer", () => {
     offersRepository = new InMemoryOffersRepository();
     catalogsRepository = new InMemoryCatalogsRepository();
 
-    sut = new DeleteOfferUseCase(
-      offersRepository,
-      catalogsRepository,
-      cyclesRepository
-    );
+    sut = new DeleteOfferUseCase(offersRepository, catalogsRepository, cyclesRepository);
   });
 
   it("should be able to delete an offer", async () => {
@@ -75,9 +69,7 @@ describe("delete offer", () => {
 
     const farm = makeFarm({ status: "ACTIVE" });
 
-    await expect(() =>
-      sut.execute({ farm_id: farm.id.value, offer_id: "123" })
-    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+    await expect(() => sut.execute({ farm_id: farm.id.value, offer_id: "123" })).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
   it("should not be able to delete an offer from a nonexistent cycle", async () => {
@@ -99,9 +91,7 @@ describe("delete offer", () => {
     catalog.offers.push(offer);
     catalogsRepository.update(catalog);
 
-    await expect(() =>
-      sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value })
-    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+    await expect(() => sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value })).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
   it("should not be able to delete an offer from another farm", async () => {
@@ -129,8 +119,6 @@ describe("delete offer", () => {
     catalog.offers.push(offer);
     catalogsRepository.update(catalog);
 
-    await expect(() =>
-      sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value })
-    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+    await expect(() => sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value })).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

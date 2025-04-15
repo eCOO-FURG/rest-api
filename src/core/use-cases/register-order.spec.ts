@@ -69,7 +69,7 @@ describe("order product", () => {
       boxesRepository,
       addressesRepository,
       otpProvider,
-      mailer
+      mailer,
     );
   });
 
@@ -182,7 +182,7 @@ describe("order product", () => {
             amount: 5,
           },
         ],
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
@@ -200,7 +200,7 @@ describe("order product", () => {
             amount: 5,
           },
         ],
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
@@ -216,7 +216,7 @@ describe("order product", () => {
         user_id: user.id.value,
         cycle_id: cycle.id.value,
         request: [{ offer_id: "1234", amount: 5 }],
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
@@ -247,7 +247,7 @@ describe("order product", () => {
         user_id: user.id.value,
         cycle_id: cycle.id.value,
         request: [{ offer_id: offer.id.value, amount: 5 }],
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceClosedError);
   });
 
@@ -287,7 +287,7 @@ describe("order product", () => {
             amount: 5,
           },
         ],
-      })
+      }),
     ).rejects.toBeInstanceOf(ResourceClosedError);
   });
 
@@ -319,7 +319,7 @@ describe("order product", () => {
         user_id: user.id.value,
         cycle_id: cycle.id.value,
         request: [{ offer_id: offer.id.value, amount: 15 }],
-      })
+      }),
     ).rejects.toBeInstanceOf(UnavailableAmountError);
   });
 
@@ -353,7 +353,7 @@ describe("order product", () => {
         user_id: user.id.value,
         cycle_id: cycle.id.value,
         request: [{ offer_id: offer.id.value, amount: 27 }],
-      })
+      }),
     ).rejects.toBeInstanceOf(InvalidWeightError);
   });
 });

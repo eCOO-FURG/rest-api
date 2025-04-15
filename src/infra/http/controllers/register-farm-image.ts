@@ -24,18 +24,13 @@ export const registerFarmImageSchema = Joi.object({
   image: file.required(),
 });
 
-export async function registerFarmImageController(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export async function registerFarmImageController(request: Request, response: Response, next: NextFunction) {
   try {
     const { farm_id } = parse(registerFarmImageParams, request.params);
 
     const { image } = parse(registerFarmImageSchema, request.body);
 
-    const registerFarmImageUseCase =
-      container.resolve<RegisterFarmImageUseCase>("registerFarmImageUseCase");
+    const registerFarmImageUseCase = container.resolve<RegisterFarmImageUseCase>("registerFarmImageUseCase");
 
     await registerFarmImageUseCase.execute({
       farm_id,

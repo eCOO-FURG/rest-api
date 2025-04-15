@@ -20,17 +20,11 @@ export const listCategoriesQuery = Joi.object({
   cycle_id: Joi.string().uuid().optional(),
 });
 
-export async function listCategoriesController(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export async function listCategoriesController(request: Request, response: Response, next: NextFunction) {
   try {
     const { page, name, cycle_id } = parse(listCategoriesQuery, request.query);
 
-    const listCategoriesUseCase = container.resolve<ListCategoriesUseCase>(
-      "listCategoriesUseCase"
-    );
+    const listCategoriesUseCase = container.resolve<ListCategoriesUseCase>("listCategoriesUseCase");
 
     const { categories } = await listCategoriesUseCase.execute({
       name,
@@ -38,9 +32,7 @@ export async function listCategoriesController(
       cycle_id,
     });
 
-    return response
-      .status(200)
-      .send(categories.map((category) => CategoryPresenter.toHttp(category)));
+    return response.status(200).send(categories.map((category) => CategoryPresenter.toHttp(category)));
   } catch (error) {
     next(error);
   }

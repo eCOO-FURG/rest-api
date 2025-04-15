@@ -15,14 +15,7 @@ import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-map
 export class PrismaAddressesRepository implements AddressesRepository {
   async find<T extends AddressRepositoryReturnType>(
     _: T,
-    {
-      id,
-      complement,
-      number,
-      street,
-      postal_code,
-      neighborhood,
-    }: AddressesRepositorySearchRequest
+    { id, complement, number, street, postal_code, neighborhood }: AddressesRepositorySearchRequest,
   ): Promise<AddressEntityOf<T> | null> {
     const address = await prisma.address.findFirst({
       where: { id, complement, number, street, postal_code, neighborhood },

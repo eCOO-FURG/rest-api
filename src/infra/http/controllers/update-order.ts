@@ -24,18 +24,13 @@ export const updateOrderSchema = Joi.object({
     .required(),
 });
 
-export async function updateOrderController(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export async function updateOrderController(request: Request, response: Response, next: NextFunction) {
   try {
     const { order_id } = parse(updateOrderParams, request.params);
 
     const { status } = parse(updateOrderSchema, request.body);
 
-    const updateOrderUseCase =
-      container.resolve<UpdateOrderUseCase>("updateOrderUseCase");
+    const updateOrderUseCase = container.resolve<UpdateOrderUseCase>("updateOrderUseCase");
 
     await updateOrderUseCase.execute({
       user_id: request.user_id,

@@ -21,7 +21,7 @@ export class FetchPendingsUseCase {
     private cyclesRepository: CyclesRepository,
     private farmsRepository: FarmsRepository,
     private boxesRepository: BoxesRepository,
-    private cacheManager: CacheManager
+    private cacheManager: CacheManager,
   ) {}
 
   async execute({ cycle_id }: FetchPendingsUseCaseRequest) {
@@ -51,9 +51,7 @@ export class FetchPendingsUseCase {
   private async countBoxes(cycle_id: string, period: Date) {
     const date = period.toISOString();
 
-    let boxes = await this.cacheManager.get<number>(
-      `boxes:pending:${cycle_id}:${date}`
-    );
+    let boxes = await this.cacheManager.get<number>(`boxes:pending:${cycle_id}:${date}`);
 
     if (boxes == null) {
       boxes = await this.boxesRepository.count({

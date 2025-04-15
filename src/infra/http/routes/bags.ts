@@ -17,9 +17,4 @@ bags.get("/", listBagsController);
 bags.get("/current", ensureRole(["BROKER"]), listCurrentBagsController);
 bags.get("/:bag_id", fetchBagController);
 
-bags.patch(
-  "/:bag_id",
-  ensureRole(["BROKER"]),
-  ensureAuthenticated,
-  updateBagController
-);
+bags.patch("/:bag_id", ensureRole(["BROKER"]), ensureAuthenticated, updateBagController);

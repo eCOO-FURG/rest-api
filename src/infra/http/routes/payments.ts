@@ -2,7 +2,6 @@
 import { Router } from "express";
 
 // Middlewares
-import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
 import { ensureRole } from "@/infra/http/middlewares/ensure-role";
 
 // Controllers
@@ -15,8 +14,4 @@ export const payments = Router();
 payments.post("/", ensureRole(["MANAGER"]), registerPaymentController);
 payments.post("/open", ensureRole(["MANAGER"]), openPaymentController);
 
-payments.patch(
-  "/:payment_id",
-  ensureRole(["MANAGER"]),
-  updatePaymentController
-);
+payments.patch("/:payment_id", ensureRole(["MANAGER"]), updatePaymentController);

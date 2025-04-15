@@ -21,7 +21,7 @@ export class InMemoryFarmsRepository implements FarmsRepository {
 
   async find<T extends FarmRepositoryReturnType>(
     type: T,
-    { id, name, status, tally, admin }: FarmsRepositorySearchRequest
+    { id, name, status, tally, admin }: FarmsRepositorySearchRequest,
   ): Promise<FarmEntityOf<T> | null> {
     const farm = this.items.find((item) =>
       Boolean(
@@ -29,8 +29,8 @@ export class InMemoryFarmsRepository implements FarmsRepository {
           (!admin?.id || item.admin_id.equals(admin.id)) &&
           (!name || item.name.includes(name)) &&
           (!tally || item.tally === tally) &&
-          (!status || item.status === status)
-      )
+          (!status || item.status === status),
+      ),
     );
 
     if (!farm) return null;
@@ -49,7 +49,7 @@ export class InMemoryFarmsRepository implements FarmsRepository {
   async list<T extends FarmRepositoryReturnType>(
     type: T,
     { id, admin, name, tally, status }: FarmsRepositorySearchRequest,
-    page?: number
+    page?: number,
   ): Promise<FarmEntityOf<T>[]> {
     let farms = this.items.filter((item) =>
       Boolean(
@@ -57,8 +57,8 @@ export class InMemoryFarmsRepository implements FarmsRepository {
           (!admin?.id || item.admin_id.equals(admin.id)) &&
           (!name || item.name.includes(name)) &&
           (!tally || item.tally === tally) &&
-          (!status || item.status === status)
-      )
+          (!status || item.status === status),
+      ),
     );
 
     if (page) farms = paginate(farms, page);
@@ -71,7 +71,7 @@ export class InMemoryFarmsRepository implements FarmsRepository {
           FarmAndAdmin.create({
             ...farm.props,
             admin: farm.admin ?? makeUser(),
-          })
+          }),
         ) as FarmEntityOf<T>[];
     }
   }
@@ -85,19 +85,14 @@ export class InMemoryFarmsRepository implements FarmsRepository {
     this.items[itemIndex] = farm;
   }
 
-  async count({
-    status,
-    admin,
-    id,
-    tally,
-  }: FarmsRepositorySearchRequest): Promise<number> {
+  async count({ status, admin, id, tally }: FarmsRepositorySearchRequest): Promise<number> {
     return this.items.filter((item) =>
       Boolean(
         (!status || item.status === status) &&
           (!admin?.id || item.admin_id.equals(admin.id)) &&
           (!id || item.id.equals(id)) &&
-          (!tally || item.tally === tally)
-      )
+          (!tally || item.tally === tally),
+      ),
     ).length;
   }
 }

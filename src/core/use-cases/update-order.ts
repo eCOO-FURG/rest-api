@@ -20,7 +20,7 @@ export class UpdateOrderUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private bagsRepository: BagsRepository,
-    private ordersRepository: OrdersRepository
+    private ordersRepository: OrdersRepository,
   ) {}
 
   async execute({ user_id, order_id, status }: UpdateOrderUseCaseRequest) {
@@ -42,11 +42,9 @@ export class UpdateOrderUseCase {
 
     const owner = bag.customer_id.equals(user_id);
 
-    if (!owner && !user.admin)
-      throw new ResourceNotFoundError("Pedido", order_id);
+    if (!owner && !user.admin) throw new ResourceNotFoundError("Pedido", order_id);
 
-    if (order.status === "CANCELLED")
-      throw new ResourceClosedError("Pedido", order_id);
+    if (order.status === "CANCELLED") throw new ResourceClosedError("Pedido", order_id);
 
     order.status = status;
     order.touch();

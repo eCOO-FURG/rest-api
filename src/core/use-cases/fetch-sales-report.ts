@@ -24,16 +24,10 @@ export class FetchSalesReportUseCase {
     private bagsRepository: BagsRepository,
     private catalogsRepository: CatalogsRepository,
     private pdfService: PDFService,
-    private spreadsheetService: SpreadsheetService
+    private spreadsheetService: SpreadsheetService,
   ) {}
 
-  async execute({
-    cycle_id,
-    type,
-    since,
-    before,
-    withdraw,
-  }: FetchSalesReportUseCaseRequest) {
+  async execute({ cycle_id, type, since, before, withdraw }: FetchSalesReportUseCaseRequest) {
     if (cycle_id) {
       const cycle = await this.cyclesRepository.find("cycle", {
         id: cycle_id,

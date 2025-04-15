@@ -14,15 +14,15 @@ export class InMemorySessionsRepository implements SessionsRepository {
 
   async find<T extends SessionRepositoryReturnType>(
     _: T,
-    { agent, ip, user, since }: SessionsRepositorySearchRequest
+    { agent, ip, user, since }: SessionsRepositorySearchRequest,
   ): Promise<SessionEntityOf<T> | null> {
     const session = this.items.find((item) =>
       Boolean(
         (!agent || item.agent === agent) &&
           (!ip || item.ip === ip) &&
           (!user?.id || item.user?.id.equals(user.id)) &&
-          (!since || item.created_at >= since)
-      )
+          (!since || item.created_at >= since),
+      ),
     );
 
     if (!session) return null;

@@ -24,20 +24,11 @@ export const sendNotificationSchema = Joi.object({
   files: files.optional(),
 });
 
-export async function sendNotificationController(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export async function sendNotificationController(request: Request, response: Response, next: NextFunction) {
   try {
-    const { title, message, role, files } = parse(
-      sendNotificationSchema,
-      request.body
-    );
+    const { title, message, role, files } = parse(sendNotificationSchema, request.body);
 
-    const sendNotificationUseCase = container.resolve<SendNotificationUseCase>(
-      "sendNotificationUseCase"
-    );
+    const sendNotificationUseCase = container.resolve<SendNotificationUseCase>("sendNotificationUseCase");
 
     await sendNotificationUseCase.execute({
       title,

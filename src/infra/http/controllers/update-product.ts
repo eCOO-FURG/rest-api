@@ -41,22 +41,13 @@ export const updateProductSchema = Joi.object({
   archived: boolean.optional(),
 });
 
-export async function updateProductController(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export async function updateProductController(request: Request, response: Response, next: NextFunction) {
   try {
     const { product_id } = parse(updateProductParams, request.params);
 
-    const { name, pricing, archived, image, category_id, perishable } = parse(
-      updateProductSchema,
-      request.body
-    );
+    const { name, pricing, archived, image, category_id, perishable } = parse(updateProductSchema, request.body);
 
-    const updateProductUseCase = container.resolve<UpdateProductUseCase>(
-      "updateProductUseCase"
-    );
+    const updateProductUseCase = container.resolve<UpdateProductUseCase>("updateProductUseCase");
 
     await updateProductUseCase.execute({
       product_id,

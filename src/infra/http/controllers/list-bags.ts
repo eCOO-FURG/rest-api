@@ -35,19 +35,11 @@ export const listBagsQuery = Joi.object({
     .optional(),
 });
 
-export async function listBagsController(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export async function listBagsController(request: Request, response: Response, next: NextFunction) {
   try {
-    const { page, since, before, cycle_id, user_id, statuses } = parse(
-      listBagsQuery,
-      request.query
-    );
+    const { page, since, before, cycle_id, user_id, statuses } = parse(listBagsQuery, request.query);
 
-    const listBagsUseCase =
-      container.resolve<ListBagsUseCase>("listBagsUseCase");
+    const listBagsUseCase = container.resolve<ListBagsUseCase>("listBagsUseCase");
 
     const { bags } = await listBagsUseCase.execute({
       user_id: request.admin ? user_id : request.user_id,
@@ -58,9 +50,7 @@ export async function listBagsController(
       page,
     });
 
-    return response
-      .status(200)
-      .send(bags.map((bag) => BagPresenter.toHttp(bag)));
+    return response.status(200).send(bags.map((bag) => BagPresenter.toHttp(bag)));
   } catch (error) {
     next(error);
   }
