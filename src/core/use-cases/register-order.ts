@@ -116,8 +116,6 @@ export class RegisterOrderUseCase {
 
       const box = await this.useBox(offer.catalog.id);
 
-      const subtotal = this.useSubtotal(offer.product.pricing, offer.price, item.amount);
-
       const order = Order.create({
         box_id: box.id,
         bag_id: bag.id,
@@ -125,8 +123,8 @@ export class RegisterOrderUseCase {
         offer_id: offer.id,
         offer,
         amount: item.amount,
-        fee: offer.catalog.fee,
-        subtotal,
+        fee: this.useFee(offer.product.pricing, offer.fee, item.amount),
+        subtotal: this.useSubtotal(offer.product.pricing, offer.price, item.amount),
       });
 
       bag.add(order);
@@ -232,5 +230,9 @@ export class RegisterOrderUseCase {
 
   private useSubtotal(pricing: ProductPricing, price: number, amount: number) {
     return pricing === "WEIGHT" ? price * (amount / 1000) : price * amount;
+  }
+
+  private useFee(pricing: ProductPricing, fee: number, amount: number) {
+    return pricing === "WEIGHT" ? fee * (amount / 1000) : fee * amount;
   }
 }
