@@ -54,7 +54,7 @@ interface RegisterOrderUseCaseRequest {
 
 interface UseBagRequest {
   bag_id?: string;
-  address?: Address;
+  address: Address | null;
   user: User;
   cycle: Cycle;
 }
@@ -153,7 +153,7 @@ export class RegisterOrderUseCase {
   }
 
   private async useAddress(address: RegisterOrderUseCaseRequest["address"]) {
-    if (!address) return;
+    if (!address) return null;
 
     const found = await this.addressesRepository.find("address", {
       street: address.street,
@@ -199,7 +199,7 @@ export class RegisterOrderUseCase {
     const bag = Bag.create({
       customer_id: user.id,
       cycle_id: cycle.id,
-      address_id: address?.id,
+      address_id: address ? address.id : null,
       address,
       code,
     });

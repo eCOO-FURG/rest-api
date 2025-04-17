@@ -98,7 +98,7 @@ export async function seedDevelopment() {
       verified_at: new Date(),
       bags: {
         create: {
-          code: "123-456",
+          code: "418293",
           subtotal: price,
           fee: price * (20 / 100),
           status: "PENDING",

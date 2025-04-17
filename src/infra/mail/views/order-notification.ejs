@@ -41,33 +41,33 @@
         margin-bottom: 20px;
       }
       .order-box {
+        margin-top: 10px;
         width: 100%;
         background: white;
         border-radius: 6px;
-        padding: 15px;
+        padding: 10px;
         font-size: 14px;
         color: #545f71;
         margin-bottom: 15px;
       }
       .order-box strong {
         display: block;
-        font-size: 14px;
+        font-size: 12px;
         text-align: start;
         font-weight: bold;
         padding-bottom: 8px;
       }
       .order-item {
-        font-size: 14px;
+        font-size: 12px;
         padding: 5px 0;
       }
       .total-box {
         width: 100%;
         background: white;
         border-radius: 6px;
-        padding: 15px;
-        font-size: 14px;
+        padding: 10px;
+        font-size: 12px;
         color: #545f71;
-        padding-bottom: 22px;
         text-align: start;
       }
       .total-box strong {
@@ -75,10 +75,12 @@
         font-size: 14px;
         text-align: start;
         font-weight: bold;
-        padding-bottom: 8px;
+      }
+
+      .total-box strong:last-child {
+        font-size: 14px;
       }
       .pickup-info {
-        padding: 22px 0;
         font-size: 14px;
         font-weight: 500;
         line-height: 22px;
@@ -97,58 +99,46 @@
         compra!
       </p>
 
-      <% let groupedOrders = {}; props.bag.orders.forEach((order) => { let
-      farmName = order.offer.catalog.farm.name; let productName =
-      order.offer.product.name; let pricingType = order.offer.product.pricing;
-      if (!groupedOrders[farmName]) { groupedOrders[farmName] = {}; } if
-      (!groupedOrders[farmName][productName]) {
-      groupedOrders[farmName][productName] = { totalAmount: 0, totalPrice: 0,
-      productName: productName, pricingType: pricingType, }; } if (pricingType
-      === "WEIGHT") { groupedOrders[farmName][productName].totalAmount +=
-      order.amount; groupedOrders[farmName][productName].totalPrice +=
-      (order.amount / 1000) * order.offer.price; } else { // Se for UNIT
-      groupedOrders[farmName][productName].totalAmount += order.amount;
-      groupedOrders[farmName][productName].totalPrice += order.amount *
-      order.offer.price; } }); %> <%
-      Object.keys(groupedOrders).forEach((farmName) => { %>
-      <div class="order-box">
-        <strong><%= farmName %></strong>
-        <% Object.values(groupedOrders[farmName]).forEach((item) => { %>
-        <div class="order-item">
-          <span>
-            <% if (item.pricingType === "WEIGHT") { %> <%= item.totalAmount >=
-            1000 ? (item.totalAmount / 1000).toFixed(2) + 'kg' :
-            item.totalAmount + 'g' %> <% } else { %> <%= item.totalAmount + 'un'
-            %> <% } %> - <%= item.productName %>
-          </span>
-          <span>R$<%= Number(item.totalPrice).toFixed(2) %></span>
-        </div>
-        <% }) %>
-      </div>
-      <% }) %>
-
       <div class="total-box">
         <strong>Sacola <%= props.bag.code %></strong>
 
         <div class="order-item">
-          <span>Subtotal:</span>
-          <span>R$<%= props.bag.subtotal.toFixed(2) %></span>
-        </div>
-        <% if (props.bag.address) { %>
-        <div class="order-item">
-          <span>Taxas:</span>
-          <span>R$<%= props.bag.fee.toFixed(2) %></span>
+          <span>Valor: R$<%= (props.bag.shipping ? props.bag.total - props.bag.shipping : props.bag.total).toFixed(2) %></span>
         </div>
         <div class="order-item">
-          <span>Entrega:</span>
-          <span>R$<%= props.bag.shipping.toFixed(2) %></span>
+          <span>Entrega: R$<%= (props.bag.shipping ? props.bag.shipping : 0).toFixed(2) %> </span>
         </div>
-        <% } %>
         <div class="order-item">
-          <strong>Total:</strong>
-          <strong>R$<%= props.bag.total.toFixed(2) %></strong>
+          <strong>Total: R$<%= props.bag.total.toFixed(2) %></strong>
         </div>
       </div>
+
+      <% let groupedOrders = {}; props.bag.orders.forEach((order) => { let
+      farmName = order.offer.catalog.farm.name; let productName =
+      order.offer.product.name; if (!groupedOrders[farmName]) {
+      groupedOrders[farmName] = {}; } if (!groupedOrders[farmName][productName]) {
+      groupedOrders[farmName][productName] = { totalAmount: 0, totalPrice: order.total,
+      productName: productName, pricingType: order.offer.product.pricing, }; }
+      groupedOrders[farmName][productName].totalAmount += order.amount; }); %>
+
+      <p class="subtitle" style="text-align: left;">Pedidos adicionados:</p>
+
+      <% Object.keys(groupedOrders).forEach((farmName) => { %>
+        <div class="order-box">
+          <strong><%= farmName %></strong>
+          <% Object.values(groupedOrders[farmName]).forEach((item) => { %>
+            <div class="order-item" style="padding: 0; margin-left: 0;">
+              <span>
+                <% if (item.pricingType === "WEIGHT") { %> <%= item.totalAmount >=
+                1000 ? (item.totalAmount / 1000).toFixed(2) + 'kg' :
+                item.totalAmount + 'g' %> <% } else { %> <%= item.totalAmount + 'un'
+                %> <% } %> - <%= item.productName %>
+              </span>
+              <span>R$<%= Number(item.totalPrice).toFixed(2) %></span>
+            </div>
+          <% }) %>
+        </div>
+      <% }) %>
 
       <% let today = new Date(); let currentDay = today.getDate(); let
       currentMonth = today.getMonth() + 1; let currentYear =
@@ -165,7 +155,7 @@
           ><%= formattedFirstDay %>/<%= formattedMonth %> a <%= formattedLastDay
           %>/<%= formattedMonth %></strong
         >
-        <% } else { %> Retire a sua sacola no Armazém e-COO de
+        <% } else { %> A retirada será no Armazém e-COO de
         <strong
           ><%= formattedFirstDay %>/<%= formattedMonth %> a <%= formattedLastDay
           %>/<%= formattedMonth %></strong
@@ -173,7 +163,7 @@
           <% } %>
         <p>
           <% if (props.existed) { %>
-            <p>*Os itens deste pedido foram adicionados a uma sacola já existente</p>
+            <p class="subtitle" style="font-size: 8px; line-height: 10px;">Nota: Os seus pedidos foram adicionados a uma sacola já existente, então o valor total da sacola pode ser diferente do valor total do pedidos adicionados.</p>
           <% } %>
         </p>
       </div>
