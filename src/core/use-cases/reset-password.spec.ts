@@ -14,7 +14,6 @@ import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-rep
 
 // Test
 import { waitFor } from "@/test/utils/wait-for";
-import { beforeEach, expect, MockInstance, vi } from "vitest";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -30,8 +29,6 @@ let mocks: {
 
 let sut: ResetPasswordUseCase;
 
-let spy: MockInstance;
-
 describe("request password update", () => {
   beforeEach(() => {
     repositories = {
@@ -44,8 +41,6 @@ describe("request password update", () => {
     };
 
     sut = new ResetPasswordUseCase(repositories.users, mocks.hasher, mocks.mailer);
-
-    spy = vi.spyOn(mocks.mailer, "send");
   });
 
   it("should be able to request a password update", async () => {
@@ -57,7 +52,7 @@ describe("request password update", () => {
     });
 
     await waitFor(() => {
-      expect(spy).toHaveBeenCalled();
+      expect(mocks.mailer.send).toHaveBeenCalled();
     });
   });
 

@@ -2,16 +2,19 @@ import js from "@eslint/js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 import { defineConfig } from "eslint/config";
-import * as vitest from "vitest";
 
 export default defineConfig([
-  { files: ["**/*.{js,mjs,cjs,ts}"], plugins: { js }, extends: ["js/recommended"] },
-  { files: ["**/*.{js,mjs,cjs,ts}"], languageOptions: { globals: { ...globals.node, ...vitest } } },
   tseslint.configs.recommended,
   {
     files: ["**/*.{js,mjs,cjs,ts}"],
     plugins: { js },
     extends: ["js/recommended"],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.vitest,
+      },
+    },
     rules: {
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": [
@@ -20,6 +23,7 @@ export default defineConfig([
           argsIgnorePattern: "^_",
         },
       ],
+      "no-undef": "off",
     },
   },
 ]);

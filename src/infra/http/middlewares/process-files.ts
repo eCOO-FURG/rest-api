@@ -24,7 +24,7 @@ function config(fields: FieldConfig[]): multer.Options {
 
       if (!config) return callback(new MulterError("LIMIT_UNEXPECTED_FILE"));
 
-      const files = (req.files?.[file.fieldname] as Express.Multer.File[]) || [];
+      const files = (req.files as { [fieldname: string]: Express.Multer.File[] })?.[file.fieldname] ?? [];
 
       if (files.length > (config.options.max ?? 1)) {
         return callback(new MulterError("LIMIT_FILE_COUNT", file.fieldname));
