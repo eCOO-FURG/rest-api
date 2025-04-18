@@ -29,7 +29,7 @@ export class ListCategoriesUseCase {
       "category",
       {
         name,
-        offers: { cycle_id, ...(cycle && { since: first(cycle.offer) }) },
+        ...(cycle && { offers: { cycle_id: cycle.id.value, since: first(cycle.offer) } }),
       },
       page,
     );
