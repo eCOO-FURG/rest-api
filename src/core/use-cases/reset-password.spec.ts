@@ -12,9 +12,6 @@ import { ResetPasswordUseCase } from "@/core/use-cases/reset-password";
 // Repositories
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 
-// Test
-import { waitFor } from "@/test/utils/wait-for";
-
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
@@ -51,9 +48,7 @@ describe("request password update", () => {
       email: user.email,
     });
 
-    await waitFor(() => {
-      expect(mocks.mailer.send).toHaveBeenCalled();
-    });
+    expect(mocks.mailer.messages).toHaveLength(1);
   });
 
   it("nonexisting user should not be able to request a password update", async () => {
