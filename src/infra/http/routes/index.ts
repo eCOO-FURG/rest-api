@@ -9,6 +9,9 @@ import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticat
 import { ensureIntegration } from "@/infra/http/middlewares/ensure-integration";
 import { ensureRole } from "@/infra/http/middlewares/ensure-role";
 
+// Controllers
+import { healthController } from "@/infra/http/controllers/health";
+
 // Routes
 import { auth } from "@/infra/http/routes/auth";
 import { users } from "@/infra/http/routes/users";
@@ -33,6 +36,7 @@ import { webhooks } from "@/infra/http/routes/webhooks";
 export const router = Router();
 
 router.use(logging());
+router.get("/", healthController);
 
 router.use("/auth", auth);
 router.use("/users", users);
