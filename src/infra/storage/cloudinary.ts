@@ -1,6 +1,3 @@
-// Env
-import "dotenv/config";
-
 // Services
 import { Storage } from "@/core/storage/storage";
 

@@ -1,5 +1,9 @@
 // Libraries
 import { Router } from "express";
+import { rateLimit } from "express-rate-limit";
+
+// Environment
+import { env } from "@/infra/env";
 
 // Middlewares
 import { logging } from "@/infra/http/middlewares/logging";
@@ -35,7 +39,15 @@ import { webhooks } from "@/infra/http/routes/webhooks";
 
 export const router = Router();
 
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  message: { message: "Limite de requisições excedido.", code: "rate-limit" },
+  ...(env.ENVIRONMENT !== "DEVELOPMENT" && { max: 10 }),
+});
+
+router.use(limiter);
 router.use(logging());
+
 router.get("/", healthController);
 
 router.use("/auth", auth);
