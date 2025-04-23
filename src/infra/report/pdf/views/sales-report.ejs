@@ -315,9 +315,8 @@
           <div class="bag-info bag-info--cobrar">
             <p>Cobrar:</p>
             <h5>
-              R$ <%= bag.address_id ? (Number(parseFloat(bag.total)) +
-              10).toLocaleString("pt-BR", { minimumFractionDigits: 2 }) :
-              bag.total %>
+              R$ <%= Number(parseFloat(bag.total)) +
+              10).toLocaleString("pt-BR", { minimumFractionDigits: 2 }) %>
             </h5>
           </div>
         </div>
