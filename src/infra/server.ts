@@ -1,3 +1,7 @@
+// Env
+import "dotenv/config";
+import { env } from "@/infra/env";
+
 // Libraries
 import express from "express";
 import cors from "cors";
@@ -8,9 +12,6 @@ import { router } from "@/infra/http/routes";
 
 // Errors
 import { handler } from "@/infra/http/errors/handler";
-
-// Env
-import { env } from "@/infra/env";
 
 // Docs
 import { docs } from "@/infra/docs";
