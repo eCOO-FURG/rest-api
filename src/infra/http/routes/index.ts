@@ -42,7 +42,7 @@ export const router = Router();
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000,
   message: { message: "Limite de requisições excedido.", code: "rate-limit" },
-  ...(env.ENVIRONMENT !== "DEVELOPMENT" && { max: 10 }),
+  limit: env.ENVIRONMENT === "DEVELOPMENT" ? 100 : 10,
 });
 
 router.use(limiter);
