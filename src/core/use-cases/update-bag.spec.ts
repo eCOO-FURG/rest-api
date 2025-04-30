@@ -55,10 +55,10 @@ describe("update bag", () => {
 
     await sut.execute({
       bag_id: bag.id.value,
-      status: "SEPARATED",
+      status: "CANCELLED",
     });
 
-    expect(bagsRepository.items[0].status).toEqual("SEPARATED");
+    expect(bagsRepository.items[0].status).toEqual("CANCELLED");
   });
 
   it("should be able to send a message to the user", async () => {
@@ -80,7 +80,7 @@ describe("update bag", () => {
 
     await sut.execute({
       bag_id: bag.id.value,
-      status: "SEPARATED",
+      status: "CANCELLED",
     });
 
     expect(chat.messages.length).toEqual(1);
