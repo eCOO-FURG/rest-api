@@ -14,7 +14,6 @@ export class BoxPresenter {
       return {
         id: box.id.value,
         status: box.status,
-        verified: box.verified,
         catalog_id: box.catalog_id.value,
         catalog: CatalogPresenter.toHttp(box.catalog),
         orders: box.orders.map(OrderPresenter.toHttp),
