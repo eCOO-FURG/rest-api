@@ -20,7 +20,6 @@ export class PrismaBoxAndCatalogMapper {
     return BoxAndCatalog.create({
       id: new UUID(raw.id),
       status: raw.status,
-      verified: raw.verified,
       catalog_id: new UUID(raw.catalog_id),
       catalog: PrismaCatalogAndFarmMapper.toDomain(raw.catalog),
       created_at: raw.created_at,

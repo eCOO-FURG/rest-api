@@ -229,6 +229,26 @@ export class PrismaBagsRepository implements BagsRepository {
       await ctx.order.createMany({
         data: bag.orders.map(PrismaOrderMapper.toPrisma),
       });
+
+      if (bag.status === "CANCELLED") {
+        const orders = await ctx.order.findMany({
+          where: { bag_id: bag.id.value },
+        });
+
+        for (const order of orders) {
+          if (order.status !== "CANCELLED") {
+            await ctx.order.update({
+              where: { id: order.id },
+              data: { status: "CANCELLED" },
+            });
+
+            await ctx.offer.update({
+              where: { id: order.offer_id },
+              data: { amount: { increment: order.amount } },
+            });
+          }
+        }
+      }
     });
   }
 }

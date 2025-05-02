@@ -22,7 +22,6 @@ export class PrismaBoxAndOrdersMapper {
     return BoxAndOrders.create({
       id: new UUID(raw.id),
       status: raw.status,
-      verified: raw.verified,
       catalog_id: new UUID(raw.catalog_id),
       catalog: PrismaCatalogAndFarmMapper.toDomain(raw.catalog),
       orders: raw.orders.map((order) => PrismaOrderAndOfferMapper.toDomain(order)),

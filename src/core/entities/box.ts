@@ -13,26 +13,17 @@ export interface BoxProps extends EntityRequest {
   catalog?: Catalog;
 
   status: BoxStatus;
-  verified: number;
 
   orders: Order[];
 }
 
 export class Box<Props extends BoxProps = BoxProps> extends Entity<Props> {
-  get verified() {
-    return this.props.verified;
-  }
-
   get status() {
     return this.props.status;
   }
 
   set status(value: BoxProps["status"]) {
     this.props.status = value;
-  }
-
-  set verified(value: number) {
-    this.props.verified = value;
   }
 
   get orders() {
@@ -51,10 +42,9 @@ export class Box<Props extends BoxProps = BoxProps> extends Entity<Props> {
     return this.props.catalog;
   }
 
-  static create(props: Optional<BoxProps, "verified" | "status" | "orders">) {
+  static create(props: Optional<BoxProps, "status" | "orders">) {
     const box = new Box({
       ...props,
-      verified: props.verified ?? 0,
       status: props.status ?? "PENDING",
       orders: props.orders ?? [],
     });

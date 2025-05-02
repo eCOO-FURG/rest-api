@@ -41,6 +41,7 @@ export class FetchSalesReportUseCase {
       withdraw,
       since,
       before,
+      ...(type === "spreadsheet" && { orders: { statuses: ["RECEIVED", "PENDING"] } }),
     });
 
     const catalogs = await this.catalogsRepository.list("catalog-and-offers", {
