@@ -289,8 +289,7 @@ enum BOX_STATUS {
 }
 
 model Box {
-  id       String @id @default(uuid())
-  verified Int
+  id String @id @default(uuid())
 
   status BOX_STATUS
 
