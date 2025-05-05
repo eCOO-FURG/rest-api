@@ -9,6 +9,8 @@ interface ListFarmsWithOrdersProps {
   cycle_id: string;
   page: number;
   farm?: string;
+  since?: Date;
+  before?: Date;
 }
 
 export class ListBoxesUseCase {
@@ -17,7 +19,7 @@ export class ListBoxesUseCase {
     private boxesRepository: BoxesRepository,
   ) {}
 
-  async execute({ cycle_id, page, farm }: ListFarmsWithOrdersProps) {
+  async execute({ cycle_id, page, farm, since, before }: ListFarmsWithOrdersProps) {
     const cycle = await this.cyclesRepository.find("cycle", {
       id: cycle_id,
     });
@@ -31,6 +33,8 @@ export class ListBoxesUseCase {
           cycle: { id: cycle_id },
           farm: { name: farm },
         },
+        since,
+        before,
       },
       page,
     );
