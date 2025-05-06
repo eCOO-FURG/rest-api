@@ -58,7 +58,6 @@ export async function seedDevelopment() {
             create: {
               id: boxId.value,
               status: "PENDING",
-              verified: 0,
             },
           },
           offers: {
