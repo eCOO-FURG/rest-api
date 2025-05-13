@@ -111,8 +111,10 @@ export class PrismaBagsRepository implements BagsRepository {
           }),
         },
         orders: {
-          some: { id: orders?.id },
-          ...(orders?.statuses && { status: { in: orders.statuses } }),
+          some: {
+            id: orders?.id,
+            ...(orders?.statuses && { status: { in: orders.statuses } }),
+          },
         },
         ...(typeof withdraw === "boolean" && (withdraw ? { address_id: null } : { address_id: { not: null } })),
         created_at: {
