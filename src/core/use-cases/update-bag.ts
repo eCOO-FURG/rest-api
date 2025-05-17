@@ -2,7 +2,6 @@
 import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceNotVerifiedError } from "@/core/errors/resource-not-verified";
-import { UnauthorizedError } from "@/core/errors/unauthorized";
 
 // Repositories
 import { BagsRepository } from "@/core/repositories/bags-repository";
@@ -49,10 +48,6 @@ export class UpdateBagUseCase {
     if (bag.status === "CANCELLED") throw new ResourceClosedError("Sacola", bag_id);
 
     if (!bag.verified) throw new ResourceNotVerifiedError("Sacola", bag_id);
-
-    const owner = bag.customer_id.equals(user.id);
-
-    if (owner && status !== "CANCELLED") throw new UnauthorizedError();
 
     bag.status = status ?? bag.status;
     bag.touch();
