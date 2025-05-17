@@ -16,7 +16,7 @@ export const registerSchema = Joi.object({
   last_name: Joi.string().required(),
   cpf: Joi.string().min(11).max(11).required(),
   phone: Joi.string().required().min(11).max(11),
-  email: Joi.string().email().required(),
+  email: Joi.string().email().lowercase().required(),
   password: Joi.string().min(8).optional(),
   role: Joi.string().valid("USER", "PRODUCER").required(),
   chat: Joi.string().optional(),
