@@ -19,6 +19,9 @@ export interface OfferProps extends EntityRequest {
   fee: number;
   amount: number;
 
+  recurring: boolean;
+  active: boolean;
+
   description: string | null;
   expires_at: Date | null;
 }
@@ -64,6 +67,22 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
     return this.props.expires_at;
   }
 
+  get recurring() {
+    return this.props.recurring;
+  }
+
+  set recurring(recurring: boolean) {
+    this.props.recurring = recurring;
+  }
+
+  get active() {
+    return this.props.active;
+  }
+
+  set active(active: boolean) {
+    this.props.active = active;
+  }
+
   set price(price: number) {
     this.props.price = price;
   }
@@ -84,9 +103,11 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
     return this.props.expires_at && this.props.expires_at < new Date();
   }
 
-  static create(props: Optional<OfferProps, "description" | "expires_at">) {
+  static create(props: Optional<OfferProps, "description" | "expires_at" | "recurring" | "active">) {
     const offer = new Offer({
       ...props,
+      recurring: props.recurring ?? false,
+      active: props.active ?? true,
       description: props.description ?? null,
       expires_at: props.expires_at ?? null,
     });
