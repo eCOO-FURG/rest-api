@@ -8,11 +8,11 @@ import { ProductsRepository, ProductsRepositorySearchRequest } from "@/core/repo
 import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
-import { PrismaProductMapper } from "@/infra/database/mappers/prisma-product-mapper";
 import { PrismaProductAndCategoryMapper } from "@/infra/database/mappers/prisma-product-and-category-mapper";
+import { PrismaProductMapper } from "@/infra/database/mappers/prisma-product-mapper";
 
 // Types
-import { ProductRepositoryReturnType, ProductEntityOf } from "@/core/repositories/products-repository";
+import { ProductEntityOf, ProductRepositoryReturnType } from "@/core/repositories/products-repository";
 
 export class PrismaProductRepository implements ProductsRepository {
   async find<T extends ProductRepositoryReturnType>(
@@ -53,6 +53,7 @@ export class PrismaProductRepository implements ProductsRepository {
     page?: number,
   ): Promise<ProductEntityOf<T>[]> {
     const products = await prisma.product.findMany({
+      orderBy: { name: "asc" },
       where: {
         id,
         pricing,
