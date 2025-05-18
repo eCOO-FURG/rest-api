@@ -100,7 +100,7 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
   }
 
   get expired() {
-    return this.props.expires_at && this.props.expires_at < new Date();
+    return !this.props.active || (this.props.expires_at && this.props.expires_at < new Date());
   }
 
   static create(props: Optional<OfferProps, "description" | "expires_at" | "recurring" | "active">) {
