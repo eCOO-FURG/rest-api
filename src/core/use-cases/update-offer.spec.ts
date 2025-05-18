@@ -17,6 +17,7 @@ import { InMemoryProductsRepository } from "@/test/repositories/in-memory-produc
 
 // Errors
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
+import { MissingFieldError } from "@/core/errors/missing-field";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { UnauthorizedError } from "@/core/errors/unauthorized";
@@ -341,5 +342,41 @@ describe("update offer", () => {
         price: 20,
       }),
     ).rejects.toThrowError(UnauthorizedError);
+  });
+
+  it("should not be able to update an offer without at least one field to update", async () => {
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
+    const farm = makeFarm({ status: "ACTIVE" });
+    farmsRepository.create(farm);
+
+    const product = makeProduct();
+    productsRepository.create(product);
+
+    const catalog = makeCatalog({
+      farm,
+      cycle_id: cycle.id,
+    });
+    catalogsRepository.create(catalog);
+
+    const offer = makeOffer({
+      catalog,
+      product_id: product.id,
+      amount: 5,
+      description: "Description",
+      price: 10,
+    });
+    offersRepository.items.push(offer);
+
+    catalog.offers.push(offer);
+    catalogsRepository.update(catalog);
+
+    await expect(
+      sut.execute({
+        farm_id: farm.id.value,
+        offer_id: offer.id.value,
+      }),
+    ).rejects.toThrowError(MissingFieldError);
   });
 });

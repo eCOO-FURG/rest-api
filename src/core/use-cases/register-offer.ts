@@ -22,15 +22,12 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 // Utils
 import { first } from "@/core/utils/first";
 import { today } from "@/core/utils/today";
-import { last } from "@/core/utils/last";
-
 interface RegisterOfferUseCaseRequest {
   farm_id: string;
   product_id: string;
   cycle_id: string;
   amount: number;
   price: number;
-  recurring?: boolean;
   description?: string;
   expires_at?: Date;
 }
@@ -44,7 +41,7 @@ export class RegisterOfferUseCase {
     private offersRepository: OffersRepository,
   ) {}
 
-  async execute({ farm_id, product_id, cycle_id, amount, price, description, recurring, expires_at }: RegisterOfferUseCaseRequest) {
+  async execute({ farm_id, product_id, cycle_id, amount, price, description, expires_at }: RegisterOfferUseCaseRequest) {
     const farm = await this.farmsRepository.find("farm", { id: farm_id });
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
@@ -73,10 +70,9 @@ export class RegisterOfferUseCase {
       const previous = await this.offersRepository.find("offer", {
         product: { id: product.id.value },
         catalog: { id: catalog.id.value },
-        ...(recurring ? { recurring } : { since: first(cycle.offer) }),
       });
 
-      if (previous) throw new ResourceAlreadyExistsError(`Oferta do produto`, product_id);
+      if (previous) throw new ResourceAlreadyExistsError("Oferta", product_id);
     }
 
     if (product.pricing === "WEIGHT" && amount % 1000 !== 0) throw new InvalidWeightError("ofertado", product_id);
@@ -86,10 +82,8 @@ export class RegisterOfferUseCase {
       product_id: product.id,
       amount,
       price,
-      recurring,
       description,
       expires_at,
-      closes_at: last(cycle.offer),
       fee: price * (catalog.fee / 100),
     });
 
@@ -104,6 +98,7 @@ export class RegisterOfferUseCase {
     const existent = await this.catalogsRepository.find("catalog", {
       farm: { id: farm.id.value },
       cycle: { id: cycle.id.value },
+      since: first(cycle.offer),
     });
 
     if (existent) return { catalog: existent, existed: true };

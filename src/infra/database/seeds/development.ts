@@ -9,8 +9,6 @@ import { hash } from "bcryptjs";
 
 // Env
 import { env } from "@/infra/env";
-import { last } from "@/core/utils/last";
-import { CycleWeek } from "@/core/entities/cycle";
 
 export async function seedDevelopment() {
   const cycleId = new UUID();
@@ -70,9 +68,6 @@ export async function seedDevelopment() {
                   product_id: product.id,
                   fee: price * (20 / 100),
                   price: price,
-                  active: true,
-                  recurring: true,
-                  closes_at: last(everyDay as CycleWeek),
                   amount: product.pricing === "UNIT" ? Math.floor(Math.random() * 20 + 1) : Math.floor(Math.random() * 20 + 1) * 100,
                   expires_at: product.perishable ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) : null,
                 };

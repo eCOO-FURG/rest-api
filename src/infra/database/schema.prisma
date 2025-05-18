@@ -169,19 +169,12 @@ model Catalog {
 }
 
 model Offer {
-  id String @id @default(uuid())
-
+  id          String    @id @default(uuid())
   amount      Int
-  description String? @db.VarChar(240)
-
-  recurring Boolean @default(false)
-  active    Boolean @default(true)
-
-  price Decimal @db.Decimal(10, 2)
-  fee   Decimal @db.Decimal(10, 2)
-
-  closes_at  DateTime  @default(now())
-  expires_at DateTime?
+  price       Decimal   @db.Decimal(10, 2)
+  fee         Decimal   @db.Decimal(10, 2)
+  description String?   @db.VarChar(240)
+  expires_at  DateTime?
 
   catalog_id String
   catalog    Catalog @relation(fields: [catalog_id], references: [id])

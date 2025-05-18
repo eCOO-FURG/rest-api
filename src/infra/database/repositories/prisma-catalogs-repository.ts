@@ -52,34 +52,14 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                       },
                       category_id: offers?.product?.category?.id,
                     },
-                    ...(typeof offers?.available === "boolean" &&
-                      (offers.available
+                    ...(typeof offers?.expired === "boolean" &&
+                      (offers.expired
                         ? {
-                            AND: [
-                              {
-                                OR: [{ recurring: true }, { recurring: false, closes_at: { gt: new Date() } }],
-                              },
-                              {
-                                OR: [{ expires_at: null }, { expires_at: { gte: new Date() } }],
-                              },
-                              {
-                                active: true,
-                                amount: { not: 0 },
-                              },
-                            ],
+                            AND: [{ expires_at: { lte: new Date() } }, { expires_at: { not: null } }],
                           }
                         : {
-                            OR: [
-                              { recurring: false, closes_at: { lte: new Date() } },
-                              { expires_at: { not: null, lte: new Date() } },
-                              { active: false },
-                              { amount: 0 },
-                            ],
+                            OR: [{ expires_at: { gt: new Date() } }, { expires_at: null }],
                           })),
-                    created_at: {
-                      gte: offers?.since,
-                      lte: offers?.before,
-                    },
                   },
                   ...(offers?.page && { skip: (offers.page - 1) * 20, take: 20 }),
                   orderBy: {
@@ -130,34 +110,14 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
               name: { contains: offers?.product?.name, mode: "insensitive" },
               category_id: offers?.product?.category?.id,
             },
-            ...(typeof offers?.available === "boolean" &&
-              (offers.available
+            ...(typeof offers?.expired === "boolean" &&
+              (offers.expired
                 ? {
-                    AND: [
-                      {
-                        OR: [{ recurring: true }, { recurring: false, closes_at: { gt: new Date() } }],
-                      },
-                      {
-                        OR: [{ expires_at: null }, { expires_at: { gte: new Date() } }],
-                      },
-                      {
-                        active: true,
-                        amount: { not: 0 },
-                      },
-                    ],
+                    AND: [{ expires_at: { lte: new Date() } }, { expires_at: { not: null } }],
                   }
                 : {
-                    OR: [
-                      { recurring: false, closes_at: { lte: new Date() } },
-                      { expires_at: { not: null, lte: new Date() } },
-                      { active: false },
-                      { amount: 0 },
-                    ],
+                    OR: [{ expires_at: { gt: new Date() } }, { expires_at: null }],
                   })),
-            created_at: {
-              gte: offers?.since,
-              lte: offers?.before,
-            },
           },
         },
       },

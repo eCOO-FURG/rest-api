@@ -22,15 +22,13 @@ export class InMemoryOffersRepository implements OffersRepository {
 
   async find<T extends OfferRepositoryReturnType>(
     type: T,
-    { id, catalog, product, since, active, recurring, before }: OffersRepositorySearchRequest,
+    { id, catalog, product, since, before }: OffersRepositorySearchRequest,
   ): Promise<OfferEntityOf<T> | null> {
     const offer = this.items.find((item) => {
       return (
         (!id || item.id.equals(id)) &&
         (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
         (!product?.id || item.product_id.equals(product.id)) &&
-        (!active || item.active === active) &&
-        (!recurring || item.recurring === recurring) &&
         (!since || item.created_at >= since) &&
         (!before || item.created_at <= before)
       );

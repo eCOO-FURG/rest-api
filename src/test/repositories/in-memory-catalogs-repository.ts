@@ -76,11 +76,11 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
           (!offers?.product?.category?.id ||
             // @ts-expect-error: ensure non nullable value
             item.offers.some((offer) => offer.product?.category?.id.equals(offers?.product?.category?.id))) &&
-          (!offers?.available ||
-            (typeof offers?.available === "boolean" &&
-              (offers.available
-                ? item.offers.some((offer) => offer.active && offer.amount > 0)
-                : item.offers.some((offer) => !offer.active || offer.amount === 0)))),
+          (!offers?.expired ||
+            (typeof offers?.expired === "boolean" &&
+              (offers.expired
+                ? item.offers.some((offer) => offer.expires_at! <= new Date())
+                : item.offers.some((offer) => offer.expires_at! > new Date())))),
       ),
     );
 

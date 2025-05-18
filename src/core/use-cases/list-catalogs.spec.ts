@@ -5,7 +5,6 @@ import { ListCatalogsUseCase } from "@/core/use-cases/list-catalogs";
 import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { InMemoryCategoriesRepository } from "@/test/repositories/in-memory-categories-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
-import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 
 // Services
 import { makeCatalog } from "@/test/factories/make-catalog";
@@ -22,18 +21,16 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 let sut: ListCatalogsUseCase;
 
 let cyclesRepository: InMemoryCyclesRepository;
-let farmsRepository: InMemoryFarmsRepository;
 let catalogsRepository: InMemoryCatalogsRepository;
 let categoriesRepository: InMemoryCategoriesRepository;
 
 describe("list catalogs", () => {
   beforeEach(() => {
     cyclesRepository = new InMemoryCyclesRepository();
-    farmsRepository = new InMemoryFarmsRepository();
     catalogsRepository = new InMemoryCatalogsRepository();
     categoriesRepository = new InMemoryCategoriesRepository();
 
-    sut = new ListCatalogsUseCase(cyclesRepository, farmsRepository, catalogsRepository, categoriesRepository);
+    sut = new ListCatalogsUseCase(cyclesRepository, catalogsRepository, categoriesRepository);
   });
 
   it("should be able to list catalogs", async () => {
@@ -48,8 +45,6 @@ describe("list catalogs", () => {
       const user = makeUser();
 
       const farm = makeFarm({ admin_id: user.id, admin: user });
-
-      farmsRepository.items.push(farm);
 
       const catalog = makeCatalog({
         farm_id: farm.id,

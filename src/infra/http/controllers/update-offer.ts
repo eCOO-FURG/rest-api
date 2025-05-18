@@ -1,6 +1,5 @@
 // Libraries
 import Joi from "joi";
-import { Request, Response, NextFunction } from "express";
 
 // Container
 import container from "@/infra/container";
@@ -8,12 +7,11 @@ import container from "@/infra/container";
 // Use-cases
 import { UpdateOfferUseCase } from "@/core/use-cases/update-offer";
 
+// Libraries
+import { Request, Response, NextFunction } from "express";
+
 // Validation
 import { parse } from "@/infra/http/validation/parse";
-import { boolean } from "@/infra/http/validation/boolean";
-
-// Utils
-import { toBoolean } from "@/infra/utils/to-boolean";
 
 export const updateOfferParams = Joi.object({
   offer_id: Joi.string().uuid().required(),
@@ -23,7 +21,6 @@ export const updateOfferSchema = Joi.object({
   amount: Joi.number().optional(),
   price: Joi.number().optional(),
   description: Joi.string().optional(),
-  active: boolean.optional(),
   expires_at: Joi.date().optional(),
 });
 
@@ -31,7 +28,7 @@ export async function updateOfferController(request: Request, response: Response
   try {
     const { offer_id } = parse(updateOfferParams, request.params);
 
-    const { amount, price, description, active, expires_at } = parse(updateOfferSchema, request.body);
+    const { amount, price, description, expires_at } = parse(updateOfferSchema, request.body);
 
     const updateOfferUseCase = container.resolve<UpdateOfferUseCase>("updateOfferUseCase");
 
@@ -41,7 +38,6 @@ export async function updateOfferController(request: Request, response: Response
       amount,
       price,
       description,
-      active: toBoolean(active),
       expires_at,
     });
 
