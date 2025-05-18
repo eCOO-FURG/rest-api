@@ -9,7 +9,6 @@ import { fetchBagParams, fetchBagQuery } from "@/infra/http/controllers/fetch-ba
 import { fetchBoxParams, fetchBoxQuery } from "@/infra/http/controllers/fetch-box";
 import { fetchCatalogParams, fetchCatalogQuery } from "@/infra/http/controllers/fetch-catalog";
 import { fetchCurrentBoxQuery } from "@/infra/http/controllers/fetch-current-box";
-import { fetchCurrentCatalogQuery } from "@/infra/http/controllers/fetch-current-catalog";
 import { fetchFarmParams } from "@/infra/http/controllers/fetch-farm";
 import { fetchInboundReportQuery } from "@/infra/http/controllers/fetch-inbound-report";
 import { fetchLastCatalogQuery } from "@/infra/http/controllers/fetch-last-catalog";
@@ -74,7 +73,6 @@ const { swagger: updateOfferParamsSwagger } = j2s(updateOfferParams);
 const { swagger: updateOfferSchemaSwagger } = j2s(updateOfferSchema);
 const { swagger: deleteOfferParamsSwagger } = j2s(deleteOfferParams);
 const { swagger: listCatalogsQuerySwagger } = j2s(listCatalogsQuery);
-const { swagger: fetchCurrentCatalogQuerySwagger } = j2s(fetchCurrentCatalogQuery);
 const { swagger: fetchLastCatalogQuerySwagger } = j2s(fetchLastCatalogQuery);
 const { swagger: fetchCatalogParamsSwagger } = j2s(fetchCatalogParams);
 const { swagger: fetchCatalogQuerySwagger } = j2s(fetchCatalogQuery);
@@ -526,18 +524,7 @@ export const docs = {
         },
       },
     },
-    "/catalogs/current": {
-      get: {
-        tags: ["Catálogos"],
-        summary: "Obter catálogo atual",
-        parameters: toQueryParams(fetchCurrentCatalogQuerySwagger),
-        responses: {
-          200: {
-            description: "Catálogo atual obtido com sucesso",
-          },
-        },
-      },
-    },
+
     "/catalogs/last": {
       get: {
         tags: ["Catálogos"],
