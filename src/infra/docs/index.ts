@@ -11,7 +11,6 @@ import { fetchCatalogParams, fetchCatalogQuery } from "@/infra/http/controllers/
 import { fetchCurrentBoxQuery } from "@/infra/http/controllers/fetch-current-box";
 import { fetchFarmParams } from "@/infra/http/controllers/fetch-farm";
 import { fetchInboundReportQuery } from "@/infra/http/controllers/fetch-inbound-report";
-import { fetchLastCatalogQuery } from "@/infra/http/controllers/fetch-last-catalog";
 import { fetchPendingsQuery } from "@/infra/http/controllers/fetch-pendings";
 import { fetchSalesReportQuery } from "@/infra/http/controllers/fetch-sales-report";
 import { fetchSalesStatsQuery } from "@/infra/http/controllers/fetch-sales-stats";
@@ -73,7 +72,6 @@ const { swagger: updateOfferParamsSwagger } = j2s(updateOfferParams);
 const { swagger: updateOfferSchemaSwagger } = j2s(updateOfferSchema);
 const { swagger: deleteOfferParamsSwagger } = j2s(deleteOfferParams);
 const { swagger: listCatalogsQuerySwagger } = j2s(listCatalogsQuery);
-const { swagger: fetchLastCatalogQuerySwagger } = j2s(fetchLastCatalogQuery);
 const { swagger: fetchCatalogParamsSwagger } = j2s(fetchCatalogParams);
 const { swagger: fetchCatalogQuerySwagger } = j2s(fetchCatalogQuery);
 const { swagger: listBagsQuerySwagger } = j2s(listBagsQuery);
@@ -520,19 +518,6 @@ export const docs = {
         responses: {
           200: {
             description: "Lista de catálogos obtida com sucesso",
-          },
-        },
-      },
-    },
-
-    "/catalogs/last": {
-      get: {
-        tags: ["Catálogos"],
-        summary: "Obter último catálogo",
-        parameters: toQueryParams(fetchLastCatalogQuerySwagger),
-        responses: {
-          200: {
-            description: "Último catálogo obtido com sucesso",
           },
         },
       },

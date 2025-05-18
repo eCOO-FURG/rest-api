@@ -11,8 +11,12 @@ import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
 // Presenters
 import { CatalogPresenter } from "@/infra/http/presenters/catalog-presenter";
 
+// Utils
+import { toBoolean } from "@/infra/utils/to-boolean";
+
 // Validation
 import { parse } from "@/infra/http/validation/parse";
+import { boolean } from "@/infra/http/validation/boolean";
 
 export const fetchCatalogParams = Joi.object({
   catalog_id: Joi.string().uuid().required(),
@@ -21,12 +25,13 @@ export const fetchCatalogParams = Joi.object({
 export const fetchCatalogQuery = Joi.object({
   page: Joi.number().integer().min(1).required(),
   product: Joi.string().optional(),
+  available: boolean.optional(),
 });
 
 export async function fetchCatalogController(request: Request, response: Response, next: NextFunction) {
   try {
     const { catalog_id } = parse(fetchCatalogParams, request.params);
-    const { page, product } = parse(fetchCatalogQuery, request.query);
+    const { page, product, available } = parse(fetchCatalogQuery, request.query);
 
     const fetchCatalogUsecase = container.resolve<FetchCatalogUseCase>("fetchCatalogUseCase");
 
@@ -34,6 +39,7 @@ export async function fetchCatalogController(request: Request, response: Respons
       catalog_id,
       page,
       product,
+      available: toBoolean(available),
     });
 
     return response.status(200).send(CatalogPresenter.toHttp(catalog));

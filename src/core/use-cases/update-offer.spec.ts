@@ -17,7 +17,6 @@ import { InMemoryProductsRepository } from "@/test/repositories/in-memory-produc
 
 // Errors
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
-import { MissingFieldError } from "@/core/errors/missing-field";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { UnauthorizedError } from "@/core/errors/unauthorized";
