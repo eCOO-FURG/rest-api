@@ -22,6 +22,7 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 // Utils
 import { first } from "@/core/utils/first";
 import { today } from "@/core/utils/today";
+import { last } from "@/core/utils/last";
 
 interface RegisterOfferUseCaseRequest {
   farm_id: string;
@@ -88,6 +89,7 @@ export class RegisterOfferUseCase {
       recurring,
       description,
       expires_at,
+      closes_at: last(cycle.offer),
       fee: price * (catalog.fee / 100),
     });
 

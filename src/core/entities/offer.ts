@@ -23,6 +23,8 @@ export interface OfferProps extends EntityRequest {
   active: boolean;
 
   description: string | null;
+
+  closes_at: Date;
   expires_at: Date | null;
 }
 
@@ -69,6 +71,14 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
 
   get recurring() {
     return this.props.recurring;
+  }
+
+  get closes_at() {
+    return this.props.closes_at;
+  }
+
+  set closes_at(closes_at: Date) {
+    this.props.closes_at = closes_at;
   }
 
   set recurring(recurring: boolean) {
