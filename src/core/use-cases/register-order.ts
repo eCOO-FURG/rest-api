@@ -110,11 +110,11 @@ export class RegisterOrderUseCase {
 
       if (item.amount > offer.amount) throw new UnavailableAmountError(offer.id.value);
 
-      const invalidAmount = item.amount % 100 != 0 && offer.product.pricing === "WEIGHT";
+      if (!offer.recurring && offer.closes_at < new Date()) throw new ResourceClosedError("Oferta", item.offer_id);
 
-      if (invalidAmount) throw new InvalidWeightError("solicitado", offer.product.id.value);
+      if (item.amount % 100 != 0 && offer.product.pricing === "WEIGHT") throw new InvalidWeightError("solicitado", offer.product.id.value);
 
-      const box = await this.useBox(offer.catalog.id);
+      const box = await this.useBox(offer.catalog.id, cycle);
 
       const order = Order.create({
         box_id: box.id,
@@ -148,6 +148,7 @@ export class RegisterOrderUseCase {
     });
 
     this.mailer.send([email]);
+    this.boxes.clear();
 
     return { bag };
   }
@@ -207,13 +208,14 @@ export class RegisterOrderUseCase {
     return { bag, existed: false };
   }
 
-  private async useBox(catalog_id: UUID) {
+  private async useBox(catalog_id: UUID, cycle: Cycle) {
     const memorized = this.boxes.get(catalog_id.value);
 
     if (memorized) return memorized;
 
-    const found = await this.boxesRepository.find("box-and-catalog", {
+    const found = await this.boxesRepository.find("box", {
       catalog: { id: catalog_id.value },
+      since: first(cycle.order),
     });
 
     if (found) {

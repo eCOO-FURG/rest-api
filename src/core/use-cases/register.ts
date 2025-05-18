@@ -25,9 +25,9 @@ interface RegisterUseCaseRequest {
   email: string;
   cpf: string;
   phone: string;
-  password?: string;
-  chat?: string;
   role: "USER" | "PRODUCER";
+  chat?: string;
+  password?: string;
 }
 
 export class RegisterUseCase {

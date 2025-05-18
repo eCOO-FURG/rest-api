@@ -53,7 +53,6 @@ export class PrismaProductRepository implements ProductsRepository {
     page?: number,
   ): Promise<ProductEntityOf<T>[]> {
     const products = await prisma.product.findMany({
-      orderBy: { name: "asc" },
       where: {
         id,
         pricing,
@@ -67,6 +66,7 @@ export class PrismaProductRepository implements ProductsRepository {
       include: {
         category: type === "product-and-category",
       },
+      orderBy: { name: "asc" },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
