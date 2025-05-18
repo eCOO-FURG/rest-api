@@ -22,6 +22,8 @@ export interface CatalogsRepositorySearchRequest {
     product?: { name?: string; category?: { id?: string } };
     page?: number;
     available?: boolean;
+    since?: Date;
+    before?: Date;
   };
   since?: Date;
   before?: Date;

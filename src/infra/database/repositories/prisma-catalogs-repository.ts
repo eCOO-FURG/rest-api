@@ -76,6 +76,10 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                               { amount: 0 },
                             ],
                           })),
+                    created_at: {
+                      gte: offers?.since,
+                      lte: offers?.before,
+                    },
                   },
                   ...(offers?.page && { skip: (offers.page - 1) * 20, take: 20 }),
                   orderBy: {
@@ -150,6 +154,10 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                       { amount: 0 },
                     ],
                   })),
+            created_at: {
+              gte: offers?.since,
+              lte: offers?.before,
+            },
           },
         },
       },

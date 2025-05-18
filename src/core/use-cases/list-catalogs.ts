@@ -14,6 +14,8 @@ interface ListCatalogsUseCaseRequest {
   category_id?: string;
   product?: string;
   available?: boolean;
+  since?: Date;
+  before?: Date;
 }
 
 export class ListCatalogsUseCase {
@@ -24,7 +26,7 @@ export class ListCatalogsUseCase {
     private categoriesRepository: CategoriesRepository,
   ) {}
 
-  async execute({ cycle_id, page, product, category_id, farm_id, available }: ListCatalogsUseCaseRequest) {
+  async execute({ cycle_id, page, product, category_id, farm_id, available, since, before }: ListCatalogsUseCaseRequest) {
     const cycle = cycle_id ? await this.cyclesRepository.find("cycle", { id: cycle_id }) : null;
 
     if (cycle_id && !cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
@@ -42,6 +44,8 @@ export class ListCatalogsUseCase {
       {
         cycle: { id: cycle_id },
         offers: { product: { name: product, category: { id: category_id } }, available, page },
+        since,
+        before,
       },
       page,
     );
