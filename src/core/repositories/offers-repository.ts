@@ -18,6 +18,8 @@ export interface OffersRepositorySearchRequest {
   ids?: string[];
   catalog?: { id?: string };
   product?: { id?: string; name?: string };
+  recurring?: boolean;
+  active?: boolean;
   since?: Date;
   before?: Date;
 }

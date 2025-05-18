@@ -20,7 +20,7 @@ import { PrismaOfferAndDetails, PrismaOfferAndDetailsMapper } from "@/infra/data
 export class PrismaOffersRepository implements OffersRepository {
   async find<T extends OfferRepositoryReturnType>(
     type: T,
-    { id, product, catalog, since, before }: OffersRepositorySearchRequest,
+    { id, product, catalog, active, recurring, since, before }: OffersRepositorySearchRequest,
   ): Promise<OfferEntityOf<T> | null> {
     const offer = await prisma.offer.findFirst({
       where: {
@@ -30,6 +30,8 @@ export class PrismaOffersRepository implements OffersRepository {
           name: { contains: product?.name, mode: "insensitive" },
         },
         catalog: { id: catalog?.id },
+        recurring,
+        active,
         created_at: { gte: since, lte: before },
       },
       include: {
@@ -55,12 +57,14 @@ export class PrismaOffersRepository implements OffersRepository {
 
   async list<T extends OfferRepositoryReturnType>(
     type: T,
-    { id, ids, product, catalog, since, before }: OffersRepositorySearchRequest,
+    { id, ids, product, catalog, active, recurring, since, before }: OffersRepositorySearchRequest,
     page?: number,
   ): Promise<OfferEntityOf<T>[]> {
     const offers = await prisma.offer.findMany({
       where: {
         id: { in: ids, equals: id },
+        active,
+        recurring,
         product: {
           id: product?.id,
           name: { contains: product?.name, mode: "insensitive" },

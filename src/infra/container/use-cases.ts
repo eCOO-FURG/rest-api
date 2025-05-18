@@ -9,10 +9,8 @@ import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 import { FetchBoxUseCase } from "@/core/use-cases/fetch-box";
 import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
 import { FetchCurrentBoxUseCase } from "@/core/use-cases/fetch-current-box";
-import { FetchCurrentCatalogUseCase } from "@/core/use-cases/fetch-current-catalog";
 import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
 import { FetchInboundReportUseCase } from "@/core/use-cases/fetch-inbound-report";
-import { FetchLastCatalogUseCase } from "@/core/use-cases/fetch-last-catalog";
 import { FetchPendingsUseCase } from "@/core/use-cases/fetch-pendings";
 import { FetchProfileUseCase } from "@/core/use-cases/fetch-profile";
 import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
@@ -102,8 +100,8 @@ export default (container: AwilixContainer) => {
     listBoxesUseCase: asFunction(({ cyclesRepository, boxesRepository }) => new ListBoxesUseCase(cyclesRepository, boxesRepository)),
     listCyclesUseCase: asFunction(({ cyclesRepository }) => new ListCyclesUseCase(cyclesRepository)),
     listCatalogsUseCase: asFunction(
-      ({ cyclesRepository, catalogsRepository, categoriesRepository }) =>
-        new ListCatalogsUseCase(cyclesRepository, catalogsRepository, categoriesRepository),
+      ({ cyclesRepository, farmsRepository, catalogsRepository, categoriesRepository }) =>
+        new ListCatalogsUseCase(cyclesRepository, farmsRepository, catalogsRepository, categoriesRepository),
     ),
     fetchBoxUseCase: asFunction(({ usersRepository, boxesRepository }) => new FetchBoxUseCase(usersRepository, boxesRepository)),
     fetchCatalogUseCase: asFunction(({ catalogsRepository }) => new FetchCatalogUseCase(catalogsRepository)),
@@ -120,17 +118,9 @@ export default (container: AwilixContainer) => {
     listCurrentBagsUseCase: asFunction(
       ({ cyclesRepository, bagsRepository }) => new ListCurrentBagsUseCase(cyclesRepository, bagsRepository),
     ),
-    fetchLastCatalogUseCase: asFunction(
-      ({ cyclesRepository, farmsRepository, catalogsRepository }) =>
-        new FetchLastCatalogUseCase(cyclesRepository, farmsRepository, catalogsRepository),
-    ),
     listFarmsUseCase: asFunction(({ farmsRepository }) => new ListFarmsUseCase(farmsRepository)),
     fetchCurrentBoxUseCase: asFunction(
       ({ boxesRepository, cyclesRepository }) => new FetchCurrentBoxUseCase(boxesRepository, cyclesRepository),
-    ),
-    fetchCurrentCatalogUseCase: asFunction(
-      ({ cyclesRepository, farmsRepository, catalogsRepository }) =>
-        new FetchCurrentCatalogUseCase(cyclesRepository, farmsRepository, catalogsRepository),
     ),
     listBagsUseCase: asFunction(
       ({ bagsRepository, usersRepository, cyclesRepository }) => new ListBagsUseCase(bagsRepository, usersRepository, cyclesRepository),

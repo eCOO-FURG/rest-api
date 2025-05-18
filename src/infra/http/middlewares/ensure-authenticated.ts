@@ -35,7 +35,7 @@ export async function ensureAuthenticated(request: Request, response: Response, 
 
     const [, token] = authHeader.split(" ");
 
-    const payload = verify(token, env.JWT_SECRET!, { ignoreExpiration: true });
+    const payload = verify(token, env.JWT_SECRET, { ignoreExpiration: true });
 
     const { user_id, iat } = parse(jwtPayloadSchema, payload);
 
