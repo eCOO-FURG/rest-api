@@ -5,7 +5,6 @@ import { OffersRepository } from "@/core/repositories/offers-repository";
 // Errors
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { InvalidFieldError } from "@/core/errors/invalid-field";
-import { MissingFieldError } from "@/core/errors/missing-field";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { UnauthorizedError } from "@/core/errors/unauthorized";
@@ -21,6 +20,7 @@ interface UpdateOfferUseCaseRequest {
   price?: number;
   description?: string;
   expires_at?: Date;
+  active?: boolean;
 }
 
 export class UpdateOfferUseCase {
@@ -29,9 +29,7 @@ export class UpdateOfferUseCase {
     private cyclesRepository: CyclesRepository,
   ) {}
 
-  async execute({ farm_id, offer_id, amount, price, description, expires_at }: UpdateOfferUseCaseRequest) {
-    if (!amount && !price && !description && !expires_at) throw new MissingFieldError("amount, price, description, expires_at");
-
+  async execute({ farm_id, offer_id, amount, price, description, expires_at, active }: UpdateOfferUseCaseRequest) {
     const offer = await this.offersRepository.find("offer-and-details", {
       id: offer_id,
     });
@@ -60,6 +58,8 @@ export class UpdateOfferUseCase {
     offer.price = price ?? offer.price;
     offer.description = description ?? offer.description;
     offer.expires_at = expires_at ?? offer.expires_at;
+    offer.active = active ?? offer.active;
+
     offer.touch();
 
     await this.offersRepository.update(offer);
