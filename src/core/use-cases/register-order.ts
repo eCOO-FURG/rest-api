@@ -110,6 +110,8 @@ export class RegisterOrderUseCase {
 
       if (item.amount > offer.amount) throw new UnavailableAmountError(offer.id.value);
 
+      if (!offer.recurring && offer.closes_at < new Date()) throw new ResourceClosedError("Oferta", item.offer_id);
+
       if (item.amount % 100 != 0 && offer.product.pricing === "WEIGHT") throw new InvalidWeightError("solicitado", offer.product.id.value);
 
       const box = await this.useBox(offer.catalog.id, cycle);
