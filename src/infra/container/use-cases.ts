@@ -11,7 +11,6 @@ import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
 import { FetchCurrentBoxUseCase } from "@/core/use-cases/fetch-current-box";
 import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
 import { FetchInboundReportUseCase } from "@/core/use-cases/fetch-inbound-report";
-import { FetchLastCatalogUseCase } from "@/core/use-cases/fetch-last-catalog";
 import { FetchPendingsUseCase } from "@/core/use-cases/fetch-pendings";
 import { FetchProfileUseCase } from "@/core/use-cases/fetch-profile";
 import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
@@ -118,10 +117,6 @@ export default (container: AwilixContainer) => {
     fetchBagUseCase: asFunction(({ bagsRepository, usersRepository }) => new FetchBagUseCase(bagsRepository, usersRepository)),
     listCurrentBagsUseCase: asFunction(
       ({ cyclesRepository, bagsRepository }) => new ListCurrentBagsUseCase(cyclesRepository, bagsRepository),
-    ),
-    fetchLastCatalogUseCase: asFunction(
-      ({ cyclesRepository, farmsRepository, catalogsRepository }) =>
-        new FetchLastCatalogUseCase(cyclesRepository, farmsRepository, catalogsRepository),
     ),
     listFarmsUseCase: asFunction(({ farmsRepository }) => new ListFarmsUseCase(farmsRepository)),
     fetchCurrentBoxUseCase: asFunction(
