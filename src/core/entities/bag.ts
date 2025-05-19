@@ -9,9 +9,6 @@ import { User } from "@/core/entities/user";
 // Types
 import { Optional } from "@/core/types/optional";
 
-// Utils
-import { fixed } from "@/core/utils/fixed";
-
 export type BagStatus = (typeof Bag.statuses)[number];
 export interface BagProps extends EntityRequest {
   customer_id: UUID;
@@ -69,7 +66,7 @@ export class Bag<Props extends BagProps = BagProps> extends Entity<Props> {
   }
 
   get total() {
-    return fixed(this.props.subtotal + this.props.shipping + this.props.fee);
+    return this.props.subtotal + this.props.shipping + this.props.fee;
   }
 
   set subtotal(value: number) {
@@ -111,8 +108,8 @@ export class Bag<Props extends BagProps = BagProps> extends Entity<Props> {
   add(order: Order) {
     this.props.orders.push(order);
 
-    this.props.subtotal = fixed(this.props.subtotal + order.subtotal);
-    this.props.fee = fixed(this.props.fee + order.fee);
+    this.props.subtotal = this.props.subtotal + order.subtotal;
+    this.props.fee = this.props.fee + order.fee;
 
     this.touch();
   }

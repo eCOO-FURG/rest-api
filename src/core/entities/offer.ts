@@ -5,9 +5,6 @@ import { Product } from "@/core/entities/product";
 import { Catalog } from "@/core/entities/catalog";
 import { Optional } from "@/core/types/optional";
 
-// Utils
-import { fixed } from "@/core/utils/fixed";
-
 export interface OfferProps extends EntityRequest {
   catalog_id: UUID;
   catalog?: Catalog;
@@ -42,7 +39,7 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
   }
 
   get total() {
-    return fixed(this.props.price + this.props.fee);
+    return this.props.price + this.props.fee;
   }
 
   get description() {
