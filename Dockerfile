@@ -2,7 +2,9 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache chromium openssl
+RUN apk add --no-cache chromium openssl tzdata
+
+ENV TZ=America/Sao_Paulo
 
 RUN npm install -g pnpm
 

@@ -29,6 +29,8 @@ import { makeCatalog } from "@/test/factories/make-catalog";
 
 // Utils
 import { today } from "@/core/utils/today";
+import { now } from "@/core/utils/now";
+import { last } from "@/core/utils/last";
 
 let farmsRepository: InMemoryFarmsRepository;
 let productsRepository: InMemoryProductsRepository;
@@ -63,7 +65,7 @@ describe("offer products", () => {
       product_id: product.id.value,
       cycle_id: cycle.id.value,
       farm_id: farm.id.value,
-      expires_at: new Date(),
+      expires_at: now(),
       amount: 10,
       price: 10,
       description: "Novo.",
@@ -106,7 +108,7 @@ describe("offer products", () => {
         product_id: product.id.value,
         cycle_id: cycle.id.value,
         farm_id: farm.id.value,
-        expires_at: new Date(),
+        expires_at: now(),
         amount: 10,
         price: 10,
       }),
@@ -128,7 +130,7 @@ describe("offer products", () => {
         product_id: product.id.value,
         cycle_id: cycle.id.value,
         farm_id: farm.id.value,
-        expires_at: new Date(),
+        expires_at: now(),
 
         amount: 10,
         price: 10,
@@ -148,7 +150,7 @@ describe("offer products", () => {
         product_id: "123",
         cycle_id: cycle.id.value,
         farm_id: farm.id.value,
-        expires_at: new Date(),
+        expires_at: now(),
         amount: 10,
         price: 10,
       }),
@@ -167,7 +169,7 @@ describe("offer products", () => {
         product_id: product.id.value,
         cycle_id: "123",
         farm_id: farm.id.value,
-        expires_at: new Date(),
+        expires_at: now(),
         amount: 10,
         price: 10,
       }),
@@ -198,6 +200,7 @@ describe("offer products", () => {
       amount: 20,
       price: 30,
       fee: 10,
+      closes_at: last(cycle.offer),
     });
 
     catalog.offers.push(offer);
@@ -211,7 +214,7 @@ describe("offer products", () => {
         farm_id: farm.id.value,
         amount: 10,
         price: 10,
-        expires_at: new Date(),
+        expires_at: now(),
       }),
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
@@ -233,7 +236,7 @@ describe("offer products", () => {
         farm_id: farm.id.value,
         amount: 10,
         price: 10,
-        expires_at: new Date(),
+        expires_at: now(),
       }),
     ).rejects.toBeInstanceOf(InvalidWeightError);
   });
@@ -260,7 +263,7 @@ describe("offer products", () => {
         farm_id: farm.id.value,
         amount: 10,
         price: 10,
-        expires_at: new Date(),
+        expires_at: now(),
       }),
     ).rejects.toBeInstanceOf(ResourceClosedError);
   });

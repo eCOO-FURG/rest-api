@@ -8,9 +8,6 @@ import { Entity, EntityRequest } from "@/core/entities/entity";
 import { Offer } from "@/core/entities/offer";
 import { Optional } from "@/core/types/optional";
 
-// Utils
-import { fixed } from "@/core/utils/fixed";
-
 export type OrderStatus = (typeof Order.statuses)[number];
 
 export interface OrderProps extends EntityRequest {
@@ -68,7 +65,7 @@ export class Order<Props extends OrderProps = OrderProps> extends Entity<Props> 
   }
 
   get total() {
-    return fixed(this.props.subtotal + this.props.fee);
+    return this.props.subtotal + this.props.fee;
   }
 
   set subtotal(value: number) {

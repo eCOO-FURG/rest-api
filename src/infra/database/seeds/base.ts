@@ -16,6 +16,9 @@ import { env } from "@/infra/env";
 // Seeds
 import { seedDevelopment } from "@/infra/database/seeds/development";
 
+// Utils
+import { now } from "@/core/utils/now";
+
 async function seedBase() {
   await prisma.user.create({
     data: {
@@ -26,7 +29,7 @@ async function seedBase() {
       roles: ["USER", "MANAGER"],
       password: await hash(env.EMAIL_PASSWORD, 8),
       phone: "55555555555",
-      verified_at: new Date(),
+      verified_at: now(),
     },
   });
 
@@ -39,7 +42,7 @@ async function seedBase() {
       roles: ["USER", "BROKER"],
       password: await hash(env.EMAIL_PASSWORD, 8),
       phone: "66666666666",
-      verified_at: new Date(),
+      verified_at: now(),
     },
   });
 

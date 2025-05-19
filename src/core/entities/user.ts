@@ -6,6 +6,9 @@ import { Entity, EntityRequest } from "@/core/entities/entity";
 // Types
 import { Optional } from "@/core/types/optional";
 
+// Utils
+import { now } from "@/core/utils/now";
+
 export type UserRole = (typeof User.roles)[number];
 
 export interface UserProps extends EntityRequest {
@@ -95,7 +98,7 @@ export class User extends Entity<UserProps> {
   }
 
   verify() {
-    this.props.verified_at = new Date();
+    this.props.verified_at = now();
     this.touch();
   }
 

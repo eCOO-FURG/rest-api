@@ -1,6 +1,9 @@
 // Entities
 import { CycleWeek } from "@/core/entities/cycle";
 
+// Utils
+import { now } from "@/core/utils/now";
+
 export function first(days: CycleWeek) {
   const min = Math.min(...days);
   const max = Math.max(...days);
@@ -9,7 +12,7 @@ export function first(days: CycleWeek) {
 
   const oldest = merge ? days.reverse().find((day, index) => day - 1 !== days.at(index + 1))! : min;
 
-  const today = new Date();
+  const today = now();
 
   const current = today.getDay() + 1;
 

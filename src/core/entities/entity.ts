@@ -4,6 +4,9 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 // Types
 import { Optional } from "@/core/types/optional";
 
+// Utils
+import { now } from "@/core/utils/now";
+
 export type EntityRequest = Optional<EntityProps, "id" | "created_at" | "updated_at">;
 
 export interface EntityProps {
@@ -40,14 +43,14 @@ export abstract class Entity<Props> {
   }
 
   public touch() {
-    this.props.updated_at = new Date();
+    this.props.updated_at = now();
   }
 
   protected constructor(props: Props & EntityRequest) {
     this._props = {
       ...props,
       id: props.id ?? new UUID(),
-      created_at: props.created_at ?? new Date(),
+      created_at: props.created_at ?? now(),
       updated_at: props.updated_at ?? null,
     };
   }

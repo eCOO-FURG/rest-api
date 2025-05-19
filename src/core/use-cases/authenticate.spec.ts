@@ -16,8 +16,13 @@ import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-rep
 
 // Errors
 import { WrongCredentialsError } from "@/core/errors/wrong-credentials";
-import { makeOtp } from "@/test/factories/make-otp";
 import { UserNotVerifiedError } from "@/core/errors/user-not-verified";
+
+// Utils
+import { now } from "@/core/utils/now";
+
+// Factories
+import { makeOtp } from "@/test/factories/make-otp";
 
 let usersRepository: InMemoryUsersRepository;
 let otpsRepository: InMemoryOtpsRepository;
@@ -43,7 +48,7 @@ describe("authenticate", () => {
   it("should be able to authenticate via basic auth", async () => {
     const password = await mockedEncrypter.encrypt("12345678");
 
-    const user = makeUser({ password, verified_at: new Date() });
+    const user = makeUser({ password, verified_at: now() });
 
     await usersRepository.create(user);
 
@@ -61,7 +66,7 @@ describe("authenticate", () => {
   });
 
   it("should be able to authenticate via otp", async () => {
-    const user = makeUser({ verified_at: new Date() });
+    const user = makeUser({ verified_at: now() });
     await usersRepository.create(user);
 
     const otp = makeOtp({ user_id: user.id, user });
@@ -83,7 +88,7 @@ describe("authenticate", () => {
   it("should not be able to authenticate with wrong basic credentials", async () => {
     const password = await mockedEncrypter.encrypt("12345678");
 
-    const user = makeUser({ password, verified_at: new Date() });
+    const user = makeUser({ password, verified_at: now() });
 
     await usersRepository.create(user);
 
@@ -99,7 +104,7 @@ describe("authenticate", () => {
   });
 
   it("should not be able to authenticate with wrong otp credentials", async () => {
-    const user = makeUser({ verified_at: new Date() });
+    const user = makeUser({ verified_at: now() });
 
     await usersRepository.create(user);
 
