@@ -15,6 +15,9 @@ import { prisma } from "@/infra/database/prisma-service";
 // Mappers
 import { PrismaSessionMapper } from "@/infra/database/mappers/prisma-session-mapper";
 
+// Utils
+import { now } from "@/core/utils/now";
+
 export class PrismaSessionsRepository implements SessionsRepository {
   async find<T extends SessionRepositoryReturnType>(
     _: T,
@@ -43,7 +46,7 @@ export class PrismaSessionsRepository implements SessionsRepository {
       if (session.user) {
         await ctx.user.update({
           where: { id: session.user.id.value },
-          data: { verified_at: new Date() },
+          data: { verified_at: now() },
         });
       }
     });

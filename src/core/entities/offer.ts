@@ -5,6 +5,9 @@ import { Product } from "@/core/entities/product";
 import { Catalog } from "@/core/entities/catalog";
 import { Optional } from "@/core/types/optional";
 
+// Utils
+import { now } from "@/core/utils/now";
+
 export interface OfferProps extends EntityRequest {
   catalog_id: UUID;
   catalog?: Catalog;
@@ -107,7 +110,7 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
   }
 
   get expired() {
-    return !this.props.active || (this.props.expires_at && this.props.expires_at < new Date());
+    return !this.props.active || (this.props.expires_at && this.props.expires_at < now());
   }
 
   static create(props: Optional<OfferProps, "description" | "expires_at" | "recurring" | "active">) {

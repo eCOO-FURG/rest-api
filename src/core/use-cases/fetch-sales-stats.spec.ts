@@ -6,6 +6,9 @@ import { FetchSalesStatsUseCase } from "@/core/use-cases/fetch-sales-stats";
 // Factories
 import { makeBag } from "@/test/factories/make-bag";
 
+// Utils
+import { now } from "@/core/utils/now";
+
 let bagsRepository: InMemoryBagsRepository;
 let sut: FetchSalesStatsUseCase;
 
@@ -16,7 +19,7 @@ describe("Fetch sales stats", () => {
   });
 
   it("should be able to fetch sales stats", async () => {
-    const today = new Date();
+    const today = now();
     const currentMonth = today.getMonth();
     const currentYear = today.getFullYear();
 

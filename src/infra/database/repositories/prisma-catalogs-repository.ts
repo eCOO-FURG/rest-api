@@ -18,6 +18,9 @@ import { PrismaCatalogAndOffers, PrismaCatalogAndOffersMapper } from "@/infra/da
 import { PrismaCatalogMapper } from "@/infra/database/mappers/prisma-catalog-mapper";
 import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
 
+// Utils
+import { now } from "@/core/utils/now";
+
 export class PrismaCatalogsRepository implements CatalogsRepository {
   async find<T extends CatalogRepositoryReturnType>(
     type: T,
@@ -57,10 +60,10 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                         ? {
                             AND: [
                               {
-                                OR: [{ recurring: true }, { recurring: false, closes_at: { gt: new Date() } }],
+                                OR: [{ recurring: true }, { recurring: false, closes_at: { gt: now() } }],
                               },
                               {
-                                OR: [{ expires_at: null }, { expires_at: { gte: new Date() } }],
+                                OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
                               },
                               {
                                 active: true,
@@ -70,8 +73,8 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                           }
                         : {
                             OR: [
-                              { recurring: false, closes_at: { lte: new Date() } },
-                              { expires_at: { not: null, lte: new Date() } },
+                              { recurring: false, closes_at: { lte: now() } },
+                              { expires_at: { not: null, lte: now() } },
                               { active: false },
                               { amount: 0 },
                             ],
@@ -135,10 +138,10 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                 ? {
                     AND: [
                       {
-                        OR: [{ recurring: true }, { recurring: false, closes_at: { gt: new Date() } }],
+                        OR: [{ recurring: true }, { recurring: false, closes_at: { gt: now() } }],
                       },
                       {
-                        OR: [{ expires_at: null }, { expires_at: { gte: new Date() } }],
+                        OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
                       },
                       {
                         active: true,
@@ -148,8 +151,8 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                   }
                 : {
                     OR: [
-                      { recurring: false, closes_at: { lte: new Date() } },
-                      { expires_at: { not: null, lte: new Date() } },
+                      { recurring: false, closes_at: { lte: now() } },
+                      { expires_at: { not: null, lte: now() } },
                       { active: false },
                       { amount: 0 },
                     ],

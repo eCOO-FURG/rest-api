@@ -1,5 +1,6 @@
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
+import { CycleWeek } from "@/core/entities/cycle";
 
 // Services
 import { prisma } from "@/infra/database/prisma-service";
@@ -9,8 +10,10 @@ import { hash } from "bcryptjs";
 
 // Env
 import { env } from "@/infra/env";
+
+// Utils
 import { last } from "@/core/utils/last";
-import { CycleWeek } from "@/core/entities/cycle";
+import { now } from "@/core/utils/now";
 
 export async function seedDevelopment() {
   const cycleId = new UUID();
@@ -38,7 +41,7 @@ export async function seedDevelopment() {
       roles: ["USER", "PRODUCER"],
       password: await hash(env.EMAIL_PASSWORD, 8),
       phone: "77777777777",
-      verified_at: new Date(),
+      verified_at: now(),
     },
   });
 
@@ -99,7 +102,7 @@ export async function seedDevelopment() {
       roles: ["USER"],
       password: await hash(env.EMAIL_PASSWORD, 8),
       phone: "88888888888",
-      verified_at: new Date(),
+      verified_at: now(),
       bags: {
         create: {
           code: "418293",

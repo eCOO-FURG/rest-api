@@ -16,6 +16,9 @@ import { makeUser } from "@/test/factories/make-user";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
+// Utils
+import { now } from "@/core/utils/now";
+
 let usersRepository: InMemoryUsersRepository;
 let bagsRepository: InMemoryBagsRepository;
 let cyclesRepository: InMemoryCyclesRepository;
@@ -36,18 +39,18 @@ describe("list user bags", () => {
     const user = makeUser();
     usersRepository.create(user);
 
-    const bag = makeBag({ customer_id: user.id, created_at: new Date() });
+    const bag = makeBag({ customer_id: user.id, created_at: now() });
     await bagsRepository.create(bag);
 
     const bag2 = makeBag({
       customer_id: user.id,
-      created_at: new Date(new Date().setDate(new Date().getDate() + 1)),
+      created_at: new Date(now().setDate(now().getDate() + 1)),
     });
     await bagsRepository.create(bag2);
 
     const result = await sut.execute({
       user_id: user.id.value,
-      since: new Date("2024-10-05"),
+      since: new Date(now().setDate(now().getDate() - 1)),
       page: 1,
     });
 

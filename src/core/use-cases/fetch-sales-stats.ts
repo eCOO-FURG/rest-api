@@ -1,6 +1,9 @@
 // Repositories
 import { BagsRepository } from "@/core/repositories/bags-repository";
 
+// Utils
+import { now } from "@/core/utils/now";
+
 interface FetchSalesStatsUseCaseRequest {
   since?: Date;
   before?: Date;
@@ -11,7 +14,7 @@ export class FetchSalesStatsUseCase {
   constructor(private bagsRepository: BagsRepository) {}
 
   async execute({ since, before, method }: FetchSalesStatsUseCaseRequest) {
-    const FIVE_MONTHS_AGO = new Date().setMonth(new Date().getMonth() - 4);
+    const FIVE_MONTHS_AGO = now().setMonth(now().getMonth() - 4);
 
     const bags = await this.bagsRepository.list("bag-and-orders", {
       since: new Date(FIVE_MONTHS_AGO),
@@ -36,7 +39,7 @@ export class FetchSalesStatsUseCase {
 
       daily[day] += bag.total;
 
-      const current = String(new Date().getMonth() + 1).padStart(2, "0");
+      const current = String(now().getMonth() + 1).padStart(2, "0");
 
       if (month === current) revenue += bag.total;
     }
