@@ -52,25 +52,44 @@ export class PrismaOrdersRepository implements OrdersRepository {
         data: PrismaOrderMapper.toPrisma(order),
       });
 
+      const box = await ctx.box.findFirstOrThrow({
+        where: { id: order.box_id.value },
+      });
+
+      if (box.status === "PENDING") {
+        const orders = await ctx.order.findMany({ where: { box_id: order.box_id.value } });
+
+        const verified = orders.every((order) => order.status !== "PENDING");
+
+        if (verified) {
+          await ctx.box.update({
+            where: { id: order.box_id.value },
+            data: { status: "VERIFIED" },
+          });
+        }
+      }
+
       const bag = await ctx.bag.findFirstOrThrow({
         where: { id: order.bag_id.value },
-        include: { orders: true },
       });
 
-      const verified = bag.orders.every((order) => order.status !== "PENDING");
+      if (bag.status === "PENDING") {
+        const orders = await ctx.order.findMany({ where: { bag_id: order.bag_id.value } });
 
-      const refund = order.status === "CANCELLED" || order.status === "REJECTED";
+        const verified = orders.every((order) => order.status !== "PENDING");
 
-      await ctx.bag.update({
-        where: { id: bag.id },
-        data: {
-          verified,
-          ...(refund && {
-            subtotal: bag.subtotal.minus(order.subtotal),
-            fee: bag.fee.minus(order.fee),
-          }),
-        },
-      });
+        const refund = order.status === "CANCELLED" || order.status === "REJECTED";
+
+        if (verified) {
+          await ctx.bag.update({
+            where: { id: order.bag_id.value },
+            data: {
+              status: "VERIFIED",
+              ...(refund && { subtotal: bag.subtotal.minus(order.subtotal), fee: bag.fee.minus(order.fee) }),
+            },
+          });
+        }
+      }
     });
   }
 }

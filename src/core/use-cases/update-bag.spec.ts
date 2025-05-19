@@ -44,11 +44,10 @@ describe("update bag", () => {
     cyclesRepository.items.push(cycle);
 
     const bag = makeBag({
-      status: "PENDING",
       cycle_id: cycle.id,
       customer_id: user.id,
       customer: user,
-      verified: true,
+      status: "MOUNTED",
     });
 
     await bagsRepository.create(bag);
@@ -73,7 +72,6 @@ describe("update bag", () => {
       cycle_id: cycle.id,
       customer_id: user.id,
       customer: user,
-      verified: true,
     });
 
     await bagsRepository.create(bag);
@@ -90,7 +88,7 @@ describe("update bag", () => {
     await expect(
       sut.execute({
         bag_id: "invalid-id",
-        status: "SEPARATED",
+        status: "MOUNTED",
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
@@ -114,7 +112,7 @@ describe("update bag", () => {
     await expect(
       sut.execute({
         bag_id: bag.id.value,
-        status: "SEPARATED",
+        status: "MOUNTED",
       }),
     ).rejects.toBeInstanceOf(ResourceNotVerifiedError);
   });

@@ -48,7 +48,7 @@ export class UpdateBagUseCase {
 
     if (bag.status === "CANCELLED") throw new ResourceClosedError("Sacola", bag_id);
 
-    if (!bag.verified) throw new ResourceNotVerifiedError("Sacola", bag_id);
+    if (bag.status === "VERIFIED" && status !== "CANCELLED") throw new ResourceNotVerifiedError("Sacola", bag_id);
 
     const owner = bag.customer_id.equals(user.id);
 
@@ -72,10 +72,11 @@ export class UpdateBagUseCase {
 }
 
 const STATUSES: Record<Bag["status"], string> = {
-  SEPARATED: "separada",
+  CANCELLED: "cancelada",
+  VERIFIED: "verificada",
+  MOUNTED: "montada",
   DISPATCHED: "despachada",
   RECEIVED: "recebida",
-  CANCELLED: "cancelada",
   DEFERRED: "deferida",
   PENDING: "pendente",
 };

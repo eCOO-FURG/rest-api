@@ -14,7 +14,6 @@ export class PrismaBoxMapper {
     return Box.create({
       id: new UUID(raw.id),
       status: raw.status,
-      verified: raw.verified,
       catalog_id: new UUID(raw.catalog_id),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
@@ -26,7 +25,6 @@ export class PrismaBoxMapper {
       id: box.id.value,
       catalog_id: box.catalog_id.value,
       status: box.status,
-      verified: box.verified,
       created_at: box.created_at,
       updated_at: box.updated_at,
     };

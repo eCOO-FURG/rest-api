@@ -40,7 +40,6 @@ describe("open payment", () => {
     const bag = makeBag({
       customer_id: user.id,
       customer: user,
-      verified: true,
     });
     bagsRepository.items.push(bag);
 
@@ -69,7 +68,7 @@ describe("open payment", () => {
     const bag = makeBag({
       customer_id: user.id,
       customer: user,
-      verified: true,
+      status: "MOUNTED",
     });
 
     bagsRepository.items.push(bag);

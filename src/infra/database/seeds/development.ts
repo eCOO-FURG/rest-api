@@ -46,7 +46,9 @@ export async function seedDevelopment() {
   });
 
   const boxId = new UUID();
-  const products = await prisma.product.findMany();
+  const products = await prisma.product.findMany({
+    take: 2,
+  });
 
   await prisma.farm.create({
     data: {

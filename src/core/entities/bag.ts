@@ -20,12 +20,10 @@ export interface BagProps extends EntityRequest {
   address_id: UUID | null;
   address?: Address | null;
 
+  code: string;
   subtotal: number;
   shipping: number;
   fee: number;
-
-  code: string;
-  verified: boolean;
 
   status: BagStatus;
 
@@ -97,10 +95,6 @@ export class Bag<Props extends BagProps = BagProps> extends Entity<Props> {
     return this.props.cycle_id;
   }
 
-  get verified() {
-    return this.props.verified;
-  }
-
   set status(value: BagStatus) {
     this.props.status = value;
   }
@@ -114,14 +108,13 @@ export class Bag<Props extends BagProps = BagProps> extends Entity<Props> {
     this.touch();
   }
 
-  static create(props: Optional<BagProps, "status" | "verified" | "subtotal" | "shipping" | "fee" | "orders" | "address_id">) {
+  static create(props: Optional<BagProps, "status" | "subtotal" | "shipping" | "fee" | "orders" | "address_id">) {
     const bag = new Bag({
       ...props,
       address_id: props.address_id ?? null,
       shipping: props.address_id ? 10 : 0,
       subtotal: props.subtotal ?? 0,
       fee: props.fee ?? 0,
-      verified: props.verified ?? false,
       status: props.status ?? "PENDING",
       orders: props.orders ?? [],
     });
@@ -129,5 +122,5 @@ export class Bag<Props extends BagProps = BagProps> extends Entity<Props> {
     return bag;
   }
 
-  static statuses = ["PENDING", "SEPARATED", "DISPATCHED", "RECEIVED", "CANCELLED", "DEFERRED"] as const;
+  static statuses = ["CANCELLED", "PENDING", "VERIFIED", "MOUNTED", "DISPATCHED", "RECEIVED", "DEFERRED"] as const;
 }

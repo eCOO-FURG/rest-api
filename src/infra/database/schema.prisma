@@ -215,12 +215,13 @@ model Address {
 }
 
 enum BAG_STATUS {
+  CANCELLED
   PENDING
-  SEPARATED
+  VERIFIED
+  MOUNTED
   DISPATCHED
   RECEIVED
   DEFERRED
-  CANCELLED
 }
 
 model Bag {
@@ -231,8 +232,6 @@ model Bag {
   subtotal Decimal @db.Decimal(10, 2)
   shipping Decimal @db.Decimal(10, 2)
   fee      Decimal @db.Decimal(10, 2)
-
-  verified Boolean @default(false)
 
   status BAG_STATUS
 

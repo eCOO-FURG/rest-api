@@ -34,7 +34,7 @@ describe("Register payment", () => {
     const bag = makeBag({
       customer_id: user.id,
       customer: user,
-      verified: true,
+      status: "MOUNTED",
     });
     await bagsRepository.create(bag);
 
@@ -73,7 +73,7 @@ describe("Register payment", () => {
     const bag = makeBag({
       customer_id: user.id,
       customer: user,
-      verified: true,
+      status: "MOUNTED",
     });
     await bagsRepository.create(bag);
 

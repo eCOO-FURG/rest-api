@@ -25,7 +25,6 @@ export class PrismaBagAndDetailsMapper {
       id: new UUID(raw.id),
       code: raw.code,
       status: raw.status,
-      verified: raw.verified,
       subtotal: raw.subtotal.toNumber(),
       fee: raw.fee.toNumber(),
       shipping: raw.shipping.toNumber(),
