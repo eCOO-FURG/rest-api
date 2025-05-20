@@ -14,7 +14,7 @@ import { boolean } from "@/infra/http/validation/boolean";
 
 // Utils
 import { toBoolean } from "@/infra/utils/to-boolean";
-
+import { toDate } from "@/infra/utils/to-date";
 export const updateOfferParams = Joi.object({
   offer_id: Joi.string().uuid().required(),
 });
@@ -25,7 +25,10 @@ export const updateOfferSchema = Joi.object({
   description: Joi.string().optional(),
   comment: Joi.string().optional(),
   active: boolean.optional(),
-  expires_at: Joi.date().optional(),
+  expires_at: Joi.string()
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
+    .optional(),
+  recurring: boolean.optional(),
 });
 
 export async function updateOfferController(request: Request, response: Response, next: NextFunction) {
@@ -44,7 +47,7 @@ export async function updateOfferController(request: Request, response: Response
       description,
       comment,
       active: toBoolean(active),
-      expires_at,
+      expires_at: toDate(expires_at),
     });
 
     return response.status(204).send();
