@@ -123,7 +123,7 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
     return !this.props.active || (this.props.expires_at && this.props.expires_at < now());
   }
 
-  static create(props: Optional<OfferProps, "description" | "expires_at" | "recurring" | "active">) {
+  static create(props: Optional<OfferProps, "description" | "expires_at" | "recurring" | "active" | "comment">) {
     const offer = new Offer({
       ...props,
       recurring: props.recurring ?? false,
