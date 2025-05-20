@@ -34,7 +34,6 @@ import { Mailer } from "@/core/mail/mailer";
 
 // Utils
 import { today } from "@/core/utils/today";
-import { now } from "@/core/utils/now";
 
 interface RegisterOrderUseCaseRequest {
   user_id: string;
