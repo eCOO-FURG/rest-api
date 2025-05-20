@@ -30,9 +30,9 @@ export class InMemoryOffersRepository implements OffersRepository {
         (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
         (!product?.id || item.product_id.equals(product.id)) &&
         (!active || item.active === active) &&
-        (!recurring || item.recurring === recurring) &&
         (!since || item.created_at >= since) &&
-        (!before || item.created_at <= before)
+        (!before || item.created_at <= before) &&
+        (typeof recurring !== "boolean" || (recurring ? item.closes_at : !item.closes_at))
       );
     });
 

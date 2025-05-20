@@ -97,11 +97,10 @@ export class RegisterOfferUseCase {
       product_id: product.id,
       amount,
       price,
-      recurring,
       description,
       comment,
       expires_at,
-      closes_at: last(cycle.offer),
+      closes_at: recurring ? null : last(cycle.offer),
       fee: price * (catalog.fee / 100),
     });
 

@@ -60,7 +60,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                         ? {
                             AND: [
                               {
-                                OR: [{ recurring: true }, { recurring: false, closes_at: { gt: now() } }],
+                                OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
                               },
                               {
                                 OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
@@ -73,7 +73,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                           }
                         : {
                             OR: [
-                              { recurring: false, closes_at: { lte: now() } },
+                              { closes_at: { not: null, lte: now() } },
                               { expires_at: { not: null, lte: now() } },
                               { active: false },
                               { amount: 0 },
@@ -138,7 +138,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                 ? {
                     AND: [
                       {
-                        OR: [{ recurring: true }, { recurring: false, closes_at: { gt: now() } }],
+                        OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
                       },
                       {
                         OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
@@ -151,7 +151,7 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                   }
                 : {
                     OR: [
-                      { recurring: false, closes_at: { lte: now() } },
+                      { closes_at: { not: null, lte: now() } },
                       { expires_at: { not: null, lte: now() } },
                       { active: false },
                       { amount: 0 },

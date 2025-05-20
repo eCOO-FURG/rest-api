@@ -19,13 +19,12 @@ export interface OfferProps extends EntityRequest {
   fee: number;
   amount: number;
 
-  recurring: boolean;
   active: boolean;
 
   description: string | null;
   comment: string | null;
 
-  closes_at: Date;
+  closes_at: Date | null;
   expires_at: Date | null;
 }
 
@@ -74,20 +73,8 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
     return this.props.expires_at;
   }
 
-  get recurring() {
-    return this.props.recurring;
-  }
-
-  get closes_at() {
-    return this.props.closes_at;
-  }
-
   set closes_at(closes_at: Date) {
     this.props.closes_at = closes_at;
-  }
-
-  set recurring(recurring: boolean) {
-    this.props.recurring = recurring;
   }
 
   get active() {
@@ -119,13 +106,16 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
   }
 
   get expired() {
-    return !this.props.active || (this.props.expires_at && this.props.expires_at < now());
+    return (
+      !this.props.active ||
+      (this.props.expires_at && this.props.expires_at < now()) ||
+      (this.props.closes_at && this.props.closes_at < now())
+    );
   }
 
-  static create(props: Optional<OfferProps, "description" | "expires_at" | "recurring" | "active" | "comment">) {
+  static create(props: Optional<OfferProps, "description" | "expires_at" | "active" | "comment">) {
     const offer = new Offer({
       ...props,
-      recurring: props.recurring ?? false,
       active: props.active ?? true,
       description: props.description ?? null,
       comment: props.comment ?? null,

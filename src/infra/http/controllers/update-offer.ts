@@ -28,7 +28,6 @@ export const updateOfferSchema = Joi.object({
   expires_at: Joi.string()
     .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
     .optional(),
-  recurring: boolean.optional(),
 });
 
 export async function updateOfferController(request: Request, response: Response, next: NextFunction) {

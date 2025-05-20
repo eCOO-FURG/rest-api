@@ -25,7 +25,6 @@ export class PrismaOfferAndProductMapper {
       catalog_id: new UUID(raw.catalog_id),
       product_id: new UUID(raw.product_id),
       product: PrismaProductMapper.toDomain(raw.product),
-      recurring: raw.recurring,
       active: raw.active,
       closes_at: raw.closes_at,
       description: raw.description,

@@ -49,7 +49,7 @@ export class UpdateOfferUseCase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", offer.catalog!.cycle_id.value);
 
-    if (offer.created_at < first(cycle.order) && !offer.recurring) throw new ResourceClosedError("Oferta", offer.id.value);
+    if (offer.created_at < first(cycle.order) && !offer.closes_at) throw new ResourceClosedError("Oferta", offer.id.value);
 
     if (!cycle.offer.includes(today())) throw new ResourceClosedError("Ciclo", cycle.id.value);
 

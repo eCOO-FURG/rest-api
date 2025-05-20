@@ -29,7 +29,7 @@ export class PrismaOfferAndDetailsMapper {
       product_id: new UUID(raw.product_id),
       product: PrismaProductMapper.toDomain(raw.product),
       description: raw.description,
-      recurring: raw.recurring,
+      comment: raw.comment,
       active: raw.active,
       closes_at: raw.closes_at,
       expires_at: raw.expires_at,

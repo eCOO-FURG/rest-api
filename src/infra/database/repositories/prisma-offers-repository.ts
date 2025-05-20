@@ -30,9 +30,9 @@ export class PrismaOffersRepository implements OffersRepository {
           name: { contains: product?.name, mode: "insensitive" },
         },
         catalog: { id: catalog?.id },
-        recurring,
         active,
         created_at: { gte: since, lte: before },
+        ...(typeof recurring === "boolean" && recurring ? { closes_at: null } : { closes_at: { not: null } }),
       },
       include: {
         ...(type === "offer-and-product" && { product: true }),
@@ -64,13 +64,13 @@ export class PrismaOffersRepository implements OffersRepository {
       where: {
         id: { in: ids, equals: id },
         active,
-        recurring,
         product: {
           id: product?.id,
           name: { contains: product?.name, mode: "insensitive" },
         },
         catalog: { id: catalog?.id },
         created_at: { gte: since, lte: before },
+        ...(typeof recurring === "boolean" && recurring ? { closes_at: null } : { closes_at: { not: null } }),
       },
       include:
         type === "offer-and-product"

@@ -20,7 +20,6 @@ export class PrismaOfferMapper {
       comment: raw.comment,
       fee: raw.fee.toNumber(),
       active: raw.active,
-      recurring: raw.recurring,
       closes_at: raw.closes_at,
       expires_at: raw.expires_at,
       created_at: raw.created_at,
