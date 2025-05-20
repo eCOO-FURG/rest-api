@@ -46,7 +46,7 @@ const limiter = rateLimit({
 });
 
 router.use(limiter);
-// router.use(logging());
+router.use(logging());
 
 router.get("/", healthController);
 
