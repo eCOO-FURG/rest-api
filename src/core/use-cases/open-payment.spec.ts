@@ -40,6 +40,7 @@ describe("open payment", () => {
     const bag = makeBag({
       customer_id: user.id,
       customer: user,
+      status: "MOUNTED",
     });
     bagsRepository.items.push(bag);
 
