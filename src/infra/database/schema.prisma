@@ -189,6 +189,8 @@ model Offer {
   product_id String
   product    Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
 
+  comment String?
+
   created_at DateTime  @default(now())
   updated_at DateTime?
 
