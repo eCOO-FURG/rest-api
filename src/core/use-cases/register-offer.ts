@@ -32,6 +32,7 @@ interface RegisterOfferUseCaseRequest {
   price: number;
   recurring?: boolean;
   description?: string;
+  comment?: string;
   expires_at?: Date;
 }
 
@@ -44,7 +45,17 @@ export class RegisterOfferUseCase {
     private offersRepository: OffersRepository,
   ) {}
 
-  async execute({ farm_id, product_id, cycle_id, amount, price, description, recurring, expires_at }: RegisterOfferUseCaseRequest) {
+  async execute({
+    farm_id,
+    product_id,
+    cycle_id,
+    amount,
+    price,
+    description,
+    comment,
+    recurring,
+    expires_at,
+  }: RegisterOfferUseCaseRequest) {
     const farm = await this.farmsRepository.find("farm", { id: farm_id });
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
@@ -88,6 +99,7 @@ export class RegisterOfferUseCase {
       price,
       recurring,
       description,
+      comment,
       expires_at,
       closes_at: last(cycle.offer),
       fee: price * (catalog.fee / 100),

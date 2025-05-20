@@ -19,6 +19,7 @@ interface UpdateOfferUseCaseRequest {
   amount?: number;
   price?: number;
   description?: string;
+  comment?: string;
   expires_at?: Date;
   active?: boolean;
 }
@@ -29,7 +30,7 @@ export class UpdateOfferUseCase {
     private cyclesRepository: CyclesRepository,
   ) {}
 
-  async execute({ farm_id, offer_id, amount, price, description, expires_at, active }: UpdateOfferUseCaseRequest) {
+  async execute({ farm_id, offer_id, amount, price, description, expires_at, active, comment }: UpdateOfferUseCaseRequest) {
     const offer = await this.offersRepository.find("offer-and-details", {
       id: offer_id,
     });
@@ -59,6 +60,7 @@ export class UpdateOfferUseCase {
     offer.description = description ?? offer.description;
     offer.expires_at = expires_at ?? offer.expires_at;
     offer.active = active ?? offer.active;
+    offer.comment = comment ?? offer.comment;
 
     offer.touch();
 

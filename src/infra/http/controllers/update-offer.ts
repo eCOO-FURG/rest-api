@@ -23,6 +23,7 @@ export const updateOfferSchema = Joi.object({
   amount: Joi.number().optional(),
   price: Joi.number().optional(),
   description: Joi.string().optional(),
+  comment: Joi.string().optional(),
   active: boolean.optional(),
   expires_at: Joi.date().optional(),
 });
@@ -31,7 +32,7 @@ export async function updateOfferController(request: Request, response: Response
   try {
     const { offer_id } = parse(updateOfferParams, request.params);
 
-    const { amount, price, description, active, expires_at } = parse(updateOfferSchema, request.body);
+    const { amount, price, description, active, expires_at, comment } = parse(updateOfferSchema, request.body);
 
     const updateOfferUseCase = container.resolve<UpdateOfferUseCase>("updateOfferUseCase");
 
@@ -41,6 +42,7 @@ export async function updateOfferController(request: Request, response: Response
       amount,
       price,
       description,
+      comment,
       active: toBoolean(active),
       expires_at,
     });

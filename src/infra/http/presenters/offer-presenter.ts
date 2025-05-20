@@ -18,6 +18,7 @@ export class OfferPresenter {
         fee: offer.fee,
         total: offer.total,
         description: offer.description,
+        comment: offer.comment,
         expires_at: offer.expires_at,
         active: offer.active,
         recurring: offer.recurring,

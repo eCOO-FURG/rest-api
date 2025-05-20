@@ -173,6 +173,7 @@ model Offer {
 
   amount      Int
   description String? @db.VarChar(240)
+  comment String?
 
   recurring Boolean @default(false)
   active    Boolean @default(true)

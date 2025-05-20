@@ -26,11 +26,12 @@ export const registerOfferSchema = Joi.object({
   expires_at: Joi.string()
     .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
     .optional(),
+  comment: Joi.string().optional(),
 });
 
 export async function registerOfferController(request: Request, response: Response, next: NextFunction) {
   try {
-    const { product_id, cycle_id, amount, price, description, recurring, expires_at } = parse(registerOfferSchema, request.body);
+    const { product_id, cycle_id, amount, price, description, recurring, expires_at, comment } = parse(registerOfferSchema, request.body);
 
     const registerOfferUseCase = container.resolve<RegisterOfferUseCase>("registerOfferUseCase");
 
@@ -43,6 +44,7 @@ export async function registerOfferController(request: Request, response: Respon
       description,
       recurring: toBoolean(recurring),
       expires_at: toDate(expires_at),
+      comment,
     });
 
     return response.sendStatus(201);

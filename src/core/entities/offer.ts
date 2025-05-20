@@ -23,6 +23,7 @@ export interface OfferProps extends EntityRequest {
   active: boolean;
 
   description: string | null;
+  comment: string | null;
 
   closes_at: Date;
   expires_at: Date | null;
@@ -47,6 +48,10 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
 
   get description() {
     return this.props.description;
+  }
+
+  get comment() {
+    return this.props.comment;
   }
 
   get catalog_id() {
@@ -105,6 +110,10 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
     this.props.description = description;
   }
 
+  set comment(comment: string | null) {
+    this.props.comment = comment;
+  }
+
   set expires_at(value: Date | null) {
     this.props.expires_at = value;
   }
@@ -113,12 +122,13 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
     return !this.props.active || (this.props.expires_at && this.props.expires_at < now());
   }
 
-  static create(props: Optional<OfferProps, "description" | "expires_at" | "recurring" | "active">) {
+  static create(props: Optional<OfferProps, "description" | "expires_at" | "recurring" | "active" | "comment">) {
     const offer = new Offer({
       ...props,
       recurring: props.recurring ?? false,
       active: props.active ?? true,
       description: props.description ?? null,
+      comment: props.comment ?? null,
       expires_at: props.expires_at ?? null,
     });
 
