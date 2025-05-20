@@ -129,6 +129,7 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
       recurring: props.recurring ?? false,
       active: props.active ?? true,
       description: props.description ?? null,
+      comment: props.comment ?? null,
       expires_at: props.expires_at ?? null,
     });
 
