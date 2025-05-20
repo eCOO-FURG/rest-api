@@ -45,7 +45,17 @@ export class RegisterOfferUseCase {
     private offersRepository: OffersRepository,
   ) {}
 
-  async execute({ farm_id, product_id, cycle_id, amount, price, description, recurring, expires_at, comment }: RegisterOfferUseCaseRequest) {
+  async execute({
+    farm_id,
+    product_id,
+    cycle_id,
+    amount,
+    price,
+    description,
+    recurring,
+    expires_at,
+    comment,
+  }: RegisterOfferUseCaseRequest) {
     const farm = await this.farmsRepository.find("farm", { id: farm_id });
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
