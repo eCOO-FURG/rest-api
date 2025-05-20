@@ -24,6 +24,8 @@ export interface OfferProps extends EntityRequest {
 
   description: string | null;
 
+  comment: string | null;
+
   closes_at: Date;
   expires_at: Date | null;
 }
@@ -47,6 +49,10 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
 
   get description() {
     return this.props.description;
+  }
+
+  get comment() {
+    return this.props.comment;
   }
 
   get catalog_id() {
@@ -103,6 +109,10 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
 
   set description(description: string | null) {
     this.props.description = description;
+  }
+
+  set comment(comment: string | null) {
+    this.props.comment = comment;
   }
 
   set expires_at(value: Date | null) {
