@@ -23,7 +23,6 @@ export interface OfferProps extends EntityRequest {
   active: boolean;
 
   description: string | null;
-
   comment: string | null;
 
   closes_at: Date;

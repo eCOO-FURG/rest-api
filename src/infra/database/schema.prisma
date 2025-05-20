@@ -173,6 +173,7 @@ model Offer {
 
   amount      Int
   description String? @db.VarChar(240)
+  comment String?
 
   recurring Boolean @default(false)
   active    Boolean @default(true)
@@ -188,8 +189,6 @@ model Offer {
 
   product_id String
   product    Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
-
-  comment String?
 
   created_at DateTime  @default(now())
   updated_at DateTime?

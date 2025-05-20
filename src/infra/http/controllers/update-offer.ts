@@ -23,9 +23,9 @@ export const updateOfferSchema = Joi.object({
   amount: Joi.number().optional(),
   price: Joi.number().optional(),
   description: Joi.string().optional(),
+  comment: Joi.string().optional(),
   active: boolean.optional(),
   expires_at: Joi.date().optional(),
-  comment: Joi.string().optional(),
 });
 
 export async function updateOfferController(request: Request, response: Response, next: NextFunction) {
@@ -42,9 +42,9 @@ export async function updateOfferController(request: Request, response: Response
       amount,
       price,
       description,
+      comment,
       active: toBoolean(active),
       expires_at,
-      comment,
     });
 
     return response.status(204).send();

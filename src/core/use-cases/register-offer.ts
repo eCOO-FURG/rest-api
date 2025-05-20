@@ -52,9 +52,9 @@ export class RegisterOfferUseCase {
     amount,
     price,
     description,
+    comment,
     recurring,
     expires_at,
-    comment,
   }: RegisterOfferUseCaseRequest) {
     const farm = await this.farmsRepository.find("farm", { id: farm_id });
 
