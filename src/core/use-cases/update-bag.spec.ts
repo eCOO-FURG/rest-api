@@ -53,6 +53,7 @@ describe("update bag", () => {
     await bagsRepository.create(bag);
 
     await sut.execute({
+      user_id: user.id.value,
       bag_id: bag.id.value,
       status: "CANCELLED",
     });
@@ -77,6 +78,7 @@ describe("update bag", () => {
     await bagsRepository.create(bag);
 
     await sut.execute({
+      user_id: user.id.value,
       bag_id: bag.id.value,
       status: "CANCELLED",
     });
@@ -85,8 +87,12 @@ describe("update bag", () => {
   });
 
   it("should not be able to handle a bag that does not exist", async () => {
+    const user = makeUser({ roles: ["MANAGER"] });
+    usersRepository.items.push(user);
+
     await expect(
       sut.execute({
+        user_id: user.id.value,
         bag_id: "invalid-id",
         status: "MOUNTED",
       }),
@@ -94,8 +100,11 @@ describe("update bag", () => {
   });
 
   it("should not be able to update a bag that is not verified", async () => {
-    const user = makeUser();
-    usersRepository.items.push(user);
+    const customer = makeUser();
+    usersRepository.items.push(customer);
+
+    const admin = makeUser({ roles: ["MANAGER"] });
+    usersRepository.items.push(admin);
 
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
@@ -103,14 +112,14 @@ describe("update bag", () => {
     const bag = makeBag({
       status: "PENDING",
       cycle_id: cycle.id,
-      customer_id: user.id,
-      customer: user,
+      customer_id: customer.id,
+      customer,
     });
-
     await bagsRepository.create(bag);
 
     await expect(
       sut.execute({
+        user_id: admin.id.value,
         bag_id: bag.id.value,
         status: "MOUNTED",
       }),
