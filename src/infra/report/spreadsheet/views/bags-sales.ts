@@ -7,8 +7,12 @@ import { BagAndOrders } from "@/core/entities/aggregates/bag-and-orders";
 // Report
 import { SpreadsheetView } from "@/infra/report/spreadsheet/excel";
 
+// Utils
+import { mapBagStatus } from "@/infra/utils/map-bag-status";
+
 const columns: SpreadsheetColumn[] = [
   { header: "SACOLA", key: "bag", width: 10 },
+  { header: "STATUS", key: "status", width: 20 },
   { header: "CONSUMIDOR", key: "consumer", width: 20 },
   { header: "CPF", key: "cpf", width: 20 },
   { header: "ENDEREÇO", key: "address", width: 20 },
@@ -50,6 +54,7 @@ export const BAGS_SALES_VIEW: SpreadsheetView = async ({ bags, since, before }: 
   for (const bag of bags) {
     rows.push({
       bag: bag.code,
+      status: mapBagStatus(bag.status),
       consumer: `${bag.customer.first_name} ${bag.customer.last_name}`,
       cpf: bag.customer.cpf.format,
       address: bag.address?.format,
