@@ -44,6 +44,7 @@ import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
 import { openPixSchema } from "@/infra/http/webhooks/open-pix";
 import { fetchCategoryParams } from "@/infra/http/controllers/fetch-category";
 import { fetchCategoryQuery } from "@/infra/http/controllers/fetch-category";
+import { fetchCycleCatalogParams, fetchCycleCatalogQuery } from "@/infra/http/controllers/fetch-cycle-catalog";
 
 // Schemas
 const { swagger: authenticateSchemaSwagger } = j2s(authenticateSchema);
@@ -96,6 +97,8 @@ const { swagger: fetchCategoryParamsSwagger } = j2s(fetchCategoryParams);
 const { swagger: fetchCategoryQuerySwagger } = j2s(fetchCategoryQuery);
 const { swagger: sendNotificationSchemaSwagger } = j2s(sendNotificationSchema);
 const { swagger: openPixSchemaSwagger } = j2s(openPixSchema);
+const { swagger: fetchCycleCatalogQuerySwagger } = j2s(fetchCycleCatalogQuery);
+const { swagger: fetchCycleCatalogParamsSwagger } = j2s(fetchCycleCatalogParams);
 const toQueryParams = (query: SwaggerSchema) =>
   Object.entries(query.properties).map(([name, schema]) => ({
     in: "query",
@@ -655,6 +658,13 @@ export const docs = {
             description: "Lista de ciclos obtida com sucesso",
           },
         },
+      },
+    },
+    "/cycles/{cycle_id}/catalog": {
+      get: {
+        tags: ["Ciclos"],
+        summary: "Obter catálogo do ciclo",
+        parameters: [...toRouteParams(fetchCycleCatalogParamsSwagger), ...toQueryParams(fetchCycleCatalogQuerySwagger)],
       },
     },
     "/products": {
