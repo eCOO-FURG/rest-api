@@ -42,6 +42,7 @@ export class ListCatalogsUseCase {
     const catalogs = await this.catalogsRepository.list(
       "catalog-and-farm",
       {
+        farm: { id: farm_id },
         cycle: { id: cycle_id },
         offers: { product: { name: product, category: { id: category_id } }, available, page },
         since,
