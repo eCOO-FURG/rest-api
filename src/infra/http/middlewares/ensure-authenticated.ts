@@ -22,6 +22,9 @@ import { parse } from "@/infra/http/validation/parse";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
+// Utils
+import { now } from "@/core/utils/now";
+
 const jwtPayloadSchema = Joi.object({
   user_id: Joi.string().required(),
   iat: Joi.number().required(),
@@ -45,23 +48,21 @@ export async function ensureAuthenticated(request: Request, response: Response, 
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
-    const expired = Date.now() / 1000 - iat > 5 * 60;
+    const lifetimeInSeconds = new Date().getTime() / 1000 - iat;
+
+    const expired = lifetimeInSeconds > 5 * 60;
 
     if (expired) {
-      const ONE_HOUR_AGO = new Date(Date.now() - 60 * 60 * 1000);
-
       const session = await container.resolve<SessionsRepository>("sessionsRepository").find("session", {
         user: { id: user_id },
         ip: request.ip!,
         agent: request.headers["user-agent"] ?? "not-identified",
-        since: ONE_HOUR_AGO,
+        since: now({ minus: 60 }),
       });
 
       if (!session) throw new SessionExpiredError();
 
-      const refresh = sign({ user_id }, env.JWT_SECRET!);
-
-      response.header("set-cookie", `token=${refresh}`);
+      response.header("set-cookie", `token=${sign({ user_id }, env.JWT_SECRET)}`);
     }
 
     request.user_id = user.id.value;
