@@ -30,9 +30,9 @@ export class PrismaOffersRepository implements OffersRepository {
           name: { contains: product?.name, mode: "insensitive" },
         },
         catalog: { id: catalog?.id },
-        active,
         created_at: { gte: since, lte: before },
-        ...(typeof recurring === "boolean" && recurring ? { closes_at: null } : { closes_at: { not: null } }),
+        ...(typeof active === "boolean" && { active }),
+        ...(typeof recurring === "boolean" && { closes_at: recurring ? null : { not: null } }),
       },
       include: {
         ...(type === "offer-and-product" && { product: true }),
@@ -63,14 +63,14 @@ export class PrismaOffersRepository implements OffersRepository {
     const offers = await prisma.offer.findMany({
       where: {
         id: { in: ids, equals: id },
-        active,
         product: {
           id: product?.id,
           name: { contains: product?.name, mode: "insensitive" },
         },
         catalog: { id: catalog?.id },
         created_at: { gte: since, lte: before },
-        ...(typeof recurring === "boolean" && recurring ? { closes_at: null } : { closes_at: { not: null } }),
+        ...(typeof active === "boolean" && { active }),
+        ...(typeof recurring === "boolean" && { closes_at: recurring ? null : { not: null } }),
       },
       include:
         type === "offer-and-product"
