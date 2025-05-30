@@ -16,6 +16,9 @@ import { Message } from "@/core/entities/message";
 // Message
 import { Chat } from "@/core/message/chat";
 
+// Constants
+import { BAG_STATUS } from "@/core/contants/bag-status";
+
 interface UpdateBagUseCaseRequest {
   user_id: string;
   bag_id: string;
@@ -66,20 +69,10 @@ export class UpdateBagUseCase {
       const message = Message.create({
         to: user.chat,
         subject: "Sacola atualizada",
-        content: `A sacola ${bag.code} foi atualizada para ${STATUSES[bag.status]}.`,
+        content: `A sacola ${bag.code} foi atualizada para ${BAG_STATUS[bag.status]}.`,
       });
 
       await this.chat.send(message);
     }
   }
 }
-
-const STATUSES: Record<Bag["status"], string> = {
-  CANCELLED: "cancelada",
-  VERIFIED: "verificada",
-  MOUNTED: "montada",
-  DISPATCHED: "despachada",
-  RECEIVED: "recebida",
-  DEFERRED: "deferida",
-  PENDING: "pendente",
-};
