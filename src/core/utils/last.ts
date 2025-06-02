@@ -20,9 +20,11 @@ export function last(days: CycleWeek) {
 
   if (difference < 0) difference += 7;
 
-  const date = new Date(today.setDate(today.getDate() + difference));
+  const date = now();
 
-  date.setHours(23, 59, 59, 999);
+  date.setDate(date.getDate() + difference);
+
+  date.setUTCHours(23, 59, 59, 999);
 
   return date;
 }

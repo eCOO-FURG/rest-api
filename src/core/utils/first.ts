@@ -20,9 +20,10 @@ export function first(days: CycleWeek) {
 
   if (difference < 0) difference += 7;
 
-  const date = new Date(today.setDate(today.getDate() - difference));
+  const date = now();
 
-  date.setHours(0, 0, 0, 0);
+  date.setDate(today.getDate() - difference);
+  date.setUTCHours(0, 0, 0, 0);
 
   return date;
 }

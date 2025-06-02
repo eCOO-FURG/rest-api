@@ -37,6 +37,8 @@ export class PrismaOfferMapper {
       amount: offer.amount,
       price: offer.price,
       fee: offer.fee,
+      closes_at: offer.closes_at,
+      active: offer.active,
       expires_at: offer.expires_at,
       updated_at: offer.updated_at,
       created_at: offer.created_at,

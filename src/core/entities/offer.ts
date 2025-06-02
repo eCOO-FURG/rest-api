@@ -73,6 +73,10 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
     return this.props.expires_at;
   }
 
+  get closes_at(): Date | null {
+    return this.props.closes_at;
+  }
+
   set closes_at(closes_at: Date) {
     this.props.closes_at = closes_at;
   }
