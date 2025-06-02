@@ -100,7 +100,7 @@ export class RegisterOfferUseCase {
       description,
       comment,
       expires_at,
-      closes_at: recurring ? null : last(cycle.offer),
+      closes_at: recurring ? null : last(cycle.order),
       fee: price * (catalog.fee / 100),
     });
 
