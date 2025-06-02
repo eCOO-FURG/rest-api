@@ -163,7 +163,7 @@ model Catalog {
   updated_at DateTime?
 
   offers Offer[]
-  box    Box?
+  boxes  Box[]
 
   @@map("catalogs")
 }
@@ -299,8 +299,8 @@ model Box {
 
   status BOX_STATUS
 
-  catalog_id String  @unique
-  catalog    Catalog @relation(fields: [catalog_id], references: [id])
+  catalog_id String
+  catalog    Catalog @relation(fields: [catalog_id], references: [id], onDelete: Cascade)
 
   created_at DateTime  @default(now())
   updated_at DateTime?
