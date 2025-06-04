@@ -11,6 +11,7 @@ import { CyclesRepository } from "@/core/repositories/cycles-repository";
 
 // Utils
 import { first } from "@/core/utils/first";
+import { inPeriodOf } from "@/core/utils/in-period-of";
 
 interface DeleteOfferUseCaseRequest {
   farm_id: string;
@@ -45,9 +46,10 @@ export class DeleteOfferUseCase {
       id: catalog.cycle_id.value,
     });
 
-    if (!cycle) throw new ResourceNotFoundError("Ciclo", offer.catalog!.cycle_id.value);
+    if (!cycle) throw new ResourceNotFoundError("Ciclo", catalog.cycle_id.value);
 
-    if (offer.created_at < first(cycle.order)) throw new ResourceClosedError("Oferta", offer.id.value);
+    if (!inPeriodOf(cycle.offer) || (offer.closes_at && offer.created_at > first(cycle.offer)))
+      throw new ResourceClosedError("Oferta", offer.id.value);
 
     await this.offersRepository.delete(offer);
   }

@@ -11,7 +11,7 @@ import { UnauthorizedError } from "@/core/errors/unauthorized";
 
 // Utils
 import { first } from "@/core/utils/first";
-import { today } from "@/core/utils/today";
+import { inPeriodOf } from "@/core/utils/in-period-of";
 
 interface UpdateOfferUseCaseRequest {
   farm_id: string;
@@ -49,9 +49,8 @@ export class UpdateOfferUseCase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", offer.catalog!.cycle_id.value);
 
-    if (offer.created_at < first(cycle.order) && !offer.closes_at) throw new ResourceClosedError("Oferta", offer.id.value);
-
-    if (!cycle.offer.includes(today())) throw new ResourceClosedError("Ciclo", cycle.id.value);
+    if (!inPeriodOf(cycle.offer) || (offer.closes_at && offer.created_at > first(cycle.offer)))
+      throw new ResourceClosedError("Oferta", offer.id.value);
 
     if (expires_at && offer.product.perishable) throw new InvalidFieldError("expires_at");
 
