@@ -5,16 +5,19 @@ import { Category } from "@/core/entities/category";
 import {
   CategoriesRepository,
   CategoriesRepositorySearchRequest,
-  CategoryRepositoryReturnType,
   CategoryEntityOf,
+  CategoryRepositoryReturnType,
 } from "@/core/repositories/categories-repository";
 
 // Database
 import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
-import { PrismaCategoryMapper } from "@/infra/database/mappers/prisma-category-mapper";
 import { PrismaCategoryAndOffers, PrismaCategoryAndOffersMapper } from "@/infra/database/mappers/prisma-category-and-offers-mapper";
+import { PrismaCategoryMapper } from "@/infra/database/mappers/prisma-category-mapper";
+
+// Utils
+import { now } from "@/core/utils/now";
 
 export class PrismaCategoriesRepository implements CategoriesRepository {
   async find<T extends CategoryRepositoryReturnType>(
@@ -38,6 +41,30 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
                           id: offers?.cycle_id,
                         },
                       },
+                      ...(typeof offers?.available === "boolean" &&
+                        (offers.available
+                          ? {
+                              AND: [
+                                {
+                                  OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+                                },
+                                {
+                                  OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                                },
+                                {
+                                  active: true,
+                                  amount: { not: 0 },
+                                },
+                              ],
+                            }
+                          : {
+                              OR: [
+                                { closes_at: { not: null, lte: now() } },
+                                { expires_at: { not: null, lte: now() } },
+                                { active: false },
+                                { amount: 0 },
+                              ],
+                            })),
                       created_at: {
                         gte: offers?.since,
                       },
@@ -93,6 +120,30 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
                       id: offers.cycle_id,
                     },
                   },
+                  ...(typeof offers?.available === "boolean" &&
+                    (offers.available
+                      ? {
+                          AND: [
+                            {
+                              OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+                            },
+                            {
+                              OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                            },
+                            {
+                              active: true,
+                              amount: { not: 0 },
+                            },
+                          ],
+                        }
+                      : {
+                          OR: [
+                            { closes_at: { not: null, lte: now() } },
+                            { expires_at: { not: null, lte: now() } },
+                            { active: false },
+                            { amount: 0 },
+                          ],
+                        })),
                   created_at: {
                     gte: offers.since,
                   },
