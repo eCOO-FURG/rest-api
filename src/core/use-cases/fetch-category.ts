@@ -12,6 +12,7 @@ interface FetchCategoryUseCaseRequest {
   id: string;
   page: number;
   cycle_id?: string;
+  available?: boolean;
 }
 
 export class FetchCategoryUseCase {
@@ -20,7 +21,7 @@ export class FetchCategoryUseCase {
     private cyclesRepository: CyclesRepository,
   ) {}
 
-  async execute({ id, page, cycle_id }: FetchCategoryUseCaseRequest) {
+  async execute({ id, page, cycle_id, available }: FetchCategoryUseCaseRequest) {
     const cycle = cycle_id ? await this.cyclesRepository.find("cycle", { id: cycle_id }) : null;
 
     if (cycle_id && !cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
@@ -31,6 +32,7 @@ export class FetchCategoryUseCase {
         page,
         cycle_id,
         ...(cycle && { since: first(cycle.offer) }),
+        available,
       },
     });
 
