@@ -78,6 +78,7 @@ describe("order product", () => {
     await usersRepository.create(user);
 
     const cycle = makeCycle();
+
     cyclesRepository.items.push(cycle);
 
     const product = makeProduct({ pricing: "UNIT" });

@@ -256,7 +256,7 @@ describe("update offer", () => {
   });
 
   it("should not be able to update an offer off the cycle's offering days", async () => {
-    const offeringDays = [1, 2, 3, 4, 5, 6, 7].filter((day) => day !== today());
+    const offeringDays = [1, 2, 3, 4, 5, 7].filter((day) => day !== today());
 
     const cycle = makeCycle({
       offer: offeringDays as CycleWeek,

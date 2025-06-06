@@ -33,7 +33,7 @@ import { OtpProvider } from "@/core/cryptography/otp-provider";
 import { Mailer } from "@/core/mail/mailer";
 
 // Utils
-import { today } from "@/core/utils/today";
+import { inPeriodOf } from "../utils/in-period-of";
 
 interface RegisterOrderUseCaseRequest {
   user_id: string;
@@ -82,7 +82,7 @@ export class RegisterOrderUseCase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    if (!cycle.order.includes(today())) throw new ResourceClosedError("Ciclo", cycle_id);
+    if (!inPeriodOf(cycle.order)) throw new ResourceClosedError("Ciclo", cycle_id);
 
     const offersIds = request.map((order) => order.offer_id);
 

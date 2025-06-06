@@ -7,5 +7,5 @@ import { now } from "@/core/utils/now";
 import { CycleWeek } from "@/core/entities/cycle";
 
 export const inPeriodOf = (days: CycleWeek) => {
-  return first(days) <= now() && now() >= last(days);
+  return first(days) <= now() && now() <= last(days);
 };
