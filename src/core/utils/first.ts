@@ -3,27 +3,15 @@ import { CycleWeek } from "@/core/entities/cycle";
 
 // Utils
 import { now } from "@/core/utils/now";
+import { today } from "@/core/utils/today";
 
 export function first(days: CycleWeek) {
-  const min = Math.min(...days);
-  const max = Math.max(...days);
+  const diff = days[0] - today();
 
-  const merge = max === 7 && min === 1;
+  const first = now();
 
-  const oldest = merge ? days.reverse().find((day, index) => day - 1 !== days.at(index + 1))! : min;
+  first.setDate(first.getDate() + diff);
+  first.setUTCHours(0, 0, 0, 0);
 
-  const today = now();
-
-  const current = today.getDay() + 1;
-
-  let difference = current - oldest;
-
-  if (difference < 0) difference += 7;
-
-  const date = now();
-
-  date.setDate(today.getDate() - difference);
-  date.setUTCHours(0, 0, 0, 0);
-
-  return date;
+  return first;
 }
