@@ -21,8 +21,8 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 
 // Utils
 import { first } from "@/core/utils/first";
-import { today } from "@/core/utils/today";
 import { last } from "@/core/utils/last";
+import { inPeriodOf } from "@/core/utils/in-period-of";
 
 interface RegisterOfferUseCaseRequest {
   farm_id: string;
@@ -76,7 +76,7 @@ export class RegisterOfferUseCase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    if (!cycle.offer.includes(today())) throw new ResourceClosedError("Ciclo", cycle.id.value);
+    if (!inPeriodOf(cycle.offer)) throw new ResourceClosedError("Ciclo", cycle.id.value);
 
     const { catalog, existed } = await this.useCatalog(farm, cycle);
 
