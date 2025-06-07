@@ -5,8 +5,8 @@ import { CycleWeek } from "@/core/entities/cycle";
 import { now } from "@/core/utils/now";
 import { today } from "@/core/utils/today";
 
-export function last(days: CycleWeek) {
-  const diff = days[days.length - 1] - today();
+export function last(days: CycleWeek, skip = false) {
+  const diff = days[days.length - 1] - today() + (skip ? 7 : 0);
 
   const last = now();
 

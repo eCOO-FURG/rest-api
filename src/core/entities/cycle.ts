@@ -65,5 +65,9 @@ export class Cycle extends Entity<CycleProps> {
     return [...days.slice(interval + 1), ...days.slice(0, interval + 1)];
   }
 
+  inverted() {
+    return this.props.order[0] && this.props.offer[0] && this.props.order[0] < this.props.offer[0];
+  }
+
   static Week = [1, 2, 3, 4, 5, 6, 7] as const;
 }
