@@ -22,12 +22,16 @@ import { now } from "@/core/utils/now";
 export class PrismaCategoriesRepository implements CategoriesRepository {
   async find<T extends CategoryRepositoryReturnType>(
     type: T,
-    { id, name, offers }: CategoriesRepositorySearchRequest,
+    { id, name, offers, since, before }: CategoriesRepositorySearchRequest,
   ): Promise<CategoryEntityOf<T> | null> {
     const category = await prisma.category.findFirst({
       where: {
         id,
         name: { contains: name, mode: "insensitive" },
+        created_at: {
+          gte: since,
+          lte: before,
+        },
       },
       include:
         type === "category-and-offers"
@@ -36,11 +40,7 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
                 include: {
                   offers: {
                     where: {
-                      catalog: {
-                        cycle: {
-                          id: offers?.cycle_id,
-                        },
-                      },
+                      catalog: { cycle: { id: offers?.catalog?.cycle.id } },
                       ...(typeof offers?.available === "boolean" &&
                         (offers.available
                           ? {
@@ -67,6 +67,7 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
                             })),
                       created_at: {
                         gte: offers?.since,
+                        lte: offers?.before,
                       },
                     },
                     include: {
@@ -103,23 +104,23 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
 
   async list<T extends CategoryRepositoryReturnType>(
     type: T,
-    { id, name, offers }: CategoriesRepositorySearchRequest,
+    { id, name, offers, since, before }: CategoriesRepositorySearchRequest,
     page?: number,
   ): Promise<CategoryEntityOf<T>[]> {
     const categories = await prisma.category.findMany({
       where: {
         id,
         name: { contains: name, mode: "insensitive" },
+        created_at: {
+          gte: since,
+          lte: before,
+        },
         ...(offers && {
           products: {
             some: {
               offers: {
                 some: {
-                  catalog: {
-                    cycle: {
-                      id: offers.cycle_id,
-                    },
-                  },
+                  catalog: { cycle: { id: offers.catalog?.cycle.id } },
                   ...(typeof offers?.available === "boolean" &&
                     (offers.available
                       ? {

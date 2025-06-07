@@ -24,7 +24,7 @@ import { now } from "@/core/utils/now";
 export class PrismaCatalogsRepository implements CatalogsRepository {
   async find<T extends CatalogRepositoryReturnType>(
     type: T,
-    { id, since, before, farm, cycle, offers }: CatalogsRepositorySearchRequest,
+    { id, farm, cycle, offers, since, before }: CatalogsRepositorySearchRequest,
   ): Promise<CatalogEntityOf<T> | null> {
     const catalog = await prisma.catalog.findFirst({
       where: {
