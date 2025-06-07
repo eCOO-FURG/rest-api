@@ -1,6 +1,6 @@
 // Entities
-import { Category } from "@/core/entities/category";
 import { CategoryAndOffers } from "@/core/entities/aggregates/category-and-offers";
+import { Category } from "@/core/entities/category";
 
 export type CategoryRepositoryReturnType = "category" | "category-and-offers";
 
@@ -14,10 +14,14 @@ export interface CategoriesRepositorySearchRequest {
   id?: string;
   name?: string;
   offers?: {
-    cycle_id?: string;
-    since?: Date;
+    catalog?: { cycle: { id?: string } };
     page?: number;
+    available?: boolean;
+    since?: Date;
+    before?: Date;
   };
+  since?: Date;
+  before?: Date;
 }
 
 export interface CategoriesRepository {
