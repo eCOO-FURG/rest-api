@@ -17,7 +17,7 @@ import { now } from "@/core/utils/now";
 
 export async function seedDevelopment() {
   const cycleId = new UUID();
-  const everyDay = [1, 2, 3, 4, 5, 6, 7];
+  const everyDay: CycleWeek = [1, 2, 3, 4, 5, 6, 7];
 
   await prisma.cycle.create({
     data: {
@@ -61,7 +61,7 @@ export async function seedDevelopment() {
         create: {
           fee: 20,
           cycle_id: cycleId.value,
-          box: {
+          boxes: {
             create: {
               id: boxId.value,
               status: "PENDING",
@@ -76,7 +76,7 @@ export async function seedDevelopment() {
                   fee: price * (20 / 100),
                   price: price,
                   active: true,
-                  closes_at: last(everyDay as CycleWeek),
+                  closes_at: last(everyDay),
                   amount: product.pricing === "UNIT" ? Math.floor(Math.random() * 20 + 1) : Math.floor(Math.random() * 20 + 1) * 100,
                   expires_at: product.perishable ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) : null,
                 };

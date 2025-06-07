@@ -200,7 +200,7 @@ describe("offer products", () => {
       amount: 20,
       price: 30,
       fee: 10,
-      closes_at: last(cycle.offer),
+      closes_at: last(cycle.offer, cycle.inverted()),
     });
 
     catalog.offers.push(offer);
