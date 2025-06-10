@@ -7,7 +7,6 @@ import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { InvalidFieldError } from "@/core/errors/invalid-field";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { UnauthorizedError } from "@/core/errors/unauthorized";
 
 // Utils
 import { first } from "@/core/utils/first";
@@ -37,9 +36,7 @@ export class UpdateOfferUseCase {
 
     if (!offer) throw new ResourceNotFoundError("Oferta", offer_id);
 
-    const owner = offer.catalog.farm_id.equals(farm_id);
-
-    if (!owner) throw new UnauthorizedError();
+    if (!offer.catalog.farm_id.equals(farm_id)) throw new ResourceNotFoundError("Oferta", offer_id);
 
     if (offer.catalog.farm.status !== "ACTIVE") throw new FarmNotActiveError();
 
@@ -47,9 +44,9 @@ export class UpdateOfferUseCase {
       id: offer.catalog.cycle_id.value,
     });
 
-    if (!cycle) throw new ResourceNotFoundError("Ciclo", offer.catalog!.cycle_id.value);
+    if (!cycle) throw new ResourceNotFoundError("Ciclo", offer.catalog.cycle_id.value);
 
-    if (!inPeriodOf(cycle.offer) || (offer.closes_at && offer.created_at > first(cycle.offer)))
+    if (!inPeriodOf(cycle.offer) || (offer.closes_at && offer.created_at < first(cycle.offer)))
       throw new ResourceClosedError("Oferta", offer.id.value);
 
     if (expires_at && offer.product.perishable) throw new InvalidFieldError("expires_at");

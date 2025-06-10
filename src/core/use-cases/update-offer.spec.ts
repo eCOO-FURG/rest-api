@@ -19,7 +19,6 @@ import { InMemoryProductsRepository } from "@/test/repositories/in-memory-produc
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { UnauthorizedError } from "@/core/errors/unauthorized";
 
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
@@ -170,7 +169,7 @@ describe("update offer", () => {
         description: "Updated description",
         price: 20,
       }),
-    ).rejects.toThrowError(UnauthorizedError);
+    ).rejects.toThrowError(ResourceNotFoundError);
   });
 
   it("should not be able to update an offer from a not active farm", async () => {
@@ -256,7 +255,7 @@ describe("update offer", () => {
   });
 
   it("should not be able to update an offer off the cycle's offering days", async () => {
-    const offeringDays = [1, 2, 3, 4, 5, 7].filter((day) => day !== today());
+    const offeringDays = [1, 2, 3, 4, 5, 6, 7].filter((day) => day !== today());
 
     const cycle = makeCycle({
       offer: offeringDays as CycleWeek,
@@ -340,6 +339,6 @@ describe("update offer", () => {
         description: "Updated description",
         price: 20,
       }),
-    ).rejects.toThrowError(UnauthorizedError);
+    ).rejects.toThrowError(ResourceNotFoundError);
   });
 });
