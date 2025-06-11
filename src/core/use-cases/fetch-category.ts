@@ -6,7 +6,7 @@ import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 interface FetchCategoryUseCaseRequest {
-  id: string;
+  category_id: string;
   page: number;
   cycle_id?: string;
   available?: boolean;
@@ -20,13 +20,13 @@ export class FetchCategoryUseCase {
     private cyclesRepository: CyclesRepository,
   ) {}
 
-  async execute({ id, page, cycle_id, available, since, before }: FetchCategoryUseCaseRequest) {
+  async execute({ category_id, page, cycle_id, available, since, before }: FetchCategoryUseCaseRequest) {
     const cycle = cycle_id ? await this.cyclesRepository.find("cycle", { id: cycle_id }) : null;
 
     if (cycle_id && !cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
     const category = await this.categoriesRepository.find("category-and-offers", {
-      id,
+      id: category_id,
       offers: {
         page,
         available,
@@ -36,7 +36,7 @@ export class FetchCategoryUseCase {
       },
     });
 
-    if (!category) throw new ResourceNotFoundError("Categoria", id);
+    if (!category) throw new ResourceNotFoundError("Categoria", category_id);
 
     return { category };
   }

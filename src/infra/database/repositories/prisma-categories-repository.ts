@@ -81,12 +81,12 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
                         },
                       },
                     },
+                    ...(offers?.page && {
+                      skip: (offers.page - 1) * 20,
+                      take: 20,
+                    }),
                   },
                 },
-                ...(offers?.page && {
-                  skip: (offers.page - 1) * 20,
-                  take: 20,
-                }),
               },
             }
           : null,
@@ -171,12 +171,12 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
                         },
                       },
                     },
+                    ...(offers?.page && {
+                      skip: (offers.page - 1) * 20,
+                      take: 20,
+                    }),
                   },
                 },
-                ...(offers?.page && {
-                  skip: (offers.page - 1) * 20,
-                  take: 20,
-                }),
               },
             }
           : null,

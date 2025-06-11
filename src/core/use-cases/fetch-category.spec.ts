@@ -34,7 +34,7 @@ describe("fetch category", () => {
     await categoriesRepository.create(category);
 
     const { category: fetchedCategory } = await sut.execute({
-      id: category.id.value,
+      category_id: category.id.value,
       page: 1,
       cycle_id: cycle.id.value,
     });
@@ -47,7 +47,7 @@ describe("fetch category", () => {
   it("should not be able to fetch a non-existent category ", async () => {
     await expect(() =>
       sut.execute({
-        id: "non-existent-id",
+        category_id: "non-existent-id",
         page: 1,
         cycle_id: "non-existent-id",
       }),
@@ -60,7 +60,7 @@ describe("fetch category", () => {
 
     await expect(() =>
       sut.execute({
-        id: category.id.value,
+        category_id: category.id.value,
         page: 1,
         cycle_id: "non-existent-id",
       }),

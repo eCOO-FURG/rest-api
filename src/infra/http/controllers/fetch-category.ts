@@ -44,7 +44,7 @@ export async function fetchCategoryController(request: Request, response: Respon
     const fetchCategoryUseCase = container.resolve<FetchCategoryUseCase>("fetchCategoryUseCase");
 
     const { category } = await fetchCategoryUseCase.execute({
-      id: category_id,
+      category_id,
       page,
       cycle_id,
       available: toBoolean(available),

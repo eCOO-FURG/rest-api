@@ -104,7 +104,7 @@ export class RegisterOrderUseCase {
 
       if (!offer) throw new ResourceNotFoundError("Oferta", item.offer_id);
 
-      if (offer.expired) throw new ResourceClosedError("Oferta", item.offer_id);
+      if (!offer.available) throw new ResourceClosedError("Oferta", item.offer_id);
 
       if (!offer.catalog.cycle_id.equals(cycle_id)) throw new ResourceClosedError("Oferta", item.offer_id);
 

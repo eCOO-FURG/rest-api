@@ -109,11 +109,12 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
     this.props.expires_at = value;
   }
 
-  get expired() {
+  get available() {
     return (
-      !this.props.active ||
-      (this.props.expires_at && this.props.expires_at < now()) ||
-      (this.props.closes_at && this.props.closes_at < now())
+      this.props.amount > 0 &&
+      this.props.active &&
+      (!this.props.expires_at || this.props.expires_at > now()) &&
+      (!this.props.closes_at || this.props.closes_at > now())
     );
   }
 
