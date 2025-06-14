@@ -78,7 +78,7 @@ export const PRODUCTS_SALES_VIEW: SpreadsheetView = async ({ bags, since, before
         amount,
         total_price: order.total,
         total_price_without_tax: order.subtotal,
-        pricing: order.offer?.product?.pricing === "UNIT" ? "Unidade" : "Peso",
+        pricing: order.offer?.product?.pricing === "UNIT" ? "Unidade" : "Kg",
         date: order.created_at.toLocaleDateString("pt-BR"),
         since: since?.toLocaleDateString("pt-BR"),
         before: before?.toLocaleDateString("pt-BR"),

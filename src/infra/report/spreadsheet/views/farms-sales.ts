@@ -66,7 +66,7 @@ export const FARMS_PRODUCERS_VIEW: SpreadsheetView = async ({ bags, catalogs, si
       rows.push({
         producer: `${catalog.farm.admin.first_name} ${catalog.farm.admin.last_name}`,
         product: offer.product?.name,
-        pricing: offer.product?.pricing === "UNIT" ? "Unidade" : "Peso",
+        pricing: offer.product?.pricing === "UNIT" ? "Unidade" : "Kg",
         price_without_tax: offer.price,
         offer_price: offer.price + (offer.price * catalog.fee) / 100,
         fee: catalog.fee / 100,
