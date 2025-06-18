@@ -5,13 +5,16 @@ import { Router } from "express";
 import { ensureRole } from "@/infra/http/middlewares/ensure-role";
 
 // Controllers
-import { registerOfferController } from "@/infra/http/controllers/register-offer";
 import { deleteOfferController } from "@/infra/http/controllers/delete-offer";
+import { listAvailableOffersController } from "@/infra/http/controllers/list-available-offers";
+import { registerOfferController } from "@/infra/http/controllers/register-offer";
 import { updateOfferController } from "@/infra/http/controllers/update-offer";
 
 export const offers = Router();
 
 offers.post("/", ensureRole(["PRODUCER"]), registerOfferController);
+
+offers.get("/available", listAvailableOffersController);
 
 offers.patch("/:offer_id", ensureRole(["PRODUCER"]), updateOfferController);
 

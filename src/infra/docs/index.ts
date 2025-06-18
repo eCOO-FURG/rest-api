@@ -8,12 +8,15 @@ import { deleteOfferParams } from "@/infra/http/controllers/delete-offer";
 import { fetchBagParams, fetchBagQuery } from "@/infra/http/controllers/fetch-bag";
 import { fetchBoxParams, fetchBoxQuery } from "@/infra/http/controllers/fetch-box";
 import { fetchCatalogParams, fetchCatalogQuery } from "@/infra/http/controllers/fetch-catalog";
+import { fetchCategoryParams, fetchCategoryQuery } from "@/infra/http/controllers/fetch-category";
 import { fetchCurrentBoxQuery } from "@/infra/http/controllers/fetch-current-box";
+import { fetchCycleCatalogParams, fetchCycleCatalogQuery } from "@/infra/http/controllers/fetch-cycle-catalog";
 import { fetchFarmParams } from "@/infra/http/controllers/fetch-farm";
 import { fetchInboundReportQuery } from "@/infra/http/controllers/fetch-inbound-report";
 import { fetchPendingsQuery } from "@/infra/http/controllers/fetch-pendings";
 import { fetchSalesReportQuery } from "@/infra/http/controllers/fetch-sales-report";
 import { fetchSalesStatsQuery } from "@/infra/http/controllers/fetch-sales-stats";
+import { listAvailableOffersQuery } from "@/infra/http/controllers/list-available-offers";
 import { listBagsQuery } from "@/infra/http/controllers/list-bags";
 import { listBoxesQuery } from "@/infra/http/controllers/list-boxes";
 import { listCatalogsQuery } from "@/infra/http/controllers/list-catalogs";
@@ -42,9 +45,6 @@ import { updateProductParams, updateProductSchema } from "@/infra/http/controlle
 import { updateUserSchema } from "@/infra/http/controllers/update-user";
 import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
 import { openPixSchema } from "@/infra/http/webhooks/open-pix";
-import { fetchCategoryParams } from "@/infra/http/controllers/fetch-category";
-import { fetchCategoryQuery } from "@/infra/http/controllers/fetch-category";
-import { fetchCycleCatalogParams, fetchCycleCatalogQuery } from "@/infra/http/controllers/fetch-cycle-catalog";
 
 // Schemas
 const { swagger: authenticateSchemaSwagger } = j2s(authenticateSchema);
@@ -99,6 +99,7 @@ const { swagger: sendNotificationSchemaSwagger } = j2s(sendNotificationSchema);
 const { swagger: openPixSchemaSwagger } = j2s(openPixSchema);
 const { swagger: fetchCycleCatalogQuerySwagger } = j2s(fetchCycleCatalogQuery);
 const { swagger: fetchCycleCatalogParamsSwagger } = j2s(fetchCycleCatalogParams);
+const { swagger: listAvailableOffersQuerySwagger } = j2s(listAvailableOffersQuery);
 const toQueryParams = (query: SwaggerSchema) =>
   Object.entries(query.properties).map(([name, schema]) => ({
     in: "query",
@@ -477,6 +478,19 @@ export const docs = {
         responses: {
           201: {
             description: "Oferta registrada com sucesso",
+          },
+        },
+      },
+    },
+
+    "/offers/available": {
+      get: {
+        tags: ["Ofertas"],
+        summary: "Listar ofertas disponíveis",
+        parameters: toQueryParams(listAvailableOffersQuerySwagger),
+        responses: {
+          200: {
+            description: "Lista de ofertas disponíveis obtida com sucesso",
           },
         },
       },
