@@ -14,7 +14,7 @@ export const offers = Router();
 
 offers.post("/", ensureRole(["PRODUCER"]), registerOfferController);
 
-offers.get("/available", listAvailableOffersController);
+offers.get("/", listAvailableOffersController);
 
 offers.patch("/:offer_id", ensureRole(["PRODUCER"]), updateOfferController);
 
