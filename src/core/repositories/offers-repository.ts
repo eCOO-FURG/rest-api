@@ -19,7 +19,6 @@ export interface OffersRepositorySearchRequest {
   catalog?: { id?: string; cycle?: { id?: string } };
   product?: { id?: string; name?: string; category?: { id?: string } };
   recurring?: boolean;
-  active?: boolean;
   available?: boolean;
   since?: Date;
   before?: Date;

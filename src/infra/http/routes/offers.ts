@@ -6,7 +6,7 @@ import { ensureRole } from "@/infra/http/middlewares/ensure-role";
 
 // Controllers
 import { deleteOfferController } from "@/infra/http/controllers/delete-offer";
-import { listAvailableOffersController } from "@/infra/http/controllers/list-available-offers";
+import { listAvailableOffersController } from "@/infra/http/controllers/list-offers";
 import { registerOfferController } from "@/infra/http/controllers/register-offer";
 import { updateOfferController } from "@/infra/http/controllers/update-offer";
 

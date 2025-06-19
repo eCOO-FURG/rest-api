@@ -16,7 +16,7 @@ import { fetchInboundReportQuery } from "@/infra/http/controllers/fetch-inbound-
 import { fetchPendingsQuery } from "@/infra/http/controllers/fetch-pendings";
 import { fetchSalesReportQuery } from "@/infra/http/controllers/fetch-sales-report";
 import { fetchSalesStatsQuery } from "@/infra/http/controllers/fetch-sales-stats";
-import { listAvailableOffersQuery } from "@/infra/http/controllers/list-available-offers";
+import { listAvailableOffersQuery } from "@/infra/http/controllers/list-offers";
 import { listBagsQuery } from "@/infra/http/controllers/list-bags";
 import { listBoxesQuery } from "@/infra/http/controllers/list-boxes";
 import { listCatalogsQuery } from "@/infra/http/controllers/list-catalogs";
@@ -464,6 +464,16 @@ export const docs = {
       },
     },
     "/offers": {
+      get: {
+        tags: ["Ofertas"],
+        summary: "Listar ofertas disponíveis",
+        parameters: toQueryParams(listAvailableOffersQuerySwagger),
+        responses: {
+          200: {
+            description: "Lista de ofertas disponíveis obtida com sucesso",
+          },
+        },
+      },
       post: {
         tags: ["Ofertas"],
         summary: "Registrar nova oferta",
@@ -478,19 +488,6 @@ export const docs = {
         responses: {
           201: {
             description: "Oferta registrada com sucesso",
-          },
-        },
-      },
-    },
-
-    "/offers/available": {
-      get: {
-        tags: ["Ofertas"],
-        summary: "Listar ofertas disponíveis",
-        parameters: toQueryParams(listAvailableOffersQuerySwagger),
-        responses: {
-          200: {
-            description: "Lista de ofertas disponíveis obtida com sucesso",
           },
         },
       },

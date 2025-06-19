@@ -1,5 +1,5 @@
 // Use-cases
-import { ListAvailableOffersUseCase } from "@/core/use-cases/list-available-offers";
+import { ListOffersUseCase } from "@/core/use-cases/list-offers";
 
 // Repositories
 import { InMemoryCategoriesRepository } from "@/test/repositories/in-memory-categories-repository";
@@ -10,11 +10,11 @@ import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-r
 
 // Errors
 
-let sut: ListAvailableOffersUseCase;
-
 let cyclesRepository: InMemoryCyclesRepository;
 let offersRepository: InMemoryOffersRepository;
 let categoriesRepository: InMemoryCategoriesRepository;
+
+let sut: ListOffersUseCase;
 
 describe("list offers", () => {
   beforeEach(() => {
@@ -22,7 +22,7 @@ describe("list offers", () => {
     offersRepository = new InMemoryOffersRepository();
     categoriesRepository = new InMemoryCategoriesRepository();
 
-    sut = new ListAvailableOffersUseCase(offersRepository, cyclesRepository, categoriesRepository);
+    sut = new ListOffersUseCase(offersRepository, cyclesRepository, categoriesRepository);
   });
 
   it("should be able to list available offers", async () => {});

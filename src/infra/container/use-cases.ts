@@ -17,7 +17,7 @@ import { FetchPendingsUseCase } from "@/core/use-cases/fetch-pendings";
 import { FetchProfileUseCase } from "@/core/use-cases/fetch-profile";
 import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
 import { FetchSalesStatsUseCase } from "@/core/use-cases/fetch-sales-stats";
-import { ListAvailableOffersUseCase } from "@/core/use-cases/list-available-offers";
+import { ListOffersUseCase } from "@/core/use-cases/list-offers";
 import { ListBagsUseCase } from "@/core/use-cases/list-bags";
 import { ListBoxesUseCase } from "@/core/use-cases/list-boxes";
 import { ListCatalogsUseCase } from "@/core/use-cases/list-catalogs";
@@ -177,7 +177,7 @@ export default (container: AwilixContainer) => {
     ),
     listAvailableOffersUseCase: asFunction(
       ({ offersRepository, cyclesRepository, categoriesRepository }) =>
-        new ListAvailableOffersUseCase(offersRepository, cyclesRepository, categoriesRepository),
+        new ListOffersUseCase(offersRepository, cyclesRepository, categoriesRepository),
     ),
   });
 };
