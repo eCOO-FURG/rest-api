@@ -14,9 +14,10 @@ import { OfferPresenter } from "@/infra/http/presenters/offer-presenter";
 // Validation
 import { boolean } from "@/infra/http/validation/boolean";
 import { parse } from "@/infra/http/validation/parse";
+
+// Utils
 import { toBoolean } from "@/infra/utils/to-boolean";
 import { toDate } from "@/infra/utils/to-date";
-import { before } from "node:test";
 
 export const listOffersQuery = Joi.object({
   page: Joi.number().required().min(1),
@@ -34,7 +35,7 @@ export const listOffersQuery = Joi.object({
 
 export async function listOffersController(request: Request, response: Response, next: NextFunction) {
   try {
-    const { cycle_id, page, product, category_id, available } = parse(listOffersQuery, request.query);
+    const { cycle_id, page, product, category_id, available, since, before } = parse(listOffersQuery, request.query);
 
     const listOffersUseCase = container.resolve<ListOffersUseCase>("listOffersUseCase");
 
