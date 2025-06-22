@@ -17,7 +17,6 @@ import { FetchPendingsUseCase } from "@/core/use-cases/fetch-pendings";
 import { FetchProfileUseCase } from "@/core/use-cases/fetch-profile";
 import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
 import { FetchSalesStatsUseCase } from "@/core/use-cases/fetch-sales-stats";
-import { ListOffersUseCase } from "@/core/use-cases/list-offers";
 import { ListBagsUseCase } from "@/core/use-cases/list-bags";
 import { ListBoxesUseCase } from "@/core/use-cases/list-boxes";
 import { ListCatalogsUseCase } from "@/core/use-cases/list-catalogs";
@@ -25,6 +24,7 @@ import { ListCategoriesUseCase } from "@/core/use-cases/list-categories";
 import { ListCurrentBagsUseCase } from "@/core/use-cases/list-current-bags";
 import { ListCyclesUseCase } from "@/core/use-cases/list-cycles";
 import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
+import { ListOffersUseCase } from "@/core/use-cases/list-offers";
 import { ListProductsUsecase } from "@/core/use-cases/list-products";
 import { OpenPaymentUseCase } from "@/core/use-cases/open-payment";
 import { RegisterUseCase } from "@/core/use-cases/register";
@@ -175,7 +175,7 @@ export default (container: AwilixContainer) => {
     fetchCycleCatalogUseCase: asFunction(
       ({ cyclesRepository, catalogsRepository }) => new FetchCycleCatalogUseCase(cyclesRepository, catalogsRepository),
     ),
-    listAvailableOffersUseCase: asFunction(
+    listOffersUseCase: asFunction(
       ({ offersRepository, cyclesRepository, categoriesRepository }) =>
         new ListOffersUseCase(offersRepository, cyclesRepository, categoriesRepository),
     ),

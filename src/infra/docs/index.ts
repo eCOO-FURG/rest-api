@@ -16,13 +16,13 @@ import { fetchInboundReportQuery } from "@/infra/http/controllers/fetch-inbound-
 import { fetchPendingsQuery } from "@/infra/http/controllers/fetch-pendings";
 import { fetchSalesReportQuery } from "@/infra/http/controllers/fetch-sales-report";
 import { fetchSalesStatsQuery } from "@/infra/http/controllers/fetch-sales-stats";
-import { listAvailableOffersQuery } from "@/infra/http/controllers/list-offers";
 import { listBagsQuery } from "@/infra/http/controllers/list-bags";
 import { listBoxesQuery } from "@/infra/http/controllers/list-boxes";
 import { listCatalogsQuery } from "@/infra/http/controllers/list-catalogs";
 import { listCategoriesQuery } from "@/infra/http/controllers/list-categories";
 import { listCurrentBagsQuery } from "@/infra/http/controllers/list-current-bags";
 import { listFarmsQuery } from "@/infra/http/controllers/list-farms";
+import { listOffersQuery } from "@/infra/http/controllers/list-offers";
 import { listProductsQuery } from "@/infra/http/controllers/list-products";
 import { openPaymentSchema } from "@/infra/http/controllers/open-payment";
 import { registerSchema } from "@/infra/http/controllers/register";
@@ -99,7 +99,7 @@ const { swagger: sendNotificationSchemaSwagger } = j2s(sendNotificationSchema);
 const { swagger: openPixSchemaSwagger } = j2s(openPixSchema);
 const { swagger: fetchCycleCatalogQuerySwagger } = j2s(fetchCycleCatalogQuery);
 const { swagger: fetchCycleCatalogParamsSwagger } = j2s(fetchCycleCatalogParams);
-const { swagger: listAvailableOffersQuerySwagger } = j2s(listAvailableOffersQuery);
+const { swagger: listOffersQuerySwagger } = j2s(listOffersQuery);
 const toQueryParams = (query: SwaggerSchema) =>
   Object.entries(query.properties).map(([name, schema]) => ({
     in: "query",
@@ -467,7 +467,7 @@ export const docs = {
       get: {
         tags: ["Ofertas"],
         summary: "Listar ofertas disponíveis",
-        parameters: toQueryParams(listAvailableOffersQuerySwagger),
+        parameters: toQueryParams(listOffersQuerySwagger),
         responses: {
           200: {
             description: "Lista de ofertas disponíveis obtida com sucesso",
