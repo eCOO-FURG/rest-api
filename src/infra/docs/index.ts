@@ -8,7 +8,9 @@ import { deleteOfferParams } from "@/infra/http/controllers/delete-offer";
 import { fetchBagParams, fetchBagQuery } from "@/infra/http/controllers/fetch-bag";
 import { fetchBoxParams, fetchBoxQuery } from "@/infra/http/controllers/fetch-box";
 import { fetchCatalogParams, fetchCatalogQuery } from "@/infra/http/controllers/fetch-catalog";
+import { fetchCategoryParams, fetchCategoryQuery } from "@/infra/http/controllers/fetch-category";
 import { fetchCurrentBoxQuery } from "@/infra/http/controllers/fetch-current-box";
+import { fetchCycleCatalogParams, fetchCycleCatalogQuery } from "@/infra/http/controllers/fetch-cycle-catalog";
 import { fetchFarmParams } from "@/infra/http/controllers/fetch-farm";
 import { fetchInboundReportQuery } from "@/infra/http/controllers/fetch-inbound-report";
 import { fetchPendingsQuery } from "@/infra/http/controllers/fetch-pendings";
@@ -20,6 +22,7 @@ import { listCatalogsQuery } from "@/infra/http/controllers/list-catalogs";
 import { listCategoriesQuery } from "@/infra/http/controllers/list-categories";
 import { listCurrentBagsQuery } from "@/infra/http/controllers/list-current-bags";
 import { listFarmsQuery } from "@/infra/http/controllers/list-farms";
+import { listOffersQuery } from "@/infra/http/controllers/list-offers";
 import { listProductsQuery } from "@/infra/http/controllers/list-products";
 import { openPaymentSchema } from "@/infra/http/controllers/open-payment";
 import { registerSchema } from "@/infra/http/controllers/register";
@@ -42,9 +45,6 @@ import { updateProductParams, updateProductSchema } from "@/infra/http/controlle
 import { updateUserSchema } from "@/infra/http/controllers/update-user";
 import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
 import { openPixSchema } from "@/infra/http/webhooks/open-pix";
-import { fetchCategoryParams } from "@/infra/http/controllers/fetch-category";
-import { fetchCategoryQuery } from "@/infra/http/controllers/fetch-category";
-import { fetchCycleCatalogParams, fetchCycleCatalogQuery } from "@/infra/http/controllers/fetch-cycle-catalog";
 
 // Schemas
 const { swagger: authenticateSchemaSwagger } = j2s(authenticateSchema);
@@ -99,6 +99,7 @@ const { swagger: sendNotificationSchemaSwagger } = j2s(sendNotificationSchema);
 const { swagger: openPixSchemaSwagger } = j2s(openPixSchema);
 const { swagger: fetchCycleCatalogQuerySwagger } = j2s(fetchCycleCatalogQuery);
 const { swagger: fetchCycleCatalogParamsSwagger } = j2s(fetchCycleCatalogParams);
+const { swagger: listOffersQuerySwagger } = j2s(listOffersQuery);
 const toQueryParams = (query: SwaggerSchema) =>
   Object.entries(query.properties).map(([name, schema]) => ({
     in: "query",
@@ -463,6 +464,16 @@ export const docs = {
       },
     },
     "/offers": {
+      get: {
+        tags: ["Ofertas"],
+        summary: "Listar ofertas disponíveis",
+        parameters: toQueryParams(listOffersQuerySwagger),
+        responses: {
+          200: {
+            description: "Lista de ofertas disponíveis obtida com sucesso",
+          },
+        },
+      },
       post: {
         tags: ["Ofertas"],
         summary: "Registrar nova oferta",
