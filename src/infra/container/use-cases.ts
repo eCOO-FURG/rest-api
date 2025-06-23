@@ -8,7 +8,9 @@ import { DeleteOfferUseCase } from "@/core/use-cases/delete-offer";
 import { FetchBagUseCase } from "@/core/use-cases/fetch-bag";
 import { FetchBoxUseCase } from "@/core/use-cases/fetch-box";
 import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
+import { FetchCategoryUseCase } from "@/core/use-cases/fetch-category";
 import { FetchCurrentBoxUseCase } from "@/core/use-cases/fetch-current-box";
+import { FetchCycleCatalogUseCase } from "@/core/use-cases/fetch-cycle-catalog";
 import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
 import { FetchInboundReportUseCase } from "@/core/use-cases/fetch-inbound-report";
 import { FetchPendingsUseCase } from "@/core/use-cases/fetch-pendings";
@@ -22,6 +24,7 @@ import { ListCategoriesUseCase } from "@/core/use-cases/list-categories";
 import { ListCurrentBagsUseCase } from "@/core/use-cases/list-current-bags";
 import { ListCyclesUseCase } from "@/core/use-cases/list-cycles";
 import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
+import { ListOffersUseCase } from "@/core/use-cases/list-offers";
 import { ListProductsUsecase } from "@/core/use-cases/list-products";
 import { OpenPaymentUseCase } from "@/core/use-cases/open-payment";
 import { RegisterUseCase } from "@/core/use-cases/register";
@@ -43,8 +46,6 @@ import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
 import { UpdateProductUseCase } from "@/core/use-cases/update-product";
 import { UpdateUserUseCase } from "@/core/use-cases/update-user";
 import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
-import { FetchCategoryUseCase } from "@/core/use-cases/fetch-category";
-import { FetchCycleCatalogUseCase } from "@/core/use-cases/fetch-cycle-catalog";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -173,6 +174,10 @@ export default (container: AwilixContainer) => {
     ),
     fetchCycleCatalogUseCase: asFunction(
       ({ cyclesRepository, catalogsRepository }) => new FetchCycleCatalogUseCase(cyclesRepository, catalogsRepository),
+    ),
+    listOffersUseCase: asFunction(
+      ({ offersRepository, cyclesRepository, categoriesRepository }) =>
+        new ListOffersUseCase(offersRepository, cyclesRepository, categoriesRepository),
     ),
   });
 };
