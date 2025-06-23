@@ -11,10 +11,10 @@ import { makeCategory } from "@/test/factories/make-category";
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeOffer } from "@/test/factories/make-offer";
 import { makeProduct } from "@/test/factories/make-product";
+import { makeCatalog } from "@/test/factories/make-catalog";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { makeCatalog } from "@/test/factories/make-catalog";
 
 // Utils
 import { now } from "@/core/utils/now";
