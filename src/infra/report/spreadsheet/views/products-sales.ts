@@ -15,7 +15,7 @@ const columns: SpreadsheetColumn[] = [
   { header: "PRODUTO", key: "product", width: 20 },
   { header: "PRODUTOR", key: "producer", width: 25 },
   { header: "CONSUMIDOR", key: "user", width: 20 },
-  { header: "STATUS", key: "status", width: 20 },
+  { header: "STATUS DO PEDIDO", key: "status", width: 20 },
   {
     header: "TAXA (%)",
     key: "fee",
