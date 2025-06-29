@@ -12,7 +12,7 @@ import { BAG_STATUS } from "@/core/constants/bag-status";
 
 const columns: SpreadsheetColumn[] = [
   { header: "SACOLA", key: "bag", width: 10 },
-  { header: "STATUS DA SACOLA", key: "status", width: 20 },
+  { header: "STATUS", key: "status", width: 20 },
   { header: "CONSUMIDOR", key: "consumer", width: 20 },
   { header: "CPF", key: "cpf", width: 20 },
   { header: "ENDEREÇO", key: "address", width: 20 },
