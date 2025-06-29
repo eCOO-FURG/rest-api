@@ -7,11 +7,13 @@ import { CatalogAndOffers } from "@/core/entities/aggregates/catalog-and-offers"
 
 // Report
 import { SpreadsheetView } from "@/infra/report/spreadsheet/excel";
+import { ORDER_STATUS } from "@/core/constants/order-status";
 
 const columns: SpreadsheetColumn[] = [
   { header: "PRODUTOR", key: "producer", width: 20 },
   { header: "PRODUTO", key: "product", width: 25 },
   { header: "PRECIFICAÇÃO", key: "pricing", width: 15 },
+  { header: "STATUS", key: "status", width: 20 },
   {
     header: "PREÇO SEM TAXA",
     key: "price_without_tax",
@@ -59,25 +61,24 @@ export const FARMS_PRODUCERS_VIEW: SpreadsheetView = async ({ bags, catalogs, si
 
   for (const catalog of catalogs) {
     for (const offer of catalog.offers) {
-      const orders = bags.flatMap((bag) => bag.orders).filter((order) => order.offer_id.equals(offer.id) && order.status === "RECEIVED");
+      const orders = bags.flatMap((bag) => bag.orders).filter((order) => order.offer_id.equals(offer.id));
 
-      const amount =
-        orders.reduce((acc, order) => (order.status === "RECEIVED" ? acc + order.amount : 0), 0) /
-        (offer.product?.pricing === "UNIT" ? 1 : 1000);
-
-      rows.push({
-        producer: `${catalog.farm.admin.first_name} ${catalog.farm.admin.last_name}`,
-        product: offer.product?.name,
-        pricing: offer.product?.pricing === "UNIT" ? "Unidade" : "Kg",
-        price_without_tax: offer.price,
-        offer_price: offer.price + (offer.price * catalog.fee) / 100,
-        fee: catalog.fee / 100,
-        total_amount: amount,
-        farm_income: amount * offer.price,
-        warehouse_income: amount * offer.fee,
-        since: since?.toLocaleDateString("pt-BR"),
-        before: before?.toLocaleDateString("pt-BR"),
-      });
+      for (const order of orders) {
+        rows.push({
+          producer: `${catalog.farm.admin.first_name} ${catalog.farm.admin.last_name}`,
+          product: offer.product?.name,
+          pricing: offer.product?.pricing === "UNIT" ? "Unidade" : "Kg",
+          status: ORDER_STATUS[order.status],
+          price_without_tax: offer.price,
+          offer_price: offer.price + (offer.price * catalog.fee) / 100,
+          fee: catalog.fee / 100,
+          total_amount: order.amount,
+          farm_income: order.subtotal,
+          warehouse_income: order.fee,
+          since: since?.toLocaleDateString("pt-BR"),
+          before: before?.toLocaleDateString("pt-BR"),
+        });
+      }
     }
   }
 
