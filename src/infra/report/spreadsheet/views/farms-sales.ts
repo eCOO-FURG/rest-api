@@ -59,9 +59,11 @@ export const FARMS_PRODUCERS_VIEW: SpreadsheetView = async ({ bags, catalogs, si
 
   for (const catalog of catalogs) {
     for (const offer of catalog.offers) {
-      const orders = bags.flatMap((bag) => bag.orders).filter((order) => order.offer_id.equals(offer.id));
+      const orders = bags.flatMap((bag) => bag.orders).filter((order) => order.offer_id.equals(offer.id) && order.status === "RECEIVED");
 
-      const amount = orders.reduce((acc, order) => acc + order.amount, 0) / (offer.product?.pricing === "UNIT" ? 1 : 1000);
+      const amount =
+        orders.reduce((acc, order) => (order.status === "RECEIVED" ? acc + order.amount : 0), 0) /
+        (offer.product?.pricing === "UNIT" ? 1 : 1000);
 
       rows.push({
         producer: `${catalog.farm.admin.first_name} ${catalog.farm.admin.last_name}`,
