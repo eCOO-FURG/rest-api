@@ -7,11 +7,15 @@ import { BagAndOrders } from "@/core/entities/aggregates/bag-and-orders";
 // Report
 import { SpreadsheetView } from "@/infra/report/spreadsheet/excel";
 
+// Constants
+import { ORDER_STATUS } from "@/core/constants/order-status";
+
 const columns: SpreadsheetColumn[] = [
   { header: "SACOLA", key: "bag", width: 10 },
   { header: "PRODUTO", key: "product", width: 20 },
   { header: "PRODUTOR", key: "producer", width: 25 },
   { header: "CONSUMIDOR", key: "user", width: 20 },
+  { header: "STATUS", key: "status", width: 20 },
   {
     header: "TAXA (%)",
     key: "fee",
@@ -72,6 +76,7 @@ export const PRODUCTS_SALES_VIEW: SpreadsheetView = async ({ bags, since, before
         product: order.offer?.product?.name,
         producer: order.offer?.catalog?.farm?.name,
         user: `${bag.customer.first_name} ${bag.customer.last_name}`,
+        status: ORDER_STATUS[order.status],
         fee: (order.offer?.catalog?.fee ?? 0) / 100,
         offer_price_without_tax: offerPrice,
         offer_price: offerPrice + (offerPrice * (order.offer?.catalog?.fee ?? 0)) / 100,
