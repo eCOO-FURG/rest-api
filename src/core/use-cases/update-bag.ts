@@ -17,7 +17,7 @@ import { Message } from "@/core/entities/message";
 import { Chat } from "@/core/message/chat";
 
 // Constants
-import { BAG_STATUS } from "@/core/contants/bag-status";
+import { BAG_STATUS } from "@/core/constants/bag-status";
 
 interface UpdateBagUseCaseRequest {
   user_id: string;

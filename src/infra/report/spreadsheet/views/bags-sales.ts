@@ -8,7 +8,7 @@ import { BagAndOrders } from "@/core/entities/aggregates/bag-and-orders";
 import { SpreadsheetView } from "@/infra/report/spreadsheet/excel";
 
 // Constants
-import { BAG_STATUS } from "@/core/contants/bag-status";
+import { BAG_STATUS } from "@/core/constants/bag-status";
 
 const columns: SpreadsheetColumn[] = [
   { header: "SACOLA", key: "bag", width: 10 },

@@ -57,7 +57,7 @@ router.use("/help", ensureAuthenticated, help);
 router.use("/farms", ensureAuthenticated, farms);
 router.use("/orders", ensureAuthenticated, orders);
 router.use("/boxes", ensureAuthenticated, boxes);
-router.use("/offers", ensureAuthenticated, offers);
+router.use("/offers", offers);
 router.use("/catalogs", catalogs);
 router.use("/bags", ensureAuthenticated, bags);
 router.use("/payments", ensureAuthenticated, payments);

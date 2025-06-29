@@ -3,6 +3,7 @@ import { Router } from "express";
 
 // Middlewares
 import { ensureRole } from "@/infra/http/middlewares/ensure-role";
+import { ensureAuthenticated } from "@/infra/http/middlewares/ensure-authenticated";
 
 // Controllers
 import { deleteOfferController } from "@/infra/http/controllers/delete-offer";
@@ -12,10 +13,10 @@ import { updateOfferController } from "@/infra/http/controllers/update-offer";
 
 export const offers = Router();
 
-offers.post("/", ensureRole(["PRODUCER"]), registerOfferController);
+offers.post("/", ensureAuthenticated, ensureRole(["PRODUCER"]), registerOfferController);
 
 offers.get("/", listOffersController);
 
-offers.patch("/:offer_id", ensureRole(["PRODUCER"]), updateOfferController);
+offers.patch("/:offer_id", ensureAuthenticated, ensureRole(["PRODUCER"]), updateOfferController);
 
-offers.delete("/:offer_id", ensureRole(["PRODUCER"]), deleteOfferController);
+offers.delete("/:offer_id", ensureAuthenticated, ensureRole(["PRODUCER"]), deleteOfferController);
