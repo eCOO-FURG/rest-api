@@ -5,6 +5,7 @@ import { SpreadsheetColumn, SpreadsheetService, SpreadsheetServiceGenerateReques
 import { PRODUCTS_SALES_VIEW } from "@/infra/report/spreadsheet/views/products-sales";
 import { BAGS_SALES_VIEW } from "@/infra/report/spreadsheet/views/bags-sales";
 import { FARMS_PRODUCERS_VIEW } from "@/infra/report/spreadsheet/views/farms-sales";
+import { OFFERS_REPORT_VIEW } from "@/infra/report/spreadsheet/views/offers-report";
 
 // Libraries
 import { Workbook } from "exceljs";
@@ -14,6 +15,7 @@ import { File } from "@/core/types/file";
 
 const names: Record<SpreadsheetServiceGenerateRequest["type"], string> = {
   "sales-report": "Relatorio de vendas",
+  "offers-report": "Relatorio de ofertas"
 };
 
 export type SpreadsheetView = (props: SpreadsheetServiceGenerateRequest["props"]) => Promise<{
@@ -24,6 +26,7 @@ export type SpreadsheetView = (props: SpreadsheetServiceGenerateRequest["props"]
 
 export const SPREADSHEETS: Record<SpreadsheetServiceGenerateRequest["type"], SpreadsheetView[]> = {
   "sales-report": [PRODUCTS_SALES_VIEW, BAGS_SALES_VIEW, FARMS_PRODUCERS_VIEW],
+  "offers-report": [OFFERS_REPORT_VIEW],
 };
 
 export class ExcelService implements SpreadsheetService {
