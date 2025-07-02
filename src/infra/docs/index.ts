@@ -45,6 +45,7 @@ import { updateProductParams, updateProductSchema } from "@/infra/http/controlle
 import { updateUserSchema } from "@/infra/http/controllers/update-user";
 import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
 import { openPixSchema } from "@/infra/http/webhooks/open-pix";
+import { fetchOffersReportQuery } from "@/infra/http/controllers/fetch-offers-report";
 
 // Schemas
 const { swagger: authenticateSchemaSwagger } = j2s(authenticateSchema);
@@ -93,6 +94,7 @@ const { swagger: fetchPendingsQuerySwagger } = j2s(fetchPendingsQuery);
 const { swagger: fetchSalesStatsQuerySwagger } = j2s(fetchSalesStatsQuery);
 const { swagger: fetchSalesReportQuerySwagger } = j2s(fetchSalesReportQuery);
 const { swagger: fetchInboundReportQuerySwagger } = j2s(fetchInboundReportQuery);
+const { swagger: fetchOffersReportQuerySwagger } = j2s(fetchOffersReportQuery);
 const { swagger: fetchCategoryParamsSwagger } = j2s(fetchCategoryParams);
 const { swagger: fetchCategoryQuerySwagger } = j2s(fetchCategoryQuery);
 const { swagger: sendNotificationSchemaSwagger } = j2s(sendNotificationSchema);
@@ -849,6 +851,32 @@ export const docs = {
             description: "Relatório de entrada gerado com sucesso",
             content: {
               "application/pdf": {
+                schema: {
+                  type: "string",
+                  format: "binary",
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/reports/offers": {
+      get: {
+        tags: ["Relatórios"],
+        summary: "Obter relatório de ofertas",
+        parameters: toQueryParams(fetchOffersReportQuerySwagger),
+        responses: {
+          200: {
+            description: "Relatório de ofertas gerado com sucesso",
+            content: {
+              "application/pdf": {
+                schema: {
+                  type: "string",
+                  format: "binary",
+                },
+              },
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
                 schema: {
                   type: "string",
                   format: "binary",
