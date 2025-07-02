@@ -15,7 +15,7 @@ import { File } from "@/core/types/file";
 
 const names: Record<SpreadsheetServiceGenerateRequest["type"], string> = {
   "sales-report": "Relatorio de vendas",
-  "offers-report": "Relatorio de ofertas"
+  "offers-report": "Relatorio de ofertas",
 };
 
 export type SpreadsheetView = (props: SpreadsheetServiceGenerateRequest["props"]) => Promise<{

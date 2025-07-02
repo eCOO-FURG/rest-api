@@ -12,7 +12,7 @@ const columns: SpreadsheetColumn[] = [
   { header: "Taxa (R$)", key: "fee", width: 15, style: { numFmt: "R$ #,##0.00" } },
   { header: "Total (R$)", key: "total", width: 15, style: { numFmt: "R$ #,##0.00" } },
   { header: "Unidade", key: "unit", width: 15 },
-  { header: "Criada em", key: "created_at", width: 15},
+  { header: "Criada em", key: "created_at", width: 15 },
 ];
 
 interface OffersReportViewProps {

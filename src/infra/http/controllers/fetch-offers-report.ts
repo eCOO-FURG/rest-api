@@ -25,17 +25,11 @@ export const fetchOffersReportQuery = Joi.object({
     .optional(),
 });
 
-export async function fetchOffersReportController(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export async function fetchOffersReportController(request: Request, response: Response, next: NextFunction) {
   try {
     const { cycle_id, type, since, before } = parse(fetchOffersReportQuery, request.query);
 
-    const fetchOffersReportUseCase = container.resolve<FetchOffersReportUseCase>(
-      "fetchOffersReportUseCase"
-    );
+    const fetchOffersReportUseCase = container.resolve<FetchOffersReportUseCase>("fetchOffersReportUseCase");
 
     const { file } = await fetchOffersReportUseCase.execute({
       cycle_id,

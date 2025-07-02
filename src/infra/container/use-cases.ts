@@ -181,7 +181,8 @@ export default (container: AwilixContainer) => {
         new ListOffersUseCase(offersRepository, cyclesRepository, categoriesRepository),
     ),
     fetchOffersReportUseCase: asFunction(
-      ({ cyclesRepository, catalogsRepository, pdfService, spreadsheetService }) => new FetchOffersReportUseCase(cyclesRepository, catalogsRepository, pdfService, spreadsheetService),
+      ({ cyclesRepository, catalogsRepository, pdfService, spreadsheetService }) =>
+        new FetchOffersReportUseCase(cyclesRepository, catalogsRepository, pdfService, spreadsheetService),
     ),
   });
 };
