@@ -12,15 +12,24 @@ export interface SpreadsheetColumn {
   style?: { numFmt: string };
 }
 
-export type SpreadsheetServiceGenerateRequest = {
-  type: "sales-report";
-  props: {
-    bags: BagAndOrders[];
-    catalogs: CatalogAndOffers[];
-    since?: Date;
-    before?: Date;
-  };
-};
+export type SpreadsheetServiceGenerateRequest =
+  | {
+      type: "sales-report";
+      props: {
+        bags: BagAndOrders[];
+        catalogs: CatalogAndOffers[];
+        since?: Date;
+        before?: Date;
+      };
+    }
+  | {
+      type: "offers-report";
+      props: {
+        catalogs: CatalogAndOffers[];
+        since?: Date;
+        before?: Date;
+      };
+    };
 
 export interface SpreadsheetService {
   generate({ type, props }: SpreadsheetServiceGenerateRequest): Promise<File>;
