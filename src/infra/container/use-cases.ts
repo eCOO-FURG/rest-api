@@ -13,6 +13,7 @@ import { FetchCurrentBoxUseCase } from "@/core/use-cases/fetch-current-box";
 import { FetchCycleCatalogUseCase } from "@/core/use-cases/fetch-cycle-catalog";
 import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
 import { FetchInboundReportUseCase } from "@/core/use-cases/fetch-inbound-report";
+import { FetchOffersReportUseCase } from "@/core/use-cases/fetch-offers-report";
 import { FetchPendingsUseCase } from "@/core/use-cases/fetch-pendings";
 import { FetchProfileUseCase } from "@/core/use-cases/fetch-profile";
 import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
@@ -178,6 +179,9 @@ export default (container: AwilixContainer) => {
     listOffersUseCase: asFunction(
       ({ offersRepository, cyclesRepository, categoriesRepository }) =>
         new ListOffersUseCase(offersRepository, cyclesRepository, categoriesRepository),
+    ),
+    fetchOffersReportUseCase: asFunction(
+      ({ cyclesRepository, catalogsRepository, pdfService, spreadsheetService }) => new FetchOffersReportUseCase(cyclesRepository, catalogsRepository, pdfService, spreadsheetService),
     ),
   });
 };
