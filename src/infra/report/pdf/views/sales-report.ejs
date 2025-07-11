@@ -291,7 +291,7 @@
           <div class="bag-info bag-info--conteudo">
             <p>Conteúdo:</p>
             <h5>
-              <% const orders = bag.orders.sort((a, b) => statusOrder[a.status]
+              <% const orders = bag.orders.filter(order => order.status !== "CANCELLED").sort((a, b) => statusOrder[a.status]
               - statusOrder[b.status]); %> <% orders.forEach((order)=> { %> <%
               if (order.offer.product.pricing==='UNIT' ) { %> <%= order.amount
               %> unidades de <%= order.offer.product.name %> <% } else if
