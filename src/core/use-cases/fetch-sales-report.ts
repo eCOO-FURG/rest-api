@@ -46,6 +46,10 @@ export class FetchSalesReportUseCase {
 
     const catalogs = await this.catalogsRepository.list("catalog-and-offers", {
       cycle: { id: cycle_id },
+      offers: {
+        since: since,
+        before: before,
+      },
       since,
       before,
     });
