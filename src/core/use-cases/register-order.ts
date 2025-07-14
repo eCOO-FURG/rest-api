@@ -145,7 +145,7 @@ export class RegisterOrderUseCase {
       content: view,
     });
 
-    this.mailer.send([email]);
+    this.mailer.send(email);
     this.boxes.clear();
 
     return { bag };

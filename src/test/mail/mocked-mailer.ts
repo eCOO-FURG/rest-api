@@ -7,7 +7,11 @@ import { Mailer, MailerLoadRequest } from "@/core/mail/mailer";
 export class MockedMailer implements Mailer {
   public messages: Message[] = [];
 
-  async send(messages: Message[]): Promise<void> {
+  async send(message: Message): Promise<void> {
+    this.messages.push(message);
+  }
+
+  async enqueue(messages: Message[]): Promise<void> {
     this.messages.push(...messages);
   }
 

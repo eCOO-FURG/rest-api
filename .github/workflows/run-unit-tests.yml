@@ -46,3 +46,5 @@ jobs:
           EMAIL_PASSWORD: senha
           SMTP_HOST: localhost
           SMTP_PORT: 2525
+          BATCH_SMTP_HOST: localhost
+          BATCH_SMTP_PORT: 2525
