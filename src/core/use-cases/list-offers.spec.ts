@@ -99,8 +99,6 @@ describe("list offers", () => {
 
     const result = await sut.execute({ page: 1, available: true });
 
-    console.log(result.offers);
-
     expect(result.offers.length).toBe(0);
   });
 
@@ -143,8 +141,6 @@ describe("list offers", () => {
       cycle_id: cycle.id.value,
       page: 1,
     });
-
-    console.log(result.offers);
 
     expect(result.offers.length).toBe(1);
     expect(result.offers[0].catalog.cycle_id).toEqual(cycle.id);

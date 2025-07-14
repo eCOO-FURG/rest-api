@@ -17,10 +17,45 @@ import { Logger } from "@/infra/logs/logger";
 export class Nodemailer implements Mailer {
   constructor(
     private transporter: Transporter,
+    private queue: Transporter,
     private fallback?: Transporter,
   ) {}
 
-  async send(messages: Message[]): Promise<void> {
+  async send(message: Message): Promise<void> {
+    const files = message.files.map((file) => ({
+      filename: file.name,
+      content: file.content,
+      contentType: file.mimetype,
+    }));
+
+    try {
+      await this.transporter.sendMail({
+        from: env.EMAIL_ACCOUNT,
+        to: message.to,
+        subject: message.subject,
+        html: message.content,
+        attachments: files,
+      });
+    } catch (error) {
+      Logger.log(error);
+
+      if (this.fallback) {
+        try {
+          await this.fallback.sendMail({
+            from: env.FALLBACK_EMAIL_ACCOUNT,
+            to: message.to,
+            subject: message.subject,
+            html: message.content,
+            attachments: files,
+          });
+        } catch (error) {
+          Logger.log(error);
+        }
+      }
+    }
+  }
+
+  async enqueue(messages: Message[]) {
     const promises = messages.map(async (message) => {
       const files = message.files.map((file) => ({
         filename: file.name,
@@ -29,7 +64,7 @@ export class Nodemailer implements Mailer {
       }));
 
       try {
-        await this.transporter.sendMail({
+        await this.queue.sendMail({
           from: env.EMAIL_ACCOUNT,
           to: message.to,
           subject: message.subject,
@@ -38,20 +73,6 @@ export class Nodemailer implements Mailer {
         });
       } catch (error) {
         Logger.log(error);
-
-        if (this.fallback) {
-          try {
-            await this.fallback.sendMail({
-              from: env.FALLBACK_EMAIL_ACCOUNT,
-              to: message.to,
-              subject: message.subject,
-              html: message.content,
-              attachments: files,
-            });
-          } catch (error) {
-            Logger.log(error);
-          }
-        }
       }
     });
 
