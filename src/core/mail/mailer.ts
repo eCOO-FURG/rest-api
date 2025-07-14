@@ -54,6 +54,7 @@ export type MailerLoadRequest =
     };
 
 export interface Mailer {
-  send(messages: Message[]): Promise<void>;
+  send(message: Message): Promise<void>;
+  enqueue(messages: Message[]): Promise<void>;
   load({ view, props }: MailerLoadRequest): Promise<string>;
 }
