@@ -90,6 +90,6 @@ export class RegisterUseCase {
       content: view,
     });
 
-    this.mailer.send([message]);
+    this.mailer.send(message);
   }
 }

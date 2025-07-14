@@ -43,6 +43,6 @@ export class ResetPasswordUseCase {
       content: view,
     });
 
-    this.mailer.send([message]);
+    this.mailer.send(message);
   }
 }

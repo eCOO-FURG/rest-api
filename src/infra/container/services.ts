@@ -40,6 +40,17 @@ export default (container: AwilixContainer) => {
         }),
       });
 
+      const queue = createTransport({
+        host: env.BATCH_SMTP_HOST,
+        port: env.BATCH_SMTP_PORT,
+        ...(deploy && {
+          auth: {
+            user: env.BATCH_EMAIL_ACCOUNT,
+            pass: env.BATCH_EMAIL_PASSWORD,
+          },
+        }),
+      });
+
       if (deploy) {
         const fallback = createTransport({
           host: env.FALLBACK_SMTP_HOST,
@@ -50,10 +61,10 @@ export default (container: AwilixContainer) => {
           },
         });
 
-        return new Nodemailer(transporter, fallback);
+        return new Nodemailer(transporter, queue, fallback);
       }
 
-      return new Nodemailer(transporter);
+      return new Nodemailer(transporter, queue);
     }),
     pdfService: asClass(Puppeteer).singleton(),
     pixProvider: asFunction(() => {

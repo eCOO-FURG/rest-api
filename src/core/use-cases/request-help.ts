@@ -50,6 +50,6 @@ export class RequestHelpUseCase {
       content: view,
     });
 
-    this.mailer.send([message]);
+    this.mailer.send(message);
   }
 }
