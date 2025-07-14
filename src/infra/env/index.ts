@@ -16,11 +16,33 @@ const schema = Joi.object({
   INTEGRATIONS_AUTHORIZATION: Joi.string(),
 
   // Email
-  EMAIL_ACCOUNT: Joi.string().required(),
-  EMAIL_PASSWORD: Joi.string().required(),
+  EMAIL_ACCOUNT: Joi.alternatives().conditional("ENVIRONMENT", {
+    not: "DEVELOPMENT",
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
+  EMAIL_PASSWORD: Joi.alternatives().conditional("ENVIRONMENT", {
+    not: "DEVELOPMENT",
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
 
   SMTP_HOST: Joi.string().required(),
   SMTP_PORT: Joi.number().required(),
+
+  BATCH_EMAIL_ACCOUNT: Joi.alternatives().conditional("ENVIRONMENT", {
+    not: "DEVELOPMENT",
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
+  BATCH_EMAIL_PASSWORD: Joi.alternatives().conditional("ENVIRONMENT", {
+    not: "DEVELOPMENT",
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
+
+  BATCH_SMTP_HOST: Joi.string().required(),
+  BATCH_SMTP_PORT: Joi.number().required(),
 
   FALLBACK_EMAIL_ACCOUNT: Joi.alternatives().conditional("ENVIRONMENT", {
     not: "DEVELOPMENT",
