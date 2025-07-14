@@ -16,11 +16,7 @@ const schema = Joi.object({
   INTEGRATIONS_AUTHORIZATION: Joi.string(),
 
   // Email
-  EMAIL_ACCOUNT: Joi.alternatives().conditional("ENVIRONMENT", {
-    not: "DEVELOPMENT",
-    then: Joi.string().required(),
-    otherwise: Joi.string().optional(),
-  }),
+  EMAIL_ACCOUNT: Joi.string().required(),
   EMAIL_PASSWORD: Joi.alternatives().conditional("ENVIRONMENT", {
     not: "DEVELOPMENT",
     then: Joi.string().required(),

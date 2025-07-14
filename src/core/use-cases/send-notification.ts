@@ -44,6 +44,6 @@ export class SendNotificationUseCase {
       messages.push(message);
     }
 
-    await this.mailer.send(messages);
+    await this.mailer.enqueue(messages);
   }
 }

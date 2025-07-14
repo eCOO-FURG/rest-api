@@ -52,6 +52,6 @@ export class RequestOtpUseCase {
       content: view,
     });
 
-    this.mailer.send([message]);
+    this.mailer.send(message);
   }
 }
