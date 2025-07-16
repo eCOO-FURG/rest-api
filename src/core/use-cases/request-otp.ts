@@ -4,6 +4,7 @@ import { OtpsRepository } from "@/core/repositories/otps-repositoy";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { UserNotVerifiedError } from "@/core/errors/user-not-verified";
 
 // Entities
 import { Otp } from "@/core/entities/otp";
@@ -33,6 +34,8 @@ export class RequestOtpUseCase {
     });
 
     if (!user) throw new ResourceNotFoundError("Usuário", email);
+
+    if (!user.verified_at) throw new UserNotVerifiedError();
 
     const otp = Otp.create({
       user_id: user.id,
