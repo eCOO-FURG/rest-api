@@ -19,6 +19,7 @@ import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { UserNotVerifiedError } from "@/core/errors/user-not-verified";
 
 let usersRepository: InMemoryUsersRepository;
 let otpsRepository: InMemoryOtpsRepository;
@@ -40,7 +41,9 @@ describe("request otp", async () => {
   });
 
   it("should be able to request a otp", async () => {
-    const user = makeUser();
+    const user = makeUser({
+      verified_at: new Date(),
+    });
     await usersRepository.create(user);
 
     await sut.execute({
@@ -56,5 +59,17 @@ describe("request otp", async () => {
         email: "t@test.com",
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it("should not be able to request otp for unverified user", async () => {
+    const user = makeUser();
+
+    await usersRepository.create(user);
+
+    await expect(() =>
+      sut.execute({
+        email: user.email,
+      }),
+    ).rejects.toBeInstanceOf(UserNotVerifiedError);
   });
 });
