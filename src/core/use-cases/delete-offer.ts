@@ -48,7 +48,7 @@ export class DeleteOfferUseCase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", catalog.cycle_id.value);
 
-    if (!inPeriodOf(cycle.offer) || (offer.closes_at && offer.created_at > first(cycle.offer)))
+    if (!inPeriodOf(cycle.offer) || (offer.closes_at && offer.created_at < first(cycle.offer)))
       throw new ResourceClosedError("Oferta", offer.id.value);
 
     await this.offersRepository.delete(offer);

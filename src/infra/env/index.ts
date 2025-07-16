@@ -17,11 +17,7 @@ const schema = Joi.object({
 
   // Email
   EMAIL_ACCOUNT: Joi.string().required(),
-  EMAIL_PASSWORD: Joi.alternatives().conditional("ENVIRONMENT", {
-    not: "DEVELOPMENT",
-    then: Joi.string().required(),
-    otherwise: Joi.string().optional(),
-  }),
+  EMAIL_PASSWORD: Joi.string().required(),
 
   SMTP_HOST: Joi.string().required(),
   SMTP_PORT: Joi.number().required(),
