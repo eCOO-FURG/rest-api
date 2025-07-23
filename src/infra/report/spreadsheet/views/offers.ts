@@ -26,7 +26,7 @@ export const OFFERS_VIEW: SpreadsheetView = async ({ catalogs, since, before }: 
 
   for (const catalog of catalogs) {
     for (const offer of catalog.offers) {
-      const isOfferInPeriod = (!since || offer.created_at >= since) && (!before || offer.created_at <= before);
+      const isOfferInPeriod = !offer.closes_at || ((!since || offer.opens_at >= since) && (!before || offer.closes_at <= before));
 
       if (!isOfferInPeriod) continue;
 
