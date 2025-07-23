@@ -46,8 +46,7 @@ export class FetchSalesReportUseCase {
 
     const catalogs = await this.catalogsRepository.list("catalog-and-offers", {
       cycle: { id: cycle_id },
-      since,
-      before,
+      offers: { since, before },
     });
 
     switch (type) {
