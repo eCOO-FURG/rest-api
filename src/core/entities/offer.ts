@@ -24,6 +24,7 @@ export interface OfferProps extends EntityRequest {
   description: string | null;
   comment: string | null;
 
+  opens_at: Date;
   closes_at: Date | null;
   expires_at: Date | null;
 }
@@ -47,6 +48,10 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
 
   get description() {
     return this.props.description;
+  }
+
+  get opens_at() {
+    return this.props.opens_at;
   }
 
   get comment() {
@@ -113,6 +118,7 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
     return (
       this.props.amount > 0 &&
       this.props.active &&
+      this.props.opens_at <= now() &&
       (!this.props.expires_at || this.props.expires_at > now()) &&
       (!this.props.closes_at || this.props.closes_at > now())
     );

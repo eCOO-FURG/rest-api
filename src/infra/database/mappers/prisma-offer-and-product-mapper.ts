@@ -24,6 +24,7 @@ export class PrismaOfferAndProductMapper {
       fee: raw.fee.toNumber(),
       catalog_id: new UUID(raw.catalog_id),
       product_id: new UUID(raw.product_id),
+      opens_at: raw.opens_at,
       product: PrismaProductMapper.toDomain(raw.product),
       comment: raw.comment,
       active: raw.active,

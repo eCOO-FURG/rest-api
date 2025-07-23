@@ -21,6 +21,7 @@ export class OfferPresenter {
         comment: offer.comment,
         expires_at: offer.expires_at,
         active: offer.active,
+        opens_at: offer.opens_at,
         closes_at: offer.closes_at,
         catalog_id: offer.catalog_id.value,
         catalog: CatalogPresenter.toHttp(offer.catalog),
