@@ -17,13 +17,19 @@ const columns: SpreadsheetColumn[] = [
 
 interface OffersReportViewProps {
   catalogs: CatalogAndOffers[];
+  since?: Date;
+  before?: Date;
 }
 
-export const OFFERS_VIEW: SpreadsheetView = async ({ catalogs }: OffersReportViewProps) => {
+export const OFFERS_VIEW: SpreadsheetView = async ({ catalogs, since, before }: OffersReportViewProps) => {
   const rows: Record<string, unknown>[] = [];
 
   for (const catalog of catalogs) {
     for (const offer of catalog.offers) {
+      const isOfferInPeriod = (!since || offer.created_at >= since) && (!before || offer.created_at <= before);
+
+      if (!isOfferInPeriod) continue;
+
       rows.push({
         farm: catalog.farm.name,
         product: offer.product.name,

@@ -41,13 +41,12 @@ export class FetchSalesReportUseCase {
       withdraw,
       since,
       before,
-      ...(type === "spreadsheet" && { orders: { statuses: ["RECEIVED", "PENDING"] } }),
+      ...(type === "pdf" && { statuses: ["MOUNTED"], orders: { statuses: ["RECEIVED"] } }),
     });
 
     const catalogs = await this.catalogsRepository.list("catalog-and-offers", {
       cycle: { id: cycle_id },
-      since,
-      before,
+      offers: { since, before },
     });
 
     switch (type) {
