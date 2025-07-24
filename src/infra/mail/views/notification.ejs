@@ -151,7 +151,7 @@
         >
           <tr>
             <td class="content">
-              <p><%= props.text %></p>
+              <p><%- props.text.replace(/\n/g, "<br>") %></p>
               </p>
             </td>
           </tr>
