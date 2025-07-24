@@ -180,6 +180,7 @@ model Offer {
   price Decimal @db.Decimal(10, 2)
   fee   Decimal @db.Decimal(10, 2)
 
+  opens_at   DateTime
   closes_at  DateTime?
   expires_at DateTime?
 

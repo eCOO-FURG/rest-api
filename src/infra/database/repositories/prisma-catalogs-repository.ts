@@ -48,6 +48,8 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                 offers: {
                   include: { product: true },
                   where: {
+                    ...(offers?.period?.since && { OR: [{ opens_at: { gte: offers.period.since } }, { closes_at: null }] }),
+                    ...(offers?.period?.before && { OR: [{ opens_at: { lte: offers.period.before } }, { closes_at: null }] }),
                     product: {
                       name: {
                         contains: offers?.product?.name,
@@ -129,6 +131,8 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
         cycle: { id: cycle?.id },
         offers: {
           some: {
+            ...(offers?.period?.since && { OR: [{ opens_at: { gte: offers.period.since } }, { closes_at: null }] }),
+            ...(offers?.period?.before && { OR: [{ opens_at: { lte: offers.period.before } }, { closes_at: null }] }),
             product: {
               name: { contains: offers?.product?.name, mode: "insensitive" },
               category_id: offers?.product?.category?.id,

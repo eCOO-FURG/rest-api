@@ -19,11 +19,15 @@ export interface CatalogsRepositorySearchRequest {
   cycle?: { id?: string };
   offers?: {
     id?: string;
-    product?: { name?: string; category?: { id?: string } };
     page?: number;
     available?: boolean;
     since?: Date;
     before?: Date;
+    product?: { name?: string; category?: { id?: string } };
+    period?: {
+      since?: Date;
+      before?: Date;
+    };
   };
   since?: Date;
   before?: Date;

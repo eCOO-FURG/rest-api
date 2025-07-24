@@ -20,6 +20,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 
 // Utils
+import { now } from "../utils/now";
 import { first } from "@/core/utils/first";
 import { last } from "@/core/utils/last";
 import { inPeriodOf } from "@/core/utils/in-period-of";
@@ -100,6 +101,7 @@ export class RegisterOfferUseCase {
       description,
       comment,
       expires_at,
+      opens_at: recurring ? now() : first(cycle.order, cycle.inverted()),
       closes_at: recurring ? null : last(cycle.order, cycle.inverted()),
       fee: price * (catalog.fee / 100),
     });
