@@ -9,10 +9,12 @@ import { processFiles } from "@/infra/http/middlewares/process-files";
 import { listProductsController } from "@/infra/http/controllers/list-products";
 import { registerProductController } from "@/infra/http/controllers/register-product";
 import { updateProductController } from "@/infra/http/controllers/update-product";
+import { fetchDescriptionSuggestionController } from "@/infra/http/controllers/fetch-description-suggestion";
 
 export const products = Router();
 
 products.get("/", listProductsController);
+products.get("/:product_id", fetchDescriptionSuggestionController);
 
 products.post(
   "/",

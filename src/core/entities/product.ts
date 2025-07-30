@@ -19,7 +19,7 @@ export interface ProductProps extends EntityRequest {
   pricing: ProductPricing;
 }
 
-export class Product extends Entity<ProductProps> {
+export class Product<Props extends ProductProps = ProductProps> extends Entity<Props> {
   get name() {
     return this.props.name;
   }

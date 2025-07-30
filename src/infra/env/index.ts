@@ -3,7 +3,9 @@ import Joi from "joi";
 
 const schema = Joi.object({
   // Environment
-  ENVIRONMENT: Joi.string().valid("PRODUCTION", "STAGING", "DEVELOPMENT").required(),
+  ENVIRONMENT: Joi.string()
+    .valid("PRODUCTION", "STAGING", "DEVELOPMENT")
+    .required(),
 
   // Server
   SERVER_PORT: Joi.string().required(),
@@ -22,37 +24,52 @@ const schema = Joi.object({
   SMTP_HOST: Joi.string().required(),
   SMTP_PORT: Joi.number().required(),
 
-  BATCH_EMAIL_ACCOUNT: Joi.alternatives().conditional("ENVIRONMENT", {
-    not: "DEVELOPMENT",
-    then: Joi.string().required(),
-    otherwise: Joi.string().optional(),
-  }),
-  BATCH_EMAIL_PASSWORD: Joi.alternatives().conditional("ENVIRONMENT", {
-    not: "DEVELOPMENT",
-    then: Joi.string().required(),
-    otherwise: Joi.string().optional(),
-  }),
+  BATCH_EMAIL_ACCOUNT: Joi.alternatives().conditional(
+    "ENVIRONMENT",
+    {
+      not: "DEVELOPMENT",
+      then: Joi.string().required(),
+      otherwise: Joi.string().optional(),
+    },
+  ),
+  BATCH_EMAIL_PASSWORD: Joi.alternatives().conditional(
+    "ENVIRONMENT",
+    {
+      not: "DEVELOPMENT",
+      then: Joi.string().required(),
+      otherwise: Joi.string().optional(),
+    },
+  ),
 
   BATCH_SMTP_HOST: Joi.string().required(),
   BATCH_SMTP_PORT: Joi.number().required(),
 
-  FALLBACK_EMAIL_ACCOUNT: Joi.alternatives().conditional("ENVIRONMENT", {
-    not: "DEVELOPMENT",
-    then: Joi.string().required(),
-    otherwise: Joi.string().optional(),
-  }),
+  FALLBACK_EMAIL_ACCOUNT: Joi.alternatives().conditional(
+    "ENVIRONMENT",
+    {
+      not: "DEVELOPMENT",
+      then: Joi.string().required(),
+      otherwise: Joi.string().optional(),
+    },
+  ),
 
-  FALLBACK_EMAIL_PASSWORD: Joi.alternatives().conditional("ENVIRONMENT", {
-    not: "DEVELOPMENT",
-    then: Joi.string().required(),
-    otherwise: Joi.string().optional(),
-  }),
+  FALLBACK_EMAIL_PASSWORD: Joi.alternatives().conditional(
+    "ENVIRONMENT",
+    {
+      not: "DEVELOPMENT",
+      then: Joi.string().required(),
+      otherwise: Joi.string().optional(),
+    },
+  ),
 
-  FALLBACK_SMTP_HOST: Joi.alternatives().conditional("ENVIRONMENT", {
-    not: "DEVELOPMENT",
-    then: Joi.string().required(),
-    otherwise: Joi.string().optional(),
-  }),
+  FALLBACK_SMTP_HOST: Joi.alternatives().conditional(
+    "ENVIRONMENT",
+    {
+      not: "DEVELOPMENT",
+      then: Joi.string().required(),
+      otherwise: Joi.string().optional(),
+    },
+  ),
 
   // Auth
   JWT_SECRET: Joi.string().required(),
@@ -61,11 +78,14 @@ const schema = Joi.object({
   STORAGE_URL: Joi.string().required(),
 
   // Logs
-  SENTRY_DSN: Joi.alternatives().conditional("ENVIRONMENT", {
-    not: "DEVELOPMENT",
-    then: Joi.string().required(),
-    otherwise: Joi.string().optional(),
-  }),
+  SENTRY_DSN: Joi.alternatives().conditional(
+    "ENVIRONMENT",
+    {
+      not: "DEVELOPMENT",
+      then: Joi.string().required(),
+      otherwise: Joi.string().optional(),
+    },
+  ),
 
   // Cache
   CACHE_URL: Joi.string().required(),
@@ -77,11 +97,17 @@ const schema = Joi.object({
   APP_URL: Joi.string().required(),
 
   // Payments
-  PIX_PROVIDER_API_KEY: Joi.alternatives().conditional("ENVIRONMENT", {
-    not: "DEVELOPMENT",
-    then: Joi.string().required(),
-    otherwise: Joi.string().optional(),
-  }),
+  PIX_PROVIDER_API_KEY: Joi.alternatives().conditional(
+    "ENVIRONMENT",
+    {
+      not: "DEVELOPMENT",
+      then: Joi.string().required(),
+      otherwise: Joi.string().optional(),
+    },
+  ),
+
+  // LLM
+  OPENAI_API_KEY: Joi.string().required(),
 })
   .unknown(true)
   .required();
@@ -89,7 +115,9 @@ const schema = Joi.object({
 const { error, value } = schema.validate(process.env);
 
 if (error) {
-  console.log(`❌ Variável ambiente ${error.details[0].path} não encontrada.`);
+  console.log(
+    `❌ Variável ambiente ${error.details[0].path} não encontrada.`,
+  );
   process.exit(1);
 }
 
