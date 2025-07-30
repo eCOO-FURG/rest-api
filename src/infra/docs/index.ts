@@ -75,6 +75,7 @@ import {
 import { updateUserSchema } from "@/infra/http/controllers/update-user";
 import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
 import { openPixSchema } from "@/infra/http/webhooks/open-pix";
+import { fetchDescriptionSuggestionParams } from "../http/controllers/fetch-description-suggestion";
 
 // Schemas
 const { swagger: authenticateSchemaSwagger } = j2s(authenticateSchema);
@@ -136,6 +137,9 @@ const { swagger: fetchCycleCatalogParamsSwagger } = j2s(
   fetchCycleCatalogParams,
 );
 const { swagger: listOffersQuerySwagger } = j2s(listOffersQuery);
+const { swagger: fetchDescriptionSuggestionParamsSwagger } = j2s(
+  fetchDescriptionSuggestionParams,
+);
 const toQueryParams = (query: SwaggerSchema) =>
   Object.entries(query.properties).map(([name, schema]) => ({
     in: "query",
@@ -759,6 +763,11 @@ export const docs = {
       },
     },
     "/products/{product_id}": {
+      get: {
+        tags: ["Produtos"],
+        summary: "Gera a descrição de um produto",
+        parameters: toRouteParams(fetchDescriptionSuggestionParamsSwagger),
+      },
       patch: {
         tags: ["Produtos"],
         summary: "Atualizar produto",
@@ -867,6 +876,7 @@ export const docs = {
         },
       },
     },
+
     "/reports/sales": {
       get: {
         tags: ["Relatórios"],
