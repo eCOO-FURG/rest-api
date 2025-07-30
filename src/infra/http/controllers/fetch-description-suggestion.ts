@@ -25,9 +25,16 @@ export async function fetchDescriptionSuggestionController(
       "fetchDescriptionSuggestionUseCase",
     );
 
-    const { description } = await useCase.execute({ product_id });
+    const { stream } = await useCase.execute({ product_id });
 
-    return res.status(200).json({ description });
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader("Transfer-Encoding", "chunked");
+
+    for await (const chunk of stream) {
+      res.write(chunk);
+    }
+
+    res.end();
   } catch (error) {
     next(error);
   }

@@ -10,5 +10,5 @@ export type LLMProviderGenerateRequest = {
 };
 
 export interface LLMProvider {
-  generate(data: LLMProviderGenerateRequest): Promise<string>;
+  generate(data: LLMProviderGenerateRequest): AsyncGenerator<string>;
 }

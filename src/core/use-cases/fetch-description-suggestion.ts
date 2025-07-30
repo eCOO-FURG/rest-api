@@ -18,23 +18,14 @@ export class FetchDescriptionSuggestionUseCase {
     private llmProvider: LLMProvider,
   ) {}
 
-  async execute({
-    product_id,
-  }: FetchDescriptionSuggestionUseCaseRequest) {
-    const product = await this.productsRepository.find(
-      "product-and-category",
-      {
-        id: product_id,
-      },
-    );
+  async execute({ product_id }: FetchDescriptionSuggestionUseCaseRequest) {
+    const product = await this.productsRepository.find("product-and-category", {
+      id: product_id,
+    });
 
-    if (!product)
-      throw new ResourceNotFoundError(
-        "Produto",
-        product_id,
-      );
+    if (!product) throw new ResourceNotFoundError("Produto", product_id);
 
-    const description = await this.llmProvider.generate({
+    const stream = this.llmProvider.generate({
       prompt: Prompt.CREATE_DESCRIPTION,
       props: {
         product: product.name,
@@ -42,6 +33,6 @@ export class FetchDescriptionSuggestionUseCase {
       },
     });
 
-    return { description };
+    return { stream };
   }
 }

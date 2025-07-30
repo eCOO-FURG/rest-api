@@ -30,22 +30,38 @@ export class OpenAIProvider implements LLMProvider {
       sketch = sketch.replace(`{${key}}`, props[key as keyof typeof props]);
     }
 
-    return prompts[Prompt.BASIC_INSTRUCTION] + "\n" + sketch;
+    return sketch;
   }
 
-  async generate({
+  async *generate({
     prompt,
     props,
-  }: LLMProviderGenerateRequest): Promise<string> {
-    const { output_text } = await this.client.responses.create({
+  }: LLMProviderGenerateRequest): AsyncGenerator<string> {
+    const stream = await this.client.chat.completions.create({
       model: "gpt-3.5-turbo",
       temperature: 0.7,
-      input: this.format({
-        sketch: prompts[prompt],
-        props,
-      }),
+      stream: true,
+      messages: [
+        {
+          role: "system",
+          content: prompts[Prompt.BASIC_INSTRUCTION],
+        },
+        {
+          role: "user",
+          content: this.format({
+            sketch: prompts[prompt],
+            props,
+          }),
+        },
+      ],
     });
 
-    return output_text;
+    for await (const chunk of stream) {
+      const content = chunk.choices[0].delta.content;
+
+      if (content) {
+        yield content;
+      }
+    }
   }
 }
