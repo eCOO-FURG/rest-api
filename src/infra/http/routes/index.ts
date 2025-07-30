@@ -67,18 +67,8 @@ router.use("/payments", ensureAuthenticated, payments);
 router.use("/cycles", cycles);
 router.use("/products", ensureAuthenticated, products);
 router.use("/categories", categories);
-router.use(
-  "/pendings",
-  ensureAuthenticated,
-  ensureRole(["BROKER"]),
-  pendings,
-);
-router.use(
-  "/stats",
-  ensureAuthenticated,
-  ensureRole(["MANAGER"]),
-  stats,
-);
+router.use("/pendings", ensureAuthenticated, ensureRole(["BROKER"]), pendings);
+router.use("/stats", ensureAuthenticated, ensureRole(["MANAGER"]), stats);
 router.use(
   "/reports",
   ensureAuthenticated,
