@@ -38,7 +38,16 @@ export class RegisterUseCase {
     private mailer: Mailer,
   ) {}
 
-  async execute({ first_name, last_name, email, cpf, phone, password, chat, role }: RegisterUseCaseRequest) {
+  async execute({
+    first_name,
+    last_name,
+    email,
+    cpf,
+    phone,
+    password,
+    chat,
+    role,
+  }: RegisterUseCaseRequest) {
     const userWithSameEmail = await this.usersRepository.find("user", {
       email,
     });
@@ -49,7 +58,8 @@ export class RegisterUseCase {
       phone,
     });
 
-    if (userWithSamePhone) throw new ResourceAlreadyExistsError("Telefone", phone);
+    if (userWithSamePhone)
+      throw new ResourceAlreadyExistsError("Telefone", phone);
 
     const userWithSameCpf = await this.usersRepository.find("user", { cpf });
 

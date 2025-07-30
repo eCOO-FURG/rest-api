@@ -22,12 +22,17 @@ export const fetchBoxQuery = Joi.object({
   page: Joi.number().integer().min(1).required(),
 });
 
-export async function fetchBoxController(request: Request, response: Response, next: NextFunction) {
+export async function fetchBoxController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
     const { box_id } = parse(fetchBoxParams, request.params);
     const { page } = parse(fetchBoxQuery, request.query);
 
-    const fetchBoxUseCase = container.resolve<FetchBoxUseCase>("fetchBoxUseCase");
+    const fetchBoxUseCase =
+      container.resolve<FetchBoxUseCase>("fetchBoxUseCase");
 
     const { box } = await fetchBoxUseCase.execute({
       user_id: request.user_id,

@@ -17,7 +17,12 @@ const FILE_ERRORS: Record<string, string> = {
   LIMIT_UNEXPECTED_FILE: "Campo de arquivo inesperado.",
 };
 
-export const handler = (error: Error, _request: Request, response: Response, _next: NextFunction) => {
+export const handler = (
+  error: Error,
+  _request: Request,
+  response: Response,
+  _next: NextFunction,
+) => {
   if (error instanceof Joi.ValidationError) {
     const info = error.details[0].context?.message ?? "";
 
@@ -29,7 +34,9 @@ export const handler = (error: Error, _request: Request, response: Response, _ne
   }
 
   if (error instanceof SyntaxError) {
-    return response.status(400).send({ message: "Sintaxe incorreta.", code: "syntax-error" });
+    return response
+      .status(400)
+      .send({ message: "Sintaxe incorreta.", code: "syntax-error" });
   }
 
   if (error instanceof MulterError) {
@@ -55,10 +62,15 @@ export const handler = (error: Error, _request: Request, response: Response, _ne
   if (error instanceof DomainError) {
     const found = HttpErrorMapper.find(error);
 
-    if (found) return response.status(found.status).send({ message: found.message, code: found.code });
+    if (found)
+      return response
+        .status(found.status)
+        .send({ message: found.message, code: found.code });
   }
 
   Logger.log(error);
 
-  return response.status(500).send({ message: "Ocorreu um erro interno.", code: "internal-error" });
+  return response
+    .status(500)
+    .send({ message: "Ocorreu um erro interno.", code: "internal-error" });
 };

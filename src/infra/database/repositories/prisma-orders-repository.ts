@@ -14,7 +14,10 @@ import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
 import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
-import { PrismaOrderAndOffer, PrismaOrderAndOfferMapper } from "@/infra/database/mappers/prisma-order-and-offer-mapper";
+import {
+  PrismaOrderAndOffer,
+  PrismaOrderAndOfferMapper,
+} from "@/infra/database/mappers/prisma-order-and-offer-mapper";
 
 export class PrismaOrdersRepository implements OrdersRepository {
   async find<T extends OrderRepositoryReturnType>(
@@ -41,7 +44,9 @@ export class PrismaOrdersRepository implements OrdersRepository {
       default:
         return PrismaOrderMapper.toDomain<T>(order);
       case "order-and-offer":
-        return PrismaOrderAndOfferMapper.toDomain<T>(order as PrismaOrderAndOffer);
+        return PrismaOrderAndOfferMapper.toDomain<T>(
+          order as PrismaOrderAndOffer,
+        );
     }
   }
 
@@ -57,7 +62,9 @@ export class PrismaOrdersRepository implements OrdersRepository {
       });
 
       if (box.status === "PENDING") {
-        const orders = await ctx.order.findMany({ where: { box_id: order.box_id.value } });
+        const orders = await ctx.order.findMany({
+          where: { box_id: order.box_id.value },
+        });
 
         const verified = orders.every((order) => order.status !== "PENDING");
 
@@ -74,18 +81,24 @@ export class PrismaOrdersRepository implements OrdersRepository {
       });
 
       if (bag.status === "PENDING") {
-        const orders = await ctx.order.findMany({ where: { bag_id: order.bag_id.value } });
+        const orders = await ctx.order.findMany({
+          where: { bag_id: order.bag_id.value },
+        });
 
         const verified = orders.every((order) => order.status !== "PENDING");
 
-        const refund = order.status === "CANCELLED" || order.status === "REJECTED";
+        const refund =
+          order.status === "CANCELLED" || order.status === "REJECTED";
 
         if (verified) {
           await ctx.bag.update({
             where: { id: order.bag_id.value },
             data: {
               status: "VERIFIED",
-              ...(refund && { subtotal: bag.subtotal.minus(order.subtotal), fee: bag.fee.minus(order.fee) }),
+              ...(refund && {
+                subtotal: bag.subtotal.minus(order.subtotal),
+                fee: bag.fee.minus(order.fee),
+              }),
             },
           });
         }

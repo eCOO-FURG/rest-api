@@ -14,7 +14,14 @@ export class InMemoryAddressesRepository implements AddressesRepository {
 
   async find<T extends AddressRepositoryReturnType>(
     _: T,
-    { id, complement, neighborhood, number, street, postal_code }: AddressesRepositorySearchRequest,
+    {
+      id,
+      complement,
+      neighborhood,
+      number,
+      street,
+      postal_code,
+    }: AddressesRepositorySearchRequest,
   ): Promise<AddressEntityOf<T> | null> {
     const address = this.items.find((item) =>
       Boolean(

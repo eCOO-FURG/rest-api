@@ -6,10 +6,15 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { Prisma, Session as PrismaSession } from "@prisma/client";
 
 // Repositories
-import { SessionRepositoryReturnType, SessionEntityOf } from "@/core/repositories/sessions-repository";
+import {
+  SessionRepositoryReturnType,
+  SessionEntityOf,
+} from "@/core/repositories/sessions-repository";
 
 export class PrismaSessionMapper {
-  static toDomain<T extends SessionRepositoryReturnType = "session">(raw: PrismaSession): SessionEntityOf<T> {
+  static toDomain<T extends SessionRepositoryReturnType = "session">(
+    raw: PrismaSession,
+  ): SessionEntityOf<T> {
     return Session.create({
       id: new UUID(raw.id),
       ip: raw.ip,

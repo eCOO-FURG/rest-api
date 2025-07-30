@@ -27,7 +27,11 @@ describe("Fetch inbound report", () => {
 
     pdfService = new MockedPDFService();
 
-    sut = new FetchInboundReportUseCase(boxesRepository, cyclesRepository, pdfService);
+    sut = new FetchInboundReportUseCase(
+      boxesRepository,
+      cyclesRepository,
+      pdfService,
+    );
   });
   it("should be able to fetch the cycle inbound report", async () => {
     const cycle = makeCycle();

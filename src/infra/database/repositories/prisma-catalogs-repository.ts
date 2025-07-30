@@ -13,8 +13,14 @@ import {
 import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
-import { PrismaCatalogAndFarm, PrismaCatalogAndFarmMapper } from "@/infra/database/mappers/prisma-catalog-and-farm-mapper";
-import { PrismaCatalogAndOffers, PrismaCatalogAndOffersMapper } from "@/infra/database/mappers/prisma-catalog-and-offers-mapper";
+import {
+  PrismaCatalogAndFarm,
+  PrismaCatalogAndFarmMapper,
+} from "@/infra/database/mappers/prisma-catalog-and-farm-mapper";
+import {
+  PrismaCatalogAndOffers,
+  PrismaCatalogAndOffersMapper,
+} from "@/infra/database/mappers/prisma-catalog-and-offers-mapper";
 import { PrismaCatalogMapper } from "@/infra/database/mappers/prisma-catalog-mapper";
 import { PrismaOfferMapper } from "@/infra/database/mappers/prisma-offer-mapper";
 
@@ -48,8 +54,18 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                 offers: {
                   include: { product: true },
                   where: {
-                    ...(offers?.period?.since && { OR: [{ opens_at: { gte: offers.period.since } }, { closes_at: null }] }),
-                    ...(offers?.period?.before && { OR: [{ opens_at: { lte: offers.period.before } }, { closes_at: null }] }),
+                    ...(offers?.period?.since && {
+                      OR: [
+                        { opens_at: { gte: offers.period.since } },
+                        { closes_at: null },
+                      ],
+                    }),
+                    ...(offers?.period?.before && {
+                      OR: [
+                        { opens_at: { lte: offers.period.before } },
+                        { closes_at: null },
+                      ],
+                    }),
                     product: {
                       name: {
                         contains: offers?.product?.name,
@@ -62,10 +78,16 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                         ? {
                             AND: [
                               {
-                                OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+                                OR: [
+                                  { closes_at: null },
+                                  { closes_at: { gt: now() } },
+                                ],
                               },
                               {
-                                OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                                OR: [
+                                  { expires_at: null },
+                                  { expires_at: { gte: now() } },
+                                ],
                               },
                               {
                                 active: true,
@@ -86,7 +108,10 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                       lte: offers?.before,
                     },
                   },
-                  ...(offers?.page && { skip: (offers.page - 1) * 20, take: 20 }),
+                  ...(offers?.page && {
+                    skip: (offers.page - 1) * 20,
+                    take: 20,
+                  }),
                   orderBy: {
                     product: {
                       name: "asc",
@@ -106,9 +131,13 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
       default:
         return PrismaCatalogMapper.toDomain<T>(catalog);
       case "catalog-and-farm":
-        return PrismaCatalogAndFarmMapper.toDomain<T>(catalog as PrismaCatalogAndFarm);
+        return PrismaCatalogAndFarmMapper.toDomain<T>(
+          catalog as PrismaCatalogAndFarm,
+        );
       case "catalog-and-offers":
-        return PrismaCatalogAndOffersMapper.toDomain<T>(catalog as PrismaCatalogAndOffers);
+        return PrismaCatalogAndOffersMapper.toDomain<T>(
+          catalog as PrismaCatalogAndOffers,
+        );
     }
   }
 
@@ -131,8 +160,18 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
         cycle: { id: cycle?.id },
         offers: {
           some: {
-            ...(offers?.period?.since && { OR: [{ opens_at: { gte: offers.period.since } }, { closes_at: null }] }),
-            ...(offers?.period?.before && { OR: [{ opens_at: { lte: offers.period.before } }, { closes_at: null }] }),
+            ...(offers?.period?.since && {
+              OR: [
+                { opens_at: { gte: offers.period.since } },
+                { closes_at: null },
+              ],
+            }),
+            ...(offers?.period?.before && {
+              OR: [
+                { opens_at: { lte: offers.period.before } },
+                { closes_at: null },
+              ],
+            }),
             product: {
               name: { contains: offers?.product?.name, mode: "insensitive" },
               category_id: offers?.product?.category?.id,
@@ -145,7 +184,10 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                         OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
                       },
                       {
-                        OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                        OR: [
+                          { expires_at: null },
+                          { expires_at: { gte: now() } },
+                        ],
                       },
                       {
                         active: true,
@@ -176,7 +218,10 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                 farm: { include: { admin: true } },
                 offers: {
                   include: { product: true },
-                  ...(offers?.page && { skip: (offers.page - 1) * 20, take: 20 }),
+                  ...(offers?.page && {
+                    skip: (offers.page - 1) * 20,
+                    take: 20,
+                  }),
                   orderBy: {
                     product: {
                       name: "asc",
@@ -195,9 +240,17 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
       default:
         return catalogs.map(PrismaCatalogMapper.toDomain<T>);
       case "catalog-and-farm":
-        return catalogs.map((catalog) => PrismaCatalogAndFarmMapper.toDomain<T>(catalog as PrismaCatalogAndFarm));
+        return catalogs.map((catalog) =>
+          PrismaCatalogAndFarmMapper.toDomain<T>(
+            catalog as PrismaCatalogAndFarm,
+          ),
+        );
       case "catalog-and-offers":
-        return catalogs.map((catalog) => PrismaCatalogAndOffersMapper.toDomain<T>(catalog as PrismaCatalogAndOffers));
+        return catalogs.map((catalog) =>
+          PrismaCatalogAndOffersMapper.toDomain<T>(
+            catalog as PrismaCatalogAndOffers,
+          ),
+        );
     }
   }
 

@@ -30,7 +30,11 @@ const jwtPayloadSchema = Joi.object({
   iat: Joi.number().required(),
 });
 
-export async function ensureAuthenticated(request: Request, response: Response, next: NextFunction) {
+export async function ensureAuthenticated(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
     const authHeader = request.headers.authorization;
 
@@ -42,9 +46,11 @@ export async function ensureAuthenticated(request: Request, response: Response, 
 
     const { user_id, iat } = parse(jwtPayloadSchema, payload);
 
-    const user = await container.resolve<UsersRepository>("usersRepository").find("user", {
-      id: user_id,
-    });
+    const user = await container
+      .resolve<UsersRepository>("usersRepository")
+      .find("user", {
+        id: user_id,
+      });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
@@ -53,16 +59,21 @@ export async function ensureAuthenticated(request: Request, response: Response, 
     const expired = lifetimeInSeconds > 5 * 60;
 
     if (expired) {
-      const session = await container.resolve<SessionsRepository>("sessionsRepository").find("session", {
-        user: { id: user_id },
-        ip: request.ip!,
-        agent: request.headers["user-agent"] ?? "not-identified",
-        since: now({ minus: 60 }),
-      });
+      const session = await container
+        .resolve<SessionsRepository>("sessionsRepository")
+        .find("session", {
+          user: { id: user_id },
+          ip: request.ip!,
+          agent: request.headers["user-agent"] ?? "not-identified",
+          since: now({ minus: 60 }),
+        });
 
       if (!session) throw new SessionExpiredError();
 
-      response.header("set-cookie", `token=${sign({ user_id }, env.JWT_SECRET)}`);
+      response.header(
+        "set-cookie",
+        `token=${sign({ user_id }, env.JWT_SECRET)}`,
+      );
     }
 
     request.user_id = user.id.value;

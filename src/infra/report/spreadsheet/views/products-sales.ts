@@ -63,11 +63,18 @@ interface ProductsSalesReportViewProps {
   before?: Date;
 }
 
-export const PRODUCTS_SALES_VIEW: SpreadsheetView = async ({ bags, since, before }: ProductsSalesReportViewProps) => {
+export const PRODUCTS_SALES_VIEW: SpreadsheetView = async ({
+  bags,
+  since,
+  before,
+}: ProductsSalesReportViewProps) => {
   const rows: Record<string, unknown>[] = [];
   for (const bag of bags) {
     for (const order of bag.orders) {
-      const amount = order.offer?.product?.pricing === "UNIT" ? order.amount : order.amount / 1000;
+      const amount =
+        order.offer?.product?.pricing === "UNIT"
+          ? order.amount
+          : order.amount / 1000;
 
       const offerPrice = order.offer?.price ?? 0;
 
@@ -79,7 +86,8 @@ export const PRODUCTS_SALES_VIEW: SpreadsheetView = async ({ bags, since, before
         status: ORDER_STATUS[order.status],
         fee: (order.offer?.catalog?.fee ?? 0) / 100,
         offer_price_without_tax: offerPrice,
-        offer_price: offerPrice + (offerPrice * (order.offer?.catalog?.fee ?? 0)) / 100,
+        offer_price:
+          offerPrice + (offerPrice * (order.offer?.catalog?.fee ?? 0)) / 100,
         amount,
         total_price: order.total,
         total_price_without_tax: order.subtotal,

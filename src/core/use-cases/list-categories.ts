@@ -20,8 +20,17 @@ export class ListCategoriesUseCase {
     private readonly categoriesRepository: CategoriesRepository,
   ) {}
 
-  async execute({ page, name, cycle_id, available, since, before }: ListCategoriesUseCaseRequest) {
-    const cycle = cycle_id ? await this.cyclesRepository.find("cycle", { id: cycle_id }) : null;
+  async execute({
+    page,
+    name,
+    cycle_id,
+    available,
+    since,
+    before,
+  }: ListCategoriesUseCaseRequest) {
+    const cycle = cycle_id
+      ? await this.cyclesRepository.find("cycle", { id: cycle_id })
+      : null;
 
     if (cycle_id && !cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 

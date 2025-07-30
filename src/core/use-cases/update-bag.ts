@@ -34,7 +34,9 @@ export class UpdateBagUseCase {
   ) {}
 
   async execute({ user_id, bag_id, status }: UpdateBagUseCaseRequest) {
-    const bag = await this.bagsRepository.find("bag-and-details", { id: bag_id });
+    const bag = await this.bagsRepository.find("bag-and-details", {
+      id: bag_id,
+    });
 
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 
@@ -52,13 +54,16 @@ export class UpdateBagUseCase {
 
     const owner = bag.customer_id.equals(user.id);
 
-    if (!owner && !user.admin) throw new ResourceNotFoundError("Sacola", bag_id);
+    if (!owner && !user.admin)
+      throw new ResourceNotFoundError("Sacola", bag_id);
 
     if (owner && status !== "CANCELLED") throw new UnauthorizedError();
 
-    if (bag.status === "CANCELLED") throw new ResourceClosedError("Sacola", bag_id);
+    if (bag.status === "CANCELLED")
+      throw new ResourceClosedError("Sacola", bag_id);
 
-    if (bag.status === "PENDING" && status !== "CANCELLED") throw new ResourceNotVerifiedError("Sacola", bag_id);
+    if (bag.status === "PENDING" && status !== "CANCELLED")
+      throw new ResourceNotVerifiedError("Sacola", bag_id);
 
     bag.status = status ?? bag.status;
     bag.touch();

@@ -28,11 +28,17 @@ export const registerPaymentSchema = Joi.object({
   }),
 });
 
-export async function registerPaymentController(request: Request, response: Response, next: NextFunction) {
+export async function registerPaymentController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
     const { method, flag, bag_id } = parse(registerPaymentSchema, request.body);
 
-    const registerPaymentUseCase = container.resolve<RegisterPaymentUseCase>("registerPaymentUseCase");
+    const registerPaymentUseCase = container.resolve<RegisterPaymentUseCase>(
+      "registerPaymentUseCase",
+    );
 
     await registerPaymentUseCase.execute({
       bag_id,

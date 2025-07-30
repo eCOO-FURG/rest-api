@@ -3,13 +3,18 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { Offer } from "@/core/entities/offer";
 
 // Repositories
-import { OfferEntityOf, OfferRepositoryReturnType } from "@/core/repositories/offers-repository";
+import {
+  OfferEntityOf,
+  OfferRepositoryReturnType,
+} from "@/core/repositories/offers-repository";
 
 // Libraries
 import { Prisma, Offer as PrismaOffer } from "@prisma/client";
 
 export class PrismaOfferMapper {
-  static toDomain<T extends OfferRepositoryReturnType = "offer">(raw: PrismaOffer): OfferEntityOf<T> {
+  static toDomain<T extends OfferRepositoryReturnType = "offer">(
+    raw: PrismaOffer,
+  ): OfferEntityOf<T> {
     return Offer.create({
       id: new UUID(raw.id),
       amount: raw.amount,

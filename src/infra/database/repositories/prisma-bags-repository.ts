@@ -2,7 +2,12 @@
 import { Bag } from "@/core/entities/bag";
 
 // Repositories
-import { BagEntityOf, BagRepositoryReturnType, BagsRepository, BagsRepositorySearchRequest } from "@/core/repositories/bags-repository";
+import {
+  BagEntityOf,
+  BagRepositoryReturnType,
+  BagsRepository,
+  BagsRepositorySearchRequest,
+} from "@/core/repositories/bags-repository";
 
 // Database
 import { prisma } from "@/infra/database/prisma-service";
@@ -10,14 +15,28 @@ import { prisma } from "@/infra/database/prisma-service";
 // Mappers
 import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";
 import { PrismaBagAndDetailsMapper } from "@/infra/database/mappers/prisma-bag-and-details-mapper";
-import { PrismaBagAndOrders, PrismaBagAndOrdersMapper } from "@/infra/database/mappers/prisma-bag-and-orders-mapper";
+import {
+  PrismaBagAndOrders,
+  PrismaBagAndOrdersMapper,
+} from "@/infra/database/mappers/prisma-bag-and-orders-mapper";
 import { PrismaBagMapper } from "@/infra/database/mappers/prisma-bag-mapper";
 import { PrismaBoxMapper } from "@/infra/database/mappers/prisma-box-mapper";
 import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
 export class PrismaBagsRepository implements BagsRepository {
   async find<T extends BagRepositoryReturnType>(
     type: T,
-    { id, withdraw, statuses, user, cycle, address, orders, payment, since, before }: BagsRepositorySearchRequest,
+    {
+      id,
+      withdraw,
+      statuses,
+      user,
+      cycle,
+      address,
+      orders,
+      payment,
+      since,
+      before,
+    }: BagsRepositorySearchRequest,
   ): Promise<BagEntityOf<T> | null> {
     const bag = await prisma.bag.findFirst({
       where: {
@@ -38,7 +57,8 @@ export class PrismaBagsRepository implements BagsRepository {
             ],
           }),
         },
-        ...(typeof withdraw === "boolean" && (withdraw ? { address_id: null } : { address_id: { not: null } })),
+        ...(typeof withdraw === "boolean" &&
+          (withdraw ? { address_id: null } : { address_id: { not: null } })),
         created_at: {
           gte: since,
           lte: before,
@@ -88,7 +108,18 @@ export class PrismaBagsRepository implements BagsRepository {
 
   async list<T extends BagRepositoryReturnType>(
     type: T,
-    { id, withdraw, statuses, user, cycle, address, orders, payment, since, before }: BagsRepositorySearchRequest,
+    {
+      id,
+      withdraw,
+      statuses,
+      user,
+      cycle,
+      address,
+      orders,
+      payment,
+      since,
+      before,
+    }: BagsRepositorySearchRequest,
     page?: number,
   ): Promise<BagEntityOf<T>[]> {
     const bags = await prisma.bag.findMany({
@@ -116,7 +147,8 @@ export class PrismaBagsRepository implements BagsRepository {
             ...(orders?.statuses && { status: { in: orders.statuses } }),
           },
         },
-        ...(typeof withdraw === "boolean" && (withdraw ? { address_id: null } : { address_id: { not: null } })),
+        ...(typeof withdraw === "boolean" &&
+          (withdraw ? { address_id: null } : { address_id: { not: null } })),
         created_at: {
           gte: since,
           lte: before,
@@ -155,7 +187,9 @@ export class PrismaBagsRepository implements BagsRepository {
       case "bag-and-details":
         return bags.map(PrismaBagAndDetailsMapper.toDomain<T>);
       case "bag-and-orders":
-        return bags.map((bag) => PrismaBagAndOrdersMapper.toDomain<T>(bag as PrismaBagAndOrders));
+        return bags.map((bag) =>
+          PrismaBagAndOrdersMapper.toDomain<T>(bag as PrismaBagAndOrders),
+        );
     }
   }
 

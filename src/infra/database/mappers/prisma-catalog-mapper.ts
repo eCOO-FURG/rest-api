@@ -12,7 +12,9 @@ import { CatalogEntityOf } from "@/core/repositories/catalogs-repository";
 import { CatalogRepositoryReturnType } from "@/core/repositories/catalogs-repository";
 
 export class PrismaCatalogMapper {
-  static toDomain<T extends CatalogRepositoryReturnType = "catalog">(raw: PrismaCatalog): CatalogEntityOf<T> {
+  static toDomain<T extends CatalogRepositoryReturnType = "catalog">(
+    raw: PrismaCatalog,
+  ): CatalogEntityOf<T> {
     return Catalog.create({
       id: new UUID(raw.id),
       fee: raw.fee,

@@ -18,11 +18,16 @@ export const fetchFarmParams = Joi.object({
   farm_id: Joi.string().uuid().required(),
 });
 
-export async function fetchFarmController(request: Request, response: Response, next: NextFunction) {
+export async function fetchFarmController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
     const { farm_id } = parse(fetchFarmParams, request.params);
 
-    const fetchUserFarmUseCase = container.resolve<FetchFarmUseCase>("fetchFarmUseCase");
+    const fetchUserFarmUseCase =
+      container.resolve<FetchFarmUseCase>("fetchFarmUseCase");
 
     const { farm } = await fetchUserFarmUseCase.execute({
       farm_id,

@@ -35,11 +35,20 @@ export const registerOrderSchema = Joi.object({
     .required(),
 });
 
-export async function registerOrderController(request: Request, response: Response, next: NextFunction) {
+export async function registerOrderController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
-    const { cycle_id, address, orders, bag_id } = parse(registerOrderSchema, request.body);
+    const { cycle_id, address, orders, bag_id } = parse(
+      registerOrderSchema,
+      request.body,
+    );
 
-    const registerOrderUseCase = container.resolve<RegisterOrderUseCase>("registerOrderUseCase");
+    const registerOrderUseCase = container.resolve<RegisterOrderUseCase>(
+      "registerOrderUseCase",
+    );
 
     const { bag } = await registerOrderUseCase.execute({
       bag_id,

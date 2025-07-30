@@ -48,7 +48,11 @@ interface BagsSalesReportViewProps {
   bags: BagAndOrders[];
 }
 
-export const BAGS_SALES_VIEW: SpreadsheetView = async ({ bags, since, before }: BagsSalesReportViewProps) => {
+export const BAGS_SALES_VIEW: SpreadsheetView = async ({
+  bags,
+  since,
+  before,
+}: BagsSalesReportViewProps) => {
   const rows: Record<string, unknown>[] = [];
 
   for (const bag of bags) {

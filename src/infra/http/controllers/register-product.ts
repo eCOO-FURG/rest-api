@@ -33,11 +33,20 @@ export const registerProductSchema = Joi.object({
   category_id: Joi.string().required(),
 });
 
-export async function registerProductController(request: Request, response: Response, next: NextFunction) {
+export async function registerProductController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
-    const { name, pricing, perishable, archived, image, category_id } = parse(registerProductSchema, request.body);
+    const { name, pricing, perishable, archived, image, category_id } = parse(
+      registerProductSchema,
+      request.body,
+    );
 
-    const registerProductUseCase = container.resolve<RegisterProductUseCase>("registerProductUseCase");
+    const registerProductUseCase = container.resolve<RegisterProductUseCase>(
+      "registerProductUseCase",
+    );
 
     await registerProductUseCase.execute({
       name,

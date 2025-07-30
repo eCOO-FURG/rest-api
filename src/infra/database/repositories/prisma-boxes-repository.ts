@@ -2,7 +2,12 @@
 import { Box } from "@/core/entities/box";
 
 // Repositories
-import { BoxesRepository, BoxesRepositorySearchRequest, BoxRepositoryReturnType, BoxEntityOf } from "@/core/repositories/boxes-repository";
+import {
+  BoxesRepository,
+  BoxesRepositorySearchRequest,
+  BoxRepositoryReturnType,
+  BoxEntityOf,
+} from "@/core/repositories/boxes-repository";
 
 // Services
 import { prisma } from "@/infra/database/prisma-service";
@@ -10,14 +15,24 @@ import { prisma } from "@/infra/database/prisma-service";
 // Mappers
 import { PrismaBoxMapper } from "@/infra/database/mappers/prisma-box-mapper";
 import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
-import { PrismaBoxAndCatalog, PrismaBoxAndCatalogMapper } from "@/infra/database/mappers/prisma-box-and-catalog-mapper";
+import {
+  PrismaBoxAndCatalog,
+  PrismaBoxAndCatalogMapper,
+} from "@/infra/database/mappers/prisma-box-and-catalog-mapper";
 import { PrismaBoxAndOrdersMapper } from "@/infra/database/mappers/prisma-box-and-orders-mapper";
 import { PrismaBoxAndOrders } from "@/infra/database/mappers/prisma-box-and-orders-mapper";
 
 export class PrismaBoxesRepository implements BoxesRepository {
   async find<T extends BoxRepositoryReturnType>(
     type: T,
-    { id, status, catalog, orders, since, before }: BoxesRepositorySearchRequest,
+    {
+      id,
+      status,
+      catalog,
+      orders,
+      since,
+      before,
+    }: BoxesRepositorySearchRequest,
   ): Promise<BoxEntityOf<T> | null> {
     const box = await prisma.box.findFirst({
       where: {
@@ -60,7 +75,9 @@ export class PrismaBoxesRepository implements BoxesRepository {
       default:
         return PrismaBoxMapper.toDomain<T>(box);
       case "box-and-catalog":
-        return PrismaBoxAndCatalogMapper.toDomain<T>(box as PrismaBoxAndCatalog);
+        return PrismaBoxAndCatalogMapper.toDomain<T>(
+          box as PrismaBoxAndCatalog,
+        );
       case "box-and-orders":
         return PrismaBoxAndOrdersMapper.toDomain<T>(box as PrismaBoxAndOrders);
     }
@@ -68,7 +85,14 @@ export class PrismaBoxesRepository implements BoxesRepository {
 
   async list<T extends BoxRepositoryReturnType>(
     type: T,
-    { id, status, catalog, orders, since, before }: BoxesRepositorySearchRequest,
+    {
+      id,
+      status,
+      catalog,
+      orders,
+      since,
+      before,
+    }: BoxesRepositorySearchRequest,
     page?: number,
   ): Promise<BoxEntityOf<T>[]> {
     const boxes = await prisma.box.findMany({
@@ -110,9 +134,13 @@ export class PrismaBoxesRepository implements BoxesRepository {
       default:
         return boxes.map(PrismaBoxMapper.toDomain<T>);
       case "box-and-catalog":
-        return boxes.map((box) => PrismaBoxAndCatalogMapper.toDomain(box as PrismaBoxAndCatalog));
+        return boxes.map((box) =>
+          PrismaBoxAndCatalogMapper.toDomain(box as PrismaBoxAndCatalog),
+        );
       case "box-and-orders":
-        return boxes.map((box) => PrismaBoxAndOrdersMapper.toDomain(box as PrismaBoxAndOrders));
+        return boxes.map((box) =>
+          PrismaBoxAndOrdersMapper.toDomain(box as PrismaBoxAndOrders),
+        );
     }
   }
 
@@ -135,7 +163,12 @@ export class PrismaBoxesRepository implements BoxesRepository {
     });
   }
 
-  async count({ catalog, id, since, status }: BoxesRepositorySearchRequest): Promise<number> {
+  async count({
+    catalog,
+    id,
+    since,
+    status,
+  }: BoxesRepositorySearchRequest): Promise<number> {
     return await prisma.box.count({
       where: {
         catalog,

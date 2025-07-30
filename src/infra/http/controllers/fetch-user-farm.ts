@@ -10,9 +10,14 @@ import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
 // Presenters
 import { FarmPresenter } from "@/infra/http/presenters/farm-presenter";
 
-export async function fetchUserFarmController(request: Request, response: Response, next: NextFunction) {
+export async function fetchUserFarmController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
-    const fetchUserFarmUseCase = container.resolve<FetchFarmUseCase>("fetchFarmUseCase");
+    const fetchUserFarmUseCase =
+      container.resolve<FetchFarmUseCase>("fetchFarmUseCase");
 
     const { farm } = await fetchUserFarmUseCase.execute({
       farm_id: request.farm_id,

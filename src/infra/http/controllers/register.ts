@@ -22,11 +22,17 @@ export const registerSchema = Joi.object({
   chat: Joi.string().optional(),
 });
 
-export async function registerController(request: Request, response: Response, next: NextFunction) {
+export async function registerController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
-    const { first_name, last_name, cpf, email, phone, password, chat, role } = parse(registerSchema, request.body);
+    const { first_name, last_name, cpf, email, phone, password, chat, role } =
+      parse(registerSchema, request.body);
 
-    const registerUseCase = container.resolve<RegisterUseCase>("registerUsecase");
+    const registerUseCase =
+      container.resolve<RegisterUseCase>("registerUsecase");
 
     await registerUseCase.execute({
       first_name,

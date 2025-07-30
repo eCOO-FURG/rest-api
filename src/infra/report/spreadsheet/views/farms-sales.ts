@@ -56,15 +56,24 @@ interface FarmsSalesReportViewProps {
   before?: Date;
 }
 
-export const FARMS_PRODUCERS_VIEW: SpreadsheetView = async ({ bags, catalogs, since, before }: FarmsSalesReportViewProps) => {
+export const FARMS_PRODUCERS_VIEW: SpreadsheetView = async ({
+  bags,
+  catalogs,
+  since,
+  before,
+}: FarmsSalesReportViewProps) => {
   const rows: Record<string, unknown>[] = [];
 
   for (const catalog of catalogs) {
     for (const offer of catalog.offers) {
-      const orders = bags.flatMap((bag) => bag.orders).filter((order) => order.offer_id.equals(offer.id));
+      const orders = bags
+        .flatMap((bag) => bag.orders)
+        .filter((order) => order.offer_id.equals(offer.id));
 
       for (const order of orders) {
-        const isOrderInPeriod = (!since || order.created_at >= since) && (!before || order.created_at <= before);
+        const isOrderInPeriod =
+          (!since || order.created_at >= since) &&
+          (!before || order.created_at <= before);
 
         if (!isOrderInPeriod) continue;
 

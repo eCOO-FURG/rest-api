@@ -43,8 +43,8 @@ describe("Update payment", () => {
   });
 
   it("should not be able to update a non-existent payment", async () => {
-    await expect(() => sut.execute({ payment_id: "non-existent-payment-id", status: "DONE" })).rejects.toBeInstanceOf(
-      ResourceNotFoundError,
-    );
+    await expect(() =>
+      sut.execute({ payment_id: "non-existent-payment-id", status: "DONE" }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

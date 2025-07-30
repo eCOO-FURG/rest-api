@@ -3,7 +3,10 @@ import { Browser, launch, PuppeteerLaunchOptions } from "puppeteer";
 import { renderFile } from "ejs";
 
 // Services
-import { PDFService, PDFServiceGenerateRequest } from "@/core/report/pdf-service";
+import {
+  PDFService,
+  PDFServiceGenerateRequest,
+} from "@/core/report/pdf-service";
 
 // Types
 import { File } from "@/core/types/file";
@@ -14,7 +17,13 @@ export class Puppeteer implements PDFService {
   private config: PuppeteerLaunchOptions = {
     headless: true,
     executablePath: "/usr/bin/chromium",
-    args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--no-first-run", "--disable-gpu"],
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--no-first-run",
+      "--disable-gpu",
+    ],
   };
 
   async init() {

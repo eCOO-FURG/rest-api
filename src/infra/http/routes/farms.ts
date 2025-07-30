@@ -44,4 +44,8 @@ farms.patch(
   updateFarmController,
 );
 
-farms.delete("/:farm_id/images/:image_url", ensureRole(["PRODUCER"]), deleteFarmImageController);
+farms.delete(
+  "/:farm_id/images/:image_url",
+  ensureRole(["PRODUCER"]),
+  deleteFarmImageController,
+);

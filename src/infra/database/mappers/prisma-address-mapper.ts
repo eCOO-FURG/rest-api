@@ -1,13 +1,18 @@
 // Entities
 import { Address } from "@/core/entities/address";
 import { UUID } from "@/core/entities/aggregates/uuid";
-import { AddressEntityOf, AddressRepositoryReturnType } from "@/core/repositories/addresses-repository";
+import {
+  AddressEntityOf,
+  AddressRepositoryReturnType,
+} from "@/core/repositories/addresses-repository";
 
 // Libraries
 import { Prisma, Address as PrismaAddress } from "@prisma/client";
 
 export class PrismaAddressMapper {
-  static toDomain<T extends AddressRepositoryReturnType = "address">(raw: PrismaAddress): AddressEntityOf<T> {
+  static toDomain<T extends AddressRepositoryReturnType = "address">(
+    raw: PrismaAddress,
+  ): AddressEntityOf<T> {
     return Address.create({
       id: new UUID(raw.id),
       number: raw.number,

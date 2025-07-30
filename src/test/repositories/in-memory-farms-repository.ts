@@ -85,7 +85,12 @@ export class InMemoryFarmsRepository implements FarmsRepository {
     this.items[itemIndex] = farm;
   }
 
-  async count({ status, admin, id, tally }: FarmsRepositorySearchRequest): Promise<number> {
+  async count({
+    status,
+    admin,
+    id,
+    tally,
+  }: FarmsRepositorySearchRequest): Promise<number> {
     return this.items.filter((item) =>
       Boolean(
         (!status || item.status === status) &&

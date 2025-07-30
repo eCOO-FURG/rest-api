@@ -32,11 +32,20 @@ export const listCategoriesQuery = Joi.object({
     .optional(),
 });
 
-export async function listCategoriesController(request: Request, response: Response, next: NextFunction) {
+export async function listCategoriesController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
-    const { page, name, cycle_id, available, since, before } = parse(listCategoriesQuery, request.query);
+    const { page, name, cycle_id, available, since, before } = parse(
+      listCategoriesQuery,
+      request.query,
+    );
 
-    const listCategoriesUseCase = container.resolve<ListCategoriesUseCase>("listCategoriesUseCase");
+    const listCategoriesUseCase = container.resolve<ListCategoriesUseCase>(
+      "listCategoriesUseCase",
+    );
 
     const { categories } = await listCategoriesUseCase.execute({
       name,
@@ -47,7 +56,9 @@ export async function listCategoriesController(request: Request, response: Respo
       before: toDate(before),
     });
 
-    return response.status(200).send(categories.map((category) => CategoryPresenter.toHttp(category)));
+    return response
+      .status(200)
+      .send(categories.map((category) => CategoryPresenter.toHttp(category)));
   } catch (error) {
     next(error);
   }

@@ -42,7 +42,12 @@ describe("register", () => {
       mailer: new MockedMailer(),
     };
 
-    sut = new RegisterUseCase(repositories.users, mocks.encrypter, mocks.hasher, mocks.mailer);
+    sut = new RegisterUseCase(
+      repositories.users,
+      mocks.encrypter,
+      mocks.hasher,
+      mocks.mailer,
+    );
   });
 
   it("should be able to register", async () => {

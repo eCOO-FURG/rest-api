@@ -4,10 +4,15 @@ import { Prisma, Farm as PrismaFarm } from "@prisma/client";
 // Entities
 import { Farm } from "@/core/entities/farm";
 import { UUID } from "@/core/entities/aggregates/uuid";
-import { FarmEntityOf, FarmRepositoryReturnType } from "@/core/repositories/farms-repository";
+import {
+  FarmEntityOf,
+  FarmRepositoryReturnType,
+} from "@/core/repositories/farms-repository";
 
 export class PrismaFarmMapper {
-  static toDomain<T extends FarmRepositoryReturnType = "farm">(raw: PrismaFarm): FarmEntityOf<T> {
+  static toDomain<T extends FarmRepositoryReturnType = "farm">(
+    raw: PrismaFarm,
+  ): FarmEntityOf<T> {
     return Farm.create({
       id: new UUID(raw.id),
       status: raw.status,

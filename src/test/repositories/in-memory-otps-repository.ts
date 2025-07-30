@@ -2,14 +2,26 @@
 import { Otp } from "@/core/entities/otp";
 
 // Repositories
-import { OtpsRepository, OtpsRepositorySearchRequest, OtpRepositoryReturnType, OtpEntityOf } from "@/core/repositories/otps-repositoy";
+import {
+  OtpsRepository,
+  OtpsRepositorySearchRequest,
+  OtpRepositoryReturnType,
+  OtpEntityOf,
+} from "@/core/repositories/otps-repositoy";
 
 export class InMemoryOtpsRepository implements OtpsRepository {
   items: Otp[] = [];
 
-  async find<T extends OtpRepositoryReturnType>(_: T, { value, used, user }: OtpsRepositorySearchRequest): Promise<OtpEntityOf<T> | null> {
+  async find<T extends OtpRepositoryReturnType>(
+    _: T,
+    { value, used, user }: OtpsRepositorySearchRequest,
+  ): Promise<OtpEntityOf<T> | null> {
     const otp = this.items.find((item) =>
-      Boolean((!user?.id || item.user?.id.equals(user.id)) && (!used || item.used === used) && (!value || item.value === value)),
+      Boolean(
+        (!user?.id || item.user?.id.equals(user.id)) &&
+          (!used || item.used === used) &&
+          (!value || item.value === value),
+      ),
     );
 
     if (!otp) return null;

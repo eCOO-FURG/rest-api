@@ -26,25 +26,45 @@ export class ListCatalogsUseCase {
     private categoriesRepository: CategoriesRepository,
   ) {}
 
-  async execute({ cycle_id, page, product, category_id, farm_id, available, since, before }: ListCatalogsUseCaseRequest) {
-    const cycle = cycle_id ? await this.cyclesRepository.find("cycle", { id: cycle_id }) : null;
+  async execute({
+    cycle_id,
+    page,
+    product,
+    category_id,
+    farm_id,
+    available,
+    since,
+    before,
+  }: ListCatalogsUseCaseRequest) {
+    const cycle = cycle_id
+      ? await this.cyclesRepository.find("cycle", { id: cycle_id })
+      : null;
 
     if (cycle_id && !cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const farm = farm_id ? await this.farmsRepository.find("farm", { id: farm_id }) : null;
+    const farm = farm_id
+      ? await this.farmsRepository.find("farm", { id: farm_id })
+      : null;
 
     if (farm_id && !farm) throw new ResourceNotFoundError("Fazenda", farm_id);
 
-    const category = category_id ? await this.categoriesRepository.find("category", { id: category_id }) : null;
+    const category = category_id
+      ? await this.categoriesRepository.find("category", { id: category_id })
+      : null;
 
-    if (category_id && !category) throw new ResourceNotFoundError("Categoria", category_id);
+    if (category_id && !category)
+      throw new ResourceNotFoundError("Categoria", category_id);
 
     const catalogs = await this.catalogsRepository.list(
       "catalog-and-farm",
       {
         farm: { id: farm_id },
         cycle: { id: cycle_id },
-        offers: { product: { name: product, category: { id: category_id } }, available, page },
+        offers: {
+          product: { name: product, category: { id: category_id } },
+          available,
+          page,
+        },
         since,
         before,
       },

@@ -31,7 +31,14 @@ export class RegisterProductUseCase {
     private storage: Storage,
   ) {}
 
-  async execute({ name, pricing, perishable, archived, image, category_id }: RegisterProductUseCaseRequest) {
+  async execute({
+    name,
+    pricing,
+    perishable,
+    archived,
+    image,
+    category_id,
+  }: RegisterProductUseCaseRequest) {
     const category = await this.categoriesRepository.find("category", {
       id: category_id,
     });
@@ -58,7 +65,8 @@ export class RegisterProductUseCase {
       return await this.productsRepository.create(product);
     }
 
-    if (!equal.archived) throw new ResourceAlreadyExistsError("Produto", equal.id.value);
+    if (!equal.archived)
+      throw new ResourceAlreadyExistsError("Produto", equal.id.value);
 
     equal.unarchive();
 

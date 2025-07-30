@@ -6,10 +6,15 @@ import { Otp } from "@/core/entities/otp";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Repositories
-import { OtpRepositoryReturnType, OtpEntityOf } from "@/core/repositories/otps-repositoy";
+import {
+  OtpRepositoryReturnType,
+  OtpEntityOf,
+} from "@/core/repositories/otps-repositoy";
 
 export class PrismaOtpMapper {
-  static toDomain<T extends OtpRepositoryReturnType>(raw: PrismaOtp): OtpEntityOf<T> {
+  static toDomain<T extends OtpRepositoryReturnType>(
+    raw: PrismaOtp,
+  ): OtpEntityOf<T> {
     return Otp.create({
       id: new UUID(raw.id),
       value: raw.value,

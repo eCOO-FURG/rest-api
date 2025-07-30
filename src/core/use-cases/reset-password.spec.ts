@@ -37,7 +37,11 @@ describe("request password update", () => {
       hasher: new MockedHasher(),
     };
 
-    sut = new ResetPasswordUseCase(repositories.users, mocks.hasher, mocks.mailer);
+    sut = new ResetPasswordUseCase(
+      repositories.users,
+      mocks.hasher,
+      mocks.mailer,
+    );
   });
 
   it("should be able to request a password update", async () => {

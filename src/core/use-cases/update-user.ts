@@ -34,7 +34,17 @@ export class UpdateUserUseCase {
     private storage: Storage,
   ) {}
 
-  async execute({ user_id, first_name, last_name, email, cpf, phone, password, photo, chat }: UpdateUserUseCaseRequest) {
+  async execute({
+    user_id,
+    first_name,
+    last_name,
+    email,
+    cpf,
+    phone,
+    password,
+    photo,
+    chat,
+  }: UpdateUserUseCaseRequest) {
     const user = await this.usersRepository.find("user", { id: user_id });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);

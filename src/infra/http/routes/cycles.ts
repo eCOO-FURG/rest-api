@@ -10,4 +10,9 @@ import { ensureRole } from "../middlewares/ensure-role";
 export const cycles = Router();
 
 cycles.get("/", listCyclesController);
-cycles.get("/:cycle_id/catalog", ensureAuthenticated, ensureRole(["PRODUCER"]), fetchCycleCatalogController);
+cycles.get(
+  "/:cycle_id/catalog",
+  ensureAuthenticated,
+  ensureRole(["PRODUCER"]),
+  fetchCycleCatalogController,
+);

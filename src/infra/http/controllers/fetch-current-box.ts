@@ -19,11 +19,17 @@ export const fetchCurrentBoxQuery = Joi.object({
   page: Joi.number().integer().min(1).required(),
 });
 
-export async function fetchCurrentBoxController(request: Request, response: Response, next: NextFunction) {
+export async function fetchCurrentBoxController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
     const { cycle_id, page } = parse(fetchCurrentBoxQuery, request.query);
 
-    const fetchCurrentBoxUsecase = container.resolve<FetchCurrentBoxUseCase>("fetchCurrentBoxUseCase");
+    const fetchCurrentBoxUsecase = container.resolve<FetchCurrentBoxUseCase>(
+      "fetchCurrentBoxUseCase",
+    );
 
     const { box } = await fetchCurrentBoxUsecase.execute({
       farm_id: request.farm_id,

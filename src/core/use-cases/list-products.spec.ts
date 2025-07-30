@@ -64,6 +64,8 @@ describe("list products", () => {
     expect(response.products).toHaveLength(2);
     expect(response.products[0].category_id).toBe(category1.id);
     expect(response.products[1].category_id).toBe(category2.id);
-    expect(response.products[0].category_id).not.toBe(response.products[1].category_id);
+    expect(response.products[0].category_id).not.toBe(
+      response.products[1].category_id,
+    );
   });
 });

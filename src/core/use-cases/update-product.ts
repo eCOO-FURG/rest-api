@@ -33,7 +33,15 @@ export class UpdateProductUseCase {
     private storage: Storage,
   ) {}
 
-  async execute({ product_id, name, image, pricing, category_id, archived, perishable }: UpdateProductUseCaseRequest) {
+  async execute({
+    product_id,
+    name,
+    image,
+    pricing,
+    category_id,
+    archived,
+    perishable,
+  }: UpdateProductUseCaseRequest) {
     const product = await this.productsRepository.find("product", {
       id: product_id,
     });

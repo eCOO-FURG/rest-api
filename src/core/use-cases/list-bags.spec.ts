@@ -32,7 +32,11 @@ describe("list user bags", () => {
 
     bagsRepository = new InMemoryBagsRepository();
 
-    sut = new ListBagsUseCase(bagsRepository, usersRepository, cyclesRepository);
+    sut = new ListBagsUseCase(
+      bagsRepository,
+      usersRepository,
+      cyclesRepository,
+    );
   });
 
   it("should return a list of bags from an user", async () => {

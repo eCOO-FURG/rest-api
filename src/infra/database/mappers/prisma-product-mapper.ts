@@ -6,10 +6,15 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { Product } from "@/core/entities/product";
 
 // Repositories
-import { ProductRepositoryReturnType, ProductEntityOf } from "@/core/repositories/products-repository";
+import {
+  ProductRepositoryReturnType,
+  ProductEntityOf,
+} from "@/core/repositories/products-repository";
 
 export class PrismaProductMapper {
-  static toDomain<T extends ProductRepositoryReturnType = "product">(raw: PrismaProduct): ProductEntityOf<T> {
+  static toDomain<T extends ProductRepositoryReturnType = "product">(
+    raw: PrismaProduct,
+  ): ProductEntityOf<T> {
     return Product.create({
       id: new UUID(raw.id),
       name: raw.name,

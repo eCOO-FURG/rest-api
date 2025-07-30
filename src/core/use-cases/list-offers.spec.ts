@@ -31,7 +31,11 @@ describe("list offers", () => {
     offersRepository = new InMemoryOffersRepository();
     categoriesRepository = new InMemoryCategoriesRepository();
 
-    sut = new ListOffersUseCase(offersRepository, cyclesRepository, categoriesRepository);
+    sut = new ListOffersUseCase(
+      offersRepository,
+      cyclesRepository,
+      categoriesRepository,
+    );
   });
 
   it("should be able to list available offers", async () => {

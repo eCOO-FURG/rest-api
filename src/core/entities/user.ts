@@ -112,7 +112,9 @@ export class User extends Entity<UserProps> {
     return false;
   }
 
-  static create(props: Optional<UserProps, "password" | "verified_at" | "photo" | "chat">) {
+  static create(
+    props: Optional<UserProps, "password" | "verified_at" | "photo" | "chat">,
+  ) {
     return new User({
       ...props,
       password: props.password ?? null,

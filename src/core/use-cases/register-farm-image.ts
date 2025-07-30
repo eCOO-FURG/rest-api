@@ -37,7 +37,8 @@ export class RegisterFarmImageUseCase {
 
     if (!farm.admin_id.equals(user.id)) throw new UnauthorizedError();
 
-    if (farm.images.length >= 4) throw new ResourceReachedLimitError("Fazenda", farm_id, "images");
+    if (farm.images.length >= 4)
+      throw new ResourceReachedLimitError("Fazenda", farm_id, "images");
 
     const url = await this.storage.upload([image], "farms");
 

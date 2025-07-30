@@ -33,7 +33,12 @@ describe("update bag", () => {
     cyclesRepository = new InMemoryCyclesRepository();
     chat = new MockedChat();
 
-    sut = new UpdateBagUseCase(bagsRepository, usersRepository, cyclesRepository, chat);
+    sut = new UpdateBagUseCase(
+      bagsRepository,
+      usersRepository,
+      cyclesRepository,
+      chat,
+    );
   });
 
   it("should be able to update a bag", async () => {

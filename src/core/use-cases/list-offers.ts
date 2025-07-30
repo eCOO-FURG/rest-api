@@ -23,14 +23,27 @@ export class ListOffersUseCase {
     private categoriesRepository: CategoriesRepository,
   ) {}
 
-  async execute({ cycle_id, page, product, category_id, available, since, before }: ListOffersUseCaseRequest) {
-    const cycle = cycle_id ? await this.cyclesRepository.find("cycle", { id: cycle_id }) : null;
+  async execute({
+    cycle_id,
+    page,
+    product,
+    category_id,
+    available,
+    since,
+    before,
+  }: ListOffersUseCaseRequest) {
+    const cycle = cycle_id
+      ? await this.cyclesRepository.find("cycle", { id: cycle_id })
+      : null;
 
     if (cycle_id && !cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    const category = category_id ? await this.categoriesRepository.find("category", { id: category_id }) : null;
+    const category = category_id
+      ? await this.categoriesRepository.find("category", { id: category_id })
+      : null;
 
-    if (category_id && !category) throw new ResourceNotFoundError("Categoria", category_id);
+    if (category_id && !category)
+      throw new ResourceNotFoundError("Categoria", category_id);
 
     const offers = await this.offersRepository.list(
       "offer-and-details",

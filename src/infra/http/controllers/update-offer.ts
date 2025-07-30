@@ -30,13 +30,21 @@ export const updateOfferSchema = Joi.object({
     .optional(),
 });
 
-export async function updateOfferController(request: Request, response: Response, next: NextFunction) {
+export async function updateOfferController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
     const { offer_id } = parse(updateOfferParams, request.params);
 
-    const { amount, price, description, active, expires_at, comment } = parse(updateOfferSchema, request.body);
+    const { amount, price, description, active, expires_at, comment } = parse(
+      updateOfferSchema,
+      request.body,
+    );
 
-    const updateOfferUseCase = container.resolve<UpdateOfferUseCase>("updateOfferUseCase");
+    const updateOfferUseCase =
+      container.resolve<UpdateOfferUseCase>("updateOfferUseCase");
 
     await updateOfferUseCase.execute({
       farm_id: request.farm_id,

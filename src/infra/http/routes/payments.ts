@@ -14,4 +14,8 @@ export const payments = Router();
 payments.post("/", ensureRole(["MANAGER"]), registerPaymentController);
 payments.post("/open", ensureRole(["MANAGER"]), openPaymentController);
 
-payments.patch("/:payment_id", ensureRole(["MANAGER"]), updatePaymentController);
+payments.patch(
+  "/:payment_id",
+  ensureRole(["MANAGER"]),
+  updatePaymentController,
+);
