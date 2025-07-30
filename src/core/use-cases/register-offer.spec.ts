@@ -31,6 +31,7 @@ import { makeCatalog } from "@/test/factories/make-catalog";
 import { today } from "@/core/utils/today";
 import { now } from "@/core/utils/now";
 import { last } from "@/core/utils/last";
+import { first } from "@/core/utils/first";
 
 let farmsRepository: InMemoryFarmsRepository;
 let productsRepository: InMemoryProductsRepository;
@@ -48,7 +49,13 @@ describe("offer products", () => {
     catalogsRepository = new InMemoryCatalogsRepository();
     offersRepository = new InMemoryOffersRepository();
 
-    sut = new RegisterOfferUseCase(farmsRepository, productsRepository, catalogsRepository, cyclesRepository, offersRepository);
+    sut = new RegisterOfferUseCase(
+      farmsRepository,
+      productsRepository,
+      catalogsRepository,
+      cyclesRepository,
+      offersRepository,
+    );
   });
 
   it("should be able to offer a product", async () => {
@@ -200,7 +207,8 @@ describe("offer products", () => {
       amount: 20,
       price: 30,
       fee: 10,
-      closes_at: last(cycle.offer, cycle.inverted()),
+      closes_at: last(cycle.offer),
+      opens_at: first(cycle.offer),
     });
 
     catalog.offers.push(offer);

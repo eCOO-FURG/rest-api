@@ -4,8 +4,11 @@ import { last } from "@/core/utils/last";
 import { now } from "@/core/utils/now";
 
 // Entities
-import { CycleWeek } from "@/core/entities/cycle";
+import { Cycle, CycleProps } from "@/core/entities/cycle";
 
-export const inPeriodOf = (days: CycleWeek) => {
-  return first(days) <= now() && now() <= last(days);
+export const inPeriodOf = (
+  key: keyof Pick<CycleProps, "offer" | "order" | "deliver">,
+  cycle: Cycle,
+) => {
+  return first(cycle[key]) <= now() && now() <= last(cycle[key]);
 };

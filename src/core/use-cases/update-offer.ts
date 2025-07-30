@@ -29,14 +29,24 @@ export class UpdateOfferUseCase {
     private cyclesRepository: CyclesRepository,
   ) {}
 
-  async execute({ farm_id, offer_id, amount, price, description, expires_at, active, comment }: UpdateOfferUseCaseRequest) {
+  async execute({
+    farm_id,
+    offer_id,
+    amount,
+    price,
+    description,
+    expires_at,
+    active,
+    comment,
+  }: UpdateOfferUseCaseRequest) {
     const offer = await this.offersRepository.find("offer-and-details", {
       id: offer_id,
     });
 
     if (!offer) throw new ResourceNotFoundError("Oferta", offer_id);
 
-    if (!offer.catalog.farm_id.equals(farm_id)) throw new ResourceNotFoundError("Oferta", offer_id);
+    if (!offer.catalog.farm_id.equals(farm_id))
+      throw new ResourceNotFoundError("Oferta", offer_id);
 
     if (offer.catalog.farm.status !== "ACTIVE") throw new FarmNotActiveError();
 
@@ -44,12 +54,17 @@ export class UpdateOfferUseCase {
       id: offer.catalog.cycle_id.value,
     });
 
-    if (!cycle) throw new ResourceNotFoundError("Ciclo", offer.catalog.cycle_id.value);
+    if (!cycle)
+      throw new ResourceNotFoundError("Ciclo", offer.catalog.cycle_id.value);
 
-    if (!inPeriodOf(cycle.offer) || (offer.closes_at && offer.created_at < first(cycle.offer)))
+    if (!inPeriodOf("offer", cycle))
+      throw new ResourceClosedError("Ciclo", cycle.id.value);
+
+    if (offer.closes_at && offer.created_at < first(cycle.offer))
       throw new ResourceClosedError("Oferta", offer.id.value);
 
-    if (expires_at && offer.product.perishable) throw new InvalidFieldError("expires_at");
+    if (expires_at && offer.product.perishable)
+      throw new InvalidFieldError("expires_at");
 
     offer.amount = amount ?? offer.amount;
     offer.price = price ?? offer.price;
