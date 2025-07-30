@@ -7,7 +7,7 @@ import { v2 as cloudinary } from "cloudinary";
 // Logs
 import { Logger } from "@/infra/logs/logger";
 
-// Env
+// Environment
 import { env } from "@/infra/env";
 
 // Types

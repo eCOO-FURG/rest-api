@@ -28,16 +28,26 @@ export class RequestHelpUseCase {
     private mailer: Mailer,
   ) {}
 
-  async execute({ user_id, content }: RequestHelpUseCaseRequest) {
-    const user = await this.usersRepository.find("user", { id: user_id });
+  async execute({
+    user_id,
+    content,
+  }: RequestHelpUseCaseRequest) {
+    const user = await this.usersRepository.find("user", {
+      id: user_id,
+    });
 
-    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+    if (!user)
+      throw new ResourceNotFoundError("Usuário", user_id);
 
     const farm = await this.farmsRepository.find("farm", {
       admin: { id: user_id },
     });
 
-    if (!farm) throw new ResourceNotFoundError("Fazenda do usuário", user_id);
+    if (!farm)
+      throw new ResourceNotFoundError(
+        "Fazenda do usuário",
+        user_id,
+      );
 
     const view = await this.mailer.load({
       view: "help",

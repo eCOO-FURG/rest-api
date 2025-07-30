@@ -10,7 +10,7 @@ import container from "@/infra/container";
 import { UsersRepository } from "@/core/repositories/users-repository";
 import { SessionsRepository } from "@/core/repositories/sessions-repository";
 
-// Env
+// Environment
 import { env } from "@/infra/env";
 
 // Errors

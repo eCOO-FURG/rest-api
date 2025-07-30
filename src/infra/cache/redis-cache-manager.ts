@@ -4,7 +4,7 @@ import { CacheManager } from "@/core/cache/cache-manager";
 // Libraries
 import { createClient, RedisClientType } from "redis";
 
-// Env
+// Environment
 import { env } from "@/infra/env";
 
 export class RedisCacheManager implements CacheManager {

@@ -1,7 +1,7 @@
 // Libraries
 import { NextFunction, Request, Response } from "express";
 
-// Env
+// Environment
 import { env } from "@/infra/env";
 
 export async function ensureIntegration(request: Request, response: Response, next: NextFunction) {

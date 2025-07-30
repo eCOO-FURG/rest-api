@@ -8,7 +8,7 @@ import { prisma } from "@/infra/database/prisma-service";
 // Libraries
 import { hash } from "bcryptjs";
 
-// Env
+// Environment
 import { env } from "@/infra/env";
 
 // Utils

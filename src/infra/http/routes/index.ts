@@ -41,7 +41,10 @@ export const router = Router();
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000,
-  message: { message: "Limite de requisições excedido.", code: "rate-limit" },
+  message: {
+    message: "Limite de requisições excedido.",
+    code: "rate-limit",
+  },
   limit: env.ENVIRONMENT === "DEVELOPMENT" ? 100 : 100,
 });
 
@@ -64,8 +67,28 @@ router.use("/payments", ensureAuthenticated, payments);
 router.use("/cycles", cycles);
 router.use("/products", ensureAuthenticated, products);
 router.use("/categories", categories);
-router.use("/pendings", ensureAuthenticated, ensureRole(["BROKER"]), pendings);
-router.use("/stats", ensureAuthenticated, ensureRole(["MANAGER"]), stats);
-router.use("/reports", ensureAuthenticated, ensureRole(["BROKER", "MANAGER"]), reports);
-router.use("/notifications", ensureAuthenticated, ensureRole(["MANAGER"]), notifications);
+router.use(
+  "/pendings",
+  ensureAuthenticated,
+  ensureRole(["BROKER"]),
+  pendings,
+);
+router.use(
+  "/stats",
+  ensureAuthenticated,
+  ensureRole(["MANAGER"]),
+  stats,
+);
+router.use(
+  "/reports",
+  ensureAuthenticated,
+  ensureRole(["BROKER", "MANAGER"]),
+  reports,
+);
+router.use(
+  "/notifications",
+  ensureAuthenticated,
+  ensureRole(["MANAGER"]),
+  notifications,
+);
 router.use("/webhooks", ensureIntegration, webhooks);

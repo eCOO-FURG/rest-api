@@ -8,7 +8,7 @@ import { PixProvider } from "@/core/payment/pix-provider";
 // Libraries
 import { createClient } from "@woovi/node-sdk";
 
-// Env
+// Environment
 import { env } from "@/infra/env";
 
 // Logs

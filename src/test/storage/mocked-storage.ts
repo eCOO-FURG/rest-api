@@ -11,7 +11,7 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 // Types
 import { File } from "@/core/types/file";
 
-// Env
+// Environment
 import { env } from "@/infra/env";
 
 export class MockedStorage implements Storage {

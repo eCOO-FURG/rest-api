@@ -2,7 +2,7 @@
 import * as Sentry from "@sentry/node";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
 
-// Env
+// Environment
 import { env } from "@/infra/env";
 
 Sentry.init({

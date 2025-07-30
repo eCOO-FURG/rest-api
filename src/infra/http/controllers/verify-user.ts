@@ -8,7 +8,7 @@ import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
 // Container
 import container from "@/infra/container";
 
-// Env
+// Environment
 import { env } from "@/infra/env";
 
 // Validation

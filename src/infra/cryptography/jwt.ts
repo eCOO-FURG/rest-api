@@ -4,7 +4,7 @@ import * as jwtService from "jsonwebtoken";
 // Services
 import { Hasher } from "@/core/cryptography/hasher";
 
-// Env
+// Environment
 import { env } from "@/infra/env";
 
 // Logger

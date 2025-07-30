@@ -4,7 +4,7 @@ import { Message } from "@/core/entities/message";
 // Message
 import { Chat } from "@/core/message/chat";
 
-// Env
+// Environment
 import { env } from "@/infra/env";
 
 // Libraries
