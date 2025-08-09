@@ -13,6 +13,6 @@ export function makeOrder(props: Partial<OrderProps> = {}) {
     box_id: props.box_id ?? new UUID(),
     fee: props.fee ?? 0,
     amount: props.amount ?? faker.number.int({ min: 10, max: 12 }),
-    price: props.price ?? faker.number.int({ min: 10, max: 12 }),
+    subtotal: props.subtotal ?? faker.number.int({ min: 10, max: 12 }),
   });
 }

@@ -34,9 +34,9 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
           (!farm?.id || item.farm_id.equals(farm.id)) &&
           (!farm?.name || item?.farm?.name.includes(farm.name)) &&
           (!offers?.id || item.offers.some((o) => o.id.equals(offers.id!))) &&
-          // @ts-expect-error: ensure non nullable value
           (!offers?.product?.name ||
             item.offers.some((offer) =>
+              // @ts-expect-error: ensure non nullable value
               offer.product?.name.includes(offers?.product?.name),
             )),
       ),
@@ -74,14 +74,14 @@ export class InMemoryCatalogsRepository implements CatalogsRepository {
           (!farm?.id || item.farm_id.equals(farm.id)) &&
           (!farm?.name || item?.farm?.name.includes(farm.name)) &&
           (!offers?.id || item.offers.some((o) => o.id.equals(offers.id!))) &&
-          // @ts-expect-error: ensure non nullable value
           (!offers?.product?.name ||
             item.offers.some((offer) =>
+              // @ts-expect-error: ensure non nullable value
               offer.product?.name.includes(offers?.product?.name),
             )) &&
           (!offers?.product?.category?.id ||
-            // @ts-expect-error: ensure non nullable value
             item.offers.some((offer) =>
+              // @ts-expect-error: ensure non nullable value
               offer.product?.category?.id.equals(offers?.product?.category?.id),
             )) &&
           (!offers?.available ||
