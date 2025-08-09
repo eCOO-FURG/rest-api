@@ -11,14 +11,16 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 // Types
 import { File } from "@/core/types/file";
 
-// Env
+// Environment
 import { env } from "@/infra/env";
 
 export class MockedStorage implements Storage {
   async upload(files: File[], folder: string): Promise<string[]> {
     const directory = this.useDirectory(folder);
 
-    const urls = await Promise.all(files.map((file) => this.save(file.content, directory)));
+    const urls = await Promise.all(
+      files.map((file) => this.save(file.content, directory)),
+    );
 
     return urls;
   }

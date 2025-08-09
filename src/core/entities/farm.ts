@@ -88,7 +88,12 @@ export class Farm<Props extends FarmProps = FarmProps> extends Entity<Props> {
     this.props.fee = value;
   }
 
-  static create(props: Optional<FarmProps, "status" | "fee" | "description" | "photo" | "images">) {
+  static create(
+    props: Optional<
+      FarmProps,
+      "status" | "fee" | "description" | "photo" | "images"
+    >,
+  ) {
     return new Farm({
       ...props,
       status: props.status ?? "PENDING",

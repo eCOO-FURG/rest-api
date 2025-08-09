@@ -8,7 +8,7 @@ import { Mailer, MailerLoadRequest } from "@/core/mail/mailer";
 import { renderFile } from "ejs";
 import { Transporter } from "nodemailer";
 
-// Env
+// Environment
 import { env } from "@/infra/env";
 
 // Loggs

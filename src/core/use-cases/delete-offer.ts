@@ -36,7 +36,8 @@ export class DeleteOfferUseCase {
       id: offer.catalog_id.value,
     });
 
-    if (!catalog) throw new ResourceNotFoundError("Catálogo", offer.catalog_id.value);
+    if (!catalog)
+      throw new ResourceNotFoundError("Catálogo", offer.catalog_id.value);
 
     const owner = catalog.farm_id.equals(farm_id);
 
@@ -46,9 +47,13 @@ export class DeleteOfferUseCase {
       id: catalog.cycle_id.value,
     });
 
-    if (!cycle) throw new ResourceNotFoundError("Ciclo", catalog.cycle_id.value);
+    if (!cycle)
+      throw new ResourceNotFoundError("Ciclo", catalog.cycle_id.value);
 
-    if (!inPeriodOf(cycle.offer) || (offer.closes_at && offer.created_at < first(cycle.offer)))
+    if (!inPeriodOf("offer", cycle))
+      throw new ResourceClosedError("Ciclo", cycle.id.value);
+
+    if (offer.closes_at && offer.created_at < first(cycle.offer))
       throw new ResourceClosedError("Oferta", offer.id.value);
 
     await this.offersRepository.delete(offer);

@@ -7,10 +7,15 @@ import { Bag as PrismaBag } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 
 // Repositories
-import { BagRepositoryReturnType, BagEntityOf } from "@/core/repositories/bags-repository";
+import {
+  BagRepositoryReturnType,
+  BagEntityOf,
+} from "@/core/repositories/bags-repository";
 
 export class PrismaBagMapper {
-  static toDomain<T extends BagRepositoryReturnType = "bag">(raw: PrismaBag): BagEntityOf<T> {
+  static toDomain<T extends BagRepositoryReturnType = "bag">(
+    raw: PrismaBag,
+  ): BagEntityOf<T> {
     return Bag.create({
       id: new UUID(raw.id),
       code: raw.code,

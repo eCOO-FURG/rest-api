@@ -15,11 +15,16 @@ export const requestOtpSchema = Joi.object({
   email: Joi.string().email().required(),
 });
 
-export async function requestOtpController(request: Request, response: Response, next: NextFunction) {
+export async function requestOtpController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
     const { email } = parse(requestOtpSchema, request.body);
 
-    const requestOtpUseCase = container.resolve<RequestOtpUseCase>("requestOtpUseCase");
+    const requestOtpUseCase =
+      container.resolve<RequestOtpUseCase>("requestOtpUseCase");
 
     await requestOtpUseCase.execute({
       email,

@@ -35,12 +35,20 @@ export const fetchCycleCatalogQuery = Joi.object({
     .optional(),
 });
 
-export async function fetchCycleCatalogController(request: Request, response: Response, next: NextFunction) {
+export async function fetchCycleCatalogController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
     const { cycle_id } = parse(fetchCycleCatalogParams, request.params);
-    const { page, product, available, since, before } = parse(fetchCycleCatalogQuery, request.query);
+    const { page, product, available, since, before } = parse(
+      fetchCycleCatalogQuery,
+      request.query,
+    );
 
-    const fetchCycleCatalogUsecase = container.resolve<FetchCycleCatalogUseCase>("fetchCycleCatalogUseCase");
+    const fetchCycleCatalogUsecase =
+      container.resolve<FetchCycleCatalogUseCase>("fetchCycleCatalogUseCase");
 
     const { catalog } = await fetchCycleCatalogUsecase.execute({
       cycle_id,

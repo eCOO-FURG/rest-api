@@ -14,14 +14,18 @@ import { Cloudinary } from "@/infra/storage/cloudinary";
 import { ExcelService } from "@/infra/report/spreadsheet/excel";
 import { Telegram } from "@/infra/message/telegram";
 
+// LLM
+import { OpenAIProvider } from "@/infra/llm/open-ai-provider";
+
 // Mocks
 import { MockedPixProvider } from "@/test/payment/mocked-pix-provider";
 import { MockedStorage } from "@/test/storage/mocked-storage";
 
-// Env
+// Environment
 import { env } from "@/infra/env";
 
-const deploy = env.ENVIRONMENT === "PRODUCTION" || env.ENVIRONMENT === "STAGING";
+const deploy =
+  env.ENVIRONMENT === "PRODUCTION" || env.ENVIRONMENT === "STAGING";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -78,6 +82,7 @@ export default (container: AwilixContainer) => {
     }).singleton(),
     spreadsheetService: asClass(ExcelService).singleton(),
     chat: asClass(Telegram).singleton(),
+    llmProvider: asClass(OpenAIProvider).singleton(),
   });
 
   container.resolve("chat");

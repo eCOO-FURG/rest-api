@@ -6,17 +6,25 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { CatalogAndFarm } from "@/core/entities/aggregates/catalog-and-farm";
 
 // Mappers
-import { PrismaFarmAndAdminMapper, PrismaFarmAndAdmin } from "@/infra/database/mappers/prisma-farm-and-admin-mapper";
+import {
+  PrismaFarmAndAdminMapper,
+  PrismaFarmAndAdmin,
+} from "@/infra/database/mappers/prisma-farm-and-admin-mapper";
 
 // Repositories
-import { CatalogEntityOf, CatalogRepositoryReturnType } from "@/core/repositories/catalogs-repository";
+import {
+  CatalogEntityOf,
+  CatalogRepositoryReturnType,
+} from "@/core/repositories/catalogs-repository";
 
 export type PrismaCatalogAndFarm = PrismaCatalog & {
   farm: PrismaFarmAndAdmin;
 };
 
 export class PrismaCatalogAndFarmMapper {
-  static toDomain<T extends CatalogRepositoryReturnType = "catalog-and-farm">(raw: PrismaCatalogAndFarm): CatalogEntityOf<T> {
+  static toDomain<T extends CatalogRepositoryReturnType = "catalog-and-farm">(
+    raw: PrismaCatalogAndFarm,
+  ): CatalogEntityOf<T> {
     return CatalogAndFarm.create({
       id: new UUID(raw.id),
       fee: raw.fee,

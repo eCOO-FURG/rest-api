@@ -3,10 +3,16 @@ import { ProductAndCategory } from "@/core/entities/aggregates/product-and-categ
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Libraries
-import { Product as PrismaProduct, Category as PrismaCategory } from "@prisma/client";
+import {
+  Product as PrismaProduct,
+  Category as PrismaCategory,
+} from "@prisma/client";
 
 // Repositories
-import { ProductRepositoryReturnType, ProductEntityOf } from "@/core/repositories/products-repository";
+import {
+  ProductRepositoryReturnType,
+  ProductEntityOf,
+} from "@/core/repositories/products-repository";
 
 // Mappers
 import { PrismaCategoryMapper } from "@/infra/database/mappers/prisma-category-mapper";
@@ -16,7 +22,9 @@ export type PrismaProductAndCategory = PrismaProduct & {
 };
 
 export class PrismaProductAndCategoryMapper {
-  static toDomain<T extends ProductRepositoryReturnType = "product-and-category">(raw: PrismaProductAndCategory): ProductEntityOf<T> {
+  static toDomain<
+    T extends ProductRepositoryReturnType = "product-and-category",
+  >(raw: PrismaProductAndCategory): ProductEntityOf<T> {
     return ProductAndCategory.create({
       id: new UUID(raw.id),
       name: raw.name,

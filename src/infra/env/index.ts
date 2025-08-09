@@ -3,7 +3,9 @@ import Joi from "joi";
 
 const schema = Joi.object({
   // Environment
-  ENVIRONMENT: Joi.string().valid("PRODUCTION", "STAGING", "DEVELOPMENT").required(),
+  ENVIRONMENT: Joi.string()
+    .valid("PRODUCTION", "STAGING", "DEVELOPMENT")
+    .required(),
 
   // Server
   SERVER_PORT: Joi.string().required(),
@@ -82,6 +84,9 @@ const schema = Joi.object({
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
+
+  // LLM
+  OPENAI_API_KEY: Joi.string().required(),
 })
   .unknown(true)
   .required();

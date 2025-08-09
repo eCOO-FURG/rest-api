@@ -1,4 +1,4 @@
-// Env
+// Environment
 import "dotenv/config";
 import { env } from "@/infra/env";
 

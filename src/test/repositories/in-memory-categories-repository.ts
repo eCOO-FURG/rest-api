@@ -20,7 +20,10 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
     { id, name }: CategoriesRepositorySearchRequest,
   ): Promise<CategoryEntityOf<T> | null> {
     const category = this.items.find((item) =>
-      Boolean((!id || item.id.equals(id)) && (!name || item.name.toLowerCase().includes(name.toLowerCase()))),
+      Boolean(
+        (!id || item.id.equals(id)) &&
+          (!name || item.name.toLowerCase().includes(name.toLowerCase())),
+      ),
     );
 
     if (!category) return null;
@@ -34,7 +37,10 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
     page: number,
   ): Promise<CategoryEntityOf<T>[]> {
     let categories = this.items.filter((item) =>
-      Boolean((!id || item.id.equals(id)) && (!name || item.name.toLowerCase().includes(name.toLowerCase()))),
+      Boolean(
+        (!id || item.id.equals(id)) &&
+          (!name || item.name.toLowerCase().includes(name.toLowerCase())),
+      ),
     );
 
     if (page) categories = paginate(categories, page);

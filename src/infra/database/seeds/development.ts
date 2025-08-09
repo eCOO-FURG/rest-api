@@ -8,7 +8,7 @@ import { prisma } from "@/infra/database/prisma-service";
 // Libraries
 import { hash } from "bcryptjs";
 
-// Env
+// Environment
 import { env } from "@/infra/env";
 
 // Utils
@@ -79,8 +79,13 @@ export async function seedDevelopment() {
                   active: true,
                   opens_at: first(everyDay),
                   closes_at: last(everyDay),
-                  amount: product.pricing === "UNIT" ? Math.floor(Math.random() * 20 + 1) : Math.floor(Math.random() * 20 + 1) * 100,
-                  expires_at: product.perishable ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) : null,
+                  amount:
+                    product.pricing === "UNIT"
+                      ? Math.floor(Math.random() * 20 + 1)
+                      : Math.floor(Math.random() * 20 + 1) * 100,
+                  expires_at: product.perishable
+                    ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+                    : null,
                 };
               }),
             },
@@ -93,7 +98,12 @@ export async function seedDevelopment() {
   const offers = await prisma.offer.findMany({ include: { product: true } });
 
   const price = offers.reduce((acc, offer) => {
-    return acc + (offer.product.pricing === "UNIT" ? Number(offer.price) : Number(offer.price) / 1000);
+    return (
+      acc +
+      (offer.product.pricing === "UNIT"
+        ? Number(offer.price)
+        : Number(offer.price) / 1000)
+    );
   }, 0);
 
   await prisma.user.create({
@@ -122,7 +132,9 @@ export async function seedDevelopment() {
                 offer_id: offer.id,
                 amount: offer.amount,
                 subtotal:
-                  offer.product.pricing === "UNIT" ? Number(offer.price) * offer.amount : Number(offer.price) * (offer.amount / 1000),
+                  offer.product.pricing === "UNIT"
+                    ? Number(offer.price) * offer.amount
+                    : Number(offer.price) * (offer.amount / 1000),
                 fee:
                   offer.product.pricing === "UNIT"
                     ? Number(offer.price) * offer.amount * (20 / 100)

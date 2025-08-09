@@ -42,7 +42,13 @@ describe("authenticate", () => {
     mockedEncrypter = new MockedEncrypter();
     mockedHasher = new MockedHasher();
 
-    sut = new AuthenticateUseCase(usersRepository, otpsRepository, sessionsRepository, mockedEncrypter, mockedHasher);
+    sut = new AuthenticateUseCase(
+      usersRepository,
+      otpsRepository,
+      sessionsRepository,
+      mockedEncrypter,
+      mockedHasher,
+    );
   });
 
   it("should be able to authenticate via basic auth", async () => {

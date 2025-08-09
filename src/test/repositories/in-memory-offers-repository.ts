@@ -23,20 +23,32 @@ export class InMemoryOffersRepository implements OffersRepository {
 
   async find<T extends OfferRepositoryReturnType>(
     type: T,
-    { id, catalog, product, since, active, recurring, available, before }: OffersRepositorySearchRequest,
+    {
+      id,
+      catalog,
+      product,
+      since,
+      active,
+      recurring,
+      available,
+      before,
+    }: OffersRepositorySearchRequest,
   ): Promise<OfferEntityOf<T> | null> {
     const offer = this.items.find((item) => {
       return (
         (!id || item.id.equals(id)) &&
         (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
-        (!catalog?.cycle?.id || item.catalog?.cycle_id.value === catalog.cycle.id) &&
+        (!catalog?.cycle?.id ||
+          item.catalog?.cycle_id.value === catalog.cycle.id) &&
         (!product?.id || item.product_id.equals(product.id)) &&
         (!product?.name || item.product?.name === product.name) &&
-        (!product?.category?.id || item.product?.category_id.value === product.category.id) &&
+        (!product?.category?.id ||
+          item.product?.category_id.value === product.category.id) &&
         (!active || item.active === active) &&
         (!since || item.created_at >= since) &&
         (!before || item.created_at <= before) &&
-        (typeof recurring !== "boolean" || (recurring ? item.closes_at : !item.closes_at)) &&
+        (typeof recurring !== "boolean" ||
+          (recurring ? item.closes_at : !item.closes_at)) &&
         (typeof available !== "boolean" ||
           (available
             ? (item.closes_at === null || item.closes_at > now()) &&
@@ -71,7 +83,15 @@ export class InMemoryOffersRepository implements OffersRepository {
 
   async list<T extends OfferRepositoryReturnType>(
     type: T,
-    { id, ids, catalog, product, available, since, before }: OffersRepositorySearchRequest,
+    {
+      id,
+      ids,
+      catalog,
+      product,
+      available,
+      since,
+      before,
+    }: OffersRepositorySearchRequest,
     page?: number,
   ): Promise<OfferEntityOf<T>[]> {
     let offers = this.items.filter((item) => {
@@ -79,10 +99,12 @@ export class InMemoryOffersRepository implements OffersRepository {
         (!id || item.id.equals(id)) &&
         (!ids || ids.includes(item.id.value)) &&
         (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
-        (!catalog?.cycle?.id || item.catalog?.cycle_id.value === catalog.cycle.id) &&
+        (!catalog?.cycle?.id ||
+          item.catalog?.cycle_id.value === catalog.cycle.id) &&
         (!product?.id || item.product_id.equals(product.id)) &&
         (!product?.name || item.product?.name === product.name) &&
-        (!product?.category?.id || item.product?.category_id.value === product.category.id) &&
+        (!product?.category?.id ||
+          item.product?.category_id.value === product.category.id) &&
         (!available ||
           (typeof available === "boolean" &&
             (available

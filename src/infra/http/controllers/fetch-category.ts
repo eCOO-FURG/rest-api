@@ -35,13 +35,22 @@ export const fetchCategoryQuery = Joi.object({
     .optional(),
 });
 
-export async function fetchCategoryController(request: Request, response: Response, next: NextFunction) {
+export async function fetchCategoryController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
     const { category_id } = parse(fetchCategoryParams, request.params);
 
-    const { page, cycle_id, available, since, before } = parse(fetchCategoryQuery, request.query);
+    const { page, cycle_id, available, since, before } = parse(
+      fetchCategoryQuery,
+      request.query,
+    );
 
-    const fetchCategoryUseCase = container.resolve<FetchCategoryUseCase>("fetchCategoryUseCase");
+    const fetchCategoryUseCase = container.resolve<FetchCategoryUseCase>(
+      "fetchCategoryUseCase",
+    );
 
     const { category } = await fetchCategoryUseCase.execute({
       category_id,

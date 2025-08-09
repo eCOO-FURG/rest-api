@@ -69,7 +69,8 @@ export class RegisterOfferUseCase {
 
     if (!product) throw new ResourceNotFoundError("Produto", product_id);
 
-    if (!product.perishable && !expires_at) throw new MissingFieldError("expires_at");
+    if (!product.perishable && !expires_at)
+      throw new MissingFieldError("expires_at");
 
     if (product.archived) throw new ResourceClosedError("Produto", product_id);
 
@@ -77,7 +78,8 @@ export class RegisterOfferUseCase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    if (!inPeriodOf(cycle.offer)) throw new ResourceClosedError("Ciclo", cycle.id.value);
+    if (!inPeriodOf("offer", cycle))
+      throw new ResourceClosedError("Ciclo", cycle.id.value);
 
     const { catalog, existed } = await this.useCatalog(farm, cycle);
 
@@ -88,10 +90,12 @@ export class RegisterOfferUseCase {
         ...(recurring ? { recurring } : { since: first(cycle.offer) }),
       });
 
-      if (previous) throw new ResourceAlreadyExistsError(`Oferta do produto`, product_id);
+      if (previous)
+        throw new ResourceAlreadyExistsError(`Oferta do produto`, product_id);
     }
 
-    if (product.pricing === "WEIGHT" && amount % 1000 !== 0) throw new InvalidWeightError("ofertado", product_id);
+    if (product.pricing === "WEIGHT" && amount % 1000 !== 0)
+      throw new InvalidWeightError("ofertado", product_id);
 
     const offer = Offer.create({
       catalog_id: catalog.id,
@@ -101,8 +105,12 @@ export class RegisterOfferUseCase {
       description,
       comment,
       expires_at,
-      opens_at: recurring ? now() : first(cycle.order, cycle.inverted()),
-      closes_at: recurring ? null : last(cycle.order, cycle.inverted()),
+      opens_at: recurring
+        ? now()
+        : first(cycle.order, first(cycle.order) < now()),
+      closes_at: recurring
+        ? null
+        : last(cycle.order, last(cycle.order) < now()),
       fee: price * (catalog.fee / 100),
     });
 

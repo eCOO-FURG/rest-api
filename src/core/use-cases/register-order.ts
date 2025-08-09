@@ -73,7 +73,13 @@ export class RegisterOrderUseCase {
     private mailer: Mailer,
   ) {}
 
-  async execute({ user_id, cycle_id, bag_id, address, request }: RegisterOrderUseCaseRequest) {
+  async execute({
+    user_id,
+    cycle_id,
+    bag_id,
+    address,
+    request,
+  }: RegisterOrderUseCaseRequest) {
     const user = await this.usersRepository.find("user", { id: user_id });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
@@ -82,7 +88,8 @@ export class RegisterOrderUseCase {
 
     if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
-    if (!inPeriodOf(cycle.order)) throw new ResourceClosedError("Ciclo", cycle_id);
+    if (!inPeriodOf("order", cycle))
+      throw new ResourceClosedError("Ciclo", cycle_id);
 
     const offersIds = request.map((order) => order.offer_id);
 
@@ -104,13 +111,17 @@ export class RegisterOrderUseCase {
 
       if (!offer) throw new ResourceNotFoundError("Oferta", item.offer_id);
 
-      if (!offer.available) throw new ResourceClosedError("Oferta", item.offer_id);
+      if (!offer.available)
+        throw new ResourceClosedError("Oferta", item.offer_id);
 
-      if (!offer.catalog.cycle_id.equals(cycle_id)) throw new ResourceClosedError("Oferta", item.offer_id);
+      if (!offer.catalog.cycle_id.equals(cycle_id))
+        throw new ResourceClosedError("Oferta", item.offer_id);
 
-      if (item.amount > offer.amount) throw new UnavailableAmountError(offer.id.value);
+      if (item.amount > offer.amount)
+        throw new UnavailableAmountError(offer.id.value);
 
-      if (item.amount % 100 != 0 && offer.product.pricing === "WEIGHT") throw new InvalidWeightError("solicitado", offer.product.id.value);
+      if (item.amount % 100 != 0 && offer.product.pricing === "WEIGHT")
+        throw new InvalidWeightError("solicitado", offer.product.id.value);
 
       const box = await this.useBox(offer.catalog.id, cycle);
 
@@ -122,7 +133,11 @@ export class RegisterOrderUseCase {
         offer,
         amount: item.amount,
         fee: this.useFee(offer.product.pricing, offer.fee, item.amount),
-        subtotal: this.useSubtotal(offer.product.pricing, offer.price, item.amount),
+        subtotal: this.useSubtotal(
+          offer.product.pricing,
+          offer.price,
+          item.amount,
+        ),
       });
 
       bag.add(order);
@@ -178,7 +193,8 @@ export class RegisterOrderUseCase {
 
       if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 
-      if (bag.status !== "PENDING" || bag.created_at < first(cycle.order)) throw new ResourceClosedError("Sacola", bag_id);
+      if (bag.status !== "PENDING" || bag.created_at < first(cycle.order))
+        throw new ResourceClosedError("Sacola", bag_id);
 
       return { bag, existed: true };
     }

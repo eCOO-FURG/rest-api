@@ -22,7 +22,11 @@ export class DeleteFarmImageUseCase {
     private storage: Storage,
   ) {}
 
-  async execute({ user_id, farm_id, image_url }: DeleteFarmImageUseCaseRequest) {
+  async execute({
+    user_id,
+    farm_id,
+    image_url,
+  }: DeleteFarmImageUseCaseRequest) {
     const farm = await this.farmsRepository.find("farm", { id: farm_id });
 
     if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);

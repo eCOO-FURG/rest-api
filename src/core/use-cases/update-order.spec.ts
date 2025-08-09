@@ -25,7 +25,11 @@ describe("update order", () => {
     ordersRepository = new InMemoryOrdersRepository();
     usersRepository = new InMemoryUsersRepository();
     bagsRepository = new InMemoryBagsRepository();
-    sut = new UpdateOrderUseCase(usersRepository, bagsRepository, ordersRepository);
+    sut = new UpdateOrderUseCase(
+      usersRepository,
+      bagsRepository,
+      ordersRepository,
+    );
   });
 
   it("should be able to update an order", async () => {

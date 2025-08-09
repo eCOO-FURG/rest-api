@@ -20,7 +20,9 @@ export interface CatalogProps extends EntityRequest {
   offers: Offer[];
 }
 
-export class Catalog<Props extends CatalogProps = CatalogProps> extends Entity<Props> {
+export class Catalog<
+  Props extends CatalogProps = CatalogProps,
+> extends Entity<Props> {
   get fee() {
     return this.props.fee;
   }

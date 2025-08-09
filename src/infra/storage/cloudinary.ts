@@ -7,7 +7,7 @@ import { v2 as cloudinary } from "cloudinary";
 // Logs
 import { Logger } from "@/infra/logs/logger";
 
-// Env
+// Environment
 import { env } from "@/infra/env";
 
 // Types
@@ -17,7 +17,10 @@ export class Cloudinary implements Storage {
   client: typeof cloudinary;
 
   constructor() {
-    const [credentials, cloud_name] = env.STORAGE_URL.replace("cloudinary://", "").split("@");
+    const [credentials, cloud_name] = env.STORAGE_URL.replace(
+      "cloudinary://",
+      "",
+    ).split("@");
 
     const [api_key, api_secret] = credentials.split(":");
 
@@ -49,10 +52,13 @@ export class Cloudinary implements Storage {
     try {
       const url = await new Promise<string>((resolve, reject) => {
         this.client.uploader
-          .upload_stream({ folder, resource_type: "image" }, (error, result) => {
-            if (error) reject(error);
-            if (result) resolve(result.secure_url);
-          })
+          .upload_stream(
+            { folder, resource_type: "image" },
+            (error, result) => {
+              if (error) reject(error);
+              if (result) resolve(result.secure_url);
+            },
+          )
           .end(file.content);
       });
 

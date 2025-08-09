@@ -27,7 +27,13 @@ export class FetchSalesReportUseCase {
     private spreadsheetService: SpreadsheetService,
   ) {}
 
-  async execute({ cycle_id, type, since, before, withdraw }: FetchSalesReportUseCaseRequest) {
+  async execute({
+    cycle_id,
+    type,
+    since,
+    before,
+    withdraw,
+  }: FetchSalesReportUseCaseRequest) {
     if (cycle_id) {
       const cycle = await this.cyclesRepository.find("cycle", {
         id: cycle_id,

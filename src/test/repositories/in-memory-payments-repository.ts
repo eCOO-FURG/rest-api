@@ -15,8 +15,13 @@ import { paginate } from "@/test/utils/paginate";
 export class InMemoryPaymentsRepository implements PaymentsRepository {
   items: Payment[] = [];
 
-  async find<T extends PaymentRepositoryReturnType>(_: T, { id }: PaymentsRepositorySearchRequest): Promise<PaymentEntityOf<T> | null> {
-    const payment = this.items.find((item) => Boolean(!id || item.id.equals(id)));
+  async find<T extends PaymentRepositoryReturnType>(
+    _: T,
+    { id }: PaymentsRepositorySearchRequest,
+  ): Promise<PaymentEntityOf<T> | null> {
+    const payment = this.items.find((item) =>
+      Boolean(!id || item.id.equals(id)),
+    );
 
     if (!payment) return null;
 
@@ -28,7 +33,9 @@ export class InMemoryPaymentsRepository implements PaymentsRepository {
     { id }: PaymentsRepositorySearchRequest,
     page?: number,
   ): Promise<PaymentEntityOf<T>[]> {
-    let payments = this.items.filter((item) => Boolean(!id || item.id.equals(id)));
+    let payments = this.items.filter((item) =>
+      Boolean(!id || item.id.equals(id)),
+    );
 
     if (page) payments = paginate(payments, page);
 

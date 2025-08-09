@@ -29,11 +29,26 @@ export const registerOfferSchema = Joi.object({
   comment: Joi.string().optional(),
 });
 
-export async function registerOfferController(request: Request, response: Response, next: NextFunction) {
+export async function registerOfferController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
-    const { product_id, cycle_id, amount, price, description, recurring, expires_at, comment } = parse(registerOfferSchema, request.body);
+    const {
+      product_id,
+      cycle_id,
+      amount,
+      price,
+      description,
+      recurring,
+      expires_at,
+      comment,
+    } = parse(registerOfferSchema, request.body);
 
-    const registerOfferUseCase = container.resolve<RegisterOfferUseCase>("registerOfferUseCase");
+    const registerOfferUseCase = container.resolve<RegisterOfferUseCase>(
+      "registerOfferUseCase",
+    );
 
     await registerOfferUseCase.execute({
       farm_id: request.farm_id,

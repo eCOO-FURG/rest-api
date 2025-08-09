@@ -6,10 +6,15 @@ import { Cycle, CycleWeek } from "@/core/entities/cycle";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Repositories
-import { CycleRepositoryReturnType, CycleEntityOf } from "@/core/repositories/cycles-repository";
+import {
+  CycleRepositoryReturnType,
+  CycleEntityOf,
+} from "@/core/repositories/cycles-repository";
 
 export class PrismaCycleMapper {
-  static toDomain<T extends CycleRepositoryReturnType = "cycle">(raw: PrismaCycle): CycleEntityOf<T> {
+  static toDomain<T extends CycleRepositoryReturnType = "cycle">(
+    raw: PrismaCycle,
+  ): CycleEntityOf<T> {
     const week = (days: number[]) => days.map((day) => day as CycleWeek[0]);
 
     return Cycle.create({

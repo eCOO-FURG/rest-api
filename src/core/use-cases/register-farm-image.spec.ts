@@ -34,7 +34,11 @@ describe("register farm image", () => {
     usersRepository = new InMemoryUsersRepository();
     storage = new MockedStorage();
 
-    sut = new RegisterFarmImageUseCase(farmsRepository, usersRepository, storage);
+    sut = new RegisterFarmImageUseCase(
+      farmsRepository,
+      usersRepository,
+      storage,
+    );
   });
 
   it("should be able to register a farm image", async () => {

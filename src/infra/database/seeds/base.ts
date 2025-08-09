@@ -10,7 +10,7 @@ import categories from "@/infra/database/seeds/data/categories.json";
 // Libraries
 import { hash } from "bcryptjs";
 
-// Env
+// Environment
 import { env } from "@/infra/env";
 
 // Seeds

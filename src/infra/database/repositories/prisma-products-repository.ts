@@ -2,7 +2,10 @@
 import { Product } from "@/core/entities/product";
 
 // Repositories
-import { ProductsRepository, ProductsRepositorySearchRequest } from "@/core/repositories/products-repository";
+import {
+  ProductsRepository,
+  ProductsRepositorySearchRequest,
+} from "@/core/repositories/products-repository";
 
 // Services
 import { prisma } from "@/infra/database/prisma-service";
@@ -12,7 +15,10 @@ import { PrismaProductAndCategoryMapper } from "@/infra/database/mappers/prisma-
 import { PrismaProductMapper } from "@/infra/database/mappers/prisma-product-mapper";
 
 // Types
-import { ProductEntityOf, ProductRepositoryReturnType } from "@/core/repositories/products-repository";
+import {
+  ProductEntityOf,
+  ProductRepositoryReturnType,
+} from "@/core/repositories/products-repository";
 
 export class PrismaProductRepository implements ProductsRepository {
   async find<T extends ProductRepositoryReturnType>(

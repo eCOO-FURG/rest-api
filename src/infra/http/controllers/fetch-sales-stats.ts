@@ -24,11 +24,20 @@ export const fetchSalesStatsQuery = Joi.object({
   method: Joi.string().valid("CREDIT", "DEBIT", "CASH", "PIX").optional(),
 });
 
-export async function fetchSalesStatsController(request: Request, response: Response, next: NextFunction) {
+export async function fetchSalesStatsController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
-    const { since, before, method } = parse(fetchSalesStatsQuery, request.query);
+    const { since, before, method } = parse(
+      fetchSalesStatsQuery,
+      request.query,
+    );
 
-    const fetchSalesStatsUseCase = container.resolve<FetchSalesStatsUseCase>("fetchSalesStatsUseCase");
+    const fetchSalesStatsUseCase = container.resolve<FetchSalesStatsUseCase>(
+      "fetchSalesStatsUseCase",
+    );
 
     const stats = await fetchSalesStatsUseCase.execute({
       since: toDate(since),

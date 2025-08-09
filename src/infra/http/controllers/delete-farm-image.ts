@@ -1,3 +1,4 @@
+// Libraries
 import { Request, Response, NextFunction } from "express";
 import Joi from "joi";
 
@@ -15,11 +16,17 @@ export const deleteFarmImageParams = Joi.object({
   image_url: Joi.string().required(),
 });
 
-export async function deleteFarmImageController(request: Request, response: Response, next: NextFunction) {
+export async function deleteFarmImageController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
     const { farm_id, image_url } = parse(deleteFarmImageParams, request.params);
 
-    const deleteFarmImageUseCase = container.resolve<DeleteFarmImageUseCase>("deleteFarmImageUseCase");
+    const deleteFarmImageUseCase = container.resolve<DeleteFarmImageUseCase>(
+      "deleteFarmImageUseCase",
+    );
 
     await deleteFarmImageUseCase.execute({
       farm_id,

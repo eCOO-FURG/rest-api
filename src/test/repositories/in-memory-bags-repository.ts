@@ -3,7 +3,12 @@ import { BagAndDetails } from "@/core/entities/aggregates/bag-and-details";
 import { Bag } from "@/core/entities/bag";
 
 // Repositories
-import { BagsRepository, BagsRepositorySearchRequest, BagRepositoryReturnType, BagEntityOf } from "@/core/repositories/bags-repository";
+import {
+  BagsRepository,
+  BagsRepositorySearchRequest,
+  BagRepositoryReturnType,
+  BagEntityOf,
+} from "@/core/repositories/bags-repository";
 
 // Utils
 import { paginate } from "@/test/utils/paginate";
@@ -19,16 +24,35 @@ export class InMemoryBagsRepository implements BagsRepository {
 
   async find<T extends BagRepositoryReturnType>(
     type: T,
-    { id, user, address, cycle, orders, payment, statuses, withdraw, since, before }: BagsRepositorySearchRequest,
+    {
+      id,
+      user,
+      address,
+      cycle,
+      orders,
+      payment,
+      statuses,
+      withdraw,
+      since,
+      before,
+    }: BagsRepositorySearchRequest,
   ): Promise<BagEntityOf<T> | null> {
     const bag = this.items.find((item) =>
       Boolean(
         (!id || item.id.equals(id)) &&
           (!user?.id || item.customer_id.equals(user.id)) &&
-          (typeof withdraw !== "boolean" || (withdraw && item.address_id) || (!withdraw && !item.address_id)) &&
-          Boolean(!user?.name || item.customer?.first_name.includes(user.name!) || item.customer?.last_name.includes(user.name!)) &&
+          (typeof withdraw !== "boolean" ||
+            (withdraw && item.address_id) ||
+            (!withdraw && !item.address_id)) &&
           Boolean(
-            address === undefined || (address === null && item.address === null) || (address?.id && item.address?.id?.equals(address.id)),
+            !user?.name ||
+              item.customer?.first_name.includes(user.name!) ||
+              item.customer?.last_name.includes(user.name!),
+          ) &&
+          Boolean(
+            address === undefined ||
+              (address === null && item.address === null) ||
+              (address?.id && item.address?.id?.equals(address.id)),
           ) &&
           (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
           (!statuses || statuses.includes(item.status)) &&
@@ -72,17 +96,36 @@ export class InMemoryBagsRepository implements BagsRepository {
 
   async list<T extends BagRepositoryReturnType>(
     type: T,
-    { id, user, address, cycle, statuses, orders, payment, withdraw, since, before }: BagsRepositorySearchRequest,
+    {
+      id,
+      user,
+      address,
+      cycle,
+      statuses,
+      orders,
+      payment,
+      withdraw,
+      since,
+      before,
+    }: BagsRepositorySearchRequest,
     page?: number,
   ): Promise<BagEntityOf<T>[]> {
     let bags = this.items.filter((item) =>
       Boolean(
         (!id || item.id.equals(id)) &&
           (!user?.id || item.customer_id.equals(user.id)) &&
-          (typeof withdraw !== "boolean" || (withdraw && item.address_id) || (!withdraw && !item.address_id)) &&
-          Boolean(!user?.name || item.customer?.first_name.includes(user.name!) || item.customer?.last_name.includes(user.name!)) &&
+          (typeof withdraw !== "boolean" ||
+            (withdraw && item.address_id) ||
+            (!withdraw && !item.address_id)) &&
           Boolean(
-            address === undefined || (address === null && item.address_id === null) || (address?.id && item.address_id?.equals(address.id)),
+            !user?.name ||
+              item.customer?.first_name.includes(user.name!) ||
+              item.customer?.last_name.includes(user.name!),
+          ) &&
+          Boolean(
+            address === undefined ||
+              (address === null && item.address_id === null) ||
+              (address?.id && item.address_id?.equals(address.id)),
           ) &&
           (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
           (!statuses || statuses.includes(item.status)) &&

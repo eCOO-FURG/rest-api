@@ -33,7 +33,12 @@ describe("list catalogs", () => {
     catalogsRepository = new InMemoryCatalogsRepository();
     categoriesRepository = new InMemoryCategoriesRepository();
 
-    sut = new ListCatalogsUseCase(cyclesRepository, farmsRepository, catalogsRepository, categoriesRepository);
+    sut = new ListCatalogsUseCase(
+      cyclesRepository,
+      farmsRepository,
+      catalogsRepository,
+      categoriesRepository,
+    );
   });
 
   it("should be able to list catalogs", async () => {
@@ -179,6 +184,8 @@ describe("list catalogs", () => {
     });
 
     expect(result.catalogs.length).toBe(5);
-    expect(result.catalogs[0].offers[0].product!.category_id).toEqual(category.id);
+    expect(result.catalogs[0].offers[0].product!.category_id).toEqual(
+      category.id,
+    );
   });
 });

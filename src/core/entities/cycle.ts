@@ -60,13 +60,11 @@ export class Cycle extends Entity<CycleProps> {
 
     if (intervals !== 1) return days;
 
-    const interval = days.findIndex((day, index) => days.at(index + 1) !== day + 1);
+    const interval = days.findIndex(
+      (day, index) => days.at(index + 1) !== day + 1,
+    );
 
     return [...days.slice(interval + 1), ...days.slice(0, interval + 1)];
-  }
-
-  inverted() {
-    return this.props.order[0] && this.props.offer[0] && this.props.order[0] < this.props.offer[0];
   }
 
   static Week = [1, 2, 3, 4, 5, 6, 7] as const;

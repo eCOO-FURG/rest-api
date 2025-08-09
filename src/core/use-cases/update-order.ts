@@ -42,9 +42,11 @@ export class UpdateOrderUseCase {
 
     const owner = bag.customer_id.equals(user_id);
 
-    if (!owner && !user.admin) throw new ResourceNotFoundError("Pedido", order_id);
+    if (!owner && !user.admin)
+      throw new ResourceNotFoundError("Pedido", order_id);
 
-    if (order.status === "CANCELLED") throw new ResourceClosedError("Pedido", order_id);
+    if (order.status === "CANCELLED")
+      throw new ResourceClosedError("Pedido", order_id);
 
     order.status = status;
     order.touch();

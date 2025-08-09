@@ -4,7 +4,12 @@ import { BoxAndOrders } from "@/core/entities/aggregates/box-and-orders";
 import { OrderAndOffer } from "@/core/entities/aggregates/order-and-offer";
 
 // Repositories
-import { BoxesRepository, BoxesRepositorySearchRequest, BoxRepositoryReturnType, BoxEntityOf } from "@/core/repositories/boxes-repository";
+import {
+  BoxesRepository,
+  BoxesRepositorySearchRequest,
+  BoxRepositoryReturnType,
+  BoxEntityOf,
+} from "@/core/repositories/boxes-repository";
 
 // Utils
 import { paginate } from "@/test/utils/paginate";
@@ -24,8 +29,10 @@ export class InMemoryBoxesRepository implements BoxesRepository {
       Boolean(
         (!id || item.id.equals(id)) &&
           (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
-          (!catalog?.farm?.id || item.catalog?.farm_id.equals(catalog.farm.id)) &&
-          (!catalog?.farm?.name || item.catalog?.farm?.name.includes(catalog.farm.name!)) &&
+          (!catalog?.farm?.id ||
+            item.catalog?.farm_id.equals(catalog.farm.id)) &&
+          (!catalog?.farm?.name ||
+            item.catalog?.farm?.name.includes(catalog.farm.name!)) &&
           (!since || item.created_at >= since) &&
           (!status || item.status === status),
       ),
@@ -64,8 +71,10 @@ export class InMemoryBoxesRepository implements BoxesRepository {
     let boxes = this.items.filter((item) =>
       Boolean(
         (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
-          (!catalog?.farm?.id || item.catalog?.farm_id.equals(catalog.farm.id)) &&
-          (!catalog?.farm?.name || item.catalog?.farm?.name.includes(catalog.farm.name!)) &&
+          (!catalog?.farm?.id ||
+            item.catalog?.farm_id.equals(catalog.farm.id)) &&
+          (!catalog?.farm?.name ||
+            item.catalog?.farm?.name.includes(catalog.farm.name!)) &&
           (!since || item.created_at >= since) &&
           (!status || item.status === status),
       ),

@@ -15,11 +15,16 @@ export const deleteOfferParams = Joi.object({
   offer_id: Joi.string().uuid().required(),
 });
 
-export async function deleteOfferController(request: Request, response: Response, next: NextFunction) {
+export async function deleteOfferController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
     const { offer_id } = parse(deleteOfferParams, request.params);
 
-    const deleteOfferUseCase = container.resolve<DeleteOfferUseCase>("deleteOfferUseCase");
+    const deleteOfferUseCase =
+      container.resolve<DeleteOfferUseCase>("deleteOfferUseCase");
 
     await deleteOfferUseCase.execute({
       farm_id: request.farm_id,

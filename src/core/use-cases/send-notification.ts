@@ -23,7 +23,12 @@ export class SendNotificationUseCase {
     private mailer: Mailer,
   ) {}
 
-  async execute({ role, title, message, files }: SendNotificationUseCaseRequest) {
+  async execute({
+    role,
+    title,
+    message,
+    files,
+  }: SendNotificationUseCaseRequest) {
     const users = await this.usersRepository.list("user", { roles: [role] });
 
     const view = await this.mailer.load({

@@ -16,11 +16,17 @@ export const registerFarmSchema = Joi.object({
   tally: Joi.string().required(),
 });
 
-export async function registerFarmController(request: Request, response: Response, next: NextFunction) {
+export async function registerFarmController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
     const { name, tally } = parse(registerFarmSchema, request.body);
 
-    const registerFarmUseCase = container.resolve<RegisterFarmUseCase>("registerFarmUseCase");
+    const registerFarmUseCase = container.resolve<RegisterFarmUseCase>(
+      "registerFarmUseCase",
+    );
 
     await registerFarmUseCase.execute({
       user_id: request.user_id,

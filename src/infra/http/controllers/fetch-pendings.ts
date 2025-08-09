@@ -15,11 +15,17 @@ export const fetchPendingsQuery = Joi.object({
   cycle_id: Joi.string().uuid().required(),
 });
 
-export async function fetchPendingsController(request: Request, response: Response, next: NextFunction) {
+export async function fetchPendingsController(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
     const { cycle_id } = parse(fetchPendingsQuery, request.query);
 
-    const fetchPendingsUseCase = container.resolve<FetchPendingsUseCase>("fetchPendingsUseCase");
+    const fetchPendingsUseCase = container.resolve<FetchPendingsUseCase>(
+      "fetchPendingsUseCase",
+    );
 
     const pendings = await fetchPendingsUseCase.execute({
       cycle_id,

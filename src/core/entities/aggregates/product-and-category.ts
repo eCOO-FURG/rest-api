@@ -6,7 +6,7 @@ export interface ProductAndCategoryProps extends ProductProps {
   category: Category;
 }
 
-export class ProductAndCategory extends Product {
+export class ProductAndCategory extends Product<ProductAndCategoryProps> {
   get category() {
     return this.props.category;
   }

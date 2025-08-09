@@ -2,7 +2,12 @@
 import { Otp } from "@/core/entities/otp";
 
 // Repositories
-import { OtpsRepository, OtpsRepositorySearchRequest, OtpRepositoryReturnType, OtpEntityOf } from "@/core/repositories/otps-repositoy";
+import {
+  OtpsRepository,
+  OtpsRepositorySearchRequest,
+  OtpRepositoryReturnType,
+  OtpEntityOf,
+} from "@/core/repositories/otps-repositoy";
 
 // Services
 import { prisma } from "@/infra/database/prisma-service";

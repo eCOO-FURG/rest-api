@@ -24,7 +24,12 @@ export class ListCurrentBagsUseCase {
     private bagsRepository: BagsRepository,
   ) {}
 
-  async execute({ cycle_id, statuses, user, page }: ListCurrentBagsUseCaseRequest) {
+  async execute({
+    cycle_id,
+    statuses,
+    user,
+    page,
+  }: ListCurrentBagsUseCaseRequest) {
     const cycle = await this.cyclesRepository.find("cycle", {
       id: cycle_id,
     });

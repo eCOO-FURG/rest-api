@@ -13,10 +13,25 @@ import { updateOfferController } from "@/infra/http/controllers/update-offer";
 
 export const offers = Router();
 
-offers.post("/", ensureAuthenticated, ensureRole(["PRODUCER"]), registerOfferController);
+offers.post(
+  "/",
+  ensureAuthenticated,
+  ensureRole(["PRODUCER"]),
+  registerOfferController,
+);
 
 offers.get("/", listOffersController);
 
-offers.patch("/:offer_id", ensureAuthenticated, ensureRole(["PRODUCER"]), updateOfferController);
+offers.patch(
+  "/:offer_id",
+  ensureAuthenticated,
+  ensureRole(["PRODUCER"]),
+  updateOfferController,
+);
 
-offers.delete("/:offer_id", ensureAuthenticated, ensureRole(["PRODUCER"]), deleteOfferController);
+offers.delete(
+  "/:offer_id",
+  ensureAuthenticated,
+  ensureRole(["PRODUCER"]),
+  deleteOfferController,
+);

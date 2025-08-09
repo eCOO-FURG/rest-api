@@ -1,7 +1,7 @@
 // Libraries
 import { PrismaClient } from "@prisma/client";
 
-// Env
+// Environment
 import { env } from "@/infra/env";
 
 export const prisma = new PrismaClient({

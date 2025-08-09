@@ -4,11 +4,12 @@ import { Category } from "@/core/entities/category";
 
 export type CategoryRepositoryReturnType = "category" | "category-and-offers";
 
-export type CategoryEntityOf<T extends CategoryRepositoryReturnType> = T extends "category"
-  ? Category
-  : T extends "category-and-offers"
-    ? CategoryAndOffers
-    : never;
+export type CategoryEntityOf<T extends CategoryRepositoryReturnType> =
+  T extends "category"
+    ? Category
+    : T extends "category-and-offers"
+      ? CategoryAndOffers
+      : never;
 
 export interface CategoriesRepositorySearchRequest {
   id?: string;
@@ -25,7 +26,10 @@ export interface CategoriesRepositorySearchRequest {
 }
 
 export interface CategoriesRepository {
-  find<T extends CategoryRepositoryReturnType>(type: T, filters: CategoriesRepositorySearchRequest): Promise<CategoryEntityOf<T> | null>;
+  find<T extends CategoryRepositoryReturnType>(
+    type: T,
+    filters: CategoriesRepositorySearchRequest,
+  ): Promise<CategoryEntityOf<T> | null>;
   list<T extends CategoryRepositoryReturnType>(
     type: T,
     filters: CategoriesRepositorySearchRequest,

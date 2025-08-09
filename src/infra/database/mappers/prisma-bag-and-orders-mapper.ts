@@ -3,16 +3,27 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { BagAndOrders } from "@/core/entities/aggregates/bag-and-orders";
 
 // Libraries
-import { Bag as PrismaBag, User as PrismaUser, Address as PrismaAddress, Payment as PrismaPayment } from "@prisma/client";
+import {
+  Bag as PrismaBag,
+  User as PrismaUser,
+  Address as PrismaAddress,
+  Payment as PrismaPayment,
+} from "@prisma/client";
 
 // Repositories
-import { BagRepositoryReturnType, BagEntityOf } from "@/core/repositories/bags-repository";
+import {
+  BagRepositoryReturnType,
+  BagEntityOf,
+} from "@/core/repositories/bags-repository";
 
 // Mappers
 import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";
 import { PrismaPaymentMapper } from "@/infra/database/mappers/prisma-payment-mapper";
 import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
-import { PrismaOrderAndDetails, PrismaOrderAndDetailsMapper } from "@/infra/database/mappers/prisma-order-and-details-mapper";
+import {
+  PrismaOrderAndDetails,
+  PrismaOrderAndDetailsMapper,
+} from "@/infra/database/mappers/prisma-order-and-details-mapper";
 
 export type PrismaBagAndOrders = PrismaBag & {
   customer: PrismaUser;
@@ -22,7 +33,9 @@ export type PrismaBagAndOrders = PrismaBag & {
 };
 
 export class PrismaBagAndOrdersMapper {
-  static toDomain<T extends BagRepositoryReturnType = "bag-and-orders">(raw: PrismaBagAndOrders): BagEntityOf<T> {
+  static toDomain<T extends BagRepositoryReturnType = "bag-and-orders">(
+    raw: PrismaBagAndOrders,
+  ): BagEntityOf<T> {
     return BagAndOrders.create({
       id: new UUID(raw.id),
       code: raw.code,
@@ -36,7 +49,9 @@ export class PrismaBagAndOrdersMapper {
       address_id: raw.address_id ? new UUID(raw.address_id) : null,
       address: raw.address ? PrismaAddressMapper.toDomain(raw.address) : null,
       payment: raw.payment ? PrismaPaymentMapper.toDomain(raw.payment) : null,
-      orders: raw.orders.map((order) => PrismaOrderAndDetailsMapper.toDomain<"order-and-details">(order)),
+      orders: raw.orders.map((order) =>
+        PrismaOrderAndDetailsMapper.toDomain<"order-and-details">(order),
+      ),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
     }) as BagEntityOf<T>;
