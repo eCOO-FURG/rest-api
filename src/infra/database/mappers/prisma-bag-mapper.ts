@@ -22,6 +22,7 @@ export class PrismaBagMapper {
       status: raw.status,
       fee: raw.fee.toNumber(),
       shipping: raw.shipping.toNumber(),
+      subtotal: raw.subtotal.toNumber(),
       customer_id: new UUID(raw.customer_id),
       cycle_id: new UUID(raw.cycle_id),
       address_id: raw.address_id ? new UUID(raw.address_id) : null,
