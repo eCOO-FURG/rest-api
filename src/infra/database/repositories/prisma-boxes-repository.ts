@@ -56,7 +56,7 @@ export class PrismaBoxesRepository implements BoxesRepository {
                 catalog: { include: { farm: { include: { admin: true } } } },
                 orders: {
                   include: { offer: { include: { product: true } } },
-                  orderBy: { created_at: "asc" },
+                  orderBy: { offer: { product: { name: "asc" } } },
                   ...(orders?.page && {
                     skip: (orders.page - 1) * 20,
                     take: 20,
@@ -64,9 +64,6 @@ export class PrismaBoxesRepository implements BoxesRepository {
                 },
               }
             : null,
-      orderBy: {
-        created_at: "desc",
-      },
     });
 
     if (!box) return null;
@@ -116,7 +113,7 @@ export class PrismaBoxesRepository implements BoxesRepository {
                 catalog: { include: { farm: { include: { admin: true } } } },
                 orders: {
                   include: { offer: { include: { product: true } } },
-                  orderBy: { created_at: "asc" },
+                  orderBy: { offer: { product: { name: "asc" } } },
                   ...(orders?.page && {
                     skip: (orders.page - 1) * 20,
                     take: 20,
@@ -126,7 +123,7 @@ export class PrismaBoxesRepository implements BoxesRepository {
             : null,
       ...(page && { skip: (page - 1) * 20, take: 20 }),
       orderBy: {
-        created_at: "desc",
+        created_at: "asc",
       },
     });
 
