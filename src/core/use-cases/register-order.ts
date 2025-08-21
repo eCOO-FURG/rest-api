@@ -156,7 +156,7 @@ export class RegisterOrderUseCase {
 
     const email = Message.create({
       to: user.email,
-      subject: "Pedido Confirmado!",
+      subject: `Pedido ${bag.code} | eCOO`,
       content: view,
     });
 

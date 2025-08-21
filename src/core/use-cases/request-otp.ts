@@ -51,7 +51,7 @@ export class RequestOtpUseCase {
 
     const message = Message.create({
       to: user.email,
-      subject: "Senha de acesso | eCOO",
+      subject: `Senha ${otp.value} | eCOO`,
       content: view,
     });
 
