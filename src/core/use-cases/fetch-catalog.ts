@@ -9,6 +9,7 @@ interface FetchCatalogUseCaseRequest {
   page: number;
   product?: string;
   available?: boolean;
+  remaining?: boolean;
   since?: Date;
   before?: Date;
 }
@@ -20,13 +21,21 @@ export class FetchCatalogUseCase {
     catalog_id,
     product,
     page,
+    remaining,
     available,
     since,
     before,
   }: FetchCatalogUseCaseRequest) {
     const catalog = await this.catalogsRepository.find("catalog-and-offers", {
       id: catalog_id,
-      offers: { product: { name: product }, available, since, before, page },
+      offers: {
+        product: { name: product },
+        remaining,
+        available,
+        since,
+        before,
+        page,
+      },
     });
 
     if (!catalog) throw new ResourceNotFoundError("Catálogo", catalog_id);

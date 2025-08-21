@@ -27,6 +27,7 @@ export const fetchCatalogQuery = Joi.object({
   page: Joi.number().integer().min(1).required(),
   product: Joi.string().optional(),
   available: boolean.optional(),
+  remaining: boolean.optional(),
   since: Joi.string()
     .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
     .optional(),
@@ -42,7 +43,7 @@ export async function fetchCatalogController(
 ) {
   try {
     const { catalog_id } = parse(fetchCatalogParams, request.params);
-    const { page, product, available, since, before } = parse(
+    const { page, product, remaining, available, since, before } = parse(
       fetchCatalogQuery,
       request.query,
     );
@@ -55,6 +56,7 @@ export async function fetchCatalogController(
       catalog_id,
       page,
       product,
+      remaining: toBoolean(remaining),
       available: toBoolean(available),
       since: toDate(since),
       before: toDate(before),

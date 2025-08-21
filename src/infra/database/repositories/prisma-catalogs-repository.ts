@@ -73,6 +73,18 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                       },
                       category_id: offers?.product?.category?.id,
                     },
+                    ...(typeof offers?.remaining === "boolean" &&
+                    offers.remaining
+                      ? {
+                          amount: {
+                            gt: 0,
+                          },
+                        }
+                      : {
+                          amount: {
+                            equals: 0,
+                          },
+                        }),
                     ...(typeof offers?.available === "boolean" &&
                       (offers.available
                         ? {
@@ -91,7 +103,6 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                               },
                               {
                                 active: true,
-                                amount: { not: 0 },
                               },
                             ],
                           }
@@ -100,7 +111,6 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                               { closes_at: { not: null, lte: now() } },
                               { expires_at: { not: null, lte: now() } },
                               { active: false },
-                              { amount: 0 },
                             ],
                           })),
                     created_at: {
@@ -176,6 +186,17 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
               name: { contains: offers?.product?.name, mode: "insensitive" },
               category_id: offers?.product?.category?.id,
             },
+            ...(typeof offers?.remaining === "boolean" && offers.remaining
+              ? {
+                  amount: {
+                    gt: 0,
+                  },
+                }
+              : {
+                  amount: {
+                    equals: 0,
+                  },
+                }),
             ...(typeof offers?.available === "boolean" &&
               (offers.available
                 ? {
@@ -191,7 +212,6 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                       },
                       {
                         active: true,
-                        amount: { not: 0 },
                       },
                     ],
                   }
@@ -200,9 +220,9 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                       { closes_at: { not: null, lte: now() } },
                       { expires_at: { not: null, lte: now() } },
                       { active: false },
-                      { amount: 0 },
                     ],
                   })),
+
             created_at: {
               gte: offers?.since,
               lte: offers?.before,
