@@ -14,21 +14,11 @@ import WebSocket from "ws";
 import { Logger } from "@/infra/logs/logger";
 
 export class Telegram implements Chat {
-  private client: WebSocket | null = null;
-
-  constructor() {
-    this.connect();
-  }
+  private ws: WebSocket | null = null;
 
   async send(message: Message): Promise<void> {
-    if (!this.client) return;
-
     try {
-      if (this.client.readyState !== WebSocket.OPEN) {
-        await this.connect();
-      }
-
-      this.client.send(
+      this.client().send(
         JSON.stringify({
           id: message.id.value,
           to: message.to,
@@ -44,15 +34,25 @@ export class Telegram implements Chat {
     }
   }
 
-  private async connect() {
-    this.client = new WebSocket(env.WS_URL, {
-      headers: { Authorization: env.INTEGRATIONS_AUTHORIZATION },
-    });
+  private client(): WebSocket {
+    if (!this.ws) {
+      this.ws = new WebSocket(env.WS_URL, {
+        headers: { Authorization: env.INTEGRATIONS_AUTHORIZATION },
+      });
 
-    this.client.on("error", (error) => {
-      if (!("code" in error && error.code === "ECONNREFUSED")) {
-        Logger.log(error);
-      }
-    });
+      this.ws.on("error", (error) => {
+        if (!("code" in error && error.code === "ECONNREFUSED")) {
+          Logger.log(error);
+        }
+      });
+
+      this.ws.on("close", () => {
+        this.ws = null;
+      });
+
+      return this.ws;
+    } else {
+      return this.ws;
+    }
   }
 }
