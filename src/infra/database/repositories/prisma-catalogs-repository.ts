@@ -74,17 +74,17 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
                       category_id: offers?.product?.category?.id,
                     },
                     ...(typeof offers?.remaining === "boolean" &&
-                    offers.remaining
-                      ? {
-                          amount: {
-                            gt: 0,
-                          },
-                        }
-                      : {
-                          amount: {
-                            equals: 0,
-                          },
-                        }),
+                      (offers.remaining
+                        ? {
+                            amount: {
+                              gt: 0,
+                            },
+                          }
+                        : {
+                            amount: {
+                              equals: 0,
+                            },
+                          })),
                     ...(typeof offers?.available === "boolean" &&
                       (offers.available
                         ? {
@@ -186,17 +186,18 @@ export class PrismaCatalogsRepository implements CatalogsRepository {
               name: { contains: offers?.product?.name, mode: "insensitive" },
               category_id: offers?.product?.category?.id,
             },
-            ...(typeof offers?.remaining === "boolean" && offers.remaining
-              ? {
-                  amount: {
-                    gt: 0,
-                  },
-                }
-              : {
-                  amount: {
-                    equals: 0,
-                  },
-                }),
+            ...(typeof offers?.remaining === "boolean" &&
+              (offers.remaining
+                ? {
+                    amount: {
+                      gt: 0,
+                    },
+                  }
+                : {
+                    amount: {
+                      equals: 0,
+                    },
+                  })),
             ...(typeof offers?.available === "boolean" &&
               (offers.available
                 ? {
