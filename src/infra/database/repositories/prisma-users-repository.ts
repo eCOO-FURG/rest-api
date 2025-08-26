@@ -1,5 +1,5 @@
 // Entities
-import { User } from "@/core/entities/user";
+import { User, UserRole } from "@/core/entities/user";
 
 // Repositories
 import {
@@ -38,9 +38,22 @@ export class PrismaUsersRepository implements UsersRepository {
 
   async list<T extends UserRepositoryReturnType>(
     _: T,
-    { id, email, cpf, phone, chat, roles }: UsersRepositorySearchRequest,
+    {
+      id,
+      email,
+      cpf,
+      phone,
+      chat,
+      roles,
+      first_name,
+      last_name,
+    }: UsersRepositorySearchRequest,
     page?: number,
   ): Promise<UserEntityOf<T>[]> {
+    const validRoles = roles?.filter((role) =>
+      User.roles.includes(role as UserRole),
+    );
+
     const users = await prisma.user.findMany({
       where: {
         id,
@@ -48,9 +61,18 @@ export class PrismaUsersRepository implements UsersRepository {
         cpf,
         phone,
         chat,
-        ...(roles && { roles: { hasEvery: roles } }),
+        ...(validRoles && validRoles.length > 0
+          ? { roles: { hasEvery: validRoles } }
+          : {}),
+        ...(first_name && {
+          first_name: { contains: first_name, mode: "insensitive" },
+        }),
+        ...(last_name && {
+          last_name: { contains: last_name, mode: "insensitive" },
+        }),
       },
-      ...(page && { skip: (page - 1) * 20, take: 20 }),
+      skip: page ? (page - 1) * 20 : undefined,
+      take: page ? 20 : undefined,
     });
 
     return users.map(PrismaUserMapper.toDomain<T>);

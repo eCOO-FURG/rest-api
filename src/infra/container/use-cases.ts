@@ -26,6 +26,7 @@ import { ListCyclesUseCase } from "@/core/use-cases/list-cycles";
 import { ListFarmsUseCase } from "@/core/use-cases/list-farms";
 import { ListOffersUseCase } from "@/core/use-cases/list-offers";
 import { ListProductsUsecase } from "@/core/use-cases/list-products";
+import { ListUsersUseCase } from "@/core/use-cases/list-users";
 import { OpenPaymentUseCase } from "@/core/use-cases/open-payment";
 import { RegisterUseCase } from "@/core/use-cases/register";
 import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
@@ -73,6 +74,9 @@ export default (container: AwilixContainer) => {
     verifyUserUseCase: asFunction(
       ({ usersRepository, sessionsRepository, hasher }) =>
         new VerifyUserUsecase(usersRepository, sessionsRepository, hasher),
+    ),
+    listUsersUseCase: asFunction(
+      ({ usersRepository }) => new ListUsersUseCase(usersRepository),
     ),
     registerFarmUseCase: asFunction(
       ({ usersRepository, farmsRepository }) =>

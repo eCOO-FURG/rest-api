@@ -14,6 +14,8 @@ export interface UsersRepositorySearchRequest {
   cpf?: string;
   chat?: string;
   roles?: UserRole[];
+  first_name?: string;
+  last_name?: string;
 }
 
 export interface UsersRepository {
