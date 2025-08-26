@@ -63,9 +63,8 @@ describe("list users", () => {
     const result = await sut.execute({ page: 1, roles: ["USER"] });
 
     expect(result.users).toHaveLength(2);
-    expect(
-      result.users.map((u) => u.roles.includes("USER")).every(Boolean),
-    ).toBe(true);
+    expect(result.users[0].roles).toContain("USER");
+    expect(result.users[1].roles).toContain("USER");
   });
 
   it("should return empty array when no user matches", async () => {

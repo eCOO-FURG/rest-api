@@ -1,5 +1,5 @@
 // Entities
-import { User, UserRole } from "@/core/entities/user";
+import { User } from "@/core/entities/user";
 
 // Repositories
 import {
@@ -18,7 +18,18 @@ import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
 export class PrismaUsersRepository implements UsersRepository {
   async find<T extends UserRepositoryReturnType>(
     _: T,
-    { id, email, cpf, phone, chat, roles }: UsersRepositorySearchRequest,
+    {
+      id,
+      email,
+      cpf,
+      phone,
+      chat,
+      roles,
+      first_name,
+      last_name,
+      since,
+      before,
+    }: UsersRepositorySearchRequest,
   ): Promise<UserEntityOf<T> | null> {
     const user = await prisma.user.findFirst({
       where: {
@@ -27,7 +38,17 @@ export class PrismaUsersRepository implements UsersRepository {
         cpf,
         phone,
         chat,
-        ...(roles && { roles: { hasEvery: roles } }),
+        ...(first_name && {
+          first_name: { contains: first_name, mode: "insensitive" },
+        }),
+        ...(last_name && {
+          last_name: { contains: last_name, mode: "insensitive" },
+        }),
+        roles: { hasEvery: roles },
+        created_at: {
+          gte: since,
+          lte: before,
+        },
       },
     });
 
@@ -47,13 +68,11 @@ export class PrismaUsersRepository implements UsersRepository {
       roles,
       first_name,
       last_name,
+      since,
+      before,
     }: UsersRepositorySearchRequest,
     page?: number,
   ): Promise<UserEntityOf<T>[]> {
-    const validRoles = roles?.filter((role) =>
-      User.roles.includes(role as UserRole),
-    );
-
     const users = await prisma.user.findMany({
       where: {
         id,
@@ -61,15 +80,17 @@ export class PrismaUsersRepository implements UsersRepository {
         cpf,
         phone,
         chat,
-        ...(validRoles && validRoles.length > 0
-          ? { roles: { hasEvery: validRoles } }
-          : {}),
+        roles: { hasEvery: roles },
         ...(first_name && {
           first_name: { contains: first_name, mode: "insensitive" },
         }),
         ...(last_name && {
           last_name: { contains: last_name, mode: "insensitive" },
         }),
+        created_at: {
+          gte: since,
+          lte: before,
+        },
       },
       skip: page ? (page - 1) * 20 : undefined,
       take: page ? 20 : undefined,
