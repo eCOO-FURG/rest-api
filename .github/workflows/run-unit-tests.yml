@@ -32,7 +32,7 @@ jobs:
       - name: Run unit tests
         run: pnpm run test
         env:
-          ENVIRONMENT: DEVELOPMENT
+          ENVIRONMENT: TEST
           SERVER_PORT: 3333
           SERVER_URL: http://localhost:3333
           JWT_SECRET: UNIT_TESTS
