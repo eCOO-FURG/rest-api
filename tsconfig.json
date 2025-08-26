@@ -8,7 +8,7 @@
       "@/infra/*": ["src/infra/*"],
       "@/test/*": ["src/test/*"]
     },
-    "types": ["vitest/globals"],
+    "types": ["vitest/globals", "@goodrequest/joi-type-extract"],
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
