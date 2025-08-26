@@ -2,7 +2,7 @@
 import { User } from "@/core/entities/user";
 
 // Repositories
-import { UsersRepository } from "@/core/repositories/users-repository";
+import { UsersRepository, UsersRepositorySearchRequest } from "@/core/repositories/users-repository";
 
 interface ListUsersRequest {
   page: number;
@@ -25,7 +25,7 @@ export class ListUsersUseCase {
     last_name,
     roles,
   }: ListUsersRequest): Promise<ListUsersResponse> {
-    const filters: any = {};
+    const filters: UsersRepositorySearchRequest = {};
 
     if (first_name) {
       filters.first_name = first_name;
