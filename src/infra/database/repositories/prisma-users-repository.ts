@@ -38,13 +38,13 @@ export class PrismaUsersRepository implements UsersRepository {
         cpf,
         phone,
         chat,
+        ...(roles && { roles: { hasEvery: roles } }),
         ...(first_name && {
           first_name: { contains: first_name, mode: "insensitive" },
         }),
         ...(last_name && {
           last_name: { contains: last_name, mode: "insensitive" },
         }),
-        roles: { hasEvery: roles },
         created_at: {
           gte: since,
           lte: before,
@@ -80,7 +80,7 @@ export class PrismaUsersRepository implements UsersRepository {
         cpf,
         phone,
         chat,
-        roles: { hasEvery: roles },
+        ...(roles && { roles: { hasEvery: roles } }),
         ...(first_name && {
           first_name: { contains: first_name, mode: "insensitive" },
         }),
