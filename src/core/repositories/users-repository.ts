@@ -9,11 +9,15 @@ export type UserEntityOf<T extends UserRepositoryReturnType> = T extends "user"
 
 export interface UsersRepositorySearchRequest {
   id?: string;
+  first_name?: string;
+  last_name?: string;
   email?: string;
   phone?: string;
   cpf?: string;
   chat?: string;
   roles?: UserRole[];
+  since?: Date;
+  before?: Date;
 }
 
 export interface UsersRepository {

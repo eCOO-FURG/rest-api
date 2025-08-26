@@ -18,7 +18,18 @@ import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
 export class PrismaUsersRepository implements UsersRepository {
   async find<T extends UserRepositoryReturnType>(
     _: T,
-    { id, email, cpf, phone, chat, roles }: UsersRepositorySearchRequest,
+    {
+      id,
+      email,
+      cpf,
+      phone,
+      chat,
+      roles,
+      first_name,
+      last_name,
+      since,
+      before,
+    }: UsersRepositorySearchRequest,
   ): Promise<UserEntityOf<T> | null> {
     const user = await prisma.user.findFirst({
       where: {
@@ -27,7 +38,17 @@ export class PrismaUsersRepository implements UsersRepository {
         cpf,
         phone,
         chat,
-        ...(roles && { roles: { hasEvery: roles } }),
+        ...(first_name && {
+          first_name: { contains: first_name, mode: "insensitive" },
+        }),
+        ...(last_name && {
+          last_name: { contains: last_name, mode: "insensitive" },
+        }),
+        roles: { hasEvery: roles },
+        created_at: {
+          gte: since,
+          lte: before,
+        },
       },
     });
 
@@ -38,7 +59,18 @@ export class PrismaUsersRepository implements UsersRepository {
 
   async list<T extends UserRepositoryReturnType>(
     _: T,
-    { id, email, cpf, phone, chat, roles }: UsersRepositorySearchRequest,
+    {
+      id,
+      email,
+      cpf,
+      phone,
+      chat,
+      roles,
+      first_name,
+      last_name,
+      since,
+      before,
+    }: UsersRepositorySearchRequest,
     page?: number,
   ): Promise<UserEntityOf<T>[]> {
     const users = await prisma.user.findMany({
@@ -48,9 +80,20 @@ export class PrismaUsersRepository implements UsersRepository {
         cpf,
         phone,
         chat,
-        ...(roles && { roles: { hasEvery: roles } }),
+        roles: { hasEvery: roles },
+        ...(first_name && {
+          first_name: { contains: first_name, mode: "insensitive" },
+        }),
+        ...(last_name && {
+          last_name: { contains: last_name, mode: "insensitive" },
+        }),
+        created_at: {
+          gte: since,
+          lte: before,
+        },
       },
-      ...(page && { skip: (page - 1) * 20, take: 20 }),
+      skip: page ? (page - 1) * 20 : undefined,
+      take: page ? 20 : undefined,
     });
 
     return users.map(PrismaUserMapper.toDomain<T>);

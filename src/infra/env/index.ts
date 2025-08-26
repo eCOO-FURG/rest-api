@@ -25,12 +25,13 @@ const schema = Joi.object({
   SMTP_PORT: Joi.number().required(),
 
   BATCH_EMAIL_ACCOUNT: Joi.alternatives().conditional("ENVIRONMENT", {
-    not: "DEVELOPMENT",
+    not: "TEST",
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
+
   BATCH_EMAIL_PASSWORD: Joi.alternatives().conditional("ENVIRONMENT", {
-    not: "DEVELOPMENT",
+    not: "TEST",
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
@@ -39,19 +40,19 @@ const schema = Joi.object({
   BATCH_SMTP_PORT: Joi.number().required(),
 
   FALLBACK_EMAIL_ACCOUNT: Joi.alternatives().conditional("ENVIRONMENT", {
-    not: "DEVELOPMENT",
+    not: Joi.alternatives().try("DEVELOPMENT", "TEST"),
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
 
   FALLBACK_EMAIL_PASSWORD: Joi.alternatives().conditional("ENVIRONMENT", {
-    not: "DEVELOPMENT",
+    not: Joi.alternatives().try("DEVELOPMENT", "TEST"),
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
 
   FALLBACK_SMTP_HOST: Joi.alternatives().conditional("ENVIRONMENT", {
-    not: "DEVELOPMENT",
+    not: Joi.alternatives().try("DEVELOPMENT", "TEST"),
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
@@ -64,7 +65,7 @@ const schema = Joi.object({
 
   // Logs
   SENTRY_DSN: Joi.alternatives().conditional("ENVIRONMENT", {
-    not: "DEVELOPMENT",
+    not: Joi.alternatives().try("DEVELOPMENT", "TEST"),
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
@@ -80,7 +81,7 @@ const schema = Joi.object({
 
   // Payments
   PIX_PROVIDER_API_KEY: Joi.alternatives().conditional("ENVIRONMENT", {
-    not: "DEVELOPMENT",
+    not: Joi.alternatives().try("DEVELOPMENT", "TEST"),
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),

@@ -17,7 +17,19 @@ export class InMemoryUsersRepository implements UsersRepository {
 
   async find<T extends UserRepositoryReturnType>(
     _: T,
-    { id, email, phone, cpf, chat, roles }: UsersRepositorySearchRequest,
+    {
+      id,
+      email,
+      phone,
+      cpf,
+      chat,
+      roles,
+      first_name,
+      last_name,
+    }: UsersRepositorySearchRequest & {
+      first_name?: string;
+      last_name?: string;
+    },
   ): Promise<UserEntityOf<T> | null> {
     const user = this.items.find((item) =>
       Boolean(
@@ -26,18 +38,31 @@ export class InMemoryUsersRepository implements UsersRepository {
           (!phone || item.phone.equals(phone)) &&
           (!cpf || item.cpf.equals(cpf)) &&
           (!chat || item.chat === chat) &&
+          (!first_name || item.first_name === first_name) &&
+          (!last_name || item.last_name === last_name) &&
           (!roles || roles.every((role) => item.roles.includes(role))),
       ),
     );
 
     if (!user) return null;
-
     return user as UserEntityOf<T>;
   }
 
   async list<T extends UserRepositoryReturnType>(
     _: T,
-    { id, email, phone, cpf, roles, chat }: UsersRepositorySearchRequest,
+    {
+      id,
+      email,
+      phone,
+      cpf,
+      roles,
+      chat,
+      first_name,
+      last_name,
+    }: UsersRepositorySearchRequest & {
+      first_name?: string;
+      last_name?: string;
+    },
     page?: number,
   ): Promise<UserEntityOf<T>[]> {
     let users = this.items.filter((item) =>
@@ -47,6 +72,8 @@ export class InMemoryUsersRepository implements UsersRepository {
           (!phone || item.phone.equals(phone)) &&
           (!cpf || item.cpf.equals(cpf)) &&
           (!chat || item.chat === chat) &&
+          (!first_name || item.first_name === first_name) &&
+          (!last_name || item.last_name === last_name) &&
           (!roles || roles.every((role) => item.roles.includes(role))),
       ),
     );
