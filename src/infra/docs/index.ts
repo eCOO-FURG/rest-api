@@ -76,6 +76,7 @@ import { updateUserSchema } from "@/infra/http/controllers/update-user";
 import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
 import { openPixSchema } from "@/infra/http/webhooks/open-pix";
 import { fetchDescriptionSuggestionParams } from "../http/controllers/fetch-description-suggestion";
+import { listUsersQuery } from "@/infra/http/controllers/list-users";
 
 // Schemas
 const { swagger: authenticateSchemaSwagger } = j2s(authenticateSchema);
@@ -140,6 +141,8 @@ const { swagger: listOffersQuerySwagger } = j2s(listOffersQuery);
 const { swagger: fetchDescriptionSuggestionParamsSwagger } = j2s(
   fetchDescriptionSuggestionParams,
 );
+const { swagger: listUsersQuerySwagger } = j2s(listUsersQuery);
+
 const toQueryParams = (query: SwaggerSchema) =>
   Object.entries(query.properties).map(([name, schema]) => ({
     in: "query",
@@ -255,6 +258,21 @@ export const docs = {
       },
     },
     "/users": {
+      get: {
+        tags: ["Usuários"],
+        summary: "Listar usuários",
+        parameters: [
+          {
+            in: "query",
+            schema: listUsersQuerySwagger,
+          },
+        ],
+        responses: {
+          200: {
+            description: "Lista de usuários obtida com sucesso",
+          },
+        },
+      },
       post: {
         tags: ["Usuários"],
         summary: "Registrar novo usuário",
