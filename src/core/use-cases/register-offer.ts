@@ -107,7 +107,7 @@ export class RegisterOfferUseCase {
       expires_at,
       opens_at: recurring
         ? now()
-        : first(cycle.order, first(cycle.order) < now()),
+        : first(cycle.order, last(cycle.order) < now()),
       closes_at: recurring
         ? null
         : last(cycle.order, last(cycle.order) < now()),
