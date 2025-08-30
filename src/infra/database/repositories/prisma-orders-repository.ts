@@ -90,11 +90,11 @@ export class PrismaOrdersRepository implements OrdersRepository {
         const refund =
           order.status === "CANCELLED" || order.status === "REJECTED";
 
-        if (verified) {
+        if (verified || refund) {
           await ctx.bag.update({
             where: { id: order.bag_id.value },
             data: {
-              status: "VERIFIED",
+              ...(verified && { status: "VERIFIED" }),
               ...(refund && {
                 subtotal: bag.subtotal.minus(order.subtotal),
                 fee: bag.fee.minus(order.fee),
