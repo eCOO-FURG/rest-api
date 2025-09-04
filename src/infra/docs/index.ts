@@ -75,7 +75,7 @@ import {
 import { updateUserSchema } from "@/infra/http/controllers/update-user";
 import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
 import { openPixSchema } from "@/infra/http/webhooks/open-pix";
-import { fetchDescriptionSuggestionParams } from "../http/controllers/fetch-description-suggestion";
+import { fetchDescriptionSuggestionParams } from "@/infra/http/controllers/fetch-description-suggestion";
 import { listUsersQuery } from "@/infra/http/controllers/list-users";
 
 // Schemas
@@ -261,12 +261,7 @@ export const docs = {
       get: {
         tags: ["Usuários"],
         summary: "Listar usuários",
-        parameters: [
-          {
-            in: "query",
-            schema: listUsersQuerySwagger,
-          },
-        ],
+        parameters: toQueryParams(listUsersQuerySwagger),
         responses: {
           200: {
             description: "Lista de usuários obtida com sucesso",
