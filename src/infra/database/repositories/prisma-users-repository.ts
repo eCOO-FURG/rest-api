@@ -92,6 +92,7 @@ export class PrismaUsersRepository implements UsersRepository {
           lte: before,
         },
       },
+      orderBy: { first_name: "asc" },
       skip: page ? (page - 1) * 20 : undefined,
       take: page ? 20 : undefined,
     });
