@@ -38,6 +38,7 @@ services:
     restart: always
     volumes:
       - ./src:/app/src
+      - storage:/storage
     depends_on:
       - database
       - cache
@@ -51,4 +52,6 @@ services:
 
 volumes:
   redis:
+    driver: local
+  storage:
     driver: local
