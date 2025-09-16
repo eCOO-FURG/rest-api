@@ -10,6 +10,7 @@ import { User } from "@/core/entities/user";
 import { Optional } from "@/core/types/optional";
 
 export type BagStatus = (typeof Bag.statuses)[number];
+
 export interface BagProps extends EntityRequest {
   customer_id: UUID;
   customer?: User;
@@ -18,7 +19,7 @@ export interface BagProps extends EntityRequest {
   cycle?: Cycle;
 
   address_id: UUID | null;
-  address?: Address | null;
+  address: Address | null;
 
   code: string;
   subtotal: number;
