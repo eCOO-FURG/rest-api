@@ -48,3 +48,4 @@ jobs:
           SMTP_PORT: 2525
           BATCH_SMTP_HOST: localhost
           BATCH_SMTP_PORT: 2525
+          WAREHOUSE_NAME: Armazém do eCOO
