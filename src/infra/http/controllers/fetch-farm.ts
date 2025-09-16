@@ -1,4 +1,4 @@
-//Libs
+// Libraries
 import Joi from "joi";
 import { NextFunction, Request, Response } from "express";
 

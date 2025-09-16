@@ -36,6 +36,7 @@ import { stats } from "@/infra/http/routes/stats";
 import { reports } from "@/infra/http/routes/reports";
 import { notifications } from "@/infra/http/routes/notifications";
 import { webhooks } from "@/infra/http/routes/webhooks";
+import { warehouse } from "@/infra/http/routes/warehouse";
 
 export const router = Router();
 
@@ -69,6 +70,7 @@ router.use("/products", ensureAuthenticated, products);
 router.use("/categories", categories);
 router.use("/pendings", ensureAuthenticated, ensureRole(["BROKER"]), pendings);
 router.use("/stats", ensureAuthenticated, ensureRole(["MANAGER"]), stats);
+router.use("/warehouse", warehouse);
 router.use(
   "/reports",
   ensureAuthenticated,

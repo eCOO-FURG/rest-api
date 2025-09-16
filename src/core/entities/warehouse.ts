@@ -1,14 +1,17 @@
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
 
+// Types
+import { Optional } from "@/core/types/optional";
+
 export type WarehouseAddress = {
-  CEP: string;
-  street: string;
-  number: string;
-  neighborhood: string;
+  CEP: string | null;
+  street: string | null;
+  number: string | null;
+  neighborhood: string | null;
   complement: string | null;
-  city: string;
-  state: string;
+  city: string | null;
+  state: string | null;
   link: string | null;
 };
 
@@ -19,10 +22,10 @@ export type WarehouseSocial = {
 
 export interface WarehouseProps extends EntityRequest {
   name: string;
-  CNPJ: string;
-  manager: string;
-  email: string;
-  phone: string;
+  CNPJ: string | null;
+  manager: string | null;
+  email: string | null;
+  phone: string | null;
   socials: WarehouseSocial[];
   address: WarehouseAddress;
   coverage: string[];
@@ -35,27 +38,27 @@ export class Warehouse<
     return this.props.name;
   }
 
-  get manager() {
+  get manager(): string | null {
     return this.props.manager;
   }
 
-  get CNPJ() {
+  get CNPJ(): string | null {
     return this.props.CNPJ;
   }
 
-  get email() {
+  get email(): string | null {
     return this.props.email;
   }
 
-  get phone() {
+  get phone(): string | null {
     return this.props.phone;
   }
 
-  get socials() {
+  get socials(): WarehouseSocial[] {
     return this.props.socials;
   }
 
-  get address() {
+  get address(): WarehouseAddress {
     return this.props.address;
   }
 
@@ -67,15 +70,15 @@ export class Warehouse<
     this.props.name = value;
   }
 
-  set manager(value: string) {
+  set manager(value: string | null) {
     this.props.manager = value;
   }
 
-  set email(value: string) {
+  set email(value: string | null) {
     this.props.email = value;
   }
 
-  set phone(value: string) {
+  set phone(value: string | null) {
     this.props.phone = value;
   }
 
@@ -83,7 +86,7 @@ export class Warehouse<
     this.props.socials = value;
   }
 
-  set CNPJ(value: string) {
+  set CNPJ(value: string | null) {
     this.props.CNPJ = value;
   }
 
@@ -95,8 +98,38 @@ export class Warehouse<
     this.props.coverage = value;
   }
 
-  static create(props: WarehouseProps) {
-    return new Warehouse(props);
+  static create(
+    props: Optional<
+      WarehouseProps,
+      | "name"
+      | "CNPJ"
+      | "manager"
+      | "email"
+      | "phone"
+      | "socials"
+      | "address"
+      | "coverage"
+    >,
+  ) {
+    return new Warehouse({
+      name: props.name ?? "Armazém Padrão",
+      CNPJ: props.CNPJ ?? null,
+      manager: props.manager ?? null,
+      email: props.email ?? null,
+      phone: props.phone ?? null,
+      socials: props.socials ?? [],
+      address: props.address ?? {
+        CEP: null,
+        street: null,
+        number: null,
+        neighborhood: null,
+        complement: null,
+        city: null,
+        state: null,
+        link: null,
+      },
+      coverage: props.coverage ?? [],
+    });
   }
 
   static socialPlatforms = [

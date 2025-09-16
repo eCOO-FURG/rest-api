@@ -1,4 +1,4 @@
-// Libs
+// Libraries
 import { Prisma, Category as PrismaCategory } from "@prisma/client";
 
 // Entities

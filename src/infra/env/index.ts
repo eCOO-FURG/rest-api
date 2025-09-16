@@ -92,6 +92,9 @@ const schema = Joi.object({
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
+
+  // Warehouse
+  WAREHOUSE_NAME: Joi.string().required(),
 })
   .unknown(true)
   .required();

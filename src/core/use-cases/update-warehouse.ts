@@ -39,10 +39,6 @@ export class UpdateWarehouseUseCase {
 
     const warehouse = await this.warehouseRepository.find();
 
-    if (!warehouse) {
-      throw new ResourceNotFoundError("Warehouse", "principal");
-    }
-
     warehouse.name = data.name ?? warehouse.name;
     warehouse.CNPJ = data.CNPJ ?? warehouse.CNPJ;
     warehouse.manager = data.manager ?? warehouse.manager;

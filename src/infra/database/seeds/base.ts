@@ -19,7 +19,25 @@ import { seedDevelopment } from "@/infra/database/seeds/development";
 // Utils
 import { now } from "@/core/utils/now";
 
+// Entities
+import { Warehouse } from "@/core/entities/warehouse";
+
+// Repositories
+import { StaticWarehouseRepository } from "@/infra/database/repositories/static-warehouse-repository";
+
 async function seedBase() {
+  const staticWarehouseRepository = new StaticWarehouseRepository();
+
+  const warehouseAlreadyExists = await staticWarehouseRepository.find();
+
+  if (!warehouseAlreadyExists) {
+    const warehouse = Warehouse.create({
+      name: env.WAREHOUSE_NAME,
+    });
+
+    await staticWarehouseRepository.create(warehouse);
+  }
+
   await prisma.user.create({
     data: {
       first_name: "Administrador",

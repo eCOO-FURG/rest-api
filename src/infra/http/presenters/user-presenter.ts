@@ -1,5 +1,7 @@
 // Entities
 import { User, UserProps } from "@/core/entities/user";
+
+// Types
 import { View } from "@/infra/types/view";
 
 export class UserPresenter {

@@ -1,7 +1,7 @@
 // Entities
 import { Category, CategoryProps } from "@/core/entities/category";
 
-// Libs
+// Libraries
 import { faker } from "@faker-js/faker";
 
 export function makeCategory(props: Partial<CategoryProps> = {}) {

@@ -1,7 +1,7 @@
 // Container
 import container from "@/infra/container";
 
-//Libs
+// Libraries
 import { NextFunction, Request, Response } from "express";
 
 // Use-cases

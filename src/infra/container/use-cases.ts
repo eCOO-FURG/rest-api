@@ -48,6 +48,8 @@ import { UpdateProductUseCase } from "@/core/use-cases/update-product";
 import { UpdateUserUseCase } from "@/core/use-cases/update-user";
 import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
 import { FetchDescriptionSuggestionUseCase } from "@/core/use-cases/fetch-description-suggestion";
+import { FetchWarehouseUseCase } from "@/core/use-cases/fetch-warehouse";
+import { UpdateWarehouseUseCase } from "@/core/use-cases/update-warehouse";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -329,6 +331,14 @@ export default (container: AwilixContainer) => {
     fetchDescriptionSuggestionUseCase: asFunction(
       ({ productsRepository, llmProvider }) =>
         new FetchDescriptionSuggestionUseCase(productsRepository, llmProvider),
+    ),
+    fetchWarehouseUseCase: asFunction(
+      ({ warehouseRepository }) =>
+        new FetchWarehouseUseCase(warehouseRepository),
+    ),
+    updateWarehouseUseCase: asFunction(
+      ({ usersRepository, warehouseRepository }) =>
+        new UpdateWarehouseUseCase(usersRepository, warehouseRepository),
     ),
   });
 };

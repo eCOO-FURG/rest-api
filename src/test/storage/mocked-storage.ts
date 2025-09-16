@@ -30,7 +30,7 @@ export class MockedStorage implements Storage {
 
     const url = path.join(folder, name);
 
-    fs.writeFileSync(url, file);
+    fs.writeFileSync(url, Uint8Array.from(file));
 
     folder = folder.split("/").reverse()[0];
 
