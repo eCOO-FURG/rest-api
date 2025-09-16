@@ -21,6 +21,7 @@ import {
   fetchCategoryParams,
   fetchCategoryQuery,
 } from "@/infra/http/controllers/fetch-category";
+import { updateWarehouseSchema } from "@/infra/http/controllers/update-warehouse";
 import { fetchCurrentBoxQuery } from "@/infra/http/controllers/fetch-current-box";
 import {
   fetchCycleCatalogParams,
@@ -142,6 +143,7 @@ const { swagger: fetchDescriptionSuggestionParamsSwagger } = j2s(
   fetchDescriptionSuggestionParams,
 );
 const { swagger: listUsersQuerySwagger } = j2s(listUsersQuery);
+const { swagger: updateWarehouseSchemaSwagger } = j2s(updateWarehouseSchema);
 
 const toQueryParams = (query: SwaggerSchema) =>
   Object.entries(query.properties).map(([name, schema]) => ({
@@ -933,6 +935,77 @@ export const docs = {
                 },
               },
             },
+          },
+        },
+      },
+    },
+    "/warehouse": {
+      get: {
+        tags: ["Armazém"],
+        summary: "Obter informações do armazém",
+        responses: {
+          200: {
+            description: "Informações do armazém obtidas com sucesso",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                    name: { type: "string" },
+                    CNPJ: { type: "string" },
+                    manager: { type: "string" },
+                    email: { type: "string" },
+                    phone: { type: "string" },
+                    socials: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          platform: { type: "string" },
+                          value: { type: "string" },
+                        },
+                      },
+                    },
+                    address: {
+                      type: "object",
+                      properties: {
+                        CEP: { type: "string" },
+                        street: { type: "string" },
+                        number: { type: "string" },
+                        neighborhood: { type: "string" },
+                        complement: { type: "string" },
+                        city: { type: "string" },
+                        state: { type: "string" },
+                        link: { type: "string" },
+                      },
+                    },
+                    coverage: {
+                      type: "array",
+                      items: { type: "string" },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      patch: {
+        tags: ["Armazém"],
+        summary: "Atualizar informações do armazém",
+        security: [{ bearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: updateWarehouseSchemaSwagger,
+            },
+          },
+        },
+        responses: {
+          204: {
+            description: "Informações do armazém atualizadas com sucesso",
           },
         },
       },
