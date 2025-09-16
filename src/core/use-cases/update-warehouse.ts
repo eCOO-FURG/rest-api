@@ -10,6 +10,7 @@ import { UnauthorizedError } from "@/core/errors/unauthorized";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 interface UpdateWarehouseUseCaseRequest {
+  user_id: string;
   name?: string;
   CNPJ?: string;
   manager?: string;
@@ -26,7 +27,7 @@ export class UpdateWarehouseUseCase {
     private warehouseRepository: WarehouseRepository,
   ) {}
 
-  async execute(user_id: string, data: UpdateWarehouseUseCaseRequest) {
+  async execute({ user_id, ...data }: UpdateWarehouseUseCaseRequest) {
     const user = await this.usersRepository.find("user", { id: user_id });
 
     if (!user) {

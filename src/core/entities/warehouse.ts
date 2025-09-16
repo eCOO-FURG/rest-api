@@ -16,7 +16,7 @@ export type WarehouseAddress = {
 };
 
 export type WarehouseSocial = {
-  platform: (typeof Warehouse.socialPlatforms)[number];
+  platform: (typeof Warehouse.plataforms)[number];
   value: string;
 };
 
@@ -132,7 +132,7 @@ export class Warehouse<
     });
   }
 
-  static socialPlatforms = [
+  static plataforms = [
     "instagram",
     "facebook",
     "whatsapp",
