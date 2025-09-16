@@ -8,8 +8,8 @@ export function makeWarehouse(props: Partial<WarehouseProps> = {}) {
   return Warehouse.create({
     ...props,
     name: props.name ?? faker.company.name(),
-    CNPJ: props.CNPJ ?? faker.datatype.uuid(),
-    manager: props.manager ?? faker.name.fullName(),
+    CNPJ: props.CNPJ ?? faker.string.uuid(),
+    manager: props.manager ?? faker.person.fullName(),
     email: props.email ?? faker.internet.email(),
     phone: props.phone ?? faker.phone.number(),
     socials: props.socials ?? [],

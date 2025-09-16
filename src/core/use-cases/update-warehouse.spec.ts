@@ -39,7 +39,8 @@ describe("Update warehouse", () => {
     });
     await repositories.users.create(manager);
 
-    await sut.execute(manager.id.value, {
+    await sut.execute({
+      user_id: manager.id.value,
       name: "New Warehouse Name",
     });
 
@@ -53,7 +54,8 @@ describe("Update warehouse", () => {
     });
     await repositories.users.create(manager);
 
-    await sut.execute(manager.id.value, {
+    await sut.execute({
+      user_id: manager.id.value,
       name: "New Warehouse Name",
       CNPJ: "12.345.678/0001-90",
       manager: "New Manager",
@@ -82,7 +84,8 @@ describe("Update warehouse", () => {
       link: "https://maps.example.com/new-location",
     };
 
-    await sut.execute(manager.id.value, {
+    await sut.execute({
+      user_id: manager.id.value,
       address: newAddress,
     });
 
@@ -98,7 +101,8 @@ describe("Update warehouse", () => {
 
     const newCoverage = ["Area1", "Area2", "Area3"];
 
-    await sut.execute(manager.id.value, {
+    await sut.execute({
+      user_id: manager.id.value,
       coverage: newCoverage,
     });
 
@@ -108,7 +112,8 @@ describe("Update warehouse", () => {
 
   it("should not be able to update if user doesn't exist", async () => {
     await expect(() =>
-      sut.execute("non-existing-user-id", {
+      sut.execute({
+        user_id: "non-existing-user-id",
         name: "New Name",
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
@@ -121,7 +126,8 @@ describe("Update warehouse", () => {
     await repositories.users.create(regularUser);
 
     await expect(() =>
-      sut.execute(regularUser.id.value, {
+      sut.execute({
+        user_id: regularUser.id.value,
         name: "New Name",
       }),
     ).rejects.toBeInstanceOf(UnauthorizedError);
