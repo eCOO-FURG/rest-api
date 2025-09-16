@@ -11,9 +11,6 @@ import * as fs from "fs";
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
-// Environment
-import { env } from "@/infra/env";
-
 const WAREHOUSE_FOLDER = "warehouse";
 const WAREHOUSE_FILE_NAME = "warehouse.json";
 
@@ -53,7 +50,7 @@ export class StaticWarehouseRepository implements WarehouseRepository {
   }
 
   private useDirectory(): string {
-    const directory = path.join(env.STORAGE_URL, WAREHOUSE_FOLDER);
+    const directory = path.join("/storage", WAREHOUSE_FOLDER);
 
     if (!fs.existsSync(directory)) {
       fs.mkdirSync(directory, { recursive: true });
