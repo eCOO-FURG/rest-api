@@ -54,8 +54,14 @@ import { UpdateWarehouseUseCase } from "@/core/use-cases/update-warehouse";
 export default (container: AwilixContainer) => {
   container.register({
     registerUsecase: asFunction(
-      ({ usersRepository, encrypter, hasher, mailer }) =>
-        new RegisterUseCase(usersRepository, encrypter, hasher, mailer),
+      ({ usersRepository, encrypter, hasher, storage, mailer }) =>
+        new RegisterUseCase(
+          usersRepository,
+          encrypter,
+          hasher,
+          storage,
+          mailer,
+        ),
     ),
     authenticateUseCase: asFunction(
       ({

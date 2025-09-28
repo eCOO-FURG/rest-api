@@ -73,7 +73,11 @@ import {
   updateProductParams,
   updateProductSchema,
 } from "@/infra/http/controllers/update-product";
-import { updateUserSchema } from "@/infra/http/controllers/update-user";
+import {
+  updateUserSchema,
+  updateUserParams,
+} from "@/infra/http/controllers/update-user";
+import { updateProfileSchema } from "@/infra/http/controllers/update-profile";
 import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
 import { openPixSchema } from "@/infra/http/webhooks/open-pix";
 import { fetchDescriptionSuggestionParams } from "@/infra/http/controllers/fetch-description-suggestion";
@@ -86,6 +90,8 @@ const { swagger: resetPasswordSchemaSwagger } = j2s(resetPasswordSchema);
 const { swagger: verifyUserSchemaSwagger } = j2s(verifyUserSchema);
 const { swagger: registerSchemaSwagger } = j2s(registerSchema);
 const { swagger: updateUserSchemaSwagger } = j2s(updateUserSchema);
+const { swagger: updateProfileSchemaSwagger } = j2s(updateProfileSchema);
+const { swagger: updateUserParamsSwagger } = j2s(updateUserParams);
 const { swagger: requestHelpSchemaSwagger } = j2s(requestHelpSchema);
 const { swagger: listFarmsQuerySwagger } = j2s(listFarmsQuery);
 const { swagger: registerFarmSchemaSwagger } = j2s(registerFarmSchema);
@@ -288,6 +294,26 @@ export const docs = {
         },
       },
     },
+    "/users/{user_id}": {
+      patch: {
+        tags: ["Usuários"],
+        summary: "Atualizar usuário",
+        parameters: toRouteParams(updateUserParamsSwagger),
+        requestBody: {
+          required: true,
+          content: {
+            "multipart/form-data": {
+              schema: updateUserSchemaSwagger,
+            },
+          },
+        },
+        responses: {
+          204: {
+            description: "Usuário atualizado com sucesso",
+          },
+        },
+      },
+    },
     "/me": {
       get: {
         tags: ["Perfil"],
@@ -324,7 +350,7 @@ export const docs = {
           required: true,
           content: {
             "multipart/form-data": {
-              schema: updateUserSchemaSwagger,
+              schema: updateProfileSchemaSwagger,
             },
           },
         },

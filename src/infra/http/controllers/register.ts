@@ -10,6 +10,7 @@ import container from "@/infra/container";
 
 // Validation
 import { parse } from "@/infra/http/validation/parse";
+import { file } from "@/infra/http/validation/file";
 
 export const registerSchema = Joi.object({
   first_name: Joi.string().required(),
@@ -20,6 +21,7 @@ export const registerSchema = Joi.object({
   password: Joi.string().min(8).optional(),
   role: Joi.string().valid("USER", "PRODUCER").required(),
   chat: Joi.string().optional(),
+  photo: file.optional(),
 });
 
 export async function registerController(

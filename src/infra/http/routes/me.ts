@@ -5,7 +5,7 @@ import { processFiles } from "@/infra/http/middlewares/process-files";
 
 // Controllers
 import { fetchProfileController } from "@/infra/http/controllers/fetch-profile";
-import { updateUserController } from "@/infra/http/controllers/update-user";
+import { updateProfileController } from "@/infra/http/controllers/update-profile";
 
 export const me = Router();
 
@@ -18,5 +18,5 @@ me.patch(
       options: { allowed: ["image/jpeg", "image/png"], size: 1 },
     },
   ]),
-  updateUserController,
+  updateProfileController,
 );
