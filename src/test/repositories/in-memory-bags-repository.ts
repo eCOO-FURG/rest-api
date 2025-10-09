@@ -16,7 +16,7 @@ export class InMemoryBagsRepository implements BagsRepository {
   items: BagEntityOf<BagRepositoryReturnType>[] = [];
 
   async find<T extends BagRepositoryReturnType>(
-    type: T,
+    _: T,
     {
       id,
       user,
@@ -67,7 +67,7 @@ export class InMemoryBagsRepository implements BagsRepository {
   }
 
   async list<T extends BagRepositoryReturnType>(
-    type: T,
+    _: T,
     {
       id,
       user,

@@ -16,7 +16,7 @@ export class InMemoryFarmsRepository implements FarmsRepository {
   items: FarmEntityOf<FarmRepositoryReturnType>[] = [];
 
   async find<T extends FarmRepositoryReturnType>(
-    type: T,
+    _: T,
     { id, name, status, tally, admin }: FarmsRepositorySearchRequest,
   ): Promise<FarmEntityOf<T> | null> {
     const farm = this.items.find((item) =>

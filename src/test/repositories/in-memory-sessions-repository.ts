@@ -10,7 +10,7 @@ import {
 } from "@/core/repositories/sessions-repository";
 
 export class InMemorySessionsRepository implements SessionsRepository {
-  items: Session[] = [];
+  items: SessionEntityOf<SessionRepositoryReturnType>[] = [];
 
   async find<T extends SessionRepositoryReturnType>(
     _: T,

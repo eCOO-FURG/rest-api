@@ -1,6 +1,5 @@
 // Entities
 import { Order } from "@/core/entities/order";
-import { OrderAndOffer } from "@/core/entities/aggregates/order-and-offer";
 
 // Repositories
 import {
@@ -10,14 +9,11 @@ import {
   OrderEntityOf,
 } from "@/core/repositories/orders-repository";
 
-// Factories
-import { makeOfferAndDetails } from "@/test/factories/make-offer-and-details";
-
 export class InMemoryOrdersRepository implements OrdersRepository {
-  items: Order[] = [];
+  items: OrderEntityOf<OrderRepositoryReturnType>[] = [];
 
   async find<T extends OrderRepositoryReturnType>(
-    type: T,
+    _: T,
     { id, bag, offer, since, before }: OrdersRepositorySearchRequest,
   ): Promise<OrderEntityOf<T> | null> {
     const order = this.items.find((item) => {
@@ -32,15 +28,7 @@ export class InMemoryOrdersRepository implements OrdersRepository {
 
     if (!order) return null;
 
-    switch (type) {
-      default:
-        return order as OrderEntityOf<T>;
-      case "order-and-offer":
-        return OrderAndOffer.create({
-          ...order.props,
-          offer: makeOfferAndDetails(order.offer),
-        }) as OrderEntityOf<T>;
-    }
+    return order as OrderEntityOf<T>;
   }
 
   async update(order: Order): Promise<void> {

@@ -1,6 +1,3 @@
-// Entities
-import { Address } from "@/core/entities/address";
-
 // Repositories
 import {
   AddressesRepository,
@@ -10,7 +7,7 @@ import {
 } from "@/core/repositories/addresses-repository";
 
 export class InMemoryAddressesRepository implements AddressesRepository {
-  items: Address[] = [];
+  items: AddressEntityOf<AddressRepositoryReturnType>[] = [];
 
   async find<T extends AddressRepositoryReturnType>(
     _: T,

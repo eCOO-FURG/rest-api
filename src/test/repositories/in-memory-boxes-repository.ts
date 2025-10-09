@@ -1,7 +1,5 @@
 // Entities
 import { Box } from "@/core/entities/box";
-import { BoxAndOrders } from "@/core/entities/aggregates/box-and-orders";
-import { OrderAndOffer } from "@/core/entities/aggregates/order-and-offer";
 
 // Repositories
 import {
@@ -14,15 +12,11 @@ import {
 // Utils
 import { paginate } from "@/test/utils/paginate";
 
-// Factories
-import { makeOfferAndDetails } from "@/test/factories/make-offer-and-details";
-import { makeFarmAndAdmin } from "@/test/factories/make-farm-and-admin";
-
 export class InMemoryBoxesRepository implements BoxesRepository {
   items: BoxEntityOf<BoxRepositoryReturnType>[] = [];
 
   async find<T extends BoxRepositoryReturnType>(
-    type: T,
+    _: T,
     { id, orders, since, before, cycle, farm, status }: BoxesRepositorySearchRequest,
   ): Promise<BoxEntityOf<T> | null> {
     const box = this.items.find((item) =>
@@ -44,7 +38,7 @@ export class InMemoryBoxesRepository implements BoxesRepository {
     return box as BoxEntityOf<T>;
   }
   async list<T extends BoxRepositoryReturnType>(
-    type: T,
+    _: T,
     { orders, since, status }: BoxesRepositorySearchRequest,
     page?: number,
   ): Promise<BoxEntityOf<T>[]> {

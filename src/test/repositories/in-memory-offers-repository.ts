@@ -17,7 +17,7 @@ export class InMemoryOffersRepository implements OffersRepository {
   items: OfferEntityOf<OfferRepositoryReturnType>[] = [];
 
   async find<T extends OfferRepositoryReturnType>(
-    type: T,
+    _: T,
     {
       id,
       product,
@@ -65,7 +65,7 @@ export class InMemoryOffersRepository implements OffersRepository {
   }
 
   async list<T extends OfferRepositoryReturnType>(
-    type: T,
+    _: T,
     { id, ids, cycle, product, available, since, before }: OffersRepositorySearchRequest,
     page?: number,
   ): Promise<OfferEntityOf<T>[]> {

@@ -13,7 +13,7 @@ import {
 import { paginate } from "@/test/utils/paginate";
 
 export class InMemoryPaymentsRepository implements PaymentsRepository {
-  items: Payment[] = [];
+  items: PaymentEntityOf<PaymentRepositoryReturnType>[] = [];
 
   async find<T extends PaymentRepositoryReturnType>(
     _: T,

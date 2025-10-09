@@ -13,7 +13,7 @@ import {
 import { paginate } from "@/test/utils/paginate";
 
 export class InMemoryUsersRepository implements UsersRepository {
-  items: User[] = [];
+  items: UserEntityOf<UserRepositoryReturnType>[] = [];
 
   async find<T extends UserRepositoryReturnType>(
     _: T,
