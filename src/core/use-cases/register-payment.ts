@@ -30,11 +30,9 @@ export class RegisterPaymentUseCase {
 
     if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
 
-    if (bag.status === "PENDING")
-      throw new ResourceNotVerifiedError("Sacola", bag_id);
+    if (bag.status === "PENDING") throw new ResourceNotVerifiedError("Sacola", bag_id);
 
-    if (bag.status === "CANCELLED")
-      throw new ResourceClosedError("Sacola", bag_id);
+    if (bag.status === "CANCELLED") throw new ResourceClosedError("Sacola", bag_id);
 
     const previous = await this.paymentsRepository.find("payment", {
       bag_id: bag.id.value,

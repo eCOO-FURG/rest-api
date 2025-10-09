@@ -1,8 +1,5 @@
 // LLM
-import {
-  LLMProvider,
-  LLMProviderGenerateRequest,
-} from "@/core/llm/llm-provider";
+import { LLMProvider, LLMProviderGenerateRequest } from "@/core/llm/llm-provider";
 import { Prompt, prompts } from "@/core/llm/prompts";
 
 // Libraries
@@ -33,10 +30,7 @@ export class OpenAIProvider implements LLMProvider {
     return sketch;
   }
 
-  async *generate({
-    prompt,
-    props,
-  }: LLMProviderGenerateRequest): AsyncGenerator<string> {
+  async *generate({ prompt, props }: LLMProviderGenerateRequest): AsyncGenerator<string> {
     const stream = await this.client.chat.completions.create({
       model: "gpt-3.5-turbo",
       temperature: 0.7,

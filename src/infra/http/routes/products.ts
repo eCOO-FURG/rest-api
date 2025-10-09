@@ -14,11 +14,7 @@ import { fetchDescriptionSuggestionController } from "@/infra/http/controllers/f
 export const products = Router();
 
 products.get("/", listProductsController);
-products.get(
-  "/:product_id",
-  ensureRole(["PRODUCER"]),
-  fetchDescriptionSuggestionController,
-);
+products.get("/:product_id", ensureRole(["PRODUCER"]), fetchDescriptionSuggestionController);
 
 products.post(
   "/",

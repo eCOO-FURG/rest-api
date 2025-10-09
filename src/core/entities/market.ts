@@ -10,9 +10,7 @@ export interface MarketProps extends EntityRequest {
   open: boolean;
 }
 
-export class Market<
-  Props extends MarketProps = MarketProps,
-> extends Entity<Props> {
+export class Market<Props extends MarketProps = MarketProps> extends Entity<Props> {
   get name() {
     return this.props.name;
   }

@@ -46,11 +46,9 @@ export async function ensureAuthenticated(
 
     const { user_id, iat } = parse(jwtPayloadSchema, payload);
 
-    const user = await container
-      .resolve<UsersRepository>("usersRepository")
-      .find("user", {
-        id: user_id,
-      });
+    const user = await container.resolve<UsersRepository>("usersRepository").find("user", {
+      id: user_id,
+    });
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
@@ -70,10 +68,7 @@ export async function ensureAuthenticated(
 
       if (!session) throw new SessionExpiredError();
 
-      response.header(
-        "set-cookie",
-        `token=${sign({ user_id }, env.JWT_SECRET)}`,
-      );
+      response.header("set-cookie", `token=${sign({ user_id }, env.JWT_SECRET)}`);
     }
 
     request.user_id = user.id.value;

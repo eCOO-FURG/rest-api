@@ -11,10 +11,7 @@ import {
 } from "@prisma/client";
 
 // Repositories
-import {
-  BagRepositoryReturnType,
-  BagEntityOf,
-} from "@/core/repositories/bags-repository";
+import { BagRepositoryReturnType, BagEntityOf } from "@/core/repositories/bags-repository";
 
 // Mappers
 import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-mapper";

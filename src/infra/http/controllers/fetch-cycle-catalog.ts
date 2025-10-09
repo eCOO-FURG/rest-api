@@ -47,8 +47,9 @@ export async function fetchCycleCatalogController(
       request.query,
     );
 
-    const fetchCycleCatalogUsecase =
-      container.resolve<FetchCycleCatalogUseCase>("fetchCycleCatalogUseCase");
+    const fetchCycleCatalogUsecase = container.resolve<FetchCycleCatalogUseCase>(
+      "fetchCycleCatalogUseCase",
+    );
 
     const { catalog } = await fetchCycleCatalogUsecase.execute({
       cycle_id,

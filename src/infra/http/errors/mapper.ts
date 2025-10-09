@@ -24,12 +24,7 @@ export const mappedDomainErrors: {
   },
   {
     status: 400,
-    errors: [
-      WrongCredentialsError,
-      InvalidWeightError,
-      MissingFieldError,
-      InvalidFieldError,
-    ],
+    errors: [WrongCredentialsError, InvalidWeightError, MissingFieldError, InvalidFieldError],
   },
   {
     status: 403,

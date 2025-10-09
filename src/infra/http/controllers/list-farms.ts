@@ -27,14 +27,11 @@ export async function listFarmsController(
   try {
     const { page, farm } = parse(listFarmsQuery, request.query);
 
-    const listFarmsUseCase =
-      container.resolve<ListFarmsUseCase>("listFarmsUseCase");
+    const listFarmsUseCase = container.resolve<ListFarmsUseCase>("listFarmsUseCase");
 
     const { farms } = await listFarmsUseCase.execute({ page, name: farm });
 
-    return response
-      .status(200)
-      .send(farms.map((farm) => FarmPresenter.toHttp(farm)));
+    return response.status(200).send(farms.map((farm) => FarmPresenter.toHttp(farm)));
   } catch (error) {
     next(error);
   }

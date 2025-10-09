@@ -48,9 +48,7 @@ export async function fetchCatalogController(
       request.query,
     );
 
-    const fetchCatalogUsecase = container.resolve<FetchCatalogUseCase>(
-      "fetchCatalogUseCase",
-    );
+    const fetchCatalogUsecase = container.resolve<FetchCatalogUseCase>("fetchCatalogUseCase");
 
     const { catalog } = await fetchCatalogUsecase.execute({
       catalog_id,

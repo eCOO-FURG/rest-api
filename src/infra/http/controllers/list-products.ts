@@ -33,14 +33,9 @@ export async function listProductsController(
   next: NextFunction,
 ) {
   try {
-    const { page, name, category_id, archived } = parse(
-      listProductsQuery,
-      request.query,
-    );
+    const { page, name, category_id, archived } = parse(listProductsQuery, request.query);
 
-    const listProductsUseCase = container.resolve<ListProductsUsecase>(
-      "listProductsUseCase",
-    );
+    const listProductsUseCase = container.resolve<ListProductsUsecase>("listProductsUseCase");
 
     const { products } = await listProductsUseCase.execute({
       name,
@@ -49,9 +44,7 @@ export async function listProductsController(
       archived: toBoolean(archived),
     });
 
-    return response
-      .status(200)
-      .send(products.map((product) => ProductPresenter.toHttp(product)));
+    return response.status(200).send(products.map((product) => ProductPresenter.toHttp(product)));
   } catch (error) {
     next(error);
   }

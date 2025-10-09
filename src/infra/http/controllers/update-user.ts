@@ -38,11 +38,12 @@ export async function updateUserController(
   next: NextFunction,
 ) {
   try {
-    const { first_name, last_name, email, cpf, phone, password, photo, chat } =
-      parse(updateUserSchema, request.body);
+    const { first_name, last_name, email, cpf, phone, password, photo, chat } = parse(
+      updateUserSchema,
+      request.body,
+    );
 
-    const updateUserUsecase =
-      container.resolve<UpdateUserUseCase>("updateUserUseCase");
+    const updateUserUsecase = container.resolve<UpdateUserUseCase>("updateUserUseCase");
 
     await updateUserUsecase.execute({
       user_id: request.user_id,

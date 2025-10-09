@@ -29,15 +29,7 @@ import { now } from "@/core/utils/now";
 export class PrismaOffersRepository implements OffersRepository {
   async find<T extends OfferRepositoryReturnType>(
     type: T,
-    {
-      id,
-      product,
-      catalog,
-      available,
-      recurring,
-      since,
-      before,
-    }: OffersRepositorySearchRequest,
+    { id, product, catalog, available, recurring, since, before }: OffersRepositorySearchRequest,
   ): Promise<OfferEntityOf<T> | null> {
     const offer = await prisma.offer.findFirst({
       where: {
@@ -94,9 +86,7 @@ export class PrismaOffersRepository implements OffersRepository {
       case "offer-and-product":
         return PrismaOfferAndProductMapper.toDomain<T>(offer);
       case "offer-and-details":
-        return PrismaOfferAndDetailsMapper.toDomain<T>(
-          offer as PrismaOfferAndDetails,
-        );
+        return PrismaOfferAndDetailsMapper.toDomain<T>(offer as PrismaOfferAndDetails);
     }
   }
 
@@ -170,15 +160,11 @@ export class PrismaOffersRepository implements OffersRepository {
         return offers.map(PrismaOfferMapper.toDomain<T>);
       case "offer-and-product":
         return offers.map((offer) =>
-          PrismaOfferAndProductMapper.toDomain<T>(
-            offer as PrismaOfferAndProduct,
-          ),
+          PrismaOfferAndProductMapper.toDomain<T>(offer as PrismaOfferAndProduct),
         );
       case "offer-and-details":
         return offers.map((offer) =>
-          PrismaOfferAndDetailsMapper.toDomain<T>(
-            offer as PrismaOfferAndDetails,
-          ),
+          PrismaOfferAndDetailsMapper.toDomain<T>(offer as PrismaOfferAndDetails),
         );
     }
   }

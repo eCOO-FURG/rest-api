@@ -72,8 +72,7 @@ export const FARMS_PRODUCERS_VIEW: SpreadsheetView = async ({
 
       for (const order of orders) {
         const isOrderInPeriod =
-          (!since || order.created_at >= since) &&
-          (!before || order.created_at <= before);
+          (!since || order.created_at >= since) && (!before || order.created_at <= before);
 
         if (!isOrderInPeriod) continue;
 

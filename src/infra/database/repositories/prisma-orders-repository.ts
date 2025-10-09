@@ -44,9 +44,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
       default:
         return PrismaOrderMapper.toDomain<T>(order);
       case "order-and-offer":
-        return PrismaOrderAndOfferMapper.toDomain<T>(
-          order as PrismaOrderAndOffer,
-        );
+        return PrismaOrderAndOfferMapper.toDomain<T>(order as PrismaOrderAndOffer);
     }
   }
 
@@ -87,8 +85,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
 
         const verified = orders.every((order) => order.status !== "PENDING");
 
-        const refund =
-          order.status === "CANCELLED" || order.status === "REJECTED";
+        const refund = order.status === "CANCELLED" || order.status === "REJECTED";
 
         if (verified || refund) {
           await ctx.bag.update({

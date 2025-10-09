@@ -5,22 +5,10 @@ import j2s, { SwaggerSchema } from "joi-to-swagger";
 import { authenticateSchema } from "@/infra/http/controllers/authenticate";
 import { deleteFarmImageParams } from "@/infra/http/controllers/delete-farm-image";
 import { deleteOfferParams } from "@/infra/http/controllers/delete-offer";
-import {
-  fetchBagParams,
-  fetchBagQuery,
-} from "@/infra/http/controllers/fetch-bag";
-import {
-  fetchBoxParams,
-  fetchBoxQuery,
-} from "@/infra/http/controllers/fetch-box";
-import {
-  fetchCatalogParams,
-  fetchCatalogQuery,
-} from "@/infra/http/controllers/fetch-catalog";
-import {
-  fetchCategoryParams,
-  fetchCategoryQuery,
-} from "@/infra/http/controllers/fetch-category";
+import { fetchBagParams, fetchBagQuery } from "@/infra/http/controllers/fetch-bag";
+import { fetchBoxParams, fetchBoxQuery } from "@/infra/http/controllers/fetch-box";
+import { fetchCatalogParams, fetchCatalogQuery } from "@/infra/http/controllers/fetch-catalog";
+import { fetchCategoryParams, fetchCategoryQuery } from "@/infra/http/controllers/fetch-category";
 import { updateWarehouseSchema } from "@/infra/http/controllers/update-warehouse";
 import { fetchCurrentBoxQuery } from "@/infra/http/controllers/fetch-current-box";
 import {
@@ -53,30 +41,12 @@ import { requestOtpSchema } from "@/infra/http/controllers/request-otp";
 import { resetPasswordSchema } from "@/infra/http/controllers/reset-password";
 import { sendNotificationSchema } from "@/infra/http/controllers/send-notification";
 import { updateBagSchema } from "@/infra/http/controllers/update-bag";
-import {
-  updateFarmParams,
-  updateFarmSchema,
-} from "@/infra/http/controllers/update-farm";
-import {
-  updateOfferParams,
-  updateOfferSchema,
-} from "@/infra/http/controllers/update-offer";
-import {
-  updateOrderParams,
-  updateOrderSchema,
-} from "@/infra/http/controllers/update-order";
-import {
-  updatePaymentParams,
-  updatePaymentSchema,
-} from "@/infra/http/controllers/update-payment";
-import {
-  updateProductParams,
-  updateProductSchema,
-} from "@/infra/http/controllers/update-product";
-import {
-  updateUserSchema,
-  updateUserParams,
-} from "@/infra/http/controllers/update-user";
+import { updateFarmParams, updateFarmSchema } from "@/infra/http/controllers/update-farm";
+import { updateOfferParams, updateOfferSchema } from "@/infra/http/controllers/update-offer";
+import { updateOrderParams, updateOrderSchema } from "@/infra/http/controllers/update-order";
+import { updatePaymentParams, updatePaymentSchema } from "@/infra/http/controllers/update-payment";
+import { updateProductParams, updateProductSchema } from "@/infra/http/controllers/update-product";
+import { updateUserSchema, updateUserParams } from "@/infra/http/controllers/update-user";
 import { updateProfileSchema } from "@/infra/http/controllers/update-profile";
 import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
 import { openPixSchema } from "@/infra/http/webhooks/open-pix";
@@ -96,9 +66,7 @@ const { swagger: requestHelpSchemaSwagger } = j2s(requestHelpSchema);
 const { swagger: listFarmsQuerySwagger } = j2s(listFarmsQuery);
 const { swagger: registerFarmSchemaSwagger } = j2s(registerFarmSchema);
 const { swagger: updateFarmSchemaSwagger } = j2s(updateFarmSchema);
-const { swagger: registerFarmImageSchemaSwagger } = j2s(
-  registerFarmImageSchema,
-);
+const { swagger: registerFarmImageSchemaSwagger } = j2s(registerFarmImageSchema);
 const { swagger: deleteFarmImageParamsSwagger } = j2s(deleteFarmImageParams);
 const { swagger: fetchFarmParamsSwagger } = j2s(fetchFarmParams);
 const { swagger: updateFarmParamsSwagger } = j2s(updateFarmParams);
@@ -133,21 +101,15 @@ const { swagger: listCategoriesQuerySwagger } = j2s(listCategoriesQuery);
 const { swagger: fetchPendingsQuerySwagger } = j2s(fetchPendingsQuery);
 const { swagger: fetchSalesStatsQuerySwagger } = j2s(fetchSalesStatsQuery);
 const { swagger: fetchSalesReportQuerySwagger } = j2s(fetchSalesReportQuery);
-const { swagger: fetchInboundReportQuerySwagger } = j2s(
-  fetchInboundReportQuery,
-);
+const { swagger: fetchInboundReportQuerySwagger } = j2s(fetchInboundReportQuery);
 const { swagger: fetchCategoryParamsSwagger } = j2s(fetchCategoryParams);
 const { swagger: fetchCategoryQuerySwagger } = j2s(fetchCategoryQuery);
 const { swagger: sendNotificationSchemaSwagger } = j2s(sendNotificationSchema);
 const { swagger: openPixSchemaSwagger } = j2s(openPixSchema);
 const { swagger: fetchCycleCatalogQuerySwagger } = j2s(fetchCycleCatalogQuery);
-const { swagger: fetchCycleCatalogParamsSwagger } = j2s(
-  fetchCycleCatalogParams,
-);
+const { swagger: fetchCycleCatalogParamsSwagger } = j2s(fetchCycleCatalogParams);
 const { swagger: listOffersQuerySwagger } = j2s(listOffersQuery);
-const { swagger: fetchDescriptionSuggestionParamsSwagger } = j2s(
-  fetchDescriptionSuggestionParams,
-);
+const { swagger: fetchDescriptionSuggestionParamsSwagger } = j2s(fetchDescriptionSuggestionParams);
 const { swagger: listUsersQuerySwagger } = j2s(listUsersQuery);
 const { swagger: updateWarehouseSchemaSwagger } = j2s(updateWarehouseSchema);
 
@@ -933,13 +895,12 @@ export const docs = {
                   format: "binary",
                 },
               },
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-                {
-                  schema: {
-                    type: "string",
-                    format: "binary",
-                  },
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                schema: {
+                  type: "string",
+                  format: "binary",
                 },
+              },
             },
           },
         },

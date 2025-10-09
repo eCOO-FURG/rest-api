@@ -10,10 +10,7 @@ import {
 } from "@prisma/client";
 
 // Repositories
-import {
-  BagEntityOf,
-  BagRepositoryReturnType,
-} from "@/core/repositories/bags-repository";
+import { BagEntityOf, BagRepositoryReturnType } from "@/core/repositories/bags-repository";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Mappers

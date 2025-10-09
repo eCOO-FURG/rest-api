@@ -6,10 +6,7 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { Box as PrismaBox } from "@prisma/client";
 
 // Repositories
-import {
-  BoxRepositoryReturnType,
-  BoxEntityOf,
-} from "@/core/repositories/boxes-repository";
+import { BoxRepositoryReturnType, BoxEntityOf } from "@/core/repositories/boxes-repository";
 
 // Mappers
 import {
@@ -35,9 +32,7 @@ export class PrismaBoxAndOrdersMapper {
       status: raw.status,
       catalog_id: new UUID(raw.catalog_id),
       catalog: PrismaCatalogAndFarmMapper.toDomain(raw.catalog),
-      orders: raw.orders.map((order) =>
-        PrismaOrderAndOfferMapper.toDomain(order),
-      ),
+      orders: raw.orders.map((order) => PrismaOrderAndOfferMapper.toDomain(order)),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
     }) as BoxEntityOf<T>;

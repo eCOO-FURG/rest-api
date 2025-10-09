@@ -6,10 +6,7 @@ import { Order } from "@/core/entities/order";
 import { Prisma, Order as PrismaOrder } from "@prisma/client";
 
 // Repositories
-import {
-  OrderRepositoryReturnType,
-  OrderEntityOf,
-} from "@/core/repositories/orders-repository";
+import { OrderRepositoryReturnType, OrderEntityOf } from "@/core/repositories/orders-repository";
 
 export class PrismaOrderMapper {
   static toDomain<T extends OrderRepositoryReturnType = "order">(

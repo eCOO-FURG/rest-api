@@ -39,11 +39,12 @@ export async function listOffersController(
   next: NextFunction,
 ) {
   try {
-    const { cycle_id, page, product, category_id, available, since, before } =
-      parse(listOffersQuery, request.query);
+    const { cycle_id, page, product, category_id, available, since, before } = parse(
+      listOffersQuery,
+      request.query,
+    );
 
-    const listOffersUseCase =
-      container.resolve<ListOffersUseCase>("listOffersUseCase");
+    const listOffersUseCase = container.resolve<ListOffersUseCase>("listOffersUseCase");
 
     const { offers } = await listOffersUseCase.execute({
       cycle_id,

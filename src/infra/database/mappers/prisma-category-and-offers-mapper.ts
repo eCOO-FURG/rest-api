@@ -3,10 +3,7 @@ import { CategoryAndOffers } from "@/core/entities/aggregates/category-and-offer
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Libraries
-import {
-  Category as PrismaCategory,
-  Product as PrismaProduct,
-} from "@prisma/client";
+import { Category as PrismaCategory, Product as PrismaProduct } from "@prisma/client";
 
 // Mappers
 import {
@@ -27,9 +24,9 @@ export type PrismaCategoryAndOffers = PrismaCategory & {
 };
 
 export class PrismaCategoryAndOffersMapper {
-  static toDomain<
-    T extends CategoryRepositoryReturnType = "category-and-offers",
-  >(raw: PrismaCategoryAndOffers): CategoryEntityOf<T> {
+  static toDomain<T extends CategoryRepositoryReturnType = "category-and-offers">(
+    raw: PrismaCategoryAndOffers,
+  ): CategoryEntityOf<T> {
     return CategoryAndOffers.create({
       id: new UUID(raw.id),
       name: raw.name,

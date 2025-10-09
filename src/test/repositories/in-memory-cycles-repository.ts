@@ -31,9 +31,7 @@ export class InMemoryCyclesRepository implements CyclesRepository {
     { id }: CyclesRepositorySearchRequest,
     page?: number,
   ): Promise<CycleEntityOf<T>[]> {
-    let cycles = this.items.filter((item) =>
-      Boolean(!id || item.id.equals(id)),
-    );
+    let cycles = this.items.filter((item) => Boolean(!id || item.id.equals(id)));
 
     if (page) cycles = paginate(cycles, page);
 

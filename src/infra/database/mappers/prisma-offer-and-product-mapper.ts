@@ -9,10 +9,7 @@ import { OfferAndProduct } from "@/core/entities/aggregates/offer-and-product";
 import { PrismaProductMapper } from "@/infra/database/mappers/prisma-product-mapper";
 
 // Repositories
-import {
-  OfferRepositoryReturnType,
-  OfferEntityOf,
-} from "@/core/repositories/offers-repository";
+import { OfferRepositoryReturnType, OfferEntityOf } from "@/core/repositories/offers-repository";
 
 export type PrismaOfferAndProduct = PrismaOffer & {
   product: PrismaProduct;

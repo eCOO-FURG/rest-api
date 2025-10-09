@@ -23,8 +23,7 @@ export async function requestOtpController(
   try {
     const { email } = parse(requestOtpSchema, request.body);
 
-    const requestOtpUseCase =
-      container.resolve<RequestOtpUseCase>("requestOtpUseCase");
+    const requestOtpUseCase = container.resolve<RequestOtpUseCase>("requestOtpUseCase");
 
     await requestOtpUseCase.execute({
       email,

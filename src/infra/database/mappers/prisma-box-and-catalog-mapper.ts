@@ -6,10 +6,7 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { Box as PrismaBox } from "@prisma/client";
 
 // Repositories
-import {
-  BoxRepositoryReturnType,
-  BoxEntityOf,
-} from "@/core/repositories/boxes-repository";
+import { BoxRepositoryReturnType, BoxEntityOf } from "@/core/repositories/boxes-repository";
 
 // Mappers
 import {

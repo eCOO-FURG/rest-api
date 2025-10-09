@@ -15,7 +15,6 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { InMemoryBoxesRepository } from "@/test/repositories/in-memory-boxes-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
-import { i } from "vitest/dist/reporters-yx5ZTtEV";
 
 let boxesRepository: InMemoryBoxesRepository;
 let cyclesRepository: InMemoryCyclesRepository;

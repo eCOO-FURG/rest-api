@@ -24,9 +24,4 @@ users.post(
   ]),
   registerController,
 );
-users.patch(
-  "/:user_id",
-  ensureAuthenticated,
-  ensureRole(["MANAGER"]),
-  updateUserController,
-);
+users.patch("/:user_id", ensureAuthenticated, ensureRole(["MANAGER"]), updateUserController);

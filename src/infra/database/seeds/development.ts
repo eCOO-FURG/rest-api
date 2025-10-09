@@ -99,10 +99,7 @@ export async function seedDevelopment() {
 
   const price = offers.reduce((acc, offer) => {
     return (
-      acc +
-      (offer.product.pricing === "UNIT"
-        ? Number(offer.price)
-        : Number(offer.price) / 1000)
+      acc + (offer.product.pricing === "UNIT" ? Number(offer.price) : Number(offer.price) / 1000)
     );
   }, 0);
 

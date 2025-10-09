@@ -51,8 +51,7 @@ export class BagPresenter {
         cycle_id: bag.cycle_id.value,
         cycle: CyclePresenter.toHttp(bag.cycle),
         address_id: bag.address_id?.value ?? null,
-        address:
-          bag.address === null ? null : AddressPresenter.toHttp(bag.address),
+        address: bag.address === null ? null : AddressPresenter.toHttp(bag.address),
         customer_id: bag.customer_id.value,
         customer: UserPresenter.toHttp(bag.customer),
         orders: bag.orders.map(OrderPresenter.toHttp),

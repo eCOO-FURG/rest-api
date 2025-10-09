@@ -4,12 +4,11 @@ import { MarketAndOffers } from "@/core/entities/aggregates/market-and-offers";
 
 export type MarketsRepositoryReturnType = "market" | "market-and-offers";
 
-export type MarketEntityOf<T extends MarketsRepositoryReturnType> =
-  T extends "market"
-    ? Market
-    : T extends "market-and-offers"
-      ? MarketAndOffers
-      : never;
+export type MarketEntityOf<T extends MarketsRepositoryReturnType> = T extends "market"
+  ? Market
+  : T extends "market-and-offers"
+    ? MarketAndOffers
+    : never;
 
 export interface MarketsRepositorySearchRequest {
   id?: string;

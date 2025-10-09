@@ -24,12 +24,7 @@ export class UpdatePaymentUseCase {
     private pixProvider: PixProvider,
   ) {}
 
-  async execute({
-    payment_id,
-    method,
-    status,
-    flag,
-  }: UpdatePaymentUseCaseRequest) {
+  async execute({ payment_id, method, status, flag }: UpdatePaymentUseCaseRequest) {
     const payment = await this.paymentsRepository.find("payment", {
       id: payment_id,
     });

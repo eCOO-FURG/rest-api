@@ -67,8 +67,7 @@ export class RegisterUseCase {
       phone,
     });
 
-    if (userWithSamePhone)
-      throw new ResourceAlreadyExistsError("Telefone", phone);
+    if (userWithSamePhone) throw new ResourceAlreadyExistsError("Telefone", phone);
 
     const userWithSameCpf = await this.usersRepository.find("user", { cpf });
 

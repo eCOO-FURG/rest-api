@@ -43,14 +43,9 @@ export async function fetchCategoryController(
   try {
     const { category_id } = parse(fetchCategoryParams, request.params);
 
-    const { page, cycle_id, available, since, before } = parse(
-      fetchCategoryQuery,
-      request.query,
-    );
+    const { page, cycle_id, available, since, before } = parse(fetchCategoryQuery, request.query);
 
-    const fetchCategoryUseCase = container.resolve<FetchCategoryUseCase>(
-      "fetchCategoryUseCase",
-    );
+    const fetchCategoryUseCase = container.resolve<FetchCategoryUseCase>("fetchCategoryUseCase");
 
     const { category } = await fetchCategoryUseCase.execute({
       category_id,

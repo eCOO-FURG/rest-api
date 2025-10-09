@@ -24,9 +24,8 @@ export async function deleteFarmImageController(
   try {
     const { farm_id, image_url } = parse(deleteFarmImageParams, request.params);
 
-    const deleteFarmImageUseCase = container.resolve<DeleteFarmImageUseCase>(
-      "deleteFarmImageUseCase",
-    );
+    const deleteFarmImageUseCase =
+      container.resolve<DeleteFarmImageUseCase>("deleteFarmImageUseCase");
 
     await deleteFarmImageUseCase.execute({
       farm_id,

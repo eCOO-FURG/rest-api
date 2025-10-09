@@ -91,13 +91,7 @@ export class PrismaFarmsRepository implements FarmsRepository {
     });
   }
 
-  async count({
-    id,
-    name,
-    status,
-    tally,
-    admin,
-  }: FarmsRepositorySearchRequest): Promise<number> {
+  async count({ id, name, status, tally, admin }: FarmsRepositorySearchRequest): Promise<number> {
     return await prisma.farm.count({
       where: {
         id,

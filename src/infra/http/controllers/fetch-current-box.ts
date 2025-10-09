@@ -27,9 +27,8 @@ export async function fetchCurrentBoxController(
   try {
     const { cycle_id, page } = parse(fetchCurrentBoxQuery, request.query);
 
-    const fetchCurrentBoxUsecase = container.resolve<FetchCurrentBoxUseCase>(
-      "fetchCurrentBoxUseCase",
-    );
+    const fetchCurrentBoxUsecase =
+      container.resolve<FetchCurrentBoxUseCase>("fetchCurrentBoxUseCase");
 
     const { box } = await fetchCurrentBoxUsecase.execute({
       farm_id: request.farm_id,

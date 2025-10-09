@@ -9,10 +9,7 @@ import { FarmAndAdmin } from "@/core/entities/aggregates/farm-and-admin";
 import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
 
 // Repositories
-import {
-  FarmEntityOf,
-  FarmRepositoryReturnType,
-} from "@/core/repositories/farms-repository";
+import { FarmEntityOf, FarmRepositoryReturnType } from "@/core/repositories/farms-repository";
 
 export type PrismaFarmAndAdmin = PrismaFarm & {
   admin: PrismaUser;

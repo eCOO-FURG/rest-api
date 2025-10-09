@@ -187,9 +187,7 @@ export class PrismaBagsRepository implements BagsRepository {
       case "bag-and-details":
         return bags.map(PrismaBagAndDetailsMapper.toDomain<T>);
       case "bag-and-orders":
-        return bags.map((bag) =>
-          PrismaBagAndOrdersMapper.toDomain<T>(bag as PrismaBagAndOrders),
-        );
+        return bags.map((bag) => PrismaBagAndOrdersMapper.toDomain<T>(bag as PrismaBagAndOrders));
     }
   }
 

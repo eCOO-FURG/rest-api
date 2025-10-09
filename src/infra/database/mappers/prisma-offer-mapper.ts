@@ -3,10 +3,7 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { Offer } from "@/core/entities/offer";
 
 // Repositories
-import {
-  OfferEntityOf,
-  OfferRepositoryReturnType,
-} from "@/core/repositories/offers-repository";
+import { OfferEntityOf, OfferRepositoryReturnType } from "@/core/repositories/offers-repository";
 
 // Libraries
 import { Prisma, Offer as PrismaOffer } from "@prisma/client";

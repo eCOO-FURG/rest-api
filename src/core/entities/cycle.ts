@@ -60,9 +60,7 @@ export class Cycle extends Entity<CycleProps> {
 
     if (intervals !== 1) return days;
 
-    const interval = days.findIndex(
-      (day, index) => days.at(index + 1) !== day + 1,
-    );
+    const interval = days.findIndex((day, index) => days.at(index + 1) !== day + 1);
 
     return [...days.slice(interval + 1), ...days.slice(0, interval + 1)];
   }

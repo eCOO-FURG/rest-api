@@ -65,8 +65,7 @@ export class RegisterProductUseCase {
       return await this.productsRepository.create(product);
     }
 
-    if (!equal.archived)
-      throw new ResourceAlreadyExistsError("Produto", equal.id.value);
+    if (!equal.archived) throw new ResourceAlreadyExistsError("Produto", equal.id.value);
 
     equal.unarchive();
 

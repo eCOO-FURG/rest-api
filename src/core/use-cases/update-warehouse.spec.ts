@@ -27,10 +27,7 @@ describe("Update warehouse", () => {
       users: new InMemoryUsersRepository(),
     };
 
-    sut = new UpdateWarehouseUseCase(
-      repositories.users,
-      repositories.warehouse,
-    );
+    sut = new UpdateWarehouseUseCase(repositories.users, repositories.warehouse);
   });
 
   it("should be able to update only one warehouse field", async () => {
