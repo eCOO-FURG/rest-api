@@ -1,6 +1,5 @@
 // Entities
 import { Farm } from "@/core/entities/farm";
-import { FarmAndAdmin } from "@/core/entities/aggregates/farm-and-admin";
 
 // Repositories
 import {
@@ -10,14 +9,11 @@ import {
   FarmEntityOf,
 } from "@/core/repositories/farms-repository";
 
-// Factories
-import { makeUser } from "@/test/factories/make-user";
-
 // Utils
 import { paginate } from "@/test/utils/paginate";
 
 export class InMemoryFarmsRepository implements FarmsRepository {
-  items: Farm[] = [];
+  items: FarmEntityOf<FarmRepositoryReturnType>[] = [];
 
   async find<T extends FarmRepositoryReturnType>(
     type: T,
@@ -35,19 +31,11 @@ export class InMemoryFarmsRepository implements FarmsRepository {
 
     if (!farm) return null;
 
-    switch (type) {
-      default:
-        return farm as FarmEntityOf<T>;
-      case "farm-and-admin":
-        return FarmAndAdmin.create({
-          ...farm.props,
-          admin: farm.admin ?? makeUser(),
-        }) as FarmEntityOf<T>;
-    }
+    return farm as FarmEntityOf<T>;
   }
 
   async list<T extends FarmRepositoryReturnType>(
-    type: T,
+    _: T,
     { id, admin, name, tally, status }: FarmsRepositorySearchRequest,
     page?: number,
   ): Promise<FarmEntityOf<T>[]> {
@@ -61,19 +49,11 @@ export class InMemoryFarmsRepository implements FarmsRepository {
       ),
     );
 
-    if (page) farms = paginate(farms, page);
-
-    switch (type) {
-      default:
-        return farms as FarmEntityOf<T>[];
-      case "farm-and-admin":
-        return farms.map((farm) =>
-          FarmAndAdmin.create({
-            ...farm.props,
-            admin: farm.admin ?? makeUser(),
-          }),
-        ) as FarmEntityOf<T>[];
+    if (page) {
+      farms = paginate(farms, page);
     }
+
+    return farms as FarmEntityOf<T>[];
   }
 
   async create(farm: Farm): Promise<void> {
@@ -85,12 +65,7 @@ export class InMemoryFarmsRepository implements FarmsRepository {
     this.items[itemIndex] = farm;
   }
 
-  async count({
-    status,
-    admin,
-    id,
-    tally,
-  }: FarmsRepositorySearchRequest): Promise<number> {
+  async count({ status, admin, id, tally }: FarmsRepositorySearchRequest): Promise<number> {
     return this.items.filter((item) =>
       Boolean(
         (!status || item.status === status) &&

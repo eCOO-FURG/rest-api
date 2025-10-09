@@ -1,17 +1,14 @@
 // Entities
 import { Box, BoxStatus } from "@/core/entities/box";
-import { BoxAndCatalog } from "@/core/entities/aggregates/box-and-catalog";
 import { BoxAndOrders } from "@/core/entities/aggregates/box-and-orders";
+import { BoxAndFarm } from "@/core/entities/aggregates/box-and-farm";
 
-export type BoxRepositoryReturnType =
-  | "box"
-  | "box-and-catalog"
-  | "box-and-orders";
+export type BoxRepositoryReturnType = "box" | "box-and-orders" | "box-and-farm";
 
 export type BoxEntityOf<T extends BoxRepositoryReturnType> = T extends "box"
   ? Box
-  : T extends "box-and-catalog"
-    ? BoxAndCatalog
+  : T extends "box-and-farm"
+    ? BoxAndFarm
     : T extends "box-and-orders"
       ? BoxAndOrders
       : never;
@@ -19,11 +16,8 @@ export type BoxEntityOf<T extends BoxRepositoryReturnType> = T extends "box"
 export interface BoxesRepositorySearchRequest {
   id?: string;
   status?: BoxStatus;
-  catalog?: {
-    id?: string;
-    farm?: { id?: string; name?: string };
-    cycle?: { id?: string };
-  };
+  farm?: { id?: string; name?: string };
+  cycle?: { id?: string };
   orders?: { page?: number };
   since?: Date;
   before?: Date;

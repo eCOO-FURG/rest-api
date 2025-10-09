@@ -1,5 +1,4 @@
 // Repositories
-import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
 import { CategoriesRepository } from "@/core/repositories/categories-repository";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { FarmsRepository } from "@/core/repositories/farms-repository";
@@ -22,7 +21,6 @@ export class ListCatalogsUseCase {
   constructor(
     private cyclesRepository: CyclesRepository,
     private farmsRepository: FarmsRepository,
-    private catalogsRepository: CatalogsRepository,
     private categoriesRepository: CategoriesRepository,
   ) {}
 
@@ -36,37 +34,38 @@ export class ListCatalogsUseCase {
     since,
     before,
   }: ListCatalogsUseCaseRequest) {
-    const cycle = cycle_id
-      ? await this.cyclesRepository.find("cycle", { id: cycle_id })
-      : null;
+    const cycle = cycle_id ? await this.cyclesRepository.find("cycle", { id: cycle_id }) : null;
 
-    if (cycle_id && !cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+    if (cycle_id && !cycle) {
+      throw new ResourceNotFoundError("Ciclo", cycle_id);
+    }
 
-    const farm = farm_id
-      ? await this.farmsRepository.find("farm", { id: farm_id })
-      : null;
+    const farm = farm_id ? await this.farmsRepository.find("farm", { id: farm_id }) : null;
 
-    if (farm_id && !farm) throw new ResourceNotFoundError("Fazenda", farm_id);
+    if (farm_id && !farm) {
+      throw new ResourceNotFoundError("Fazenda", farm_id);
+    }
 
     const category = category_id
       ? await this.categoriesRepository.find("category", { id: category_id })
       : null;
 
-    if (category_id && !category)
+    if (category_id && !category) {
       throw new ResourceNotFoundError("Categoria", category_id);
+    }
 
-    const catalogs = await this.catalogsRepository.list(
-      "catalog-and-farm",
+    const catalogs = await this.farmsRepository.list(
+      "catalog",
       {
-        farm: { id: farm_id },
-        cycle: { id: cycle_id },
+        id: farm_id,
         offers: {
+          cycle: { id: cycle_id },
           product: { name: product, category: { id: category_id } },
           available,
           page,
+          since,
+          before,
         },
-        since,
-        before,
       },
       page,
     );

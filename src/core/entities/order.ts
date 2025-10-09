@@ -17,7 +17,7 @@ export interface OrderProps extends EntityRequest {
   bag_id: UUID;
   bag?: Bag;
 
-  box_id: UUID;
+  box_id: UUID | null;
   box?: Box;
 
   subtotal: number;
@@ -27,9 +27,7 @@ export interface OrderProps extends EntityRequest {
   status: OrderStatus;
 }
 
-export class Order<
-  Props extends OrderProps = OrderProps,
-> extends Entity<Props> {
+export class Order<Props extends OrderProps = OrderProps> extends Entity<Props> {
   get offer_id() {
     return this.props.offer_id;
   }
@@ -50,8 +48,16 @@ export class Order<
     return this.props.box_id;
   }
 
+  set box_id(value: UUID | null) {
+    this.props.box_id = value;
+  }
+
   get box() {
     return this.props.box;
+  }
+
+  pack(value: Box) {
+    this.props.box = value;
   }
 
   get amount() {
@@ -86,9 +92,10 @@ export class Order<
     this.props.status = value;
   }
 
-  static create(props: Optional<OrderProps, "status">) {
+  static create(props: Optional<OrderProps, "status" | "box_id">) {
     const order = new Order({
       ...props,
+      box_id: props.box_id ?? null,
       status: props.status ?? "PENDING",
     });
     return order;

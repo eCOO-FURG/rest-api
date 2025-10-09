@@ -1,6 +1,5 @@
 // Entities
 import { Product } from "@/core/entities/product";
-import { ProductAndCategory } from "@/core/entities/aggregates/product-and-category";
 
 // Repositories
 import {
@@ -13,10 +12,8 @@ import {
 // Utils
 import { paginate } from "@/test/utils/paginate";
 
-// Factories
-import { makeCategory } from "@/test/factories/make-category";
 export class InMemoryProductsRepository implements ProductsRepository {
-  items: Product[] = [];
+  items: ProductEntityOf<ProductRepositoryReturnType>[] = [];
 
   async find<T extends ProductRepositoryReturnType>(
     type: T,
@@ -35,15 +32,7 @@ export class InMemoryProductsRepository implements ProductsRepository {
 
     if (!product) return null;
 
-    switch (type) {
-      default:
-        return product as ProductEntityOf<T>;
-      case "product-and-category":
-        return ProductAndCategory.create({
-          ...product.props,
-          category: product.category ?? makeCategory(),
-        }) as ProductEntityOf<T>;
-    }
+    return product as ProductEntityOf<T>;
   }
 
   async list<T extends ProductRepositoryReturnType>(
@@ -64,17 +53,7 @@ export class InMemoryProductsRepository implements ProductsRepository {
 
     if (page) products = paginate(products, page);
 
-    switch (type) {
-      default:
-        return products as ProductEntityOf<T>[];
-      case "product-and-category":
-        return products.map((product) => {
-          return ProductAndCategory.create({
-            ...product.props,
-            category: product.category ?? makeCategory(),
-          }) as ProductEntityOf<T>;
-        });
-    }
+    return products as ProductEntityOf<T>[];
   }
 
   async create(product: Product): Promise<void> {

@@ -7,7 +7,6 @@ import { makeOrder } from "@/test/factories/make-order";
 import { makeProduct } from "@/test/factories/make-product";
 import { makeBox } from "@/test/factories/make-box";
 import { makeUser } from "@/test/factories/make-user";
-import { makeCatalog } from "@/test/factories/make-catalog";
 
 // Repositories
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
@@ -37,14 +36,12 @@ describe("list farm sales", () => {
 
     const product = makeProduct();
 
-    const catalog = makeCatalog({ farm_id: farm.id, farm });
-
     const offer = makeOffer({
-      catalog_id: catalog.id,
+      farm_id: farm.id,
       product_id: product.id,
     });
 
-    const box = makeBox({ catalog_id: catalog.id, catalog });
+    const box = makeBox({ farm_id: farm.id, farm });
 
     const order = makeOrder({
       offer_id: offer.id,

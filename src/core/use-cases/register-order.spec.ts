@@ -1,360 +1,522 @@
-// Entities
-import { CycleWeek } from "@/core/entities/cycle";
-
 // Use-cases
 import { RegisterOrderUseCase } from "@/core/use-cases/register-order";
 
-// Errors
-import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
-import { InvalidWeightError } from "@/core/errors/invalid-weight";
-import { ResourceClosedError } from "@/core/errors/resource-closed";
-
 // Factories
-import { makeOffer } from "@/test/factories/make-offer";
 import { makeCycle } from "@/test/factories/make-cycle";
+import { makeMarket } from "@/test/factories/make-market";
 import { makeUser } from "@/test/factories/make-user";
-import { makeProduct } from "@/test/factories/make-product";
+import { makeOffer } from "@/test/factories/make-offer";
 import { makeBag } from "@/test/factories/make-bag";
-import { makeCatalog } from "@/test/factories/make-catalog";
-import { makeAddress } from "@/test/factories/make-address";
-import { makeFarm } from "@/test/factories/make-farm";
+import { makeProduct } from "@/test/factories/make-product";
 
 // Repositories
-import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
-import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
+import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
+import { InMemoryMarketsRepository } from "@/test/repositories/in-memory-markets-repository";
+import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryBagsRepository } from "@/test/repositories/in-memory-bags-repository";
 import { InMemoryBoxesRepository } from "@/test/repositories/in-memory-boxes-repository";
 import { InMemoryAddressesRepository } from "@/test/repositories/in-memory-addresses-repository";
 
-// Cryptography
-import { MockedOtpProvider } from "@/test/cryptography/mocked-otp-provider";
+// Errors
+import { InvalidWeightError } from "@/core/errors/invalid-weight";
+import { ResourceClosedError } from "@/core/errors/resource-closed";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 
-// Mail
-import { MockedMailer } from "@/test/mail/mocked-mailer";
+// Entities
+import { CycleWeek } from "@/core/entities/cycle";
 
 // Utils
 import { today } from "@/core/utils/today";
 
+// Test utilities
+import { MockedMailer } from "@/test/mail/mocked-mailer";
+import { makeOfferAndDetails } from "@/test/factories/make-offer-and-details";
+
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
+let marketsRepository: InMemoryMarketsRepository;
 let offersRepository: InMemoryOffersRepository;
-let addressesRepository: InMemoryAddressesRepository;
 let bagsRepository: InMemoryBagsRepository;
 let boxesRepository: InMemoryBoxesRepository;
-
-let otpProvider: MockedOtpProvider;
+let addressesRepository: InMemoryAddressesRepository;
 let mailer: MockedMailer;
 
 let sut: RegisterOrderUseCase;
 
-describe("order product", () => {
+describe("register order", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
     cyclesRepository = new InMemoryCyclesRepository();
+    marketsRepository = new InMemoryMarketsRepository();
     offersRepository = new InMemoryOffersRepository();
-    addressesRepository = new InMemoryAddressesRepository();
     bagsRepository = new InMemoryBagsRepository();
     boxesRepository = new InMemoryBoxesRepository();
-
-    otpProvider = new MockedOtpProvider();
+    addressesRepository = new InMemoryAddressesRepository();
     mailer = new MockedMailer();
 
     sut = new RegisterOrderUseCase(
       usersRepository,
       cyclesRepository,
+      marketsRepository,
       offersRepository,
       bagsRepository,
       boxesRepository,
       addressesRepository,
-      otpProvider,
       mailer,
     );
   });
 
-  it("should be able to order a product from an offer", async () => {
+  it("should be able to create an order for a cycle", async () => {
     const user = makeUser();
-    await usersRepository.create(user);
+    usersRepository.items.push(user);
 
     const cycle = makeCycle();
-
     cyclesRepository.items.push(cycle);
 
-    const product = makeProduct({ pricing: "UNIT" });
+    const offer = makeOffer({ cycle_id: cycle.id, amount: 100 });
+    offersRepository.items.push(makeOfferAndDetails(offer));
 
-    const farm = makeFarm({ admin_id: user.id });
-
-    const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id });
-
-    const offer = makeOffer({
-      product_id: product.id,
-      product,
-      catalog_id: catalog.id,
-      catalog,
-      amount: 10,
-    });
-
-    offersRepository.items.push(offer);
-
-    await sut.execute({
+    const result = await sut.execute({
       user_id: user.id.value,
       cycle_id: cycle.id.value,
-      address: {
-        street: "street",
-        number: "number",
-        complement: "complement",
-        neighborhood: "neighborhood",
-        postal_code: "12345-678",
-      },
-      request: [{ offer_id: offer.id.value, amount: 5 }],
+      items: [
+        {
+          offer_id: offer.id.value,
+          amount: 10,
+        },
+      ],
     });
 
-    expect(bagsRepository.items.length).toBe(1);
-    expect(bagsRepository.items[0].orders.length).toBe(1);
+    expect(result.bag).toBeDefined();
+    expect(bagsRepository.items).toHaveLength(1);
+    expect(bagsRepository.items[0].orders).toHaveLength(1);
+    expect(bagsRepository.items[0].orders[0]).toEqual(
+      expect.objectContaining({
+        offer_id: offer.id,
+        amount: 10,
+      }),
+    );
   });
 
-  it("should add orders to a existing bag if exists", async () => {
+  it("should be able to create an order for a market", async () => {
     const user = makeUser();
-    await usersRepository.create(user);
+    usersRepository.items.push(user);
+
+    const market = makeMarket({ open: true });
+    marketsRepository.items.push(market);
+
+    const product = makeProduct({ perishable: false });
+    const offer = makeOffer({
+      market_id: market.id,
+      amount: 100,
+      price: 50,
+      product,
+    });
+    offersRepository.items.push(offer);
+
+    const result = await sut.execute({
+      user_id: user.id.value,
+      market_id: market.id.value,
+      items: [
+        {
+          offer_id: offer.id.value,
+          amount: 10,
+        },
+      ],
+    });
+
+    expect(result.bag).toBeDefined();
+    expect(bagsRepository.items).toHaveLength(1);
+    expect(bagsRepository.items[0].orders).toHaveLength(1);
+  });
+
+  it("should be able to create an order with address", async () => {
+    const user = makeUser();
+    usersRepository.items.push(user);
 
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
-    const product = makeProduct();
+    const product = makeProduct({ perishable: true });
+    const offer = makeOffer({
+      cycle_id: cycle.id,
+      amount: 100,
+      price: 50,
+      product,
+    });
+    offersRepository.items.push(offer);
 
-    const address = makeAddress();
-    addressesRepository.items.push(address);
+    const result = await sut.execute({
+      user_id: user.id.value,
+      cycle_id: cycle.id.value,
+      items: [{ offer_id: offer.id.value, amount: 10 }],
+      residence: {
+        street: "Rua das Flores",
+        number: "123",
+        neighborhood: "Centro",
+        postal_code: "12345-678",
+        complement: "Apto 101",
+      },
+    });
+
+    expect(result.bag).toBeDefined();
+    expect(bagsRepository.items[0].address_id).toBeDefined();
+  });
+
+  it("should be able to add items to existing bag", async () => {
+    const user = makeUser();
+    usersRepository.items.push(user);
+
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
 
     const bag = makeBag({
       customer_id: user.id,
       cycle_id: cycle.id,
-      address_id: address.id,
-      address: address,
+      status: "PENDING",
     });
-
     bagsRepository.items.push(bag);
 
-    const farm = makeFarm({ admin_id: user.id });
-    const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id, farm });
-
+    const product = makeProduct({ perishable: true });
     const offer = makeOffer({
-      product_id: product.id,
-      catalog_id: catalog.id,
-      catalog,
+      cycle_id: cycle.id,
+      amount: 100,
+      price: 50,
       product,
-      amount: 10,
     });
     offersRepository.items.push(offer);
 
     await sut.execute({
       user_id: user.id.value,
       cycle_id: cycle.id.value,
-      address: {
-        street: address.street,
-        number: address.number,
-        neighborhood: address.neighborhood,
-        postal_code: address.postal_code,
-      },
-      request: [{ offer_id: offer.id.value, amount: 5 }],
+      items: [
+        {
+          offer_id: offer.id.value,
+          amount: 10,
+        },
+      ],
     });
 
-    expect(bagsRepository.items[0].orders.length).toBe(1);
+    expect(bagsRepository.items).toHaveLength(1);
+    expect(bagsRepository.items[0].orders).toHaveLength(1);
   });
 
-  it("should not allow an non existing user to create an order", async () => {
+  it("should not be able to create an order for a nonexistent user", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
+    const product = makeProduct({ perishable: true });
+    const offer = makeOffer({
+      cycle_id: cycle.id,
+      amount: 100,
+      price: 50,
+      product,
+    });
+    offersRepository.items.push(offer);
+
     await expect(() =>
       sut.execute({
-        user_id: "1234",
+        user_id: "nonexistent-user-id",
         cycle_id: cycle.id.value,
-        address: {
-          street: "street",
-          number: "number",
-          complement: "complement",
-          neighborhood: "neighborhood",
-          postal_code: "12345-678",
-        },
-        request: [
+        items: [
           {
-            offer_id: "1234",
-            amount: 5,
+            offer_id: offer.id.value,
+            amount: 10,
           },
         ],
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
-  it("should not create orders from a non existent cycle", async () => {
+  it("should not be able to create an order for a nonexistent cycle", async () => {
     const user = makeUser();
     usersRepository.items.push(user);
 
-    await expect(() =>
-      sut.execute({
-        user_id: user.id.value,
-        cycle_id: "1234",
-        request: [
-          {
-            offer_id: "1234",
-            amount: 5,
-          },
-        ],
-      }),
-    ).rejects.toBeInstanceOf(ResourceNotFoundError);
-  });
-
-  it("should not be able create an order from a non existing offer", async () => {
-    const user = makeUser();
-    await usersRepository.create(user);
-
-    const cycle = makeCycle();
-    cyclesRepository.items.push(cycle);
-
-    await expect(() =>
-      sut.execute({
-        user_id: user.id.value,
-        cycle_id: cycle.id.value,
-        request: [{ offer_id: "1234", amount: 5 }],
-      }),
-    ).rejects.toBeInstanceOf(ResourceNotFoundError);
-  });
-
-  it("should not be able create an order from a cycle different than the requested", async () => {
-    const cycle = makeCycle();
-    cyclesRepository.items.push(cycle);
-
-    const user = makeUser();
-    await usersRepository.create(user);
-
-    const product = makeProduct();
-
-    const farm = makeFarm({ admin_id: user.id });
-    const catalog = makeCatalog({ farm_id: farm.id, farm });
-
+    const product = makeProduct({ perishable: true });
     const offer = makeOffer({
-      product_id: product.id,
+      amount: 100,
+      price: 50,
       product,
-      catalog_id: catalog.id,
-      catalog,
-      amount: 10,
     });
-
     offersRepository.items.push(offer);
 
     await expect(() =>
       sut.execute({
         user_id: user.id.value,
-        cycle_id: cycle.id.value,
-        request: [{ offer_id: offer.id.value, amount: 5 }],
-      }),
-    ).rejects.toBeInstanceOf(ResourceClosedError);
-  });
-
-  it("should not be able create an order outside the cycle day", async () => {
-    const user = makeUser();
-    await usersRepository.create(user);
-
-    const orderDays = [1, 2, 3, 4, 5, 6, 7].filter((day) => day != today());
-
-    const cycle = makeCycle({
-      order: orderDays as CycleWeek,
-    });
-
-    cyclesRepository.items.push(cycle);
-
-    const product = makeProduct();
-
-    const farm = makeFarm({ admin_id: user.id });
-
-    const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id, farm });
-
-    const offer = makeOffer({
-      product_id: product.id,
-      catalog_id: catalog.id,
-      amount: 10,
-    });
-
-    offersRepository.items.push(offer);
-
-    await expect(() =>
-      sut.execute({
-        user_id: user.id.value,
-        cycle_id: cycle.id.value,
-        request: [
+        cycle_id: "nonexistent-cycle-id",
+        items: [
           {
             offer_id: offer.id.value,
-            amount: 5,
+            amount: 10,
           },
         ],
       }),
-    ).rejects.toBeInstanceOf(ResourceClosedError);
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
-  it("should not be able create an order with an amount greater than the offer", async () => {
+  it("should not be able to create an order for a closed cycle", async () => {
     const user = makeUser();
-    await usersRepository.create(user);
+    usersRepository.items.push(user);
 
-    const cycle = makeCycle();
+    const days = [1, 2, 3, 4, 5, 6, 7].filter((day) => day != today());
+
+    const cycle = makeCycle({
+      order: days as CycleWeek,
+    });
     cyclesRepository.items.push(cycle);
 
-    const product = makeProduct();
-
-    const farm = makeFarm({ admin_id: user.id });
-
-    const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id, farm });
-
+    const product = makeProduct({ perishable: true });
     const offer = makeOffer({
-      product_id: product.id,
+      cycle_id: cycle.id,
+      amount: 100,
+      price: 50,
       product,
-      catalog_id: catalog.id,
-      catalog,
-      amount: 5,
     });
-
     offersRepository.items.push(offer);
 
     await expect(() =>
       sut.execute({
         user_id: user.id.value,
         cycle_id: cycle.id.value,
-        request: [{ offer_id: offer.id.value, amount: 15 }],
+        items: [
+          {
+            offer_id: offer.id.value,
+            amount: 10,
+          },
+        ],
+      }),
+    ).rejects.toBeInstanceOf(ResourceClosedError);
+  });
+
+  it("should not be able to create an order for a nonexistent market", async () => {
+    const user = makeUser();
+    usersRepository.items.push(user);
+
+    const product = makeProduct({ perishable: false });
+    const offer = makeOffer({
+      amount: 100,
+      price: 50,
+      product,
+    });
+    offersRepository.items.push(offer);
+
+    await expect(() =>
+      sut.execute({
+        user_id: user.id.value,
+        market_id: "nonexistent-market-id",
+        items: [
+          {
+            offer_id: offer.id.value,
+            amount: 10,
+          },
+        ],
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it("should not be able to create an order for a closed market", async () => {
+    const user = makeUser();
+    usersRepository.items.push(user);
+
+    const market = makeMarket({ open: false });
+    marketsRepository.items.push(market);
+
+    const product = makeProduct({ perishable: false });
+    const offer = makeOffer({
+      market_id: market.id,
+      amount: 100,
+      price: 50,
+      product,
+    });
+    offersRepository.items.push(offer);
+
+    await expect(() =>
+      sut.execute({
+        user_id: user.id.value,
+        market_id: market.id.value,
+        items: [
+          {
+            offer_id: offer.id.value,
+            amount: 10,
+          },
+        ],
+      }),
+    ).rejects.toBeInstanceOf(ResourceClosedError);
+  });
+
+  it("should not be able to create an order for a nonexistent offer", async () => {
+    const user = makeUser();
+    usersRepository.items.push(user);
+
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
+    await expect(() =>
+      sut.execute({
+        user_id: user.id.value,
+        cycle_id: cycle.id.value,
+        items: [
+          {
+            offer_id: "nonexistent-offer-id",
+            amount: 10,
+          },
+        ],
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it("should not be able to create an order for an unavailable offer", async () => {
+    const user = makeUser();
+    usersRepository.items.push(user);
+
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
+    const product = makeProduct({ perishable: true });
+    const offer = makeOffer({
+      cycle_id: cycle.id,
+      amount: 100,
+      price: 50,
+      product,
+      active: false,
+    });
+    offersRepository.items.push(offer);
+
+    await expect(() =>
+      sut.execute({
+        user_id: user.id.value,
+        cycle_id: cycle.id.value,
+        items: [
+          {
+            offer_id: offer.id.value,
+            amount: 10,
+          },
+        ],
+      }),
+    ).rejects.toBeInstanceOf(ResourceClosedError);
+  });
+
+  it("should not be able to create an order with amount greater than available", async () => {
+    const user = makeUser();
+    usersRepository.items.push(user);
+
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
+    const product = makeProduct({ perishable: true });
+    const offer = makeOffer({
+      cycle_id: cycle.id,
+      amount: 10, // Available amount
+      price: 50,
+      product,
+    });
+    offersRepository.items.push(offer);
+
+    await expect(() =>
+      sut.execute({
+        user_id: user.id.value,
+        cycle_id: cycle.id.value,
+        items: [
+          {
+            offer_id: offer.id.value,
+            amount: 20, // More than available
+          },
+        ],
       }),
     ).rejects.toBeInstanceOf(UnavailableAmountError);
   });
 
-  it("should not be able create an order with an invalid amount", async () => {
+  it("should not be able to create an order for weight-priced product with invalid amount", async () => {
     const user = makeUser();
-    await usersRepository.create(user);
+    usersRepository.items.push(user);
 
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
-    const product = makeProduct({
-      pricing: "WEIGHT",
-    });
-
-    const farm = makeFarm({ admin_id: user.id });
-
-    const catalog = makeCatalog({ cycle_id: cycle.id, farm_id: farm.id, farm });
-
+    const product = makeProduct({ pricing: "WEIGHT", perishable: true });
     const offer = makeOffer({
-      product_id: product.id,
+      cycle_id: cycle.id,
+      amount: 1000,
+      price: 50,
       product,
-      catalog_id: catalog.id,
-      catalog,
-      amount: 500,
     });
-
     offersRepository.items.push(offer);
 
     await expect(() =>
       sut.execute({
         user_id: user.id.value,
         cycle_id: cycle.id.value,
-        request: [{ offer_id: offer.id.value, amount: 27 }],
+        items: [
+          {
+            offer_id: offer.id.value,
+            amount: 150, // Not a multiple of 100
+          },
+        ],
       }),
     ).rejects.toBeInstanceOf(InvalidWeightError);
+  });
+
+  it("should not be able to create an order for offer from different cycle", async () => {
+    const user = makeUser();
+    usersRepository.items.push(user);
+
+    const cycle1 = makeCycle();
+    const cycle2 = makeCycle();
+    cyclesRepository.items.push(cycle1, cycle2);
+
+    const product = makeProduct({ perishable: true });
+    const offer = makeOffer({
+      cycle_id: cycle2.id, // Offer is from cycle2
+      amount: 100,
+      price: 50,
+      product,
+    });
+    offersRepository.items.push(offer);
+
+    await expect(() =>
+      sut.execute({
+        user_id: user.id.value,
+        cycle_id: cycle1.id.value, // But ordering from cycle1
+        items: [
+          {
+            offer_id: offer.id.value,
+            amount: 10,
+          },
+        ],
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it("should not be able to create an order for offer from different market", async () => {
+    const user = makeUser();
+    usersRepository.items.push(user);
+
+    const market1 = makeMarket({ open: true });
+    const market2 = makeMarket({ open: true });
+    marketsRepository.items.push(market1, market2);
+
+    const product = makeProduct({ perishable: false });
+    const offer = makeOffer({
+      market_id: market2.id, // Offer is from market2
+      amount: 100,
+      price: 50,
+      product,
+    });
+    offersRepository.items.push(offer);
+
+    await expect(() =>
+      sut.execute({
+        user_id: user.id.value,
+        market_id: market1.id.value, // But ordering from market1
+        items: [
+          {
+            offer_id: offer.id.value,
+            amount: 10,
+          },
+        ],
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

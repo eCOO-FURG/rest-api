@@ -32,9 +32,7 @@ export class ListOffersUseCase {
     since,
     before,
   }: ListOffersUseCaseRequest) {
-    const cycle = cycle_id
-      ? await this.cyclesRepository.find("cycle", { id: cycle_id })
-      : null;
+    const cycle = cycle_id ? await this.cyclesRepository.find("cycle", { id: cycle_id }) : null;
 
     if (cycle_id && !cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
 
@@ -42,14 +40,13 @@ export class ListOffersUseCase {
       ? await this.categoriesRepository.find("category", { id: category_id })
       : null;
 
-    if (category_id && !category)
-      throw new ResourceNotFoundError("Categoria", category_id);
+    if (category_id && !category) throw new ResourceNotFoundError("Categoria", category_id);
 
     const offers = await this.offersRepository.list(
       "offer-and-details",
       {
         product: { name: product, category: { id: category_id } },
-        catalog: { cycle: { id: cycle_id } },
+        cycle: { id: cycle_id },
         available,
         since,
         before,

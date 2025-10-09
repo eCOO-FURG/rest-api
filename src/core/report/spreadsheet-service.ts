@@ -1,6 +1,6 @@
 // Entities
 import { BagAndOrders } from "@/core/entities/aggregates/bag-and-orders";
-import { CatalogAndOffers } from "@/core/entities/aggregates/catalog-and-offers";
+import { CatalogAndOffers } from "@/core/entities/aggregates/farm-and-offers";
 
 // Types
 import { File } from "@/core/types/file";

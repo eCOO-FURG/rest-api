@@ -15,25 +15,24 @@ import {
 import { paginate } from "@/test/utils/paginate";
 
 // Factories
-import { makeCatalogAndFarm } from "@/test/factories/make-farm-and-catalog";
 import { makeOfferAndDetails } from "@/test/factories/make-offer-and-details";
+import { makeFarmAndAdmin } from "@/test/factories/make-farm-and-admin";
 
 export class InMemoryBoxesRepository implements BoxesRepository {
-  items: Box[] = [];
+  items: BoxEntityOf<BoxRepositoryReturnType>[] = [];
 
   async find<T extends BoxRepositoryReturnType>(
     type: T,
-    { id, catalog, orders, since, status }: BoxesRepositorySearchRequest,
+    { id, orders, since, before, cycle, farm, status }: BoxesRepositorySearchRequest,
   ): Promise<BoxEntityOf<T> | null> {
     const box = this.items.find((item) =>
       Boolean(
         (!id || item.id.equals(id)) &&
-          (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
-          (!catalog?.farm?.id ||
-            item.catalog?.farm_id.equals(catalog.farm.id)) &&
-          (!catalog?.farm?.name ||
-            item.catalog?.farm?.name.includes(catalog.farm.name!)) &&
+          (!cycle?.id || item.cycle_id.equals(cycle.id)) &&
+          (!farm?.id || item.farm_id.equals(farm.id)) &&
+          (!farm?.name || item.farm?.name.includes(farm.name!)) &&
           (!since || item.created_at >= since) &&
+          (!before || item.created_at <= before) &&
           (!status || item.status === status),
       ),
     );
@@ -42,42 +41,15 @@ export class InMemoryBoxesRepository implements BoxesRepository {
 
     if (orders?.page) box.orders = paginate(box.orders, orders.page);
 
-    switch (type) {
-      default:
-        return box as BoxEntityOf<T>;
-      case "box-and-orders":
-        return BoxAndOrders.create({
-          ...box.props,
-          catalog: makeCatalogAndFarm(box.catalog),
-        }) as BoxEntityOf<T>;
-      case "box-and-catalog":
-        return BoxAndOrders.create({
-          ...box.props,
-          catalog: makeCatalogAndFarm(box.catalog),
-          orders: box.orders.map((order) =>
-            OrderAndOffer.create({
-              ...order.props,
-              offer: makeOfferAndDetails(order.offer),
-            }),
-          ),
-        }) as BoxEntityOf<T>;
-    }
+    return box as BoxEntityOf<T>;
   }
   async list<T extends BoxRepositoryReturnType>(
     type: T,
-    { catalog, orders, since, status }: BoxesRepositorySearchRequest,
+    { orders, since, status }: BoxesRepositorySearchRequest,
     page?: number,
   ): Promise<BoxEntityOf<T>[]> {
     let boxes = this.items.filter((item) =>
-      Boolean(
-        (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
-          (!catalog?.farm?.id ||
-            item.catalog?.farm_id.equals(catalog.farm.id)) &&
-          (!catalog?.farm?.name ||
-            item.catalog?.farm?.name.includes(catalog.farm.name!)) &&
-          (!since || item.created_at >= since) &&
-          (!status || item.status === status),
-      ),
+      Boolean((!since || item.created_at >= since) && (!status || item.status === status)),
     );
 
     if (orders?.page) {
@@ -86,32 +58,7 @@ export class InMemoryBoxesRepository implements BoxesRepository {
 
     if (page) boxes = paginate(boxes, page);
 
-    switch (type) {
-      default:
-        return boxes as BoxEntityOf<T>[];
-      case "box-and-orders":
-        return boxes.map(
-          (box) =>
-            BoxAndOrders.create({
-              ...box.props,
-              catalog: makeCatalogAndFarm(box.catalog),
-            }) as BoxEntityOf<T>,
-        );
-      case "box-and-catalog":
-        return boxes.map(
-          (box) =>
-            BoxAndOrders.create({
-              ...box.props,
-              catalog: makeCatalogAndFarm(box.catalog),
-              orders: box.orders.map((order) =>
-                OrderAndOffer.create({
-                  ...order.props,
-                  offer: makeOfferAndDetails(order.offer),
-                }),
-              ),
-            }) as BoxEntityOf<T>,
-        );
-    }
+    return boxes as BoxEntityOf<T>[];
   }
 
   async count(filters: BoxesRepositorySearchRequest): Promise<number> {

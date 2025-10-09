@@ -3,7 +3,7 @@ import { SpreadsheetColumn } from "@/core/report/spreadsheet-service";
 
 // Entities
 import { BagAndOrders } from "@/core/entities/aggregates/bag-and-orders";
-import { CatalogAndOffers } from "@/core/entities/aggregates/catalog-and-offers";
+import { CatalogAndOffers } from "@/core/entities/aggregates/farm-and-offers";
 
 // Report
 import { SpreadsheetView } from "@/infra/report/spreadsheet/excel";
@@ -83,8 +83,8 @@ export const FARMS_PRODUCERS_VIEW: SpreadsheetView = async ({
           pricing: offer.product?.pricing === "UNIT" ? "Unidade" : "Kg",
           status: ORDER_STATUS[order.status],
           price_without_tax: offer.price,
-          offer_price: offer.price + (offer.price * catalog.fee) / 100,
-          fee: catalog.fee / 100,
+          offer_price: offer.price + (offer.price * catalog.farm.fee) / 100,
+          fee: catalog.farm.fee / 100,
           total_amount: order.amount,
           farm_income: order.subtotal,
           warehouse_income: order.fee,

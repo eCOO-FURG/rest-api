@@ -11,7 +11,6 @@ import { makeCategory } from "@/test/factories/make-category";
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeOffer } from "@/test/factories/make-offer";
 import { makeProduct } from "@/test/factories/make-product";
-import { makeCatalog } from "@/test/factories/make-catalog";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -31,11 +30,7 @@ describe("list offers", () => {
     offersRepository = new InMemoryOffersRepository();
     categoriesRepository = new InMemoryCategoriesRepository();
 
-    sut = new ListOffersUseCase(
-      offersRepository,
-      cyclesRepository,
-      categoriesRepository,
-    );
+    sut = new ListOffersUseCase(offersRepository, cyclesRepository, categoriesRepository);
   });
 
   it("should be able to list available offers", async () => {
@@ -45,9 +40,7 @@ describe("list offers", () => {
     const product = makeProduct();
 
     const availableOffer = makeOffer({
-      catalog: makeCatalog({
-        cycle_id: cycle.id,
-      }),
+      cycle_id: cycle.id,
       product_id: product.id,
       product,
       closes_at: null,
@@ -57,9 +50,7 @@ describe("list offers", () => {
     });
 
     const unavailableOffer = makeOffer({
-      catalog: makeCatalog({
-        cycle_id: cycle.id,
-      }),
+      cycle_id: cycle.id,
       product_id: product.id,
       product,
       closes_at: now({
@@ -88,9 +79,7 @@ describe("list offers", () => {
     const product = makeProduct();
 
     const closedOffer = makeOffer({
-      catalog: makeCatalog({
-        cycle_id: cycle.id,
-      }),
+      cycle_id: cycle.id,
       product_id: product.id,
       product,
       closes_at: now(),
@@ -116,9 +105,7 @@ describe("list offers", () => {
     const product = makeProduct();
 
     const offer1 = makeOffer({
-      catalog: makeCatalog({
-        cycle_id: cycle.id,
-      }),
+      cycle_id: cycle.id,
       product_id: product.id,
       product,
       closes_at: null,
@@ -128,9 +115,7 @@ describe("list offers", () => {
     });
 
     const offer2 = makeOffer({
-      catalog: makeCatalog({
-        cycle_id: otherCycle.id,
-      }),
+      cycle_id: otherCycle.id,
       product_id: product.id,
       product,
       closes_at: null,
@@ -147,7 +132,7 @@ describe("list offers", () => {
     });
 
     expect(result.offers.length).toBe(1);
-    expect(result.offers[0].catalog.cycle_id).toEqual(cycle.id);
+    expect(result.offers[0].cycle_id).toEqual(cycle.id);
   });
 
   it("should not be able to list available offers from a non-existing cycle", async () => {
@@ -176,9 +161,7 @@ describe("list offers", () => {
     });
 
     const offer1 = makeOffer({
-      catalog: makeCatalog({
-        cycle_id: cycle.id,
-      }),
+      cycle_id: cycle.id,
       product_id: product1.id,
       product: product1,
       closes_at: null,
@@ -188,9 +171,7 @@ describe("list offers", () => {
     });
 
     const offer2 = makeOffer({
-      catalog: makeCatalog({
-        cycle_id: cycle.id,
-      }),
+      cycle_id: cycle.id,
       product_id: product2.id,
       product: product2,
       closes_at: null,
@@ -227,9 +208,7 @@ describe("list offers", () => {
     const product2 = makeProduct();
 
     const offer1 = makeOffer({
-      catalog: makeCatalog({
-        cycle_id: cycle.id,
-      }),
+      cycle_id: cycle.id,
       product_id: product1.id,
       product: product1,
       closes_at: null,
@@ -239,9 +218,7 @@ describe("list offers", () => {
     });
 
     const offer2 = makeOffer({
-      catalog: makeCatalog({
-        cycle_id: cycle.id,
-      }),
+      cycle_id: cycle.id,
       product_id: product2.id,
       product: product2,
       closes_at: null,
@@ -278,9 +255,7 @@ describe("list offers", () => {
 
     for (let i = 0; i < 25; i++) {
       const offer = makeOffer({
-        catalog: makeCatalog({
-          cycle_id: cycle.id,
-        }),
+        cycle_id: cycle.id,
         product_id: product.id,
         product,
         closes_at: null,

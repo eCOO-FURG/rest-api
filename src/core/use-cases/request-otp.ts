@@ -13,9 +13,6 @@ import { Message } from "@/core/entities/message";
 // Mail
 import { Mailer } from "@/core/mail/mailer";
 
-// Cryptography
-import { OtpProvider } from "@/core/cryptography/otp-provider";
-
 interface RequestOtpUseCaseRequest {
   email: string;
 }
@@ -23,7 +20,6 @@ interface RequestOtpUseCaseRequest {
 export class RequestOtpUseCase {
   constructor(
     private usersRepository: UsersRepository,
-    private otpGenerator: OtpProvider,
     private otpsRepository: OtpsRepository,
     private mailer: Mailer,
   ) {}
@@ -37,10 +33,7 @@ export class RequestOtpUseCase {
 
     if (!user.verified_at) throw new UserNotVerifiedError();
 
-    const otp = Otp.create({
-      user_id: user.id,
-      value: await this.otpGenerator.generate(),
-    });
+    const otp = Otp.create({ user_id: user.id });
 
     await this.otpsRepository.create(otp);
 

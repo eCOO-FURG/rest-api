@@ -4,9 +4,6 @@ import { Bag, BagProps } from "@/core/entities/bag";
 import { Address } from "@/core/entities/address";
 import { Payment } from "@/core/entities/payment";
 
-// Types
-import { Optional } from "@/core/types/optional";
-
 export interface BagAndDetailsProps extends BagProps {
   customer: User;
   address: Address | null;
@@ -34,10 +31,7 @@ export class BagAndDetails extends Bag<BagAndDetailsProps> {
     this.props.payment = payment;
   }
 
-  static create(props: Optional<BagAndDetailsProps, "orders">) {
-    return new BagAndDetails({
-      ...props,
-      orders: props.orders ?? [],
-    });
+  static create(props: BagAndDetailsProps) {
+    return new BagAndDetails(props);
   }
 }

@@ -11,7 +11,6 @@ import { makeCycle } from "@/test/factories/make-cycle";
 import { makeProduct } from "@/test/factories/make-product";
 import { makeOffer } from "@/test/factories/make-offer";
 import { makeOrder } from "@/test/factories/make-order";
-import { makeCatalog } from "@/test/factories/make-catalog";
 import { makeBox } from "@/test/factories/make-box";
 import { makeUser } from "@/test/factories/make-user";
 
@@ -58,17 +57,15 @@ describe("list farms with orders", () => {
 
     const farm = makeFarm({ name: "Fazenda 1" });
 
-    const catalog = makeCatalog({
+    const box = makeBox({
       farm_id: farm.id,
       farm,
       cycle_id: cycle.id,
     });
 
-    const box = makeBox({ catalog_id: catalog.id, catalog });
-
     const product = makeProduct();
 
-    const offer = makeOffer({ catalog_id: catalog.id, product_id: product.id });
+    const offer = makeOffer({ product_id: product.id });
 
     const order = makeOrder({ offer_id: offer.id });
 
@@ -97,9 +94,7 @@ describe("list farms with orders", () => {
         admin_id: admin.id,
       });
 
-      const catalog = makeCatalog({ farm_id: farm.id, cycle_id: cycle.id });
-
-      const box = makeBox({ catalog_id: catalog.id });
+      const box = makeBox({ farm_id: farm.id, cycle_id: cycle.id });
 
       await boxesRepository.create(box);
     }

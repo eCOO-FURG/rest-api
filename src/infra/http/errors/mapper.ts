@@ -20,7 +20,7 @@ export const mappedDomainErrors: {
 }[] = [
   {
     status: 401,
-    errors: [SessionExpiredError],
+    errors: [UnauthorizedError, SessionExpiredError],
   },
   {
     status: 400,
@@ -35,11 +35,9 @@ export const mappedDomainErrors: {
     status: 403,
     errors: [
       ResourceNotVerifiedError,
-      ResourceAlreadyExistsError,
       FarmNotActiveError,
       ResourceClosedError,
       UserNotVerifiedError,
-      UnauthorizedError,
     ],
   },
   {
@@ -48,7 +46,7 @@ export const mappedDomainErrors: {
   },
   {
     status: 409,
-    errors: [UnavailableAmountError],
+    errors: [ResourceAlreadyExistsError, UnavailableAmountError],
   },
 ];
 

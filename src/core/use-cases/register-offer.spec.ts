@@ -1,300 +1,375 @@
 // Use-cases
 import { RegisterOfferUseCase } from "@/core/use-cases/register-offer";
 
-// Services
+// Factories
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeFarm } from "@/test/factories/make-farm";
+import { makeMarket } from "@/test/factories/make-market";
 import { makeProduct } from "@/test/factories/make-product";
-import { makeUser } from "@/test/factories/make-user";
+import { makeOffer } from "@/test/factories/make-offer";
 
 // Repositories
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
+import { InMemoryMarketsRepository } from "@/test/repositories/in-memory-markets-repository";
 import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
-import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 
 // Errors
-import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { FarmNotActiveError } from "@/core/errors/farm-not-active";
-import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
-import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { MissingFieldError } from "@/core/errors/missing-field";
+import { ResourceClosedError } from "@/core/errors/resource-closed";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 
 // Entities
-import { Offer } from "@/core/entities/offer";
 import { CycleWeek } from "@/core/entities/cycle";
-import { makeCatalog } from "@/test/factories/make-catalog";
 
 // Utils
 import { today } from "@/core/utils/today";
-import { now } from "@/core/utils/now";
-import { last } from "@/core/utils/last";
-import { first } from "@/core/utils/first";
 
 let farmsRepository: InMemoryFarmsRepository;
 let productsRepository: InMemoryProductsRepository;
-let catalogsRepository: InMemoryCatalogsRepository;
 let cyclesRepository: InMemoryCyclesRepository;
+let marketsRepository: InMemoryMarketsRepository;
 let offersRepository: InMemoryOffersRepository;
 
 let sut: RegisterOfferUseCase;
 
-describe("offer products", () => {
+describe("register offer", () => {
   beforeEach(() => {
-    cyclesRepository = new InMemoryCyclesRepository();
-    productsRepository = new InMemoryProductsRepository();
     farmsRepository = new InMemoryFarmsRepository();
-    catalogsRepository = new InMemoryCatalogsRepository();
+    productsRepository = new InMemoryProductsRepository();
+    cyclesRepository = new InMemoryCyclesRepository();
+    marketsRepository = new InMemoryMarketsRepository();
     offersRepository = new InMemoryOffersRepository();
 
     sut = new RegisterOfferUseCase(
       farmsRepository,
       productsRepository,
-      catalogsRepository,
       cyclesRepository,
+      marketsRepository,
       offersRepository,
     );
   });
 
-  it("should be able to offer a product", async () => {
+  it("should be able to create an offer for a cycle", async () => {
+    const farm = makeFarm({ status: "ACTIVE" });
+    farmsRepository.items.push(farm);
+
+    const product = makeProduct({ perishable: true });
+    productsRepository.items.push(product);
+
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
-
-    const product = makeProduct();
-    await productsRepository.create(product);
-
-    const farm = makeFarm({ status: "ACTIVE" });
-    await farmsRepository.create(farm);
 
     await sut.execute({
+      farm_id: farm.id.value,
       product_id: product.id.value,
       cycle_id: cycle.id.value,
-      farm_id: farm.id.value,
-      expires_at: now(),
+      market_id: "",
       amount: 10,
-      price: 10,
-      description: "Novo.",
+      price: 100,
+      description: "offer description",
+      comment: "offer comment",
     });
 
-    expect(catalogsRepository.items.length).toBe(1);
-    expect(catalogsRepository.items[0].offers.length).toBe(1);
+    expect(offersRepository.items).toHaveLength(1);
+    expect(offersRepository.items[0]).toEqual(
+      expect.objectContaining({
+        farm_id: farm.id,
+        product_id: product.id,
+        cycle_id: cycle.id,
+        amount: 10,
+        price: 100,
+        description: "offer description",
+        comment: "offer comment",
+      }),
+    );
   });
 
-  it("should not be able to offer products from a nonexistent farm", async () => {
+  it("should be able to create an offer for a market", async () => {
+    const farm = makeFarm({ status: "ACTIVE" });
+    farmsRepository.items.push(farm);
+
+    const product = makeProduct({ perishable: false });
+    productsRepository.items.push(product);
+
+    const market = makeMarket({ open: true });
+    marketsRepository.items.push(market);
+
+    await sut.execute({
+      farm_id: farm.id.value,
+      product_id: product.id.value,
+      cycle_id: "",
+      market_id: market.id.value,
+      amount: 10,
+      price: 100,
+      expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24),
+    });
+
+    expect(offersRepository.items).toHaveLength(1);
+    expect(offersRepository.items[0]).toEqual(
+      expect.objectContaining({
+        farm_id: farm.id,
+        product_id: product.id,
+        market_id: market.id,
+        amount: 10,
+        price: 100,
+      }),
+    );
+  });
+
+  it("should not be able to create an offer for a nonexistent farm", async () => {
+    const product = makeProduct();
+    productsRepository.items.push(product);
+
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
-
-    const product = makeProduct();
-    await productsRepository.create(product);
 
     await expect(() =>
       sut.execute({
+        farm_id: "nonexistent-farm-id",
         product_id: product.id.value,
         cycle_id: cycle.id.value,
-        farm_id: "123",
+        market_id: "",
         amount: 10,
-        price: 10,
+        price: 100,
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
-  it("should not be able to offer products from a closed product", async () => {
+  it("should not be able to create an offer for a nonexistent product", async () => {
+    const farm = makeFarm({ status: "ACTIVE" });
+    farmsRepository.items.push(farm);
+
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
-    const product = makeProduct({ archived: true });
-    await productsRepository.create(product);
+    await expect(() =>
+      sut.execute({
+        farm_id: farm.id.value,
+        product_id: "nonexistent-product-id",
+        cycle_id: cycle.id.value,
+        market_id: "",
+        amount: 10,
+        price: 100,
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
 
+  it("should not be able to create an offer for a non-perishable product without expiration date", async () => {
     const farm = makeFarm({ status: "ACTIVE" });
-    await farmsRepository.create(farm);
+    farmsRepository.items.push(farm);
+
+    const product = makeProduct({ perishable: false });
+    productsRepository.items.push(product);
+
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
 
     await expect(() =>
       sut.execute({
+        farm_id: farm.id.value,
         product_id: product.id.value,
         cycle_id: cycle.id.value,
-        farm_id: farm.id.value,
-        expires_at: now(),
+        market_id: "",
         amount: 10,
-        price: 10,
+        price: 100,
+      }),
+    ).rejects.toBeInstanceOf(MissingFieldError);
+  });
+
+  it("should not be able to create an offer for an archived product", async () => {
+    const farm = makeFarm({ status: "ACTIVE" });
+    farmsRepository.items.push(farm);
+
+    const product = makeProduct({ archived: true, perishable: true });
+    productsRepository.items.push(product);
+
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
+    await expect(() =>
+      sut.execute({
+        farm_id: farm.id.value,
+        product_id: product.id.value,
+        cycle_id: cycle.id.value,
+        market_id: "",
+        amount: 10,
+        price: 100,
       }),
     ).rejects.toBeInstanceOf(ResourceClosedError);
   });
 
-  it("should not be able to offer products from a not active farm", async () => {
-    const cycle = makeCycle();
-    cyclesRepository.items.push(cycle);
-
-    const product = makeProduct();
-    await productsRepository.create(product);
-
-    const farm = makeFarm({ status: "INACTIVE" });
-    await farmsRepository.create(farm);
-
-    await expect(() =>
-      sut.execute({
-        product_id: product.id.value,
-        cycle_id: cycle.id.value,
-        farm_id: farm.id.value,
-        expires_at: now(),
-
-        amount: 10,
-        price: 10,
-      }),
-    ).rejects.toBeInstanceOf(FarmNotActiveError);
-  });
-
-  it("should not be able to offer nonexistent products", async () => {
-    const cycle = makeCycle();
-    cyclesRepository.items.push(cycle);
-
+  it("should not be able to create an offer for a weight-priced product with invalid amount", async () => {
     const farm = makeFarm({ status: "ACTIVE" });
-    await farmsRepository.create(farm);
+    farmsRepository.items.push(farm);
 
-    await expect(() =>
-      sut.execute({
-        product_id: "123",
-        cycle_id: cycle.id.value,
-        farm_id: farm.id.value,
-        expires_at: now(),
-        amount: 10,
-        price: 10,
-      }),
-    ).rejects.toBeInstanceOf(ResourceNotFoundError);
-  });
+    const product = makeProduct({ pricing: "WEIGHT", perishable: true });
+    productsRepository.items.push(product);
 
-  it("should not be able to offer products in a nonexistent cycle", async () => {
-    const product = makeProduct();
-    await productsRepository.create(product);
-
-    const farm = makeFarm({ status: "ACTIVE" });
-    await farmsRepository.create(farm);
-
-    await expect(() =>
-      sut.execute({
-        product_id: product.id.value,
-        cycle_id: "123",
-        farm_id: farm.id.value,
-        expires_at: now(),
-        amount: 10,
-        price: 10,
-      }),
-    ).rejects.toBeInstanceOf(ResourceNotFoundError);
-  });
-
-  it("should not be able to offer the same product twice in the same cycle", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
-    const product = makeProduct();
-    await productsRepository.create(product);
-
-    const user = makeUser();
-
-    const farm = makeFarm({ status: "ACTIVE", admin_id: user.id, admin: user });
-    await farmsRepository.create(farm);
-
-    const catalog = makeCatalog({
-      farm_id: farm.id,
-      cycle_id: cycle.id,
-    });
-
-    const offer = Offer.create({
-      catalog_id: catalog.id,
-      product_id: product.id,
-      product,
-      amount: 20,
-      price: 30,
-      fee: 10,
-      closes_at: last(cycle.offer),
-      opens_at: first(cycle.offer),
-    });
-
-    catalog.offers.push(offer);
-    offersRepository.items.push(offer);
-    await catalogsRepository.create(catalog);
-
     await expect(() =>
       sut.execute({
+        farm_id: farm.id.value,
         product_id: product.id.value,
         cycle_id: cycle.id.value,
-        farm_id: farm.id.value,
-        amount: 10,
-        price: 10,
-        expires_at: now(),
-      }),
-    ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
-  });
-
-  it("should not be able to offer products with invalid weight", async () => {
-    const cycle = makeCycle();
-    cyclesRepository.items.push(cycle);
-
-    const product = makeProduct({ pricing: "WEIGHT" });
-    await productsRepository.create(product);
-
-    const farm = makeFarm({ status: "ACTIVE" });
-    await farmsRepository.create(farm);
-
-    await expect(() =>
-      sut.execute({
-        product_id: product.id.value,
-        cycle_id: cycle.id.value,
-        farm_id: farm.id.value,
-        amount: 10,
-        price: 10,
-        expires_at: now(),
+        market_id: "",
+        amount: 150, // Not a multiple of 100
+        price: 100,
       }),
     ).rejects.toBeInstanceOf(InvalidWeightError);
   });
 
-  it("should not be able to offer products off the cycle offering days", async () => {
-    const offer = [1, 2, 3, 4, 5, 6, 7].filter((day) => day != today());
-
-    const cycle = makeCycle({
-      offer: offer as CycleWeek,
-    });
-
-    cyclesRepository.items.push(cycle);
-
-    const product = makeProduct();
-    await productsRepository.create(product);
-
+  it("should not be able to create an offer for a nonexistent market", async () => {
     const farm = makeFarm({ status: "ACTIVE" });
-    await farmsRepository.create(farm);
+    farmsRepository.items.push(farm);
+
+    const product = makeProduct({ perishable: false });
+    productsRepository.items.push(product);
 
     await expect(() =>
       sut.execute({
-        product_id: product.id.value,
-        cycle_id: cycle.id.value,
         farm_id: farm.id.value,
+        product_id: product.id.value,
+        cycle_id: "",
+        market_id: "nonexistent-market-id",
         amount: 10,
-        price: 10,
-        expires_at: now(),
+        price: 100,
+        expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24),
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it("should not be able to create an offer for a closed market", async () => {
+    const farm = makeFarm({ status: "ACTIVE" });
+    farmsRepository.items.push(farm);
+
+    const product = makeProduct({ perishable: false });
+    productsRepository.items.push(product);
+
+    const market = makeMarket({ open: false });
+    marketsRepository.items.push(market);
+
+    await expect(() =>
+      sut.execute({
+        farm_id: farm.id.value,
+        product_id: product.id.value,
+        cycle_id: "",
+        market_id: market.id.value,
+        amount: 10,
+        price: 100,
+        expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24),
       }),
     ).rejects.toBeInstanceOf(ResourceClosedError);
   });
 
-  it("should not be able to offer a non perishable product without expires_at", async () => {
-    const cycle = makeCycle();
-    cyclesRepository.items.push(cycle);
-
-    const product = makeProduct();
-    await productsRepository.create(product);
-
+  it("should not be able to create a duplicate offer for a market", async () => {
     const farm = makeFarm({ status: "ACTIVE" });
-    await farmsRepository.create(farm);
+    farmsRepository.items.push(farm);
+
+    const product = makeProduct({ perishable: false });
+    productsRepository.items.push(product);
+
+    const market = makeMarket({ open: true });
+    marketsRepository.items.push(market);
+
+    // Create first offer
+    const existingOffer = makeOffer({
+      farm_id: farm.id,
+      product_id: product.id,
+      market_id: market.id,
+    });
+    offersRepository.items.push(existingOffer);
 
     await expect(() =>
       sut.execute({
+        farm_id: farm.id.value,
+        product_id: product.id.value,
+        cycle_id: "",
+        market_id: market.id.value,
+        amount: 10,
+        price: 100,
+        expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24),
+      }),
+    ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
+  });
+
+  it("should not be able to create an offer for a nonexistent cycle", async () => {
+    const farm = makeFarm({ status: "ACTIVE" });
+    farmsRepository.items.push(farm);
+
+    const product = makeProduct({ perishable: true });
+    productsRepository.items.push(product);
+
+    await expect(() =>
+      sut.execute({
+        farm_id: farm.id.value,
+        product_id: product.id.value,
+        cycle_id: "nonexistent-cycle-id",
+        market_id: "",
+        amount: 10,
+        price: 100,
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it("should not be able to create an offer for a cycle outside offering period", async () => {
+    const farm = makeFarm({ status: "ACTIVE" });
+    farmsRepository.items.push(farm);
+
+    const product = makeProduct({ perishable: true });
+    productsRepository.items.push(product);
+
+    const days = [1, 2, 3, 4, 5, 6, 7].filter((day) => day != today());
+
+    const cycle = makeCycle({
+      offer: days as CycleWeek,
+    });
+    cyclesRepository.items.push(cycle);
+
+    await expect(() =>
+      sut.execute({
+        farm_id: farm.id.value,
         product_id: product.id.value,
         cycle_id: cycle.id.value,
-        farm_id: farm.id.value,
+        market_id: "",
         amount: 10,
-        price: 10,
-        description: "Novo.",
+        price: 100,
       }),
-    ).rejects.toBeInstanceOf(MissingFieldError);
+    ).rejects.toBeInstanceOf(ResourceClosedError);
+  });
+
+  it("should not be able to create a duplicate offer for a cycle", async () => {
+    const farm = makeFarm({ status: "ACTIVE" });
+    farmsRepository.items.push(farm);
+
+    const product = makeProduct({ perishable: true });
+    productsRepository.items.push(product);
+
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
+    // Create first offer
+    const existingOffer = makeOffer({
+      farm_id: farm.id,
+      product_id: product.id,
+      cycle_id: cycle.id,
+    });
+    offersRepository.items.push(existingOffer);
+
+    await expect(() =>
+      sut.execute({
+        farm_id: farm.id.value,
+        product_id: product.id.value,
+        cycle_id: cycle.id.value,
+        market_id: "",
+        amount: 10,
+        price: 100,
+      }),
+    ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 });

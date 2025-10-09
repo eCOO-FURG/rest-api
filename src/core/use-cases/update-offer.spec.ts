@@ -2,343 +2,197 @@
 import { UpdateOfferUseCase } from "@/core/use-cases/update-offer";
 
 // Factories
-import { makeCatalog } from "@/test/factories/make-catalog";
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeOffer } from "@/test/factories/make-offer";
-import { makeProduct } from "@/test/factories/make-product";
+import { makeMarket } from "@/test/factories/make-market";
 
 // Repositories
-import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
-import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
-import { InMemoryProductsRepository } from "@/test/repositories/in-memory-products-repository";
+import { InMemoryMarketsRepository } from "@/test/repositories/in-memory-markets-repository";
 
 // Errors
-import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Entities
-import { UUID } from "@/core/entities/aggregates/uuid";
 import { CycleWeek } from "@/core/entities/cycle";
 
 // Utils
 import { today } from "@/core/utils/today";
 
-let farmsRepository: InMemoryFarmsRepository;
-let productsRepository: InMemoryProductsRepository;
 let offersRepository: InMemoryOffersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
-let catalogsRepository: InMemoryCatalogsRepository;
+let marketsRepository: InMemoryMarketsRepository;
 
 let sut: UpdateOfferUseCase;
 
 describe("update offer", () => {
   beforeEach(() => {
     cyclesRepository = new InMemoryCyclesRepository();
-    productsRepository = new InMemoryProductsRepository();
-    farmsRepository = new InMemoryFarmsRepository();
+    marketsRepository = new InMemoryMarketsRepository();
     offersRepository = new InMemoryOffersRepository();
-    catalogsRepository = new InMemoryCatalogsRepository();
 
-    sut = new UpdateOfferUseCase(offersRepository, cyclesRepository);
+    sut = new UpdateOfferUseCase(offersRepository, cyclesRepository, marketsRepository);
   });
 
-  it("should be able to update an offer", async () => {
+  it("should be able to update an offer from a cycle", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
     const farm = makeFarm({ status: "ACTIVE" });
-    farmsRepository.create(farm);
-
-    const product = makeProduct();
-    productsRepository.create(product);
-
-    const catalog = makeCatalog({
-      farm_id: farm.id,
-      farm,
-      cycle_id: cycle.id,
-      cycle,
-    });
-
-    catalogsRepository.create(catalog);
 
     const offer = makeOffer({
-      catalog_id: catalog.id,
-      catalog,
-      product_id: product.id,
-      amount: 5,
-      description: "Description",
-      price: 10,
+      farm_id: farm.id,
+      cycle_id: cycle.id,
     });
-    offersRepository.items.push(offer);
 
-    catalog.offers.push(offer);
-    catalogsRepository.update(catalog);
+    offersRepository.items.push(offer);
 
     await sut.execute({
       farm_id: farm.id.value,
       offer_id: offer.id.value,
+      description: "offer description.",
+      comment: "offer comment.",
       amount: 10,
-      description: "Updated description",
-      price: 20,
+      price: 10,
+      active: false,
     });
 
-    const updatedOffer = await offersRepository.find("offer", {
-      id: offer.id.value,
+    expect(offersRepository.items[0]).toMatchObject({
+      description: "offer description.",
+      comment: "offer comment.",
+      amount: 10,
+      price: 10,
+      active: false,
+    });
+  });
+
+  it("should be able to update an offer from a market", async () => {
+    const market = makeMarket({ open: true });
+    marketsRepository.items.push(market);
+
+    const farm = makeFarm({ status: "ACTIVE" });
+
+    const offer = makeOffer({
+      farm_id: farm.id,
+      market_id: market.id,
+    });
+    offersRepository.items.push(offer);
+
+    await sut.execute({
+      farm_id: farm.id.value,
+      offer_id: offer.id.value,
+      description: "offer description.",
+      comment: "offer comment.",
+      amount: 10,
+      price: 10,
+      active: false,
     });
 
-    expect(updatedOffer!.amount).toBe(10);
-    expect(updatedOffer!.description).toBe("Updated description");
-    expect(updatedOffer!.price).toBe(20);
+    expect(offersRepository.items[0]).toMatchObject({
+      description: "offer description.",
+      comment: "offer comment.",
+      amount: 10,
+      price: 10,
+      active: false,
+    });
+  });
+
+  it("should not be able to update an offer exclusive from a closed market", async () => {
+    const market = makeMarket({ open: false });
+    marketsRepository.items.push(market);
+
+    const farm = makeFarm({ status: "ACTIVE" });
+
+    const offer = makeOffer({
+      farm_id: farm.id,
+      market_id: market.id,
+    });
+    offersRepository.items.push(offer);
+
+    await expect(() =>
+      sut.execute({
+        farm_id: farm.id.value,
+        offer_id: offer.id.value,
+        description: "offer description.",
+        comment: "offer comment.",
+        amount: 10,
+        price: 10,
+        active: false,
+      }),
+    ).rejects.toBeInstanceOf(ResourceClosedError);
+  });
+
+  it("should be not be able to update an offer exclusive from a closed cycle", async () => {
+    const days = [1, 2, 3, 4, 5, 6, 7].filter((day) => day != today());
+
+    const cycle = makeCycle({
+      offer: days as CycleWeek,
+    });
+    cyclesRepository.items.push(cycle);
+
+    const farm = makeFarm({ status: "ACTIVE" });
+
+    const offer = makeOffer({
+      farm_id: farm.id,
+      cycle_id: cycle.id,
+    });
+    offersRepository.items.push(offer);
+
+    await expect(() =>
+      sut.execute({
+        farm_id: farm.id.value,
+        offer_id: offer.id.value,
+        description: "offer description.",
+        comment: "offer comment.",
+        amount: 10,
+        price: 10,
+        active: false,
+      }),
+    ).rejects.toBeInstanceOf(ResourceClosedError);
+  });
+
+  it("should not be able to updated an offer from past cycle offering days", async () => {
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
+    const farm = makeFarm({ status: "ACTIVE" });
+
+    const offer = makeOffer({
+      farm_id: farm.id,
+      cycle_id: cycle.id,
+      created_at: new Date(Date.now() - 1000 * 60 * 60 * 24 * 10),
+    });
+    offersRepository.items.push(offer);
+
+    await expect(() =>
+      sut.execute({
+        farm_id: farm.id.value,
+        offer_id: offer.id.value,
+        description: "offer description.",
+        comment: "offer comment.",
+        amount: 10,
+        price: 10,
+        active: false,
+      }),
+    ).rejects.toBeInstanceOf(ResourceClosedError);
   });
 
   it("should not be able to update a nonexistent offer", async () => {
-    const cycle = makeCycle();
-    cyclesRepository.items.push(cycle);
-
     const farm = makeFarm({ status: "ACTIVE" });
-    farmsRepository.create(farm);
 
-    const product = makeProduct();
-    productsRepository.create(product);
-
-    const catalog = makeCatalog({
-      farm,
-      cycle,
-    });
-    catalogsRepository.create(catalog);
-
-    const offer = makeOffer({
-      catalog,
-      product,
-      amount: 5,
-      description: "Description",
-      price: 10,
-    });
-
-    catalog.offers.push(offer);
-    catalogsRepository.update(catalog);
-
-    await expect(
+    await expect(() =>
       sut.execute({
         farm_id: farm.id.value,
-        offer_id: offer.id.value,
+        offer_id: "123",
+        description: "offer description.",
+        comment: "offer comment.",
         amount: 10,
-        description: "Updated description",
-        price: 20,
+        price: 10,
+        active: false,
       }),
-    ).rejects.toThrowError(ResourceNotFoundError);
-  });
-
-  it("should not be able to update an offer from a nonexistent farm", async () => {
-    const cycle = makeCycle();
-    cyclesRepository.items.push(cycle);
-
-    const farm = makeFarm({ status: "ACTIVE" });
-    farmsRepository.create(farm);
-
-    const product = makeProduct();
-    productsRepository.create(product);
-
-    const catalog = makeCatalog({
-      farm,
-      cycle,
-    });
-    catalogsRepository.create(catalog);
-
-    const offer = makeOffer({
-      catalog,
-      product,
-      amount: 5,
-      description: "Description",
-      price: 10,
-    });
-    offersRepository.items.push(offer);
-
-    catalog.offers.push(offer);
-    catalogsRepository.update(catalog);
-
-    await expect(
-      sut.execute({
-        farm_id: new UUID().value,
-        offer_id: offer.id.value,
-        amount: 10,
-        description: "Updated description",
-        price: 20,
-      }),
-    ).rejects.toThrowError(ResourceNotFoundError);
-  });
-
-  it("should not be able to update an offer from a not active farm", async () => {
-    const cycle = makeCycle();
-    cyclesRepository.items.push(cycle);
-
-    const farm = makeFarm({ status: "INACTIVE" });
-    farmsRepository.create(farm);
-
-    const product = makeProduct();
-    productsRepository.create(product);
-
-    const catalog = makeCatalog({
-      farm_id: farm.id,
-      farm,
-      cycle_id: cycle.id,
-      cycle,
-    });
-
-    catalogsRepository.create(catalog);
-
-    const offer = makeOffer({
-      catalog_id: catalog.id,
-      catalog,
-      product_id: product.id,
-      amount: 5,
-      description: "Description",
-      price: 10,
-    });
-    offersRepository.items.push(offer);
-
-    catalog.offers.push(offer);
-    catalogsRepository.update(catalog);
-
-    await expect(
-      sut.execute({
-        farm_id: farm.id.value,
-        offer_id: offer.id.value,
-        amount: 10,
-        description: "Updated description",
-        price: 20,
-      }),
-    ).rejects.toThrowError(FarmNotActiveError);
-  });
-
-  it("should not be able to update an offer from a nonexistent cycle", async () => {
-    const farm = makeFarm({ status: "ACTIVE" });
-    farmsRepository.create(farm);
-
-    const product = makeProduct();
-    productsRepository.create(product);
-
-    const catalog = makeCatalog({
-      farm_id: farm.id,
-      farm,
-      cycle_id: new UUID(),
-    });
-
-    catalogsRepository.create(catalog);
-
-    const offer = makeOffer({
-      catalog_id: catalog.id,
-      catalog,
-      product_id: product.id,
-      amount: 5,
-      description: "Description",
-      price: 10,
-    });
-    offersRepository.items.push(offer);
-
-    catalog.offers.push(offer);
-    catalogsRepository.update(catalog);
-
-    await expect(
-      sut.execute({
-        farm_id: farm.id.value,
-        offer_id: offer.id.value,
-        amount: 10,
-        description: "Updated description",
-        price: 20,
-      }),
-    ).rejects.toThrowError(ResourceNotFoundError);
-  });
-
-  it("should not be able to update an offer off the cycle's offering days", async () => {
-    const offeringDays = [1, 2, 3, 4, 5, 6, 7].filter((day) => day !== today());
-
-    const cycle = makeCycle({
-      offer: offeringDays as CycleWeek,
-    });
-    cyclesRepository.items.push(cycle);
-
-    const farm = makeFarm({ status: "ACTIVE" });
-    farmsRepository.create(farm);
-
-    const product = makeProduct();
-    productsRepository.create(product);
-
-    const catalog = makeCatalog({
-      farm_id: farm.id,
-      farm,
-      cycle_id: cycle.id,
-      cycle,
-    });
-    catalogsRepository.create(catalog);
-
-    const offer = makeOffer({
-      catalog_id: catalog.id,
-      catalog,
-      product_id: product.id,
-      amount: 5,
-      description: "Description",
-      price: 10,
-    });
-    offersRepository.items.push(offer);
-
-    catalog.offers.push(offer);
-    catalogsRepository.update(catalog);
-
-    await expect(
-      sut.execute({
-        farm_id: farm.id.value,
-        offer_id: offer.id.value,
-        amount: 10,
-        description: "Updated description",
-        price: 20,
-      }),
-    ).rejects.toThrowError(ResourceClosedError);
-  });
-
-  it("should not be able to update an offer from another farm", async () => {
-    const cycle = makeCycle();
-    cyclesRepository.items.push(cycle);
-
-    const farm = makeFarm({ status: "ACTIVE" });
-    farmsRepository.create(farm);
-
-    const anotherFarm = makeFarm({ status: "ACTIVE" });
-    farmsRepository.create(anotherFarm);
-
-    const product = makeProduct();
-    productsRepository.create(product);
-
-    const catalog = makeCatalog({
-      farm: anotherFarm,
-      cycle,
-    });
-    catalogsRepository.create(catalog);
-
-    const offer = makeOffer({
-      catalog,
-      product,
-      amount: 5,
-      description: "Description",
-      price: 10,
-    });
-    offersRepository.items.push(offer);
-
-    catalog.offers.push(offer);
-    catalogsRepository.update(catalog);
-
-    await expect(
-      sut.execute({
-        farm_id: farm.id.value,
-        offer_id: offer.id.value,
-        amount: 10,
-        description: "Updated description",
-        price: 20,
-      }),
-    ).rejects.toThrowError(ResourceNotFoundError);
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

@@ -6,7 +6,6 @@ import { UnauthorizedError } from "@/core/errors/unauthorized";
 
 // Repositories
 import { BagsRepository } from "@/core/repositories/bags-repository";
-import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { UsersRepository } from "@/core/repositories/users-repository";
 
 // Entities
@@ -29,7 +28,6 @@ export class UpdateBagUseCase {
   constructor(
     private bagsRepository: BagsRepository,
     private usersRepository: UsersRepository,
-    private cyclesRepository: CyclesRepository,
     private chat: Chat,
   ) {}
 
@@ -46,21 +44,13 @@ export class UpdateBagUseCase {
 
     if (!user) throw new ResourceNotFoundError("Usuário", user_id);
 
-    const cycle = await this.cyclesRepository.find("cycle", {
-      id: bag.cycle_id.value,
-    });
-
-    if (!cycle) throw new ResourceNotFoundError("Ciclo", bag.cycle_id.value);
-
     const owner = bag.customer_id.equals(user.id);
 
-    if (!owner && !user.admin)
-      throw new ResourceNotFoundError("Sacola", bag_id);
+    if (!owner && !user.admin) throw new ResourceNotFoundError("Sacola", bag_id);
 
     if (owner && status !== "CANCELLED") throw new UnauthorizedError();
 
-    if (bag.status === "CANCELLED")
-      throw new ResourceClosedError("Sacola", bag_id);
+    if (bag.status === "CANCELLED") throw new ResourceClosedError("Sacola", bag_id);
 
     if (bag.status === "PENDING" && status !== "CANCELLED")
       throw new ResourceNotVerifiedError("Sacola", bag_id);
@@ -68,7 +58,7 @@ export class UpdateBagUseCase {
     bag.status = status ?? bag.status;
     bag.touch();
 
-    await this.bagsRepository.update(bag);
+    await this.bagsRepository.save(bag);
 
     if (user.chat) {
       const message = Message.create({

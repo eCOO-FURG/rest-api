@@ -3,7 +3,7 @@ import { SpreadsheetColumn } from "@/core/report/spreadsheet-service";
 import { SpreadsheetView } from "@/infra/report/spreadsheet/excel";
 
 // Entities
-import { CatalogAndOffers } from "@/core/entities/aggregates/catalog-and-offers";
+import { CatalogAndOffers } from "@/core/entities/aggregates/farm-and-offers";
 
 const columns: SpreadsheetColumn[] = [
   { header: "Fazenda", key: "farm", width: 25 },

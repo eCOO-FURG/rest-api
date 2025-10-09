@@ -150,8 +150,7 @@ model Cycle {
 }
 
 model Catalog {
-  id  String @id @default(uuid())
-  fee Float
+  id String @id @default(uuid())
 
   farm_id String
   farm    Farm   @relation(fields: [farm_id], references: [id])

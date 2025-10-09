@@ -26,14 +26,7 @@ export class ListBagsUseCase {
     private cyclesRepository: CyclesRepository,
   ) {}
 
-  async execute({
-    user_id,
-    since,
-    before,
-    page,
-    statuses,
-    cycle_id,
-  }: ListBagsUseCaseRequest) {
+  async execute({ user_id, since, before, page, statuses, cycle_id }: ListBagsUseCaseRequest) {
     if (user_id) {
       const user = await this.usersRepository.find("user", { id: user_id });
 

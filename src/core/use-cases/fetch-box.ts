@@ -25,14 +25,16 @@ export class FetchBoxUseCase {
 
     if (!box) throw new ResourceNotFoundError("Caixa", box_id);
 
-    const owner = box.catalog.farm.admin_id.equals(user_id);
-
-    if (!owner) {
+    if (!box.farm.admin_id.equals(user_id)) {
       const user = await this.usersRepository.find("user", { id: user_id });
 
-      if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+      if (!user) {
+        throw new ResourceNotFoundError("Usuário", user_id);
+      }
 
-      if (!user.admin) throw new ResourceNotFoundError("Caixa", box_id);
+      if (!user.admin) {
+        throw new ResourceNotFoundError("Caixa", box_id);
+      }
     }
 
     return { box };

@@ -1,18 +1,14 @@
 // Entities
-import { Catalog } from "@/core/entities/catalog";
-import { Cycle } from "@/core/entities/cycle";
-import { Farm } from "@/core/entities/farm";
 import { Offer } from "@/core/entities/offer";
 
 // Repositories
-import { CatalogsRepository } from "@/core//repositories/catalogs-repository";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { FarmsRepository } from "@/core/repositories/farms-repository";
 import { ProductsRepository } from "@/core/repositories/products-repository";
 import { OffersRepository } from "@/core/repositories/offers-repository";
+import { MarketsRepository } from "@/core/repositories/markets-repository";
 
 // Errors
-import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { InvalidWeightError } from "@/core/errors/invalid-weight";
 import { MissingFieldError } from "@/core/errors/missing-field";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
@@ -24,11 +20,13 @@ import { now } from "../utils/now";
 import { first } from "@/core/utils/first";
 import { last } from "@/core/utils/last";
 import { inPeriodOf } from "@/core/utils/in-period-of";
+import { UUID } from "../entities/aggregates/uuid";
 
 interface RegisterOfferUseCaseRequest {
   farm_id: string;
   product_id: string;
   cycle_id: string;
+  market_id: string;
   amount: number;
   price: number;
   recurring?: boolean;
@@ -41,8 +39,8 @@ export class RegisterOfferUseCase {
   constructor(
     private farmsRepository: FarmsRepository,
     private productsRepository: ProductsRepository,
-    private catalogsRepository: CatalogsRepository,
     private cyclesRepository: CyclesRepository,
+    private marketsRepository: MarketsRepository,
     private offersRepository: OffersRepository,
   ) {}
 
@@ -50,6 +48,7 @@ export class RegisterOfferUseCase {
     farm_id,
     product_id,
     cycle_id,
+    market_id,
     amount,
     price,
     description,
@@ -59,82 +58,95 @@ export class RegisterOfferUseCase {
   }: RegisterOfferUseCaseRequest) {
     const farm = await this.farmsRepository.find("farm", { id: farm_id });
 
-    if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
-
-    if (farm.status !== "ACTIVE") throw new FarmNotActiveError();
+    if (!farm) {
+      throw new ResourceNotFoundError("Fazenda", farm_id);
+    }
 
     const product = await this.productsRepository.find("product", {
       id: product_id,
     });
 
-    if (!product) throw new ResourceNotFoundError("Produto", product_id);
-
-    if (!product.perishable && !expires_at)
-      throw new MissingFieldError("expires_at");
-
-    if (product.archived) throw new ResourceClosedError("Produto", product_id);
-
-    const cycle = await this.cyclesRepository.find("cycle", { id: cycle_id });
-
-    if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
-
-    if (!inPeriodOf("offer", cycle))
-      throw new ResourceClosedError("Ciclo", cycle.id.value);
-
-    const { catalog, existed } = await this.useCatalog(farm, cycle);
-
-    if (existed) {
-      const previous = await this.offersRepository.find("offer", {
-        product: { id: product.id.value },
-        catalog: { id: catalog.id.value },
-        ...(recurring ? { recurring } : { since: first(cycle.offer) }),
-      });
-
-      if (previous)
-        throw new ResourceAlreadyExistsError(`Oferta do produto`, product_id);
+    if (!product) {
+      throw new ResourceNotFoundError("Produto", product_id);
     }
 
-    if (product.pricing === "WEIGHT" && amount % 1000 !== 0)
+    if (!product.perishable && !expires_at) {
+      throw new MissingFieldError("expires_at");
+    }
+
+    if (product.archived) {
+      throw new ResourceClosedError("Produto", product_id);
+    }
+
+    if (product.pricing === "WEIGHT" && amount % 100 !== 0) {
       throw new InvalidWeightError("ofertado", product_id);
+    }
+
+    if (market_id) {
+      const market = await this.marketsRepository.find("market", {
+        id: market_id,
+      });
+
+      if (!market) {
+        throw new ResourceNotFoundError("Mercado", market_id);
+      }
+
+      if (!market.open) {
+        throw new ResourceClosedError("Mercado", market_id);
+      }
+
+      const offerAlreadyExists = await this.offersRepository.find("offer", {
+        farm: { id: farm.id.value },
+        product: { id: product.id.value },
+        market: { id: market_id },
+      });
+
+      if (offerAlreadyExists) {
+        throw new ResourceAlreadyExistsError(`Oferta do produto`, product_id);
+      }
+    }
 
     const offer = Offer.create({
-      catalog_id: catalog.id,
+      farm_id: farm.id,
       product_id: product.id,
+      cycle_id: cycle_id ? new UUID(cycle_id) : null,
+      market_id: market_id ? new UUID(market_id) : null,
       amount,
       price,
       description,
       comment,
       expires_at,
-      opens_at: recurring
-        ? now()
-        : first(cycle.order, last(cycle.order) < now()),
-      closes_at: recurring
-        ? null
-        : last(cycle.order, last(cycle.order) < now()),
-      fee: price * (catalog.fee / 100),
+      fee: price * (farm.fee / 100),
     });
 
-    catalog.offers.push(offer);
+    if (cycle_id) {
+      const cycle = await this.cyclesRepository.find("cycle", { id: cycle_id });
 
-    if (existed) return await this.catalogsRepository.update(catalog);
+      if (!cycle) {
+        throw new ResourceNotFoundError("Ciclo", cycle_id);
+      }
 
-    return await this.catalogsRepository.create(catalog);
-  }
+      if (!inPeriodOf("offer", cycle)) {
+        throw new ResourceClosedError("Ciclo", cycle.id.value);
+      }
 
-  private async useCatalog(farm: Farm, cycle: Cycle) {
-    const existent = await this.catalogsRepository.find("catalog", {
-      farm: { id: farm.id.value },
-      cycle: { id: cycle.id.value },
-    });
+      const offerAlreadyExists = await this.offersRepository.find("offer", {
+        farm: { id: farm.id.value },
+        product: { id: product.id.value },
+        cycle: { id: cycle_id },
+        ...(recurring ? { recurring } : { since: first(cycle.offer) }),
+      });
 
-    if (existent) return { catalog: existent, existed: true };
+      if (offerAlreadyExists) {
+        throw new ResourceAlreadyExistsError(`Oferta do produto`, product_id);
+      }
 
-    const catalog = Catalog.create({
-      fee: farm.fee,
-      farm_id: farm.id,
-      cycle_id: cycle.id,
-    });
+      if (!recurring) {
+        offer.opens_at = first(cycle.order, last(cycle.order) < now());
+        offer.closes_at = last(cycle.order, last(cycle.order) < now());
+      }
+    }
 
-    return { catalog, existed: false };
+    await this.offersRepository.create(offer);
   }
 }

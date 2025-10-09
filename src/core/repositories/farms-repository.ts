@@ -1,14 +1,17 @@
 // Entities
 import { Farm, FarmStatus } from "@/core/entities/farm";
 import { FarmAndAdmin } from "@/core/entities/aggregates/farm-and-admin";
+import { Catalog } from "@/core/entities/aggregates/catalog";
 
-export type FarmRepositoryReturnType = "farm" | "farm-and-admin";
+export type FarmRepositoryReturnType = "farm" | "farm-and-admin" | "catalog";
 
 export type FarmEntityOf<T extends FarmRepositoryReturnType> = T extends "farm"
   ? Farm
   : T extends "farm-and-admin"
     ? FarmAndAdmin
-    : never;
+    : T extends "catalog"
+      ? Catalog
+      : never;
 
 export interface FarmsRepositorySearchRequest {
   id?: string;
@@ -16,6 +19,20 @@ export interface FarmsRepositorySearchRequest {
   name?: string;
   status?: FarmStatus;
   admin?: { id?: string };
+  offers?: {
+    id?: string;
+    cycle?: { id?: string };
+    page?: number;
+    available?: boolean;
+    remaining?: boolean;
+    since?: Date;
+    before?: Date;
+    product?: { name?: string; category?: { id?: string } };
+    period?: {
+      since?: Date;
+      before?: Date;
+    };
+  };
 }
 
 export interface FarmsRepository {

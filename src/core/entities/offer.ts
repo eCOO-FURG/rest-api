@@ -2,15 +2,25 @@
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { Entity, EntityRequest } from "@/core/entities/entity";
 import { Product } from "@/core/entities/product";
-import { Catalog } from "@/core/entities/catalog";
-import { Optional } from "@/core/types/optional";
+import { Farm } from "@/core/entities/farm";
+import { Cycle } from "@/core/entities/cycle";
+import { Market } from "@/core/entities/market";
 
 // Utils
 import { now } from "@/core/utils/now";
 
+// Types
+import { Optional } from "@/core/types/optional";
+
 export interface OfferProps extends EntityRequest {
-  catalog_id: UUID;
-  catalog?: Catalog;
+  farm_id: UUID;
+  farm?: Farm;
+
+  cycle_id: UUID | null;
+  cycle?: Cycle | null;
+
+  market_id: UUID | null;
+  market?: Market | null;
 
   product_id: UUID;
   product?: Product;
@@ -29,9 +39,7 @@ export interface OfferProps extends EntityRequest {
   expires_at: Date | null;
 }
 
-export class Offer<
-  Props extends OfferProps = OfferProps,
-> extends Entity<Props> {
+export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> {
   get price() {
     return this.props.price;
   }
@@ -56,16 +64,36 @@ export class Offer<
     return this.props.opens_at;
   }
 
+  set opens_at(opens_at: Date) {
+    this.props.opens_at = opens_at;
+  }
+
   get comment() {
     return this.props.comment;
   }
 
-  get catalog_id() {
-    return this.props.catalog_id;
+  get farm_id() {
+    return this.props.farm_id;
   }
 
-  get catalog() {
-    return this.props.catalog;
+  get farm() {
+    return this.props.farm;
+  }
+
+  get cycle_id() {
+    return this.props.cycle_id;
+  }
+
+  get cycle() {
+    return this.props.cycle;
+  }
+
+  get market_id() {
+    return this.props.market_id;
+  }
+
+  get market() {
+    return this.props.market;
   }
 
   get product_id() {
@@ -116,6 +144,14 @@ export class Offer<
     this.props.expires_at = value;
   }
 
+  exclusive(to: "MARKET" | "CYCLE"): boolean {
+    if (to === "MARKET") {
+      return Boolean(this.props.market_id && !this.props.cycle_id);
+    } else {
+      return Boolean(!this.props.market_id && this.props.cycle_id);
+    }
+  }
+
   get available() {
     return (
       this.props.amount > 0 &&
@@ -129,7 +165,7 @@ export class Offer<
   static create(
     props: Optional<
       OfferProps,
-      "description" | "expires_at" | "active" | "comment"
+      "description" | "expires_at" | "active" | "comment" | "closes_at" | "opens_at"
     >,
   ) {
     const offer = new Offer({
@@ -138,6 +174,8 @@ export class Offer<
       description: props.description ?? null,
       comment: props.comment ?? null,
       expires_at: props.expires_at ?? null,
+      opens_at: props.opens_at ?? now(),
+      closes_at: props.closes_at ?? null,
     });
 
     return offer;
