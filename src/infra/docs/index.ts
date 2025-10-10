@@ -21,12 +21,12 @@ import {
   fetchCategoryParams,
   fetchCategoryQuery,
 } from "@/infra/http/controllers/fetch-category";
-import { updateWarehouseSchema } from "@/infra/http/controllers/update-warehouse";
 import { fetchCurrentBoxQuery } from "@/infra/http/controllers/fetch-current-box";
 import {
   fetchCycleCatalogParams,
   fetchCycleCatalogQuery,
 } from "@/infra/http/controllers/fetch-cycle-catalog";
+import { fetchDescriptionSuggestionParams } from "@/infra/http/controllers/fetch-description-suggestion";
 import { fetchFarmParams } from "@/infra/http/controllers/fetch-farm";
 import { fetchInboundReportQuery } from "@/infra/http/controllers/fetch-inbound-report";
 import { fetchPendingsQuery } from "@/infra/http/controllers/fetch-pendings";
@@ -40,6 +40,7 @@ import { listCurrentBagsQuery } from "@/infra/http/controllers/list-current-bags
 import { listFarmsQuery } from "@/infra/http/controllers/list-farms";
 import { listOffersQuery } from "@/infra/http/controllers/list-offers";
 import { listProductsQuery } from "@/infra/http/controllers/list-products";
+import { listUsersQuery } from "@/infra/http/controllers/list-users";
 import { openPaymentSchema } from "@/infra/http/controllers/open-payment";
 import { registerSchema } from "@/infra/http/controllers/register";
 import { registerFarmSchema } from "@/infra/http/controllers/register-farm";
@@ -47,6 +48,7 @@ import { registerFarmImageSchema } from "@/infra/http/controllers/register-farm-
 import { registerOfferSchema } from "@/infra/http/controllers/register-offer";
 import { registerOrderSchema } from "@/infra/http/controllers/register-order";
 import { registerPaymentSchema } from "@/infra/http/controllers/register-payment";
+import { registerProducerSchema } from "@/infra/http/controllers/register-producer";
 import { registerProductSchema } from "@/infra/http/controllers/register-product";
 import { requestHelpSchema } from "@/infra/http/controllers/request-help";
 import { requestOtpSchema } from "@/infra/http/controllers/request-otp";
@@ -69,19 +71,19 @@ import {
   updatePaymentParams,
   updatePaymentSchema,
 } from "@/infra/http/controllers/update-payment";
+import { updateProducerSchema } from "@/infra/http/controllers/update-producer";
 import {
   updateProductParams,
   updateProductSchema,
 } from "@/infra/http/controllers/update-product";
-import {
-  updateUserSchema,
-  updateUserParams,
-} from "@/infra/http/controllers/update-user";
 import { updateProfileSchema } from "@/infra/http/controllers/update-profile";
+import {
+  updateUserParams,
+  updateUserSchema,
+} from "@/infra/http/controllers/update-user";
+import { updateWarehouseSchema } from "@/infra/http/controllers/update-warehouse";
 import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
 import { openPixSchema } from "@/infra/http/webhooks/open-pix";
-import { fetchDescriptionSuggestionParams } from "@/infra/http/controllers/fetch-description-suggestion";
-import { listUsersQuery } from "@/infra/http/controllers/list-users";
 
 // Schemas
 const { swagger: authenticateSchemaSwagger } = j2s(authenticateSchema);
@@ -150,6 +152,8 @@ const { swagger: fetchDescriptionSuggestionParamsSwagger } = j2s(
 );
 const { swagger: listUsersQuerySwagger } = j2s(listUsersQuery);
 const { swagger: updateWarehouseSchemaSwagger } = j2s(updateWarehouseSchema);
+const { swagger: registerProducerSchemaSwagger } = j2s(registerProducerSchema);
+const { swagger: updateProducerSchemaSwagger } = j2s(updateProducerSchema);
 
 const toQueryParams = (query: SwaggerSchema) =>
   Object.entries(query.properties).map(([name, schema]) => ({
@@ -478,6 +482,44 @@ export const docs = {
         responses: {
           204: {
             description: "Imagem removida com sucesso",
+          },
+        },
+      },
+    },
+    "/producers": {
+      post: {
+        tags: ["Produtores"],
+        summary: "Registrar novo produtor",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: registerProducerSchemaSwagger,
+            },
+          },
+        },
+        responses: {
+          201: {
+            description: "Fazenda registrada com sucesso",
+          },
+        },
+      },
+    },
+    "/producers/{farm_id}": {
+      patch: {
+        tags: ["Produtores"],
+        summary: "Atualizar produtor",
+        requestBody: {
+          required: true,
+          content: {
+            "multipart/form-data": {
+              schema: updateProducerSchemaSwagger,
+            },
+          },
+        },
+        responses: {
+          204: {
+            description: "Fazenda atualizada com sucesso",
           },
         },
       },
