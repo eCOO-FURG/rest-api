@@ -74,9 +74,9 @@ describe("register producer", () => {
       tally: "12345678",
     });
 
-    expect(usersRepository.items).toHaveLength(2);
+    expect(usersRepository.items).toHaveLength(1);
     expect(farmsRepository.items).toHaveLength(1);
-    expect(usersRepository.items[1].first_name).toBe("John");
+    expect(usersRepository.items[0].first_name).toBe("John");
     expect(farmsRepository.items[0].name).toBe("Fazenda Feliz");
   });
 

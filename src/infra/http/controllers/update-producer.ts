@@ -34,13 +34,21 @@ export async function updateProducerController(
 ) {
   try {
     const { farm_id } = request.params;
-    const { first_name, last_name, cpf, email, phone, name, tally, chat, photo } =
-      parse(updateProducerSchema, request.body);
+    const {
+      first_name,
+      last_name,
+      cpf,
+      email,
+      phone,
+      name,
+      tally,
+      chat,
+      photo,
+    } = parse(updateProducerSchema, request.body);
 
-    const updateProducerUseCase =
-      container.resolve<UpdateProducerUseCase>(
-        "updateProducerUseCase",
-      );
+    const updateProducerUseCase = container.resolve<UpdateProducerUseCase>(
+      "updateProducerUseCase",
+    );
 
     await updateProducerUseCase.execute({
       farm_id,

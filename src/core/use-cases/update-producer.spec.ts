@@ -69,7 +69,7 @@ describe("admin update producer", () => {
       name: "New Farm",
     });
 
-    expect(usersRepository.items[1].first_name).toBe("Jane");
+    expect(usersRepository.items[0].first_name).toBe("Jane");
     expect(farmsRepository.items[0].name).toBe("New Farm");
   });
 
