@@ -11,6 +11,7 @@ import { RegisterProducerUseCase } from "@/core/use-cases/register-producer";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 
 // Factories
+import { makeFarm } from "@/test/factories/make-farm";
 import { makeUser } from "@/test/factories/make-user";
 
 // Entities
@@ -117,11 +118,12 @@ describe("register producer", () => {
     const producer = makeUser({ roles: ["USER", "PRODUCER"] });
     await usersRepository.create(producer);
 
-    await farmsRepository.create({
+    const existingFarm = makeFarm({
       admin_id: producer.id,
       tally: "12345678",
       name: "Fazenda Existente",
-    } as any);
+    });
+    await farmsRepository.create(existingFarm);
 
     await expect(() =>
       sut.execute({
@@ -140,11 +142,12 @@ describe("register producer", () => {
     const existingProducer = makeUser({ roles: ["USER", "PRODUCER"] });
     await usersRepository.create(existingProducer);
 
-    await farmsRepository.create({
+    const farm = makeFarm({
       admin_id: existingProducer.id,
       tally: "12345678",
       name: "Fazenda Existente",
-    } as any);
+    });
+    await farmsRepository.create(farm);
 
     const initialUserCount = usersRepository.items.length;
 

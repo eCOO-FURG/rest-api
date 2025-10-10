@@ -3,10 +3,10 @@ import { User } from "@/core/entities/user";
 
 // Repositories
 import {
-    UserEntityOf,
-    UserRepositoryReturnType,
-    UsersRepository,
-    UsersRepositorySearchRequest,
+  UserEntityOf,
+  UserRepositoryReturnType,
+  UsersRepository,
+  UsersRepositorySearchRequest,
 } from "@/core/repositories/users-repository";
 
 // Utils

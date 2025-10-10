@@ -357,11 +357,7 @@ export default (container: AwilixContainer) => {
         ),
     ),
     updateProducerUseCase: asFunction(
-      ({
-        farmsRepository,
-        updateUserUseCase,
-        updateFarmUseCase,
-      }) =>
+      ({ farmsRepository, updateUserUseCase, updateFarmUseCase }) =>
         new UpdateProducerUseCase(
           farmsRepository,
           updateUserUseCase,
