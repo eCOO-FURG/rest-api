@@ -32,4 +32,5 @@ export interface UsersRepository {
   ): Promise<UserEntityOf<T>[]>;
   create(user: User): Promise<void>;
   update(user: User): Promise<void>;
+  delete(user: User): Promise<void>;
 }

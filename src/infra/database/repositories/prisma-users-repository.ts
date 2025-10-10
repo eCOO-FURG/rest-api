@@ -3,10 +3,10 @@ import { User } from "@/core/entities/user";
 
 // Repositories
 import {
+  UserEntityOf,
+  UserRepositoryReturnType,
   UsersRepository,
   UsersRepositorySearchRequest,
-  UserRepositoryReturnType,
-  UserEntityOf,
 } from "@/core/repositories/users-repository";
 
 // Database
@@ -108,6 +108,12 @@ export class PrismaUsersRepository implements UsersRepository {
     await prisma.user.update({
       where: { id: user.id.value },
       data: PrismaUserMapper.toPrisma(user),
+    });
+  }
+
+  async delete(user: User): Promise<void> {
+    await prisma.user.delete({
+      where: { id: user.id.value },
     });
   }
 }

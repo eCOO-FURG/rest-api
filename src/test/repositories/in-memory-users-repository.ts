@@ -3,10 +3,10 @@ import { User } from "@/core/entities/user";
 
 // Repositories
 import {
-  UsersRepository,
-  UsersRepositorySearchRequest,
-  UserRepositoryReturnType,
-  UserEntityOf,
+    UserEntityOf,
+    UserRepositoryReturnType,
+    UsersRepository,
+    UsersRepositorySearchRequest,
 } from "@/core/repositories/users-repository";
 
 // Utils
@@ -90,5 +90,12 @@ export class InMemoryUsersRepository implements UsersRepository {
   async update(user: User): Promise<void> {
     const index = this.items.findIndex((item) => item.id.equals(user.id));
     this.items[index] = user;
+  }
+
+  async delete(user: User): Promise<void> {
+    const index = this.items.findIndex((item) => item.id.equals(user.id));
+    if (index !== -1) {
+      this.items.splice(index, 1);
+    }
   }
 }
