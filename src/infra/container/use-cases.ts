@@ -11,12 +11,14 @@ import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
 import { FetchCategoryUseCase } from "@/core/use-cases/fetch-category";
 import { FetchCurrentBoxUseCase } from "@/core/use-cases/fetch-current-box";
 import { FetchCycleCatalogUseCase } from "@/core/use-cases/fetch-cycle-catalog";
+import { FetchDescriptionSuggestionUseCase } from "@/core/use-cases/fetch-description-suggestion";
 import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
 import { FetchInboundReportUseCase } from "@/core/use-cases/fetch-inbound-report";
 import { FetchPendingsUseCase } from "@/core/use-cases/fetch-pendings";
 import { FetchProfileUseCase } from "@/core/use-cases/fetch-profile";
 import { FetchSalesReportUseCase } from "@/core/use-cases/fetch-sales-report";
 import { FetchSalesStatsUseCase } from "@/core/use-cases/fetch-sales-stats";
+import { FetchWarehouseUseCase } from "@/core/use-cases/fetch-warehouse";
 import { ListBagsUseCase } from "@/core/use-cases/list-bags";
 import { ListBoxesUseCase } from "@/core/use-cases/list-boxes";
 import { ListCatalogsUseCase } from "@/core/use-cases/list-catalogs";
@@ -34,6 +36,7 @@ import { RegisterFarmImageUseCase } from "@/core/use-cases/register-farm-image";
 import { RegisterOfferUseCase } from "@/core/use-cases/register-offer";
 import { RegisterOrderUseCase } from "@/core/use-cases/register-order";
 import { RegisterPaymentUseCase } from "@/core/use-cases/register-payment";
+import { RegisterProducerUseCase } from "@/core/use-cases/register-producer";
 import { RegisterProductUseCase } from "@/core/use-cases/register-product";
 import { RequestHelpUseCase } from "@/core/use-cases/request-help";
 import { RequestOtpUseCase } from "@/core/use-cases/request-otp";
@@ -44,12 +47,11 @@ import { UpdateFarmUseCase } from "@/core/use-cases/update-farm";
 import { UpdateOfferUseCase } from "@/core/use-cases/update-offer";
 import { UpdateOrderUseCase } from "@/core/use-cases/update-order";
 import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
+import { UpdateProducerUseCase } from "@/core/use-cases/update-producer";
 import { UpdateProductUseCase } from "@/core/use-cases/update-product";
 import { UpdateUserUseCase } from "@/core/use-cases/update-user";
-import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
-import { FetchDescriptionSuggestionUseCase } from "@/core/use-cases/fetch-description-suggestion";
-import { FetchWarehouseUseCase } from "@/core/use-cases/fetch-warehouse";
 import { UpdateWarehouseUseCase } from "@/core/use-cases/update-warehouse";
+import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -345,6 +347,26 @@ export default (container: AwilixContainer) => {
     updateWarehouseUseCase: asFunction(
       ({ usersRepository, warehouseRepository }) =>
         new UpdateWarehouseUseCase(usersRepository, warehouseRepository),
+    ),
+    registerProducerUseCase: asFunction(
+      ({ usersRepository, registerUsecase, registerFarmUseCase }) =>
+        new RegisterProducerUseCase(
+          usersRepository,
+          registerUsecase,
+          registerFarmUseCase,
+        ),
+    ),
+    updateProducerUseCase: asFunction(
+      ({
+        farmsRepository,
+        updateUserUseCase,
+        updateFarmUseCase,
+      }) =>
+        new UpdateProducerUseCase(
+          farmsRepository,
+          updateUserUseCase,
+          updateFarmUseCase,
+        ),
     ),
   });
 };
