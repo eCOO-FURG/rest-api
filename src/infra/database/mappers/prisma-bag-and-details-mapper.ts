@@ -39,7 +39,6 @@ export class PrismaBagAndDetailsMapper {
       customer: PrismaUserMapper.toDomain(raw.customer),
       market_id: raw.market_id ? new UUID(raw.market_id) : null,
       cycle_id: raw.cycle_id ? new UUID(raw.cycle_id) : null,
-      orders: [],
       address_id: raw.address_id ? new UUID(raw.address_id) : null,
       address: raw.address ? PrismaAddressMapper.toDomain(raw.address) : null,
       created_at: raw.created_at,

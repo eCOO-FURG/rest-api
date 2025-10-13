@@ -15,48 +15,43 @@ import { prisma } from "@/infra/database/prisma-service";
 // Mappers
 import { PrismaBoxMapper } from "@/infra/database/mappers/prisma-box-mapper";
 import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
-import {
-  PrismaBoxAndCatalog,
-  PrismaBoxAndCatalogMapper,
-} from "@/infra/database/mappers/prisma-box-and-catalog-mapper";
 import { PrismaBoxAndOrdersMapper } from "@/infra/database/mappers/prisma-box-and-orders-mapper";
 import { PrismaBoxAndOrders } from "@/infra/database/mappers/prisma-box-and-orders-mapper";
+import {
+  PrismaBoxAndFarm,
+  PrismaBoxAndFarmMapper,
+} from "@/infra/database/mappers/prisma-box-and-farm-mapper";
 
 export class PrismaBoxesRepository implements BoxesRepository {
   async find<T extends BoxRepositoryReturnType>(
     type: T,
-    { id, status, catalog, orders, since, before }: BoxesRepositorySearchRequest,
+    { id, status, cycle, farm, orders, since, before }: BoxesRepositorySearchRequest,
   ): Promise<BoxEntityOf<T> | null> {
     const box = await prisma.box.findFirst({
       where: {
         id,
         status,
-        catalog: {
-          id: catalog?.id,
-          cycle: { id: catalog?.cycle?.id },
-          farm: {
-            id: catalog?.farm?.id,
-            name: { contains: catalog?.farm?.name, mode: "insensitive" },
-          },
+        cycle: { id: cycle?.id },
+        farm: {
+          id: farm?.id,
+          name: { contains: farm?.name, mode: "insensitive" },
         },
         created_at: { gte: since, lte: before },
       },
-      include:
-        type === "box-and-catalog"
-          ? { catalog: { include: { farm: { include: { admin: true } } } } }
-          : type === "box-and-orders"
-            ? {
-                catalog: { include: { farm: { include: { admin: true } } } },
-                orders: {
-                  include: { offer: { include: { product: true } } },
-                  orderBy: { offer: { product: { name: "asc" } } },
-                  ...(orders?.page && {
-                    skip: (orders.page - 1) * 20,
-                    take: 20,
-                  }),
-                },
-              }
-            : null,
+      include: {
+        ...(type === "box-and-farm" && { farm: { include: { admin: true } } }),
+        ...(type === "box-and-orders" && {
+          farm: { include: { admin: true } },
+          orders: {
+            include: { offer: { include: { product: true } } },
+            orderBy: { offer: { product: { name: "asc" } } },
+            ...(orders?.page && {
+              skip: (orders.page - 1) * 20,
+              take: 20,
+            }),
+          },
+        }),
+      },
     });
 
     if (!box) return null;
@@ -64,8 +59,9 @@ export class PrismaBoxesRepository implements BoxesRepository {
     switch (type) {
       default:
         return PrismaBoxMapper.toDomain<T>(box);
-      case "box-and-catalog":
-        return PrismaBoxAndCatalogMapper.toDomain<T>(box as PrismaBoxAndCatalog);
+      case "box-and-farm":
+        // @ts-expect-error Prisma cannot infer type here
+        return PrismaBoxAndFarmMapper.toDomain<T>(box as PrismaBoxAndFarm);
       case "box-and-orders":
         return PrismaBoxAndOrdersMapper.toDomain<T>(box as PrismaBoxAndOrders);
     }
@@ -73,38 +69,34 @@ export class PrismaBoxesRepository implements BoxesRepository {
 
   async list<T extends BoxRepositoryReturnType>(
     type: T,
-    { id, status, catalog, orders, since, before }: BoxesRepositorySearchRequest,
+    { id, status, cycle, farm, orders, since, before }: BoxesRepositorySearchRequest,
     page?: number,
   ): Promise<BoxEntityOf<T>[]> {
     const boxes = await prisma.box.findMany({
       where: {
         id,
         status,
-        catalog: {
-          id: catalog?.id,
-          cycle: { id: catalog?.cycle?.id },
-          farm: {
-            name: { contains: catalog?.farm?.name, mode: "insensitive" },
-          },
+        cycle: { id: cycle?.id },
+        farm: {
+          id: farm?.id,
+          name: { contains: farm?.name, mode: "insensitive" },
         },
         created_at: { gte: since, lte: before },
       },
-      include:
-        type === "box-and-catalog"
-          ? { catalog: { include: { farm: { include: { admin: true } } } } }
-          : type === "box-and-orders"
-            ? {
-                catalog: { include: { farm: { include: { admin: true } } } },
-                orders: {
-                  include: { offer: { include: { product: true } } },
-                  orderBy: { offer: { product: { name: "asc" } } },
-                  ...(orders?.page && {
-                    skip: (orders.page - 1) * 20,
-                    take: 20,
-                  }),
-                },
-              }
-            : null,
+      include: {
+        ...(type === "box-and-farm" && { farm: { include: { admin: true } } }),
+        ...(type === "box-and-orders" && {
+          farm: { include: { admin: true } },
+          orders: {
+            include: { offer: { include: { product: true } } },
+            orderBy: { offer: { product: { name: "asc" } } },
+            ...(orders?.page && {
+              skip: (orders.page - 1) * 20,
+              take: 20,
+            }),
+          },
+        }),
+      },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
       orderBy: {
         created_at: "asc",
@@ -114,8 +106,11 @@ export class PrismaBoxesRepository implements BoxesRepository {
     switch (type) {
       default:
         return boxes.map(PrismaBoxMapper.toDomain<T>);
-      case "box-and-catalog":
-        return boxes.map((box) => PrismaBoxAndCatalogMapper.toDomain(box as PrismaBoxAndCatalog));
+      case "box-and-farm":
+        return boxes.map((box) =>
+          // @ts-expect-error Prisma cannot infer type here
+          PrismaBoxAndFarmMapper.toDomain(box as PrismaBoxAndFarm),
+        );
       case "box-and-orders":
         return boxes.map((box) => PrismaBoxAndOrdersMapper.toDomain(box as PrismaBoxAndOrders));
     }
@@ -140,13 +135,24 @@ export class PrismaBoxesRepository implements BoxesRepository {
     });
   }
 
-  async count({ catalog, id, since, status }: BoxesRepositorySearchRequest): Promise<number> {
+  async count({
+    id,
+    since,
+    farm,
+    cycle,
+    before,
+    status,
+  }: BoxesRepositorySearchRequest): Promise<number> {
     return await prisma.box.count({
       where: {
-        catalog,
         id,
-        created_at: { gte: since },
         status,
+        cycle: { id: cycle?.id },
+        farm: {
+          id: farm?.id,
+          name: { contains: farm?.name, mode: "insensitive" },
+        },
+        created_at: { gte: since, lte: before },
       },
     });
   }

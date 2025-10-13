@@ -28,7 +28,6 @@ export class PrismaFarmAndAdminMapper {
       description: raw.description,
       images: raw.images,
       photo: raw.photo,
-      offers: [],
       admin_id: new UUID(raw.admin_id),
       admin: PrismaUserMapper.toDomain(raw.admin),
       created_at: raw.created_at,

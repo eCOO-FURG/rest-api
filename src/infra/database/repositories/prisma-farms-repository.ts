@@ -17,10 +17,13 @@ import { PrismaFarmMapper } from "@/infra/database/mappers/prisma-farm-mapper";
 import { PrismaFarmAndAdminMapper } from "@/infra/database/mappers/prisma-farm-and-admin-mapper";
 import { PrismaCatalog, PrismaCatalogMapper } from "@/infra/database/mappers/prisma-catalog-mapper";
 
+// Utils
+import { now } from "@/core/utils/now";
+
 export class PrismaFarmsRepository implements FarmsRepository {
   async find<T extends FarmRepositoryReturnType>(
     type: T,
-    { id, name, status, tally, admin }: FarmsRepositorySearchRequest,
+    { id, name, status, tally, admin, offers }: FarmsRepositorySearchRequest,
   ): Promise<FarmEntityOf<T> | null> {
     const farm = await prisma.farm.findFirst({
       where: {
@@ -34,7 +37,71 @@ export class PrismaFarmsRepository implements FarmsRepository {
         admin: type === "farm-and-admin",
         ...(type === "catalog" && {
           admin: true,
-          offers: { include: { product: true } },
+          offers: {
+            include: { product: true },
+            where: {
+              ...(offers?.period?.since && {
+                OR: [{ opens_at: { gte: offers.period.since } }, { closes_at: null }],
+              }),
+              ...(offers?.period?.before && {
+                OR: [{ opens_at: { lte: offers.period.before } }, { closes_at: null }],
+              }),
+              product: {
+                name: {
+                  contains: offers?.product?.name,
+                  mode: "insensitive",
+                },
+                category_id: offers?.product?.category?.id,
+              },
+              ...(typeof offers?.remaining === "boolean" &&
+                (offers.remaining
+                  ? {
+                      amount: {
+                        gt: 0,
+                      },
+                    }
+                  : {
+                      amount: {
+                        equals: 0,
+                      },
+                    })),
+              ...(typeof offers?.available === "boolean" &&
+                (offers.available
+                  ? {
+                      AND: [
+                        {
+                          OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+                        },
+                        {
+                          OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                        },
+                        {
+                          active: true,
+                        },
+                      ],
+                    }
+                  : {
+                      OR: [
+                        { closes_at: { not: null, lte: now() } },
+                        { expires_at: { not: null, lte: now() } },
+                        { active: false },
+                      ],
+                    })),
+              created_at: {
+                gte: offers?.since,
+                lte: offers?.before,
+              },
+            },
+            ...(offers?.page && {
+              skip: (offers.page - 1) * 20,
+              take: 20,
+            }),
+            orderBy: {
+              product: {
+                name: "asc",
+              },
+            },
+          },
         }),
       },
     });
@@ -55,7 +122,7 @@ export class PrismaFarmsRepository implements FarmsRepository {
 
   async list<T extends FarmRepositoryReturnType>(
     type: T,
-    { id, name, status, tally, admin }: FarmsRepositorySearchRequest,
+    { id, name, status, tally, admin, offers }: FarmsRepositorySearchRequest,
     page?: number,
   ): Promise<FarmEntityOf<T>[]> {
     const farms = await prisma.farm.findMany({
@@ -65,6 +132,59 @@ export class PrismaFarmsRepository implements FarmsRepository {
         status,
         tally,
         admin,
+        offers: {
+          some: {
+            ...(offers?.period?.since && {
+              OR: [{ opens_at: { gte: offers.period.since } }, { closes_at: null }],
+            }),
+            ...(offers?.period?.before && {
+              OR: [{ opens_at: { lte: offers.period.before } }, { closes_at: null }],
+            }),
+            product: {
+              name: { contains: offers?.product?.name, mode: "insensitive" },
+              category_id: offers?.product?.category?.id,
+            },
+            ...(typeof offers?.remaining === "boolean" &&
+              (offers.remaining
+                ? {
+                    amount: {
+                      gt: 0,
+                    },
+                  }
+                : {
+                    amount: {
+                      equals: 0,
+                    },
+                  })),
+            ...(typeof offers?.available === "boolean" &&
+              (offers.available
+                ? {
+                    AND: [
+                      {
+                        OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+                      },
+                      {
+                        OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                      },
+                      {
+                        active: true,
+                      },
+                    ],
+                  }
+                : {
+                    OR: [
+                      { closes_at: { not: null, lte: now() } },
+                      { expires_at: { not: null, lte: now() } },
+                      { active: false },
+                    ],
+                  })),
+
+            created_at: {
+              gte: offers?.since,
+              lte: offers?.before,
+            },
+          },
+        },
       },
       include: {
         admin: type === "farm-and-admin",

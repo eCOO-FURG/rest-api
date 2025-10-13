@@ -74,7 +74,7 @@ export class PrismaBagsRepository implements BagsRepository {
               offer: {
                 include: {
                   product: true,
-                  catalog: { include: { farm: { include: { admin: true } } } },
+                  farm: { include: { admin: true } },
                 },
               },
             },
@@ -164,7 +164,7 @@ export class PrismaBagsRepository implements BagsRepository {
               offer: {
                 include: {
                   product: true,
-                  catalog: { include: { farm: { include: { admin: true } } } },
+                  farm: { include: { admin: true } },
                 },
               },
             },
@@ -191,7 +191,7 @@ export class PrismaBagsRepository implements BagsRepository {
     }
   }
 
-  async create(bag: Bag): Promise<void> {
+  async save(bag: Bag): Promise<void> {
     await prisma.$transaction(async (ctx) => {
       if (bag.address) {
         const address = await ctx.address.findFirst({
@@ -208,38 +208,6 @@ export class PrismaBagsRepository implements BagsRepository {
       const data = PrismaBagMapper.toPrisma(bag);
 
       await ctx.bag.create({ data });
-
-      for (const order of bag.orders.values()) {
-        if (order.box) {
-          const box = await ctx.box.findFirst({
-            where: { id: order.box.id.value },
-          });
-
-          if (!box) {
-            await ctx.box.create({
-              data: PrismaBoxMapper.toPrisma(order.box),
-            });
-          }
-        }
-
-        await ctx.offer.update({
-          where: { id: order.offer_id.value },
-          data: { amount: { decrement: order.amount } },
-        });
-      }
-
-      await ctx.order.createMany({
-        data: bag.orders.map(PrismaOrderMapper.toPrisma),
-      });
-    });
-  }
-
-  async update(bag: Bag): Promise<void> {
-    await prisma.$transaction(async (ctx) => {
-      await ctx.bag.update({
-        where: { id: bag.id.value },
-        data: PrismaBagMapper.toPrisma(bag),
-      });
 
       for (const order of bag.orders.values()) {
         if (order.box) {
