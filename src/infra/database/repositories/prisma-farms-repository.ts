@@ -15,6 +15,7 @@ import { prisma } from "@/infra/database/prisma-service";
 // Mappers
 import { PrismaFarmMapper } from "@/infra/database/mappers/prisma-farm-mapper";
 import { PrismaFarmAndAdminMapper } from "@/infra/database/mappers/prisma-farm-and-admin-mapper";
+import { PrismaCatalog, PrismaCatalogMapper } from "@/infra/database/mappers/prisma-catalog-mapper";
 
 export class PrismaFarmsRepository implements FarmsRepository {
   async find<T extends FarmRepositoryReturnType>(
@@ -31,16 +32,24 @@ export class PrismaFarmsRepository implements FarmsRepository {
       },
       include: {
         admin: type === "farm-and-admin",
+        ...(type === "catalog" && {
+          admin: true,
+          offers: { include: { product: true } },
+        }),
       },
     });
 
-    if (!farm) return null;
+    if (!farm) {
+      return null;
+    }
 
     switch (type) {
       default:
         return PrismaFarmMapper.toDomain<T>(farm);
       case "farm-and-admin":
         return PrismaFarmAndAdminMapper.toDomain<T>(farm);
+      case "catalog":
+        return PrismaCatalogMapper.toDomain<T>(farm as PrismaCatalog);
     }
   }
 
@@ -57,7 +66,13 @@ export class PrismaFarmsRepository implements FarmsRepository {
         tally,
         admin,
       },
-      include: { admin: type === "farm-and-admin" },
+      include: {
+        admin: type === "farm-and-admin",
+        ...(type === "catalog" && {
+          admin: true,
+          offers: { include: { product: true } },
+        }),
+      },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
@@ -66,6 +81,8 @@ export class PrismaFarmsRepository implements FarmsRepository {
         return farms.map(PrismaFarmMapper.toDomain<T>);
       case "farm-and-admin":
         return farms.map(PrismaFarmAndAdminMapper.toDomain<T>);
+      case "catalog":
+        return farms.map((farm) => PrismaCatalogMapper.toDomain(farm as PrismaCatalog));
     }
   }
 

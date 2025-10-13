@@ -14,7 +14,8 @@ export class PrismaBoxMapper {
     return Box.create({
       id: new UUID(raw.id),
       status: raw.status,
-      catalog_id: new UUID(raw.catalog_id),
+      cycle_id: new UUID(raw.cycle_id),
+      farm_id: new UUID(raw.farm_id),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
     }) as BoxEntityOf<T>;
@@ -23,7 +24,8 @@ export class PrismaBoxMapper {
   static toPrisma(box: Box): Prisma.BoxUncheckedCreateInput {
     return {
       id: box.id.value,
-      catalog_id: box.catalog_id.value,
+      cycle_id: box.cycle_id.value,
+      farm_id: box.farm_id.value,
       status: box.status,
       created_at: box.created_at,
       updated_at: box.updated_at,

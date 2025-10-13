@@ -21,7 +21,9 @@ export class PrismaAddressesRepository implements AddressesRepository {
       where: { id, complement, number, street, postal_code, neighborhood },
     });
 
-    if (!address) return null;
+    if (!address) {
+      return null;
+    }
 
     return PrismaAddressMapper.toDomain<T>(address);
   }

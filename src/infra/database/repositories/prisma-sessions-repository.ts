@@ -32,7 +32,9 @@ export class PrismaSessionsRepository implements SessionsRepository {
       },
     });
 
-    if (!session) return null;
+    if (!session) {
+      return null;
+    }
 
     return PrismaSessionMapper.toDomain<T>(session) as SessionEntityOf<T>;
   }

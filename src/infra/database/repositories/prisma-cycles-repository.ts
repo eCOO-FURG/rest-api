@@ -19,9 +19,11 @@ export class PrismaCyclesRepository implements CyclesRepository {
   ): Promise<CycleEntityOf<T> | null> {
     const cycle = await prisma.cycle.findFirst({ where: { id } });
 
-    if (!cycle) return null;
+    if (!cycle) {
+      return null;
+    }
 
-    return PrismaCycleMapper.toDomain(cycle) as CycleEntityOf<T>;
+    return PrismaCycleMapper.toDomain<T>(cycle);
   }
   async list<T extends CycleRepositoryReturnType>(
     _: T,
@@ -33,6 +35,6 @@ export class PrismaCyclesRepository implements CyclesRepository {
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
-    return cycles.map(PrismaCycleMapper.toDomain) as CycleEntityOf<T>[];
+    return cycles.map(PrismaCycleMapper.toDomain<T>);
   }
 }

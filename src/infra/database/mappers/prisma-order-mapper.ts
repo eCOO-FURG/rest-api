@@ -17,7 +17,7 @@ export class PrismaOrderMapper {
       amount: raw.amount,
       subtotal: raw.subtotal.toNumber(),
       status: raw.status,
-      box_id: new UUID(raw.box_id),
+      box_id: raw.box_id ? new UUID(raw.box_id) : null,
       bag_id: new UUID(raw.bag_id),
       offer_id: new UUID(raw.offer_id),
       fee: raw.fee.toNumber(),
@@ -35,7 +35,7 @@ export class PrismaOrderMapper {
       fee: order.fee,
       bag_id: order.bag_id.value,
       offer_id: order.offer_id.value,
-      box_id: order.box_id.value,
+      box_id: order.box_id ? order.box_id.value : null,
       created_at: order.created_at,
       updated_at: order.updated_at,
     };
