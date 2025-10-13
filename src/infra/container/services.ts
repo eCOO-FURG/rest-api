@@ -6,7 +6,6 @@ import { createTransport } from "nodemailer";
 import { Nodemailer } from "@/infra/mail/nodemailer";
 import { Jwt } from "@/infra/cryptography/jwt";
 import { BcrypterHasher } from "@/infra/cryptography/bcrypt";
-import { OtpGenerator } from "@/infra/cryptography/otp-generator";
 import { Puppeteer } from "@/infra/report/pdf/puppeteer";
 import { OpenPix } from "@/infra/payment/open-pix";
 import { RedisCacheManager } from "@/infra/cache/redis-cache-manager";
@@ -30,7 +29,6 @@ export default (container: AwilixContainer) => {
   container.register({
     encrypter: asClass(BcrypterHasher).singleton(),
     hasher: asClass(Jwt).singleton(),
-    otpProvider: asClass(OtpGenerator).singleton(),
     mailer: asFunction(() => {
       const transporter = createTransport({
         host: env.SMTP_HOST,

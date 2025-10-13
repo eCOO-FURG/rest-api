@@ -10,7 +10,6 @@ import { FetchBoxUseCase } from "@/core/use-cases/fetch-box";
 import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
 import { FetchCategoryUseCase } from "@/core/use-cases/fetch-category";
 import { FetchCurrentBoxUseCase } from "@/core/use-cases/fetch-current-box";
-import { FetchCycleCatalogUseCase } from "@/core/use-cases/fetch-cycle-catalog";
 import { FetchFarmUseCase } from "@/core/use-cases/fetch-farm";
 import { FetchInboundReportUseCase } from "@/core/use-cases/fetch-inbound-report";
 import { FetchPendingsUseCase } from "@/core/use-cases/fetch-pendings";
@@ -50,6 +49,10 @@ import { VerifyUserUsecase } from "@/core/use-cases/verify-user";
 import { FetchDescriptionSuggestionUseCase } from "@/core/use-cases/fetch-description-suggestion";
 import { FetchWarehouseUseCase } from "@/core/use-cases/fetch-warehouse";
 import { UpdateWarehouseUseCase } from "@/core/use-cases/update-warehouse";
+import { UpdateMarketUseCase } from "@/core/use-cases/update-market";
+import { RegisterMarketUseCase } from "@/core/use-cases/register-market";
+import { FetchMarketUseCase } from "@/core/use-cases/fetch-market";
+import { ListMarketsUseCase } from "@/core/use-cases/list-markets";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -58,9 +61,17 @@ export default (container: AwilixContainer) => {
         new RegisterUseCase(usersRepository, encrypter, hasher, storage, mailer),
     ),
     authenticateUseCase: asFunction(
-      ({ usersRepository, otpsRepository, sessionsRepository, encrypter, hasher }) =>
+      ({
+        usersRepository,
+        farmsRepository,
+        otpsRepository,
+        sessionsRepository,
+        encrypter,
+        hasher,
+      }) =>
         new AuthenticateUseCase(
           usersRepository,
+          farmsRepository,
           otpsRepository,
           sessionsRepository,
           encrypter,
@@ -131,8 +142,8 @@ export default (container: AwilixContainer) => {
     ),
     fetchFarmUseCase: asFunction(({ farmsRepository }) => new FetchFarmUseCase(farmsRepository)),
     requestOtpUseCase: asFunction(
-      ({ usersRepository, otpProvider, otpsRepository, mailer }) =>
-        new RequestOtpUseCase(usersRepository, otpProvider, otpsRepository, mailer),
+      ({ usersRepository, otpsRepository, mailer }) =>
+        new RequestOtpUseCase(usersRepository, otpsRepository, mailer),
     ),
     listBoxesUseCase: asFunction(
       ({ cyclesRepository, boxesRepository }) =>
@@ -142,13 +153,8 @@ export default (container: AwilixContainer) => {
       ({ cyclesRepository }) => new ListCyclesUseCase(cyclesRepository),
     ),
     listCatalogsUseCase: asFunction(
-      ({ cyclesRepository, farmsRepository, catalogsRepository, categoriesRepository }) =>
-        new ListCatalogsUseCase(
-          cyclesRepository,
-          farmsRepository,
-          catalogsRepository,
-          categoriesRepository,
-        ),
+      ({ cyclesRepository, farmsRepository, categoriesRepository }) =>
+        new ListCatalogsUseCase(cyclesRepository, farmsRepository, categoriesRepository),
     ),
     fetchBoxUseCase: asFunction(
       ({ usersRepository, boxesRepository }) =>
@@ -171,8 +177,8 @@ export default (container: AwilixContainer) => {
         ),
     ),
     updateBagUseCase: asFunction(
-      ({ bagsRepository, usersRepository, cyclesRepository, chat }) =>
-        new UpdateBagUseCase(bagsRepository, usersRepository, cyclesRepository, chat),
+      ({ bagsRepository, usersRepository, chat }) =>
+        new UpdateBagUseCase(bagsRepository, usersRepository, chat),
     ),
     fetchBagUseCase: asFunction(
       ({ bagsRepository, usersRepository }) => new FetchBagUseCase(bagsRepository, usersRepository),
@@ -183,8 +189,8 @@ export default (container: AwilixContainer) => {
     ),
     listFarmsUseCase: asFunction(({ farmsRepository }) => new ListFarmsUseCase(farmsRepository)),
     fetchCurrentBoxUseCase: asFunction(
-      ({ boxesRepository, cyclesRepository }) =>
-        new FetchCurrentBoxUseCase(boxesRepository, cyclesRepository),
+      ({ boxesRepository, cyclesRepository, farmsRepository }) =>
+        new FetchCurrentBoxUseCase(boxesRepository, cyclesRepository, farmsRepository),
     ),
     listBagsUseCase: asFunction(
       ({ bagsRepository, usersRepository, cyclesRepository }) =>
@@ -249,16 +255,12 @@ export default (container: AwilixContainer) => {
         new DeleteOfferUseCase(offersRepository, catalogsRepository, cyclesRepository),
     ),
     updateOfferUseCase: asFunction(
-      ({ offersRepository, cyclesRepository }) =>
-        new UpdateOfferUseCase(offersRepository, cyclesRepository),
+      ({ offersRepository, cyclesRepository, marketsRepository }) =>
+        new UpdateOfferUseCase(offersRepository, cyclesRepository, marketsRepository),
     ),
     fetchCategoryUseCase: asFunction(
       ({ categoriesRepository, cyclesRepository }) =>
         new FetchCategoryUseCase(categoriesRepository, cyclesRepository),
-    ),
-    fetchCycleCatalogUseCase: asFunction(
-      ({ cyclesRepository, catalogsRepository }) =>
-        new FetchCycleCatalogUseCase(cyclesRepository, catalogsRepository),
     ),
     listOffersUseCase: asFunction(
       ({ offersRepository, cyclesRepository, categoriesRepository }) =>
@@ -274,6 +276,18 @@ export default (container: AwilixContainer) => {
     updateWarehouseUseCase: asFunction(
       ({ usersRepository, warehouseRepository }) =>
         new UpdateWarehouseUseCase(usersRepository, warehouseRepository),
+    ),
+    registerMarketUseCase: asFunction(
+      ({ marketsRepository }) => new RegisterMarketUseCase(marketsRepository),
+    ),
+    updateMarketUseCase: asFunction(
+      ({ marketsRepository }) => new UpdateMarketUseCase(marketsRepository),
+    ),
+    fetchMarketUseCase: asFunction(
+      ({ marketsRepository }) => new FetchMarketUseCase(marketsRepository),
+    ),
+    listMarketsUseCase: asFunction(
+      ({ marketsRepository }) => new ListMarketsUseCase(marketsRepository),
     ),
   });
 };
