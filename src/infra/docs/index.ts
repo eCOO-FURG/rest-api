@@ -48,6 +48,10 @@ import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
 import { openPixSchema } from "@/infra/http/webhooks/open-pix";
 import { fetchDescriptionSuggestionParams } from "@/infra/http/controllers/fetch-description-suggestion";
 import { listUsersQuery } from "@/infra/http/controllers/list-users";
+import { registerMarketSchema } from "@/infra/http/controllers/register-market";
+import { fetchMarketParams, fetchMarketQuery } from "@/infra/http/controllers/fetch-market";
+import { updateMarketParams, updateMarketSchema } from "@/infra/http/controllers/update-market";
+import { listMarketsQuery } from "@/infra/http/controllers/list-markets";
 
 // Schemas
 const { swagger: authenticateSchemaSwagger } = j2s(authenticateSchema);
@@ -106,6 +110,12 @@ const { swagger: listOffersQuerySwagger } = j2s(listOffersQuery);
 const { swagger: fetchDescriptionSuggestionParamsSwagger } = j2s(fetchDescriptionSuggestionParams);
 const { swagger: listUsersQuerySwagger } = j2s(listUsersQuery);
 const { swagger: updateWarehouseSchemaSwagger } = j2s(updateWarehouseSchema);
+const { swagger: registerMarketSchemaSwagger } = j2s(registerMarketSchema);
+const { swagger: fetchMarketParamsSwagger } = j2s(fetchMarketParams);
+const { swagger: fetchMarketQuerySwagger } = j2s(fetchMarketQuery);
+const { swagger: updateMarketParamsSwagger } = j2s(updateMarketParams);
+const { swagger: updateMarketSchemaSwagger } = j2s(updateMarketSchema);
+const { swagger: listMarketsQuerySwagger } = j2s(listMarketsQuery);
 
 const toQueryParams = (query: SwaggerSchema) =>
   Object.entries(query.properties).map(([name, schema]) => ({
@@ -716,6 +726,68 @@ export const docs = {
         responses: {
           200: {
             description: "Lista de ciclos obtida com sucesso",
+          },
+        },
+      },
+    },
+    "/markets": {
+      get: {
+        tags: ["Feiras"],
+        summary: "Listar feiras",
+        parameters: toQueryParams(listMarketsQuerySwagger),
+        responses: {
+          200: {
+            description: "Lista de feiras obtida com sucesso",
+          },
+        },
+      },
+      post: {
+        tags: ["Feiras"],
+        summary: "Registrar novo mercado",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: registerMarketSchemaSwagger,
+            },
+          },
+        },
+        responses: {
+          201: {
+            description: "Mercado registrado com sucesso",
+          },
+        },
+      },
+    },
+    "/markets/{market_id}": {
+      get: {
+        tags: ["Feiras"],
+        summary: "Obter mercado específico",
+        parameters: [
+          ...toRouteParams(fetchMarketParamsSwagger),
+          ...toQueryParams(fetchMarketQuerySwagger),
+        ],
+        responses: {
+          200: {
+            description: "Mercado obtido com sucesso",
+          },
+        },
+      },
+      patch: {
+        tags: ["Feiras"],
+        summary: "Atualizar mercado",
+        parameters: toRouteParams(updateMarketParamsSwagger),
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: updateMarketSchemaSwagger,
+            },
+          },
+        },
+        responses: {
+          204: {
+            description: "Mercado atualizado com sucesso",
           },
         },
       },

@@ -13,6 +13,7 @@ interface ListCatalogsUseCaseRequest {
   category_id?: string;
   product?: string;
   available?: boolean;
+  remaining?: boolean;
   since?: Date;
   before?: Date;
 }
@@ -31,6 +32,7 @@ export class ListCatalogsUseCase {
     category_id,
     farm_id,
     available,
+    remaining,
     since,
     before,
   }: ListCatalogsUseCaseRequest) {
@@ -62,6 +64,7 @@ export class ListCatalogsUseCase {
           cycle: { id: cycle_id },
           product: { name: product, category: { id: category_id } },
           available,
+          remaining,
           page,
           since,
           before,

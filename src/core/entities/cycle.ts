@@ -1,5 +1,6 @@
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
+import { Offer } from "@/core/entities/offer";
 
 export type CycleWeek = (typeof Cycle.Week)[number][];
 
@@ -8,6 +9,7 @@ export interface CycleProps extends EntityRequest {
   offer: CycleWeek;
   order: CycleWeek;
   deliver: CycleWeek;
+  offers: Offer[];
 }
 
 export class Cycle extends Entity<CycleProps> {
