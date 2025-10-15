@@ -25,10 +25,10 @@ import { UUID } from "../entities/aggregates/uuid";
 interface RegisterOfferUseCaseRequest {
   farm_id: string;
   product_id: string;
-  cycle_id: string;
-  market_id: string;
   amount: number;
   price: number;
+  cycle_id?: string;
+  market_id?: string;
   recurring?: boolean;
   description?: string;
   comment?: string;

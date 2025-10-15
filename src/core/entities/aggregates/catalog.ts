@@ -16,6 +16,10 @@ export class Catalog extends Farm<CatalogProps> {
     return this.props.offers;
   }
 
+  get admin() {
+    return this.props.admin;
+  }
+
   static create(props: Optional<CatalogProps, "offers">) {
     return new Catalog({
       ...props,

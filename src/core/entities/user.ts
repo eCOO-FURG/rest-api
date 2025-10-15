@@ -97,6 +97,10 @@ export class User extends Entity<UserProps> {
     this.props.chat = value;
   }
 
+  get name() {
+    return `${this.props.first_name} ${this.props.last_name}`;
+  }
+
   verify() {
     this.props.verified_at = now();
     this.touch();

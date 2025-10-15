@@ -40,7 +40,9 @@ export class ListOffersUseCase {
       ? await this.categoriesRepository.find("category", { id: category_id })
       : null;
 
-    if (category_id && !category) throw new ResourceNotFoundError("Categoria", category_id);
+    if (category_id && !category) {
+      throw new ResourceNotFoundError("Categoria", category_id);
+    }
 
     const offers = await this.offersRepository.list(
       "offer-and-details",
@@ -53,6 +55,8 @@ export class ListOffersUseCase {
       },
       page,
     );
+
+    console.log(offers);
 
     return { offers };
   }

@@ -56,8 +56,9 @@ export class Order<Props extends OrderProps = OrderProps> extends Entity<Props> 
     return this.props.box;
   }
 
-  pack(value: Box) {
-    this.props.box = value;
+  pack(box: Box) {
+    this.props.box_id = box.id;
+    this.props.box = box;
   }
 
   get amount() {

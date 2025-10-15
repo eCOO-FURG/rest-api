@@ -31,6 +31,7 @@ export class PrismaBagsRepository implements BagsRepository {
       statuses,
       user,
       cycle,
+      market,
       address,
       orders,
       payment,
@@ -43,6 +44,7 @@ export class PrismaBagsRepository implements BagsRepository {
         id,
         status: { in: statuses },
         cycle,
+        market,
         address,
         payment: {
           ...(payment?.status && { status: { in: payment.status } }),
@@ -207,7 +209,7 @@ export class PrismaBagsRepository implements BagsRepository {
 
       const data = PrismaBagMapper.toPrisma(bag);
 
-      await ctx.bag.create({ data });
+      await ctx.bag.upsert({ where: { id: bag.id.value }, update: data, create: data });
 
       for (const order of bag.orders.values()) {
         if (order.box) {

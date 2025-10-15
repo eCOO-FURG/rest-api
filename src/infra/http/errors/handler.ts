@@ -24,12 +24,10 @@ export const handler = (
   _next: NextFunction,
 ) => {
   if (error instanceof Joi.ValidationError) {
-    const info = error.details[0].context?.message ?? "";
-
     return response.status(400).send({
       message: "Ocorreu um erro de validação.",
       code: "bad-request",
-      details: `${error.message.replace(/['"]/g, "")}. ${info}`,
+      details: `${error.message.replace(/['"]/g, "")}.`,
     });
   }
 

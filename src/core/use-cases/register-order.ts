@@ -4,7 +4,7 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { Bag } from "@/core/entities/bag";
 import { Box } from "@/core/entities/box";
 import { Order } from "@/core/entities/order";
-import { Message } from "@/core/entities/message";
+// import { Message } from "@/core/entities/message";
 
 // Repositories
 import { AddressesRepository } from "@/core/repositories/addresses-repository";
@@ -90,7 +90,7 @@ export class RegisterOrderUseCase {
       ? ((await this.addressesRepository.find("address", residence)) ?? Address.create(residence))
       : null;
 
-    const exsitent = await this.bagsRepository.find("bag", {
+    const existent = await this.bagsRepository.find("bag", {
       user: { id: user.id.value },
       statuses: ["PENDING"],
       address: address ? { id: address.id.value } : null,
@@ -99,10 +99,11 @@ export class RegisterOrderUseCase {
       ...(market_id && { market: { id: market_id } }),
     });
 
-    const bag = exsitent
-      ? exsitent
+    const bag = existent
+      ? existent
       : Bag.create({
           customer_id: user.id,
+          address_id: address ? address.id : null,
           address,
           cycle_id: cycle_id ? new UUID(cycle_id) : null,
           market_id: market_id ? new UUID(market_id) : null,
@@ -190,18 +191,20 @@ export class RegisterOrderUseCase {
 
     await this.bagsRepository.save(bag);
 
-    const view = await this.mailer.load({
-      view: "order-notification",
-      props: { first_name: user.first_name, bag, cycle, market },
-    });
+    // NICKOLAS
 
-    const email = Message.create({
-      to: user.email,
-      subject: `Pedido ${bag.code} | eCOO`,
-      content: view,
-    });
+    // const view = await this.mailer.load({
+    //   view: "order-notification",
+    //   props: { first_name: user.first_name, bag, cycle, market },
+    // });
 
-    await this.mailer.send(email);
+    // const email = Message.create({
+    //   to: user.email,
+    //   subject: `Pedido ${bag.code} | eCOO`,
+    //   content: view,
+    // });
+
+    // await this.mailer.send(email);
 
     return { bag };
   }

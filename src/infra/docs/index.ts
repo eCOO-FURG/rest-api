@@ -11,10 +11,6 @@ import { fetchCatalogParams, fetchCatalogQuery } from "@/infra/http/controllers/
 import { fetchCategoryParams, fetchCategoryQuery } from "@/infra/http/controllers/fetch-category";
 import { updateWarehouseSchema } from "@/infra/http/controllers/update-warehouse";
 import { fetchCurrentBoxQuery } from "@/infra/http/controllers/fetch-current-box";
-import {
-  fetchCycleCatalogParams,
-  fetchCycleCatalogQuery,
-} from "@/infra/http/controllers/fetch-cycle-catalog";
 import { fetchFarmParams } from "@/infra/http/controllers/fetch-farm";
 import { fetchInboundReportQuery } from "@/infra/http/controllers/fetch-inbound-report";
 import { fetchPendingsQuery } from "@/infra/http/controllers/fetch-pendings";
@@ -106,8 +102,6 @@ const { swagger: fetchCategoryParamsSwagger } = j2s(fetchCategoryParams);
 const { swagger: fetchCategoryQuerySwagger } = j2s(fetchCategoryQuery);
 const { swagger: sendNotificationSchemaSwagger } = j2s(sendNotificationSchema);
 const { swagger: openPixSchemaSwagger } = j2s(openPixSchema);
-const { swagger: fetchCycleCatalogQuerySwagger } = j2s(fetchCycleCatalogQuery);
-const { swagger: fetchCycleCatalogParamsSwagger } = j2s(fetchCycleCatalogParams);
 const { swagger: listOffersQuerySwagger } = j2s(listOffersQuery);
 const { swagger: fetchDescriptionSuggestionParamsSwagger } = j2s(fetchDescriptionSuggestionParams);
 const { swagger: listUsersQuerySwagger } = j2s(listUsersQuery);
@@ -726,16 +720,7 @@ export const docs = {
         },
       },
     },
-    "/cycles/{cycle_id}/catalog": {
-      get: {
-        tags: ["Ciclos"],
-        summary: "Obter catálogo do ciclo",
-        parameters: [
-          ...toRouteParams(fetchCycleCatalogParamsSwagger),
-          ...toQueryParams(fetchCycleCatalogQuerySwagger),
-        ],
-      },
-    },
+
     "/products": {
       get: {
         tags: ["Produtos"],

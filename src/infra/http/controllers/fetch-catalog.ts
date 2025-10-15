@@ -9,7 +9,7 @@ import container from "@/infra/container";
 import { FetchCatalogUseCase } from "@/core/use-cases/fetch-catalog";
 
 // Presenters
-import { CatalogPresenter } from "@/infra/http/presenters/catalog-presenter";
+import { FarmPresenter } from "@/infra/http/presenters/farm-presenter";
 
 // Utils
 import { toBoolean } from "@/infra/utils/to-boolean";
@@ -51,7 +51,7 @@ export async function fetchCatalogController(
     const fetchCatalogUsecase = container.resolve<FetchCatalogUseCase>("fetchCatalogUseCase");
 
     const { catalog } = await fetchCatalogUsecase.execute({
-      catalog_id,
+      farm_id: catalog_id,
       page,
       product,
       remaining: toBoolean(remaining),
@@ -60,7 +60,7 @@ export async function fetchCatalogController(
       before: toDate(before),
     });
 
-    return response.status(200).send(CatalogPresenter.toHttp(catalog));
+    return response.status(200).send(FarmPresenter.toHttp(catalog));
   } catch (error) {
     next(error);
   }

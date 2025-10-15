@@ -15,7 +15,6 @@ import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 import { parse } from "@/infra/http/validation/parse";
 
 export const registerOrderSchema = Joi.object({
-  bag_id: Joi.string().uuid().optional(),
   cycle_id: Joi.string().required(),
   address: Joi.object({
     street: Joi.string().required(),
@@ -41,16 +40,15 @@ export async function registerOrderController(
   next: NextFunction,
 ) {
   try {
-    const { cycle_id, address, orders, bag_id } = parse(registerOrderSchema, request.body);
+    const { cycle_id, address, orders } = parse(registerOrderSchema, request.body);
 
     const registerOrderUseCase = container.resolve<RegisterOrderUseCase>("registerOrderUseCase");
 
     const { bag } = await registerOrderUseCase.execute({
-      bag_id,
       user_id: request.user_id,
       cycle_id,
-      address,
-      request: orders,
+      residence: address,
+      items: orders,
     });
 
     return response.status(200).send(BagPresenter.toHttp(bag));

@@ -95,15 +95,15 @@ export default (container: AwilixContainer) => {
       ({
         farmsRepository,
         productsRepository,
-        catalogsRepository,
+        marketsRepository,
         cyclesRepository,
         offersRepository,
       }) =>
         new RegisterOfferUseCase(
           farmsRepository,
           productsRepository,
-          catalogsRepository,
           cyclesRepository,
+          marketsRepository,
           offersRepository,
         ),
     ),
@@ -115,21 +115,21 @@ export default (container: AwilixContainer) => {
       ({
         usersRepository,
         cyclesRepository,
+        marketsRepository,
         offersRepository,
         bagsRepository,
         boxesRepository,
         addressesRepository,
-        otpProvider,
         mailer,
       }) =>
         new RegisterOrderUseCase(
           usersRepository,
           cyclesRepository,
+          marketsRepository,
           offersRepository,
           bagsRepository,
           boxesRepository,
           addressesRepository,
-          otpProvider,
           mailer,
         ),
     ).transient(),
@@ -161,17 +161,17 @@ export default (container: AwilixContainer) => {
         new FetchBoxUseCase(usersRepository, boxesRepository),
     ),
     fetchCatalogUseCase: asFunction(
-      ({ catalogsRepository }) => new FetchCatalogUseCase(catalogsRepository),
+      ({ farmsRepository }) => new FetchCatalogUseCase(farmsRepository),
     ),
     listProductsUseCase: asFunction(
       ({ productsRepository }) => new ListProductsUsecase(productsRepository),
     ),
     fetchSalesReportUseCase: asFunction(
-      ({ cyclesRepository, bagsRepository, catalogsRepository, pdfService, spreadsheetService }) =>
+      ({ cyclesRepository, farmsRepository, bagsRepository, pdfService, spreadsheetService }) =>
         new FetchSalesReportUseCase(
           cyclesRepository,
+          farmsRepository,
           bagsRepository,
-          catalogsRepository,
           pdfService,
           spreadsheetService,
         ),
@@ -251,8 +251,8 @@ export default (container: AwilixContainer) => {
         new DeleteFarmImageUseCase(farmsRepository, usersRepository, storage),
     ),
     deleteOfferUseCase: asFunction(
-      ({ offersRepository, catalogsRepository, cyclesRepository }) =>
-        new DeleteOfferUseCase(offersRepository, catalogsRepository, cyclesRepository),
+      ({ offersRepository, cyclesRepository, marketsRepository }) =>
+        new DeleteOfferUseCase(offersRepository, cyclesRepository, marketsRepository),
     ),
     updateOfferUseCase: asFunction(
       ({ offersRepository, cyclesRepository, marketsRepository }) =>

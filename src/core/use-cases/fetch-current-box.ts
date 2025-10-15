@@ -25,11 +25,15 @@ export class FetchCurrentBoxUseCase {
   async execute({ farm_id, cycle_id, page }: FetchCurrentBoxUseCaseRequest) {
     const cycle = await this.cyclesRepository.find("cycle", { id: cycle_id });
 
-    if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+    if (!cycle) {
+      throw new ResourceNotFoundError("Ciclo", cycle_id);
+    }
 
     const farm = await this.farmsRepository.find("farm", { id: farm_id });
 
-    if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
+    if (!farm) {
+      throw new ResourceNotFoundError("Fazenda", farm_id);
+    }
 
     const box = await this.boxesRepository.find("box-and-orders", {
       farm: { id: farm_id },

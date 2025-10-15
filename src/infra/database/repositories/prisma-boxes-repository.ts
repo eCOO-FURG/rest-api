@@ -54,7 +54,9 @@ export class PrismaBoxesRepository implements BoxesRepository {
       },
     });
 
-    if (!box) return null;
+    if (!box) {
+      return null;
+    }
 
     switch (type) {
       default:

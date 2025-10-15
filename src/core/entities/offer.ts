@@ -17,10 +17,10 @@ export interface OfferProps extends EntityRequest {
   farm?: Farm;
 
   cycle_id: UUID | null;
-  cycle?: Cycle | null;
+  cycle?: Cycle;
 
   market_id: UUID | null;
-  market?: Market | null;
+  market?: Market;
 
   product_id: UUID;
   product?: Product;

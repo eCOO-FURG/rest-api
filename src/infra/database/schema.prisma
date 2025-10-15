@@ -93,7 +93,7 @@ model Farm {
   updated_at DateTime?
 
   offers Offer[]
-  Box    Box[]
+  boxes  Box[]
 
   @@map("farms")
 }
