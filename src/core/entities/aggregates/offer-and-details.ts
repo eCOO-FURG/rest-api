@@ -1,11 +1,11 @@
 // Entities
-import { CatalogAndFarm } from "@/core/entities/aggregates/catalog-and-farm";
 import { Offer, OfferProps } from "@/core/entities/offer";
 import { Product } from "@/core/entities/product";
+import { FarmAndAdmin } from "@/core/entities/aggregates/farm-and-admin";
 
 export interface OfferAndDetailsProps extends OfferProps {
   product: Product;
-  catalog: CatalogAndFarm;
+  farm: FarmAndAdmin;
 }
 
 export class OfferAndDetails extends Offer<OfferAndDetailsProps> {
@@ -13,8 +13,8 @@ export class OfferAndDetails extends Offer<OfferAndDetailsProps> {
     return this.props.product;
   }
 
-  get catalog() {
-    return this.props.catalog;
+  get farm() {
+    return this.props.farm;
   }
 
   static create(props: OfferAndDetailsProps) {

@@ -300,7 +300,7 @@
               minimumFractionDigits: order.amount % 1000 === 0 ? 0 : 1 }) %>kg
               de <%= order.offer.product.name %> <% } else { %> <%= order.amount
               %>g de <%= order.offer.product.name %> <% } %> <% } %>
-              - <%= order.offer.catalog.farm.name %> |
+              - <%= order.offer.farm.name %> |
               R$<%= order.total.toLocaleString("pt-BR", { minimumFractionDigits:
               2 }) %> 
               <br>

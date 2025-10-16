@@ -46,8 +46,7 @@ export async function listUsersController(
       request.query,
     );
 
-    const listUsersUseCase =
-      container.resolve<ListUsersUseCase>("listUsersUseCase");
+    const listUsersUseCase = container.resolve<ListUsersUseCase>("listUsersUseCase");
 
     const { users } = await listUsersUseCase.execute({
       page,
@@ -58,9 +57,7 @@ export async function listUsersController(
       before: toDate(before),
     });
 
-    return response
-      .status(200)
-      .send(users.map((user) => UserPresenter.toHttp(user)));
+    return response.status(200).send(users.map((user) => UserPresenter.toHttp(user)));
   } catch (error) {
     next(error);
   }

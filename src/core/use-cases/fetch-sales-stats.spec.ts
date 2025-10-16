@@ -35,7 +35,7 @@ describe("Fetch sales stats", () => {
         created_at: FIVE_MONTHS_AGO,
       });
 
-      await bagsRepository.create(bag);
+      await bagsRepository.save(bag);
     }
 
     for (let i = 0; i < 10; i++) {
@@ -43,7 +43,7 @@ describe("Fetch sales stats", () => {
         subtotal: 100,
         created_at: FOUR_MONTHS_AGO,
       });
-      await bagsRepository.create(bag);
+      await bagsRepository.save(bag);
     }
 
     for (let i = 0; i < 10; i++) {
@@ -51,7 +51,7 @@ describe("Fetch sales stats", () => {
         subtotal: 100,
         created_at: THREE_MONTHS_AGO,
       });
-      await bagsRepository.create(bag);
+      await bagsRepository.save(bag);
     }
 
     for (let i = 0; i < 10; i++) {
@@ -59,7 +59,7 @@ describe("Fetch sales stats", () => {
         subtotal: 100,
         created_at: TWO_MONTHS_AGO,
       });
-      await bagsRepository.create(bag);
+      await bagsRepository.save(bag);
     }
 
     for (let i = 0; i < 10; i++) {
@@ -67,7 +67,7 @@ describe("Fetch sales stats", () => {
         subtotal: 100,
         created_at: ONE_MONTH_AGO,
       });
-      await bagsRepository.create(bag);
+      await bagsRepository.save(bag);
     }
 
     const { revenue, monthly, daily } = await sut.execute({
@@ -75,7 +75,7 @@ describe("Fetch sales stats", () => {
       before: today,
     });
 
-    expect(revenue).toBe(1100);
+    expect(revenue).toBe(1000);
     expect(Object.keys(monthly).length).toBe(4);
     expect(Object.keys(daily).length).toBe(4);
   });

@@ -38,15 +38,15 @@ export class PrismaOrdersRepository implements OrdersRepository {
       },
     });
 
-    if (!order) return null;
+    if (!order) {
+      return null;
+    }
 
     switch (type) {
       default:
         return PrismaOrderMapper.toDomain<T>(order);
       case "order-and-offer":
-        return PrismaOrderAndOfferMapper.toDomain<T>(
-          order as PrismaOrderAndOffer,
-        );
+        return PrismaOrderAndOfferMapper.toDomain<T>(order as PrismaOrderAndOffer);
     }
   }
 
@@ -57,22 +57,24 @@ export class PrismaOrdersRepository implements OrdersRepository {
         data: PrismaOrderMapper.toPrisma(order),
       });
 
-      const box = await ctx.box.findFirstOrThrow({
-        where: { id: order.box_id.value },
-      });
-
-      if (box.status === "PENDING") {
-        const orders = await ctx.order.findMany({
-          where: { box_id: order.box_id.value },
+      if (order.box_id) {
+        const box = await ctx.box.findFirstOrThrow({
+          where: { id: order.box_id.value },
         });
 
-        const verified = orders.every((order) => order.status !== "PENDING");
-
-        if (verified) {
-          await ctx.box.update({
-            where: { id: order.box_id.value },
-            data: { status: "VERIFIED" },
+        if (box.status === "PENDING") {
+          const orders = await ctx.order.findMany({
+            where: { box_id: order.box_id.value },
           });
+
+          const verified = orders.every((order) => order.status !== "PENDING");
+
+          if (verified) {
+            await ctx.box.update({
+              where: { id: order.box_id.value },
+              data: { status: "VERIFIED" },
+            });
+          }
         }
       }
 
@@ -87,8 +89,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
 
         const verified = orders.every((order) => order.status !== "PENDING");
 
-        const refund =
-          order.status === "CANCELLED" || order.status === "REJECTED";
+        const refund = order.status === "CANCELLED" || order.status === "REJECTED";
 
         if (verified || refund) {
           await ctx.bag.update({

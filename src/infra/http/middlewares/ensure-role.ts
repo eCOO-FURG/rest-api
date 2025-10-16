@@ -19,16 +19,18 @@ export function ensureRole(roles: UserRole[]): RequestHandler {
     try {
       const allowed = roles.some((role) => request.roles.includes(role));
 
-      if (!allowed) throw new UnauthorizedError();
+      if (!allowed) {
+        throw new UnauthorizedError();
+      }
 
       if (roles.includes("PRODUCER")) {
-        const farm = await container
-          .resolve<FarmsRepository>("farmsRepository")
-          .find("farm", {
-            admin: { id: request.user_id },
-          });
+        const farm = await container.resolve<FarmsRepository>("farmsRepository").find("farm", {
+          admin: { id: request.user_id },
+        });
 
-        if (!farm) throw new ResourceNotFoundError("Fazenda", request.user_id);
+        if (!farm) {
+          throw new ResourceNotFoundError("Fazenda", request.user_id);
+        }
 
         request.farm_id = farm.id.value;
       }

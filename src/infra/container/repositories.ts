@@ -5,7 +5,6 @@ import { asClass, AwilixContainer } from "awilix";
 import { PrismaAddressesRepository } from "@/infra/database/repositories/prisma-addresses-repository";
 import { PrismaBagsRepository } from "@/infra/database/repositories/prisma-bags-repository";
 import { PrismaBoxesRepository } from "@/infra/database/repositories/prisma-boxes-repository";
-import { PrismaCatalogsRepository } from "@/infra/database/repositories/prisma-catalogs-repository";
 import { PrismaCategoriesRepository } from "@/infra/database/repositories/prisma-categories-repository";
 import { PrismaCyclesRepository } from "@/infra/database/repositories/prisma-cycles-repository";
 import { PrismaFarmsRepository } from "@/infra/database/repositories/prisma-farms-repository";
@@ -17,6 +16,7 @@ import { PrismaUsersRepository } from "@/infra/database/repositories/prisma-user
 import { PrismaPaymentsRepository } from "@/infra/database/repositories/prisma-payments-repository";
 import { PrismaOrdersRepository } from "@/infra/database/repositories/prisma-orders-repository";
 import { StaticWarehouseRepository } from "@/infra/database/repositories/static-warehouse-repository";
+import { PrismaMarketsRepository } from "@/infra/database/repositories/prisma-markets-repository";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -28,7 +28,7 @@ export default (container: AwilixContainer) => {
     offersRepository: asClass(PrismaOffersRepository).singleton(),
     farmsRepository: asClass(PrismaFarmsRepository).singleton(),
     bagsRepository: asClass(PrismaBagsRepository).singleton(),
-    catalogsRepository: asClass(PrismaCatalogsRepository).singleton(),
+    marketsRepository: asClass(PrismaMarketsRepository).singleton(),
     boxesRepository: asClass(PrismaBoxesRepository).singleton(),
     addressesRepository: asClass(PrismaAddressesRepository).singleton(),
     categoriesRepository: asClass(PrismaCategoriesRepository).singleton(),

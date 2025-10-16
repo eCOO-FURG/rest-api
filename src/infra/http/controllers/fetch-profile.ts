@@ -16,9 +16,7 @@ export async function fetchProfileController(
   next: NextFunction,
 ) {
   try {
-    const getProfileUseCase = container.resolve<FetchProfileUseCase>(
-      "fetchProfileUseCase",
-    );
+    const getProfileUseCase = container.resolve<FetchProfileUseCase>("fetchProfileUseCase");
 
     const { user } = await getProfileUseCase.execute({
       user_id: request.user_id,

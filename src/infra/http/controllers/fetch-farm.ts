@@ -26,8 +26,7 @@ export async function fetchFarmController(
   try {
     const { farm_id } = parse(fetchFarmParams, request.params);
 
-    const fetchUserFarmUseCase =
-      container.resolve<FetchFarmUseCase>("fetchFarmUseCase");
+    const fetchUserFarmUseCase = container.resolve<FetchFarmUseCase>("fetchFarmUseCase");
 
     const { farm } = await fetchUserFarmUseCase.execute({
       farm_id,

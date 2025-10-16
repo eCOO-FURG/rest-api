@@ -3,8 +3,9 @@ import { Payment } from "@/core/entities/payment";
 
 export type PaymentRepositoryReturnType = "payment";
 
-export type PaymentEntityOf<T extends PaymentRepositoryReturnType> =
-  T extends "payment" ? Payment : never;
+export type PaymentEntityOf<T extends PaymentRepositoryReturnType> = T extends "payment"
+  ? Payment
+  : never;
 
 export interface PaymentsRepositorySearchRequest {
   id?: string;

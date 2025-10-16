@@ -26,8 +26,7 @@ export async function openPaymentController(
   try {
     const { bag_id } = parse(openPaymentSchema, request.body);
 
-    const openPaymentUseCase =
-      container.resolve<OpenPaymentUseCase>("openPaymentUseCase");
+    const openPaymentUseCase = container.resolve<OpenPaymentUseCase>("openPaymentUseCase");
 
     const { payment, charge } = await openPaymentUseCase.execute({ bag_id });
 

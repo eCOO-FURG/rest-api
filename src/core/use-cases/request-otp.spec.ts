@@ -1,9 +1,6 @@
 // Factories
 import { makeUser } from "@/test/factories/make-user";
 
-// Cryptography
-import { MockedOtpProvider } from "@/test/cryptography/mocked-otp-provider";
-
 // Mail
 import { MockedMailer } from "@/test/mail/mocked-mailer";
 
@@ -25,8 +22,6 @@ let usersRepository: InMemoryUsersRepository;
 let otpsRepository: InMemoryOtpsRepository;
 let mailer: MockedMailer;
 
-let otpGenerator: MockedOtpProvider;
-
 let sut: RequestOtpUseCase;
 
 describe("request otp", async () => {
@@ -34,15 +29,9 @@ describe("request otp", async () => {
     usersRepository = new InMemoryUsersRepository();
     otpsRepository = new InMemoryOtpsRepository();
 
-    otpGenerator = new MockedOtpProvider();
     mailer = new MockedMailer();
 
-    sut = new RequestOtpUseCase(
-      usersRepository,
-      otpGenerator,
-      otpsRepository,
-      mailer,
-    );
+    sut = new RequestOtpUseCase(usersRepository, otpsRepository, mailer);
   });
 
   it("should be able to request a otp", async () => {

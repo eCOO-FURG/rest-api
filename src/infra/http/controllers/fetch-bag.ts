@@ -30,17 +30,12 @@ export const fetchBagQuery = Joi.object({
   statuses: options(Order.statuses).optional(),
 });
 
-export async function fetchBagController(
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) {
+export async function fetchBagController(request: Request, response: Response, next: NextFunction) {
   try {
     const { bag_id } = parse(fetchBagParams, request.params);
     const { page, statuses } = parse(fetchBagQuery, request.query);
 
-    const fetchBagUseCase =
-      container.resolve<FetchBagUseCase>("fetchBagUseCase");
+    const fetchBagUseCase = container.resolve<FetchBagUseCase>("fetchBagUseCase");
 
     const { bag } = await fetchBagUseCase.execute({
       bag_id,

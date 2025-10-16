@@ -34,14 +34,10 @@ export async function listCurrentBagsController(
   next: NextFunction,
 ) {
   try {
-    const { cycle_id, page, user, statuses } = parse(
-      listCurrentBagsQuery,
-      request.query,
-    );
+    const { cycle_id, page, user, statuses } = parse(listCurrentBagsQuery, request.query);
 
-    const listCurrentBagsUseCase = container.resolve<ListCurrentBagsUseCase>(
-      "listCurrentBagsUseCase",
-    );
+    const listCurrentBagsUseCase =
+      container.resolve<ListCurrentBagsUseCase>("listCurrentBagsUseCase");
 
     const { bags } = await listCurrentBagsUseCase.execute({
       cycle_id,
@@ -50,9 +46,7 @@ export async function listCurrentBagsController(
       statuses: toArray(statuses),
     });
 
-    return response
-      .status(200)
-      .send(bags.map((bag) => BagPresenter.toHttp(bag)));
+    return response.status(200).send(bags.map((bag) => BagPresenter.toHttp(bag)));
   } catch (error) {
     next(error);
   }

@@ -32,11 +32,7 @@ describe("list user bags", () => {
 
     bagsRepository = new InMemoryBagsRepository();
 
-    sut = new ListBagsUseCase(
-      bagsRepository,
-      usersRepository,
-      cyclesRepository,
-    );
+    sut = new ListBagsUseCase(bagsRepository, usersRepository, cyclesRepository);
   });
 
   it("should return a list of bags from an user", async () => {
@@ -44,13 +40,13 @@ describe("list user bags", () => {
     usersRepository.create(user);
 
     const bag = makeBag({ customer_id: user.id, created_at: now() });
-    await bagsRepository.create(bag);
+    await bagsRepository.save(bag);
 
     const bag2 = makeBag({
       customer_id: user.id,
       created_at: new Date(now().setDate(now().getDate() + 1)),
     });
-    await bagsRepository.create(bag2);
+    await bagsRepository.save(bag2);
 
     const result = await sut.execute({
       user_id: user.id.value,
@@ -63,7 +59,7 @@ describe("list user bags", () => {
 
   it("should not be able to list bags from a non-existing user", async () => {
     const bag = makeBag();
-    await bagsRepository.create(bag);
+    await bagsRepository.save(bag);
 
     await expect(() =>
       sut.execute({
@@ -81,13 +77,13 @@ describe("list user bags", () => {
       customer_id: user.id,
       created_at: new Date("2024-10-06"),
     });
-    await bagsRepository.create(bagWithinRange);
+    await bagsRepository.save(bagWithinRange);
 
     const bagOutsideRange = makeBag({
       customer_id: user.id,
       created_at: new Date("2024-10-04"),
     });
-    await bagsRepository.create(bagOutsideRange);
+    await bagsRepository.save(bagOutsideRange);
 
     const result = await sut.execute({
       user_id: user.id.value,

@@ -30,14 +30,10 @@ export async function fetchSalesStatsController(
   next: NextFunction,
 ) {
   try {
-    const { since, before, method } = parse(
-      fetchSalesStatsQuery,
-      request.query,
-    );
+    const { since, before, method } = parse(fetchSalesStatsQuery, request.query);
 
-    const fetchSalesStatsUseCase = container.resolve<FetchSalesStatsUseCase>(
-      "fetchSalesStatsUseCase",
-    );
+    const fetchSalesStatsUseCase =
+      container.resolve<FetchSalesStatsUseCase>("fetchSalesStatsUseCase");
 
     const stats = await fetchSalesStatsUseCase.execute({
       since: toDate(since),

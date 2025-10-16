@@ -61,25 +61,32 @@ export class RegisterUseCase {
       email,
     });
 
-    if (userWithSameEmail) throw new ResourceAlreadyExistsError("Email", email);
+    if (userWithSameEmail) {
+      throw new ResourceAlreadyExistsError("Email", email);
+    }
 
     const userWithSamePhone = await this.usersRepository.find("user", {
       phone,
     });
 
-    if (userWithSamePhone)
+    if (userWithSamePhone) {
       throw new ResourceAlreadyExistsError("Telefone", phone);
+    }
 
     const userWithSameCpf = await this.usersRepository.find("user", { cpf });
 
-    if (userWithSameCpf) throw new ResourceAlreadyExistsError("CPF", cpf);
+    if (userWithSameCpf) {
+      throw new ResourceAlreadyExistsError("CPF", cpf);
+    }
 
     if (chat) {
       const userWithSameChat = await this.usersRepository.find("user", {
         chat,
       });
 
-      if (userWithSameChat) throw new ResourceAlreadyExistsError("Chat", chat);
+      if (userWithSameChat) {
+        throw new ResourceAlreadyExistsError("Chat", chat);
+      }
     }
 
     const user = User.create({
@@ -92,7 +99,9 @@ export class RegisterUseCase {
       cpf: new CPF(cpf),
     });
 
-    if (password) user.password = await this.encrypter.encrypt(password);
+    if (password) {
+      user.password = await this.encrypter.encrypt(password);
+    }
 
     if (photo) {
       const urls = await this.storage.upload([photo], "users");

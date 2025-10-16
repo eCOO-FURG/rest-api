@@ -10,10 +10,7 @@ import {
 } from "@prisma/client";
 
 // Repositories
-import {
-  BagEntityOf,
-  BagRepositoryReturnType,
-} from "@/core/repositories/bags-repository";
+import { BagEntityOf, BagRepositoryReturnType } from "@/core/repositories/bags-repository";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Mappers
@@ -40,7 +37,8 @@ export class PrismaBagAndDetailsMapper {
       shipping: raw.shipping.toNumber(),
       customer_id: new UUID(raw.customer_id),
       customer: PrismaUserMapper.toDomain(raw.customer),
-      cycle_id: new UUID(raw.cycle_id),
+      market_id: raw.market_id ? new UUID(raw.market_id) : null,
+      cycle_id: raw.cycle_id ? new UUID(raw.cycle_id) : null,
       address_id: raw.address_id ? new UUID(raw.address_id) : null,
       address: raw.address ? PrismaAddressMapper.toDomain(raw.address) : null,
       created_at: raw.created_at,

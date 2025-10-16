@@ -25,7 +25,7 @@ export class PrismaOtpsRepository implements OtpsRepository {
       include: { user: type !== "otp" },
     });
 
-    if (!otp) return null;
+    if (!otp) {return null;}
 
     return PrismaOtpMapper.toDomain<T>(otp) as OtpEntityOf<T>;
   }

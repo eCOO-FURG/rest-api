@@ -24,17 +24,14 @@ export class ListCurrentBagsUseCase {
     private bagsRepository: BagsRepository,
   ) {}
 
-  async execute({
-    cycle_id,
-    statuses,
-    user,
-    page,
-  }: ListCurrentBagsUseCaseRequest) {
+  async execute({ cycle_id, statuses, user, page }: ListCurrentBagsUseCaseRequest) {
     const cycle = await this.cyclesRepository.find("cycle", {
       id: cycle_id,
     });
 
-    if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+    if (!cycle) {
+      throw new ResourceNotFoundError("Ciclo", cycle_id);
+    }
 
     const bags = await this.bagsRepository.list(
       "bag-and-details",

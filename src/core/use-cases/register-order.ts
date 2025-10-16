@@ -3,11 +3,8 @@ import { Address } from "@/core/entities/address";
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { Bag } from "@/core/entities/bag";
 import { Box } from "@/core/entities/box";
-import { Cycle } from "@/core/entities/cycle";
 import { Order } from "@/core/entities/order";
-import { User } from "@/core/entities/user";
 import { Message } from "@/core/entities/message";
-import { ProductPricing } from "@/core/entities/product";
 
 // Repositories
 import { AddressesRepository } from "@/core/repositories/addresses-repository";
@@ -15,6 +12,7 @@ import { BagsRepository } from "@/core/repositories/bags-repository";
 import { BoxesRepository } from "@/core/repositories/boxes-repository";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { OffersRepository } from "@/core/repositories/offers-repository";
+import { MarketsRepository } from "@/core/repositories/markets-repository";
 import { UsersRepository } from "@/core/repositories/users-repository";
 
 // Errors
@@ -25,25 +23,20 @@ import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 
 // Utils
 import { first } from "@/core/utils/first";
-
-// Cryptography
-import { OtpProvider } from "@/core/cryptography/otp-provider";
+import { inPeriodOf } from "@/core/utils/in-period-of";
 
 // Mail
 import { Mailer } from "@/core/mail/mailer";
 
-// Utils
-import { inPeriodOf } from "../utils/in-period-of";
-
 interface RegisterOrderUseCaseRequest {
   user_id: string;
-  cycle_id: string;
-  request: {
+  items: {
     offer_id: string;
     amount: number;
   }[];
-  bag_id?: string;
-  address?: {
+  market_id?: string;
+  cycle_id?: string;
+  residence?: {
     street: string;
     number: string;
     neighborhood: string;
@@ -52,106 +45,155 @@ interface RegisterOrderUseCaseRequest {
   };
 }
 
-interface UseBagRequest {
-  bag_id?: string;
-  address: Address | null;
-  user: User;
-  cycle: Cycle;
-}
-
 export class RegisterOrderUseCase {
-  private boxes: Map<string, Box> = new Map();
-
   constructor(
     private usersRepository: UsersRepository,
     private cyclesRepository: CyclesRepository,
+    private marketsRepository: MarketsRepository,
     private offersRepository: OffersRepository,
     private bagsRepository: BagsRepository,
     private boxesRepository: BoxesRepository,
     private addressesRepository: AddressesRepository,
-    private otpGenerator: OtpProvider,
     private mailer: Mailer,
   ) {}
 
-  async execute({
-    user_id,
-    cycle_id,
-    bag_id,
-    address,
-    request,
-  }: RegisterOrderUseCaseRequest) {
+  async execute({ user_id, cycle_id, market_id, residence, items }: RegisterOrderUseCaseRequest) {
     const user = await this.usersRepository.find("user", { id: user_id });
 
-    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+    if (!user) {
+      throw new ResourceNotFoundError("Usuário", user_id);
+    }
 
-    const cycle = await this.cyclesRepository.find("cycle", { id: cycle_id });
+    const market = market_id
+      ? await this.marketsRepository.find("market", { id: market_id })
+      : null;
 
-    if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+    if (market_id && !market) {
+      throw new ResourceNotFoundError("Mercado", market_id);
+    }
 
-    if (!inPeriodOf("order", cycle))
-      throw new ResourceClosedError("Ciclo", cycle_id);
+    if (market && !market.open) {
+      throw new ResourceClosedError("Mercado", market.id.value);
+    }
 
-    const offersIds = request.map((order) => order.offer_id);
+    const cycle = cycle_id ? await this.cyclesRepository.find("cycle", { id: cycle_id }) : null;
+
+    if (cycle_id && !cycle) {
+      throw new ResourceNotFoundError("Ciclo", cycle_id);
+    }
+
+    if (cycle && !inPeriodOf("order", cycle)) {
+      throw new ResourceClosedError("Ciclo", cycle.id.value);
+    }
+
+    const address = residence
+      ? ((await this.addressesRepository.find("address", residence)) ?? Address.create(residence))
+      : null;
+
+    const existent = await this.bagsRepository.find("bag", {
+      user: { id: user.id.value },
+      statuses: ["PENDING"],
+      address: address ? { id: address.id.value } : null,
+      ...(cycle && { since: first(cycle.order) }),
+      ...(cycle_id && { cycle: { id: cycle_id } }),
+      ...(market_id && { market: { id: market_id } }),
+    });
+
+    const bag = existent
+      ? existent
+      : Bag.create({
+          customer_id: user.id,
+          address_id: address ? address.id : null,
+          address,
+          cycle_id: cycle_id ? new UUID(cycle_id) : null,
+          market_id: market_id ? new UUID(market_id) : null,
+        });
 
     const offers = await this.offersRepository.list("offer-and-details", {
-      ids: offersIds,
+      ids: items.map((order) => order.offer_id),
     });
 
-    const destination = await this.useAddress(address);
+    const boxes = new Map<UUID, Box>();
 
-    const { bag, existed } = await this.useBag({
-      bag_id,
-      cycle,
-      user,
-      address: destination,
-    });
+    for (const item of items) {
+      const offer = offers.find((offer) => offer.id.value === item.offer_id);
 
-    for (const item of request) {
-      const offer = offers.find((offer) => offer.id.equals(item.offer_id));
+      if (!offer) {
+        throw new ResourceNotFoundError("Oferta", item.offer_id);
+      }
 
-      if (!offer) throw new ResourceNotFoundError("Oferta", item.offer_id);
-
-      if (!offer.available)
+      if (!offer.available) {
         throw new ResourceClosedError("Oferta", item.offer_id);
+      }
 
-      if (!offer.catalog.cycle_id.equals(cycle_id))
-        throw new ResourceClosedError("Oferta", item.offer_id);
+      if (cycle_id && (!offer.cycle_id || !offer.cycle_id.equals(cycle_id))) {
+        throw new ResourceNotFoundError(`Oferta ${item.offer_id} no ciclo`, cycle_id);
+      }
 
-      if (item.amount > offer.amount)
+      if (market_id && (!offer.market_id || !offer.market_id.equals(market_id))) {
+        throw new ResourceNotFoundError(`Oferta ${item.offer_id} na feira`, market_id);
+      }
+
+      if (item.amount > offer.amount) {
         throw new UnavailableAmountError(offer.id.value);
+      }
 
-      if (item.amount % 100 != 0 && offer.product.pricing === "WEIGHT")
+      if (offer.product.pricing === "WEIGHT" && item.amount % 100 != 0) {
         throw new InvalidWeightError("solicitado", offer.product.id.value);
-
-      const box = await this.useBox(offer.catalog.id, cycle);
+      }
 
       const order = Order.create({
-        box_id: box.id,
+        amount: item.amount,
         bag_id: bag.id,
-        box,
         offer_id: offer.id,
         offer,
-        amount: item.amount,
-        fee: this.useFee(offer.product.pricing, offer.fee, item.amount),
-        subtotal: this.useSubtotal(
-          offer.product.pricing,
-          offer.price,
-          item.amount,
-        ),
+        fee:
+          offer.product.pricing === "WEIGHT"
+            ? offer.fee * (item.amount / 1000)
+            : offer.fee * item.amount,
+        subtotal:
+          offer.product.pricing === "WEIGHT"
+            ? offer.price * (item.amount / 1000)
+            : offer.price * item.amount,
       });
 
-      bag.add(order);
+      bag.include(order);
+
+      if (cycle) {
+        const box = boxes.get(offer.farm_id);
+
+        if (box) {
+          order.pack(box);
+          continue;
+        }
+
+        const existent = await this.boxesRepository.find("box", {
+          farm: { id: offer.farm_id.value },
+          cycle: { id: cycle.id.value },
+          since: first(cycle.order),
+        });
+
+        if (existent) {
+          boxes.set(offer.farm_id, existent);
+          order.pack(existent);
+          continue;
+        }
+
+        const created = Box.create({
+          farm_id: offer.farm_id,
+          cycle_id: cycle.id,
+        });
+
+        boxes.set(offer.farm_id, created);
+        order.pack(created);
+      }
     }
 
-    if (existed) {
-      await this.bagsRepository.update(bag);
-    } else {
-      await this.bagsRepository.create(bag);
-    }
+    await this.bagsRepository.save(bag);
 
     const view = await this.mailer.load({
       view: "order-notification",
-      props: { first_name: user.first_name, bag, cycle, existed },
+      props: { first_name: user.first_name, bag, cycle, market },
     });
 
     const email = Message.create({
@@ -160,95 +202,8 @@ export class RegisterOrderUseCase {
       content: view,
     });
 
-    this.mailer.send(email);
-    this.boxes.clear();
+    await this.mailer.send(email);
 
     return { bag };
-  }
-
-  private async useAddress(address: RegisterOrderUseCaseRequest["address"]) {
-    if (!address) return null;
-
-    const found = await this.addressesRepository.find("address", {
-      street: address.street,
-      number: address.number,
-      complement: address.complement,
-      neighborhood: address.neighborhood,
-      postal_code: address.postal_code,
-    });
-
-    if (found) return found;
-
-    return Address.create(address);
-  }
-
-  private async useBag({ bag_id, user, address, cycle }: UseBagRequest) {
-    if (bag_id) {
-      const bag = await this.bagsRepository.find("bag-and-details", {
-        id: bag_id,
-        statuses: ["PENDING"],
-        cycle: { id: cycle.id.value },
-        since: first(cycle.order),
-      });
-
-      if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
-
-      if (bag.status !== "PENDING" || bag.created_at < first(cycle.order))
-        throw new ResourceClosedError("Sacola", bag_id);
-
-      return { bag, existed: true };
-    }
-
-    const found = await this.bagsRepository.find("bag", {
-      user: { id: user.id.value },
-      cycle: { id: cycle.id.value },
-      statuses: ["PENDING"],
-      address: address ? { id: address.id.value } : null,
-      since: first(cycle.order),
-    });
-
-    if (found) return { bag: found, existed: true };
-
-    const code = await this.otpGenerator.generate();
-
-    const bag = Bag.create({
-      customer_id: user.id,
-      cycle_id: cycle.id,
-      address_id: address ? address.id : null,
-      address,
-      code,
-    });
-
-    return { bag, existed: false };
-  }
-
-  private async useBox(catalog_id: UUID, cycle: Cycle) {
-    const memorized = this.boxes.get(catalog_id.value);
-
-    if (memorized) return memorized;
-
-    const found = await this.boxesRepository.find("box", {
-      catalog: { id: catalog_id.value },
-      since: first(cycle.order),
-    });
-
-    if (found) {
-      this.boxes.set(catalog_id.value, found);
-      return found;
-    }
-
-    const box = Box.create({ catalog_id });
-
-    this.boxes.set(catalog_id.value, box);
-
-    return box;
-  }
-
-  private useSubtotal(pricing: ProductPricing, price: number, amount: number) {
-    return pricing === "WEIGHT" ? price * (amount / 1000) : price * amount;
-  }
-
-  private useFee(pricing: ProductPricing, fee: number, amount: number) {
-    return pricing === "WEIGHT" ? fee * (amount / 1000) : fee * amount;
   }
 }

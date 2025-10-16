@@ -6,6 +6,7 @@ import { UserPresenter } from "@/infra/http/presenters/user-presenter";
 
 // Types
 import { View } from "@/infra/types/view";
+import { OfferPresenter } from "./offer-presenter";
 
 export class FarmPresenter {
   static toHttp(farm?: Farm): View<FarmProps> {
@@ -16,7 +17,7 @@ export class FarmPresenter {
       delete admin.verified_at;
     }
 
-    if (farm)
+    if (farm) {
       return {
         id: farm.id.value,
         name: farm.name,
@@ -28,8 +29,10 @@ export class FarmPresenter {
         description: farm.description,
         admin_id: farm.admin_id.value,
         admin: admin,
+        offers: farm.offers.map(OfferPresenter.toHttp),
         created_at: farm.created_at,
         updated_at: farm.updated_at,
       };
+    }
   }
 }

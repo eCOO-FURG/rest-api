@@ -10,7 +10,7 @@ import {
 } from "@/core/repositories/otps-repositoy";
 
 export class InMemoryOtpsRepository implements OtpsRepository {
-  items: Otp[] = [];
+  items: OtpEntityOf<OtpRepositoryReturnType>[] = [];
 
   async find<T extends OtpRepositoryReturnType>(
     _: T,
@@ -24,7 +24,9 @@ export class InMemoryOtpsRepository implements OtpsRepository {
       ),
     );
 
-    if (!otp) return null;
+    if (!otp) {
+      return null;
+    }
 
     return otp as OtpEntityOf<T>;
   }

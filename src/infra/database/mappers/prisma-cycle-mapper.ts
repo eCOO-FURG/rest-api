@@ -6,10 +6,7 @@ import { Cycle, CycleWeek } from "@/core/entities/cycle";
 import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Repositories
-import {
-  CycleRepositoryReturnType,
-  CycleEntityOf,
-} from "@/core/repositories/cycles-repository";
+import { CycleRepositoryReturnType, CycleEntityOf } from "@/core/repositories/cycles-repository";
 
 export class PrismaCycleMapper {
   static toDomain<T extends CycleRepositoryReturnType = "cycle">(

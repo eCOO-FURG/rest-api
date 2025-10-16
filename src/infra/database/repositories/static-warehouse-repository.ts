@@ -49,6 +49,10 @@ export class StaticWarehouseRepository implements WarehouseRepository {
     fs.writeFileSync(url, JSON.stringify(data, null, 2));
   }
 
+  async create(warehouse: Warehouse): Promise<void> {
+    return this.update(warehouse);
+  }
+
   private useDirectory(): string {
     const directory = path.join("/storage", WAREHOUSE_FOLDER);
 
@@ -57,9 +61,5 @@ export class StaticWarehouseRepository implements WarehouseRepository {
     }
 
     return directory;
-  }
-
-  async create(warehouse: Warehouse): Promise<void> {
-    return this.update(warehouse);
   }
 }

@@ -7,20 +7,15 @@ import { OfferAndDetails } from "@/core/entities/aggregates/offer-and-details";
 
 // Mappers
 import { PrismaProductMapper } from "@/infra/database/mappers/prisma-product-mapper";
-import {
-  PrismaCatalogAndFarm,
-  PrismaCatalogAndFarmMapper,
-} from "@/infra/database/mappers/prisma-catalog-and-farm-mapper";
+import { PrismaFarmAndAdmin } from "@/infra/database/mappers/prisma-farm-and-admin-mapper";
+import { PrismaFarmAndAdminMapper } from "@/infra/database/mappers/prisma-farm-and-admin-mapper";
 
 // Repositories
-import {
-  OfferRepositoryReturnType,
-  OfferEntityOf,
-} from "@/core/repositories/offers-repository";
+import { OfferRepositoryReturnType, OfferEntityOf } from "@/core/repositories/offers-repository";
 
 export type PrismaOfferAndDetails = PrismaOffer & {
   product: PrismaProduct;
-  catalog: PrismaCatalogAndFarm;
+  farm: PrismaFarmAndAdmin;
 };
 
 export class PrismaOfferAndDetailsMapper {
@@ -32,10 +27,12 @@ export class PrismaOfferAndDetailsMapper {
       amount: raw.amount,
       price: raw.price.toNumber(),
       fee: raw.fee.toNumber(),
-      catalog_id: new UUID(raw.catalog_id),
       opens_at: raw.opens_at,
-      catalog: PrismaCatalogAndFarmMapper.toDomain(raw.catalog),
+      farm_id: new UUID(raw.farm_id),
       product_id: new UUID(raw.product_id),
+      cycle_id: raw.cycle_id ? new UUID(raw.cycle_id) : null,
+      market_id: raw.market_id ? new UUID(raw.market_id) : null,
+      farm: PrismaFarmAndAdminMapper.toDomain(raw.farm),
       product: PrismaProductMapper.toDomain(raw.product),
       description: raw.description,
       comment: raw.comment,

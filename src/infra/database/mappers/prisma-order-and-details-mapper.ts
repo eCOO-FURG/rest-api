@@ -6,10 +6,7 @@ import { OrderAndDetails } from "@/core/entities/aggregates/order-and-details";
 import { Order as PrismaOrder } from "@prisma/client";
 
 // Repositories
-import {
-  OrderRepositoryReturnType,
-  OrderEntityOf,
-} from "@/core/repositories/orders-repository";
+import { OrderRepositoryReturnType, OrderEntityOf } from "@/core/repositories/orders-repository";
 
 // Mappers
 import {

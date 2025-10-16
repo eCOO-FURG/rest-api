@@ -1,5 +1,7 @@
 export const toDate = (dateString?: string) => {
-  if (!dateString) return;
+  if (!dateString) {
+    return;
+  }
 
   const [day, month, year] = dateString.split("-").map(Number);
 

@@ -20,26 +20,19 @@ export const mappedDomainErrors: {
 }[] = [
   {
     status: 401,
-    errors: [SessionExpiredError],
+    errors: [UnauthorizedError, SessionExpiredError],
   },
   {
     status: 400,
-    errors: [
-      WrongCredentialsError,
-      InvalidWeightError,
-      MissingFieldError,
-      InvalidFieldError,
-    ],
+    errors: [WrongCredentialsError, InvalidWeightError, MissingFieldError, InvalidFieldError],
   },
   {
     status: 403,
     errors: [
       ResourceNotVerifiedError,
-      ResourceAlreadyExistsError,
       FarmNotActiveError,
       ResourceClosedError,
       UserNotVerifiedError,
-      UnauthorizedError,
     ],
   },
   {
@@ -48,7 +41,7 @@ export const mappedDomainErrors: {
   },
   {
     status: 409,
-    errors: [UnavailableAmountError],
+    errors: [ResourceAlreadyExistsError, UnavailableAmountError],
   },
 ];
 
@@ -58,7 +51,9 @@ export class HttpErrorMapper {
       item.errors.find((constructor) => error instanceof constructor),
     );
 
-    if (!found) return null;
+    if (!found) {
+      return null;
+    }
 
     return {
       name: error.name,

@@ -6,7 +6,7 @@ export interface OrderAndDetailsProps extends OrderProps {
   offer: OfferAndDetails;
 }
 
-export class OrderAndDetails extends Order {
+export class OrderAndDetails extends Order<OrderAndDetailsProps> {
   get offer() {
     return this.props.offer;
   }

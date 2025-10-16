@@ -36,7 +36,7 @@ describe("Register payment", () => {
       customer: user,
       status: "MOUNTED",
     });
-    await bagsRepository.create(bag);
+    await bagsRepository.save(bag);
 
     await sut.execute({
       bag_id: bag.id.value,
@@ -48,7 +48,7 @@ describe("Register payment", () => {
     const user = makeUser();
 
     const bag = makeBag({ customer_id: user.id, customer: user });
-    await bagsRepository.create(bag);
+    await bagsRepository.save(bag);
 
     await expect(() =>
       sut.execute({
@@ -75,7 +75,7 @@ describe("Register payment", () => {
       customer: user,
       status: "MOUNTED",
     });
-    await bagsRepository.create(bag);
+    await bagsRepository.save(bag);
 
     const payment = makePayment({ bag_id: bag.id, status: "DONE" });
     await paymentsRepository.create(payment);

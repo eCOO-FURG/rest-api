@@ -1,5 +1,6 @@
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
+import { Offer } from "@/core/entities/offer";
 
 export type CycleWeek = (typeof Cycle.Week)[number][];
 
@@ -8,6 +9,7 @@ export interface CycleProps extends EntityRequest {
   offer: CycleWeek;
   order: CycleWeek;
   deliver: CycleWeek;
+  offers: Offer[];
 }
 
 export class Cycle extends Entity<CycleProps> {
@@ -44,25 +46,29 @@ export class Cycle extends Entity<CycleProps> {
 
     const merge = max === 7 && min === 1 && days.length !== 7;
 
-    if (!merge) return days;
+    if (!merge) {
+      return days;
+    }
 
     let intervals = 0;
 
     for (const [index, day] of days.entries()) {
       const next = days[index + 1];
 
-      if (!next) continue;
+      if (!next) {
+        continue;
+      }
 
       if (next != day + 1) {
         intervals++;
       }
     }
 
-    if (intervals !== 1) return days;
+    if (intervals !== 1) {
+      return days;
+    }
 
-    const interval = days.findIndex(
-      (day, index) => days.at(index + 1) !== day + 1,
-    );
+    const interval = days.findIndex((day, index) => days.at(index + 1) !== day + 1);
 
     return [...days.slice(interval + 1), ...days.slice(0, interval + 1)];
   }

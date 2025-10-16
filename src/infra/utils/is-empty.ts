@@ -1,6 +1,8 @@
 export function isEmpty(value: unknown) {
   if (typeof value === "string") {
-    if (value === "No Content") return true;
+    if (value === "No Content") {
+      return true;
+    }
 
     return value.trim() === "";
   }

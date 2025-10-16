@@ -26,8 +26,7 @@ export async function verifyUserController(
   try {
     const { token } = parse(verifyUserSchema, request.query);
 
-    const verifyUserUseCase =
-      container.resolve<VerifyUserUsecase>("verifyUserUseCase");
+    const verifyUserUseCase = container.resolve<VerifyUserUsecase>("verifyUserUseCase");
 
     const ip = request.ip || request.socket.remoteAddress || "unknown";
 
@@ -39,9 +38,7 @@ export async function verifyUserController(
 
     const path = roles.includes("PRODUCER") ? "login" : "telegram";
 
-    return response
-      .status(301)
-      .redirect(`${env.APP_URL}/${path}?token=${refresh}`);
+    return response.status(301).redirect(`${env.APP_URL}/${path}?token=${refresh}`);
   } catch (error) {
     next(error);
   }

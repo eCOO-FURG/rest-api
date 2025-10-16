@@ -51,12 +51,13 @@ export async function updateWarehouseController(
   next: NextFunction,
 ) {
   try {
-    const { name, CNPJ, manager, email, phone, socials, address, coverage } =
-      parse(updateWarehouseSchema, request.body);
-
-    const updateWarehouseUseCase = container.resolve<UpdateWarehouseUseCase>(
-      "updateWarehouseUseCase",
+    const { name, CNPJ, manager, email, phone, socials, address, coverage } = parse(
+      updateWarehouseSchema,
+      request.body,
     );
+
+    const updateWarehouseUseCase =
+      container.resolve<UpdateWarehouseUseCase>("updateWarehouseUseCase");
 
     await updateWarehouseUseCase.execute({
       user_id: request.user_id,

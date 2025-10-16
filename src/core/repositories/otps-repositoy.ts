@@ -3,9 +3,7 @@ import { Otp } from "@/core/entities/otp";
 
 export type OtpRepositoryReturnType = "otp";
 
-export type OtpEntityOf<T extends OtpRepositoryReturnType> = T extends "otp"
-  ? Otp
-  : never;
+export type OtpEntityOf<T extends OtpRepositoryReturnType> = T extends "otp" ? Otp : never;
 
 export interface OtpsRepositorySearchRequest {
   value: string;

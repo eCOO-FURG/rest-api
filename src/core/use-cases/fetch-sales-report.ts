@@ -1,7 +1,7 @@
 // Repositories
 import { BagsRepository } from "@/core/repositories/bags-repository";
-import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
+import { FarmsRepository } from "@/core/repositories/farms-repository";
 
 // Services
 import { PDFService } from "@/core/report/pdf-service";
@@ -21,25 +21,21 @@ interface FetchSalesReportUseCaseRequest {
 export class FetchSalesReportUseCase {
   constructor(
     private cyclesRepository: CyclesRepository,
+    private farmsRepository: FarmsRepository,
     private bagsRepository: BagsRepository,
-    private catalogsRepository: CatalogsRepository,
     private pdfService: PDFService,
     private spreadsheetService: SpreadsheetService,
   ) {}
 
-  async execute({
-    cycle_id,
-    type,
-    since,
-    before,
-    withdraw,
-  }: FetchSalesReportUseCaseRequest) {
+  async execute({ cycle_id, type, since, before, withdraw }: FetchSalesReportUseCaseRequest) {
     if (cycle_id) {
       const cycle = await this.cyclesRepository.find("cycle", {
         id: cycle_id,
       });
 
-      if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+      if (!cycle) {
+        throw new ResourceNotFoundError("Ciclo", cycle_id);
+      }
     }
 
     const bags = await this.bagsRepository.list("bag-and-orders", {
@@ -50,9 +46,8 @@ export class FetchSalesReportUseCase {
       ...(type === "pdf" && { statuses: ["MOUNTED", "DISPATCHED"] }),
     });
 
-    const catalogs = await this.catalogsRepository.list("catalog-and-offers", {
-      cycle: { id: cycle_id },
-      offers: { period: { since, before } },
+    const catalogs = await this.farmsRepository.list("catalog", {
+      offers: { cycle: { id: cycle_id }, period: { since, before } },
     });
 
     switch (type) {

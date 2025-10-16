@@ -29,16 +29,23 @@ export class RegisterFarmImageUseCase {
   async execute({ user_id, farm_id, image }: RegisterFarmImageUseCaseRequest) {
     const farm = await this.farmsRepository.find("farm", { id: farm_id });
 
-    if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
+    if (!farm) {
+      throw new ResourceNotFoundError("Fazenda", farm_id);
+    }
 
     const user = await this.usersRepository.find("user", { id: user_id });
 
-    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+    if (!user) {
+      throw new ResourceNotFoundError("Usuário", user_id);
+    }
 
-    if (!farm.admin_id.equals(user.id)) throw new UnauthorizedError();
+    if (!farm.admin_id.equals(user.id)) {
+      throw new UnauthorizedError();
+    }
 
-    if (farm.images.length >= 4)
+    if (farm.images.length >= 4) {
       throw new ResourceReachedLimitError("Fazenda", farm_id, "images");
+    }
 
     const url = await this.storage.upload([image], "farms");
 

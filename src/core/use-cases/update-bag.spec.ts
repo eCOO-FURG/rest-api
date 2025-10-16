@@ -33,12 +33,7 @@ describe("update bag", () => {
     cyclesRepository = new InMemoryCyclesRepository();
     chat = new MockedChat();
 
-    sut = new UpdateBagUseCase(
-      bagsRepository,
-      usersRepository,
-      cyclesRepository,
-      chat,
-    );
+    sut = new UpdateBagUseCase(bagsRepository, usersRepository, chat);
   });
 
   it("should be able to update a bag", async () => {
@@ -55,7 +50,7 @@ describe("update bag", () => {
       status: "MOUNTED",
     });
 
-    await bagsRepository.create(bag);
+    await bagsRepository.save(bag);
 
     await sut.execute({
       user_id: user.id.value,
@@ -80,7 +75,7 @@ describe("update bag", () => {
       customer: user,
     });
 
-    await bagsRepository.create(bag);
+    await bagsRepository.save(bag);
 
     await sut.execute({
       user_id: user.id.value,
@@ -120,7 +115,7 @@ describe("update bag", () => {
       customer_id: customer.id,
       customer,
     });
-    await bagsRepository.create(bag);
+    await bagsRepository.save(bag);
 
     await expect(
       sut.execute({

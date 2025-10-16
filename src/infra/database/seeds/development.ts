@@ -58,38 +58,38 @@ export async function seedDevelopment() {
       fee: 20,
       status: "ACTIVE",
       admin_id: farmerId.value,
-      catalogs: {
-        create: {
-          fee: 20,
-          cycle_id: cycleId.value,
-          boxes: {
-            create: {
+      boxes: {
+        createMany: {
+          data: [
+            {
               id: boxId.value,
+              cycle_id: cycleId.value,
               status: "PENDING",
             },
-          },
-          offers: {
-            createMany: {
-              data: products.map((product) => {
-                const price = Math.floor(Math.random() * 20 + 1);
-                return {
-                  product_id: product.id,
-                  fee: price * (20 / 100),
-                  price: price,
-                  active: true,
-                  opens_at: first(everyDay),
-                  closes_at: last(everyDay),
-                  amount:
-                    product.pricing === "UNIT"
-                      ? Math.floor(Math.random() * 20 + 1)
-                      : Math.floor(Math.random() * 20 + 1) * 100,
-                  expires_at: product.perishable
-                    ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-                    : null,
-                };
-              }),
-            },
-          },
+          ],
+        },
+      },
+      offers: {
+        createMany: {
+          data: products.map((product) => {
+            const price = Math.floor(Math.random() * 20 + 1);
+            return {
+              product_id: product.id,
+              cycle_id: cycleId.value,
+              fee: price * (20 / 100),
+              price: price,
+              active: true,
+              opens_at: first(everyDay),
+              closes_at: last(everyDay),
+              amount:
+                product.pricing === "UNIT"
+                  ? Math.floor(Math.random() * 20 + 1)
+                  : Math.floor(Math.random() * 20 + 1) * 100,
+              expires_at: product.perishable
+                ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+                : null,
+            };
+          }),
         },
       },
     },
@@ -99,10 +99,7 @@ export async function seedDevelopment() {
 
   const price = offers.reduce((acc, offer) => {
     return (
-      acc +
-      (offer.product.pricing === "UNIT"
-        ? Number(offer.price)
-        : Number(offer.price) / 1000)
+      acc + (offer.product.pricing === "UNIT" ? Number(offer.price) : Number(offer.price) / 1000)
     );
   }, 0);
 

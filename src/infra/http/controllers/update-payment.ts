@@ -44,9 +44,7 @@ export async function updatePaymentController(
 
     const { status, method, flag } = parse(updatePaymentSchema, request.body);
 
-    const updatePaymentUseCase = container.resolve<UpdatePaymentUseCase>(
-      "updatePaymentUseCase",
-    );
+    const updatePaymentUseCase = container.resolve<UpdatePaymentUseCase>("updatePaymentUseCase");
 
     await updatePaymentUseCase.execute({
       payment_id,

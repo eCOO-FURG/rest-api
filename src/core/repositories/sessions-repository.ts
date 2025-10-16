@@ -3,8 +3,9 @@ import { Session } from "@/core/entities/session";
 
 export type SessionRepositoryReturnType = "session";
 
-export type SessionEntityOf<T extends SessionRepositoryReturnType> =
-  T extends "session" ? Session : never;
+export type SessionEntityOf<T extends SessionRepositoryReturnType> = T extends "session"
+  ? Session
+  : never;
 
 export interface SessionsRepositorySearchRequest {
   ip?: string;

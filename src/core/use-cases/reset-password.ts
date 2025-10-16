@@ -28,7 +28,9 @@ export class ResetPasswordUseCase {
   async execute({ email }: ResetPasswordUseCaseRequest) {
     const user = await this.usersRepository.find("user", { email });
 
-    if (!user) throw new ResourceNotFoundError("Usuário", email);
+    if (!user) {
+      throw new ResourceNotFoundError("Usuário", email);
+    }
 
     const token = await this.hasher.hash({ user_id: user.id.value });
 

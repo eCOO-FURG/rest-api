@@ -3,8 +3,7 @@ import { Cycle } from "@/core/entities/cycle";
 
 export type CycleRepositoryReturnType = "cycle";
 
-export type CycleEntityOf<T extends CycleRepositoryReturnType> =
-  T extends "cycle" ? Cycle : never;
+export type CycleEntityOf<T extends CycleRepositoryReturnType> = T extends "cycle" ? Cycle : never;
 
 export interface CyclesRepositorySearchRequest {
   id?: string;

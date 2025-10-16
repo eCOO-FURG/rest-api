@@ -31,6 +31,7 @@ export class PrismaBagsRepository implements BagsRepository {
       statuses,
       user,
       cycle,
+      market,
       address,
       orders,
       payment,
@@ -43,6 +44,7 @@ export class PrismaBagsRepository implements BagsRepository {
         id,
         status: { in: statuses },
         cycle,
+        market,
         address,
         payment: {
           ...(payment?.status && { status: { in: payment.status } }),
@@ -74,7 +76,7 @@ export class PrismaBagsRepository implements BagsRepository {
               offer: {
                 include: {
                   product: true,
-                  catalog: { include: { farm: { include: { admin: true } } } },
+                  farm: { include: { admin: true } },
                 },
               },
             },
@@ -94,7 +96,9 @@ export class PrismaBagsRepository implements BagsRepository {
       },
     });
 
-    if (!bag) return null;
+    if (!bag) {
+      return null;
+    }
 
     switch (type) {
       default:
@@ -164,7 +168,7 @@ export class PrismaBagsRepository implements BagsRepository {
               offer: {
                 include: {
                   product: true,
-                  catalog: { include: { farm: { include: { admin: true } } } },
+                  farm: { include: { admin: true } },
                 },
               },
             },
@@ -187,13 +191,11 @@ export class PrismaBagsRepository implements BagsRepository {
       case "bag-and-details":
         return bags.map(PrismaBagAndDetailsMapper.toDomain<T>);
       case "bag-and-orders":
-        return bags.map((bag) =>
-          PrismaBagAndOrdersMapper.toDomain<T>(bag as PrismaBagAndOrders),
-        );
+        return bags.map((bag) => PrismaBagAndOrdersMapper.toDomain<T>(bag as PrismaBagAndOrders));
     }
   }
 
-  async create(bag: Bag): Promise<void> {
+  async save(bag: Bag): Promise<void> {
     await prisma.$transaction(async (ctx) => {
       if (bag.address) {
         const address = await ctx.address.findFirst({
@@ -209,39 +211,7 @@ export class PrismaBagsRepository implements BagsRepository {
 
       const data = PrismaBagMapper.toPrisma(bag);
 
-      await ctx.bag.create({ data });
-
-      for (const order of bag.orders.values()) {
-        if (order.box) {
-          const box = await ctx.box.findFirst({
-            where: { id: order.box.id.value },
-          });
-
-          if (!box) {
-            await ctx.box.create({
-              data: PrismaBoxMapper.toPrisma(order.box),
-            });
-          }
-        }
-
-        await ctx.offer.update({
-          where: { id: order.offer_id.value },
-          data: { amount: { decrement: order.amount } },
-        });
-      }
-
-      await ctx.order.createMany({
-        data: bag.orders.map(PrismaOrderMapper.toPrisma),
-      });
-    });
-  }
-
-  async update(bag: Bag): Promise<void> {
-    await prisma.$transaction(async (ctx) => {
-      await ctx.bag.update({
-        where: { id: bag.id.value },
-        data: PrismaBagMapper.toPrisma(bag),
-      });
+      await ctx.bag.upsert({ where: { id: bag.id.value }, update: data, create: data });
 
       for (const order of bag.orders.values()) {
         if (order.box) {
