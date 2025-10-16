@@ -153,8 +153,13 @@ export default (container: AwilixContainer) => {
       ({ cyclesRepository }) => new ListCyclesUseCase(cyclesRepository),
     ),
     listCatalogsUseCase: asFunction(
-      ({ cyclesRepository, farmsRepository, categoriesRepository }) =>
-        new ListCatalogsUseCase(cyclesRepository, farmsRepository, categoriesRepository),
+      ({ cyclesRepository, marketsRepository, farmsRepository, categoriesRepository }) =>
+        new ListCatalogsUseCase(
+          cyclesRepository,
+          marketsRepository,
+          farmsRepository,
+          categoriesRepository,
+        ),
     ),
     fetchBoxUseCase: asFunction(
       ({ usersRepository, boxesRepository }) =>
@@ -263,8 +268,13 @@ export default (container: AwilixContainer) => {
         new FetchCategoryUseCase(categoriesRepository, cyclesRepository),
     ),
     listOffersUseCase: asFunction(
-      ({ offersRepository, cyclesRepository, categoriesRepository }) =>
-        new ListOffersUseCase(offersRepository, cyclesRepository, categoriesRepository),
+      ({ offersRepository, cyclesRepository, marketsRepository, categoriesRepository }) =>
+        new ListOffersUseCase(
+          offersRepository,
+          cyclesRepository,
+          marketsRepository,
+          categoriesRepository,
+        ),
     ),
     fetchDescriptionSuggestionUseCase: asFunction(
       ({ productsRepository, llmProvider }) =>

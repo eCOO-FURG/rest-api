@@ -1,6 +1,7 @@
 // Repositories
 import { CategoriesRepository } from "@/core/repositories/categories-repository";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
+import { MarketsRepository } from "@/core/repositories/markets-repository";
 import { FarmsRepository } from "@/core/repositories/farms-repository";
 
 // Errors
@@ -9,6 +10,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 interface ListCatalogsUseCaseRequest {
   page: number;
   cycle_id?: string;
+  market_id?: string;
   farm_id?: string;
   category_id?: string;
   product?: string;
@@ -21,12 +23,14 @@ interface ListCatalogsUseCaseRequest {
 export class ListCatalogsUseCase {
   constructor(
     private cyclesRepository: CyclesRepository,
+    private marketsRepository: MarketsRepository,
     private farmsRepository: FarmsRepository,
     private categoriesRepository: CategoriesRepository,
   ) {}
 
   async execute({
     cycle_id,
+    market_id,
     page,
     product,
     category_id,
@@ -40,6 +44,16 @@ export class ListCatalogsUseCase {
 
     if (cycle_id && !cycle) {
       throw new ResourceNotFoundError("Ciclo", cycle_id);
+    }
+
+    const market = market_id
+      ? await this.marketsRepository.find("market", { id: market_id })
+      : null;
+
+    console.log(market_id, market);
+
+    if (market_id && !market) {
+      throw new ResourceNotFoundError("Feira", market_id);
     }
 
     const farm = farm_id ? await this.farmsRepository.find("farm", { id: farm_id }) : null;
@@ -62,6 +76,7 @@ export class ListCatalogsUseCase {
         id: farm_id,
         offers: {
           cycle: { id: cycle_id },
+          market: { id: market_id },
           product: { name: product, category: { id: category_id } },
           available,
           remaining,

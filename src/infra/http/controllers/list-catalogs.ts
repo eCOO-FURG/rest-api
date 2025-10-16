@@ -22,6 +22,7 @@ import { toDate } from "@/infra/utils/to-date";
 export const listCatalogsQuery = Joi.object({
   page: Joi.number().required().min(1),
   cycle_id: Joi.string().uuid().optional(),
+  market_id: Joi.string().uuid().optional(),
   farm_id: Joi.string().uuid().optional(),
   product: Joi.string().optional(),
   category_id: Joi.string().uuid().optional(),
@@ -41,13 +42,24 @@ export async function listCatalogsController(
   next: NextFunction,
 ) {
   try {
-    const { cycle_id, farm_id, page, product, category_id, available, remaining, since, before } =
-      parse(listCatalogsQuery, request.query);
+    const {
+      cycle_id,
+      market_id,
+      farm_id,
+      page,
+      product,
+      category_id,
+      available,
+      remaining,
+      since,
+      before,
+    } = parse(listCatalogsQuery, request.query);
 
     const listCatalogsUseCase = container.resolve<ListCatalogsUseCase>("listCatalogsUseCase");
 
     const { catalogs } = await listCatalogsUseCase.execute({
       cycle_id,
+      market_id,
       farm_id,
       page,
       product,

@@ -4,6 +4,7 @@ import { ListCatalogsUseCase } from "@/core/use-cases/list-catalogs";
 // Repositories
 import { InMemoryCategoriesRepository } from "@/test/repositories/in-memory-categories-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
+import { InMemoryMarketsRepository } from "@/test/repositories/in-memory-markets-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 
 // Services
@@ -21,14 +22,21 @@ let sut: ListCatalogsUseCase;
 let cyclesRepository: InMemoryCyclesRepository;
 let farmsRepository: InMemoryFarmsRepository;
 let categoriesRepository: InMemoryCategoriesRepository;
+let marketRepository: InMemoryMarketsRepository;
 
 describe("list catalogs", () => {
   beforeEach(() => {
     cyclesRepository = new InMemoryCyclesRepository();
     farmsRepository = new InMemoryFarmsRepository();
     categoriesRepository = new InMemoryCategoriesRepository();
+    marketRepository = new InMemoryMarketsRepository();
 
-    sut = new ListCatalogsUseCase(cyclesRepository, farmsRepository, categoriesRepository);
+    sut = new ListCatalogsUseCase(
+      cyclesRepository,
+      marketRepository,
+      farmsRepository,
+      categoriesRepository,
+    );
   });
 
   it("should be able to list catalogs", async () => {

@@ -22,6 +22,7 @@ import { toDate } from "@/infra/utils/to-date";
 export const listOffersQuery = Joi.object({
   page: Joi.number().required().min(1),
   cycle_id: Joi.string().uuid().optional(),
+  market_id: Joi.string().uuid().optional(),
   product: Joi.string().optional(),
   category_id: Joi.string().uuid().optional(),
   available: boolean.optional(),
@@ -39,7 +40,7 @@ export async function listOffersController(
   next: NextFunction,
 ) {
   try {
-    const { cycle_id, page, product, category_id, available, since, before } = parse(
+    const { cycle_id, page, product, category_id, available, since, before, market_id } = parse(
       listOffersQuery,
       request.query,
     );
@@ -48,6 +49,7 @@ export async function listOffersController(
 
     const { offers } = await listOffersUseCase.execute({
       cycle_id,
+      market_id,
       page,
       product,
       category_id,

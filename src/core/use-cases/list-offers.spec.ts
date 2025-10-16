@@ -4,6 +4,7 @@ import { ListOffersUseCase } from "@/core/use-cases/list-offers";
 // Repositories
 import { InMemoryCategoriesRepository } from "@/test/repositories/in-memory-categories-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
+import { InMemoryMarketsRepository } from "@/test/repositories/in-memory-markets-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 
 // Factories
@@ -19,6 +20,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { now } from "@/core/utils/now";
 
 let cyclesRepository: InMemoryCyclesRepository;
+let marketRepository: InMemoryMarketsRepository;
 let offersRepository: InMemoryOffersRepository;
 let categoriesRepository: InMemoryCategoriesRepository;
 
@@ -29,8 +31,14 @@ describe("list offers", () => {
     cyclesRepository = new InMemoryCyclesRepository();
     offersRepository = new InMemoryOffersRepository();
     categoriesRepository = new InMemoryCategoriesRepository();
+    marketRepository = new InMemoryMarketsRepository();
 
-    sut = new ListOffersUseCase(offersRepository, cyclesRepository, categoriesRepository);
+    sut = new ListOffersUseCase(
+      offersRepository,
+      cyclesRepository,
+      marketRepository,
+      categoriesRepository,
+    );
   });
 
   it("should be able to list available offers", async () => {

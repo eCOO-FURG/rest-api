@@ -40,6 +40,8 @@ export class PrismaFarmsRepository implements FarmsRepository {
           offers: {
             include: { product: true },
             where: {
+              cycle: { id: offers?.cycle?.id },
+              market: { id: offers?.market?.id },
               ...(offers?.period?.since && {
                 OR: [{ opens_at: { gte: offers.period.since } }, { closes_at: null }],
               }),
@@ -134,6 +136,8 @@ export class PrismaFarmsRepository implements FarmsRepository {
         admin,
         offers: {
           some: {
+            cycle: { id: offers?.cycle?.id },
+            market: { id: offers?.market?.id },
             ...(offers?.period?.since && {
               OR: [{ opens_at: { gte: offers.period.since } }, { closes_at: null }],
             }),

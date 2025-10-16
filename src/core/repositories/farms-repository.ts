@@ -22,6 +22,7 @@ export interface FarmsRepositorySearchRequest {
   offers?: {
     id?: string;
     cycle?: { id?: string };
+    market?: { id?: string };
     page?: number;
     available?: boolean;
     remaining?: boolean;
