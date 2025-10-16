@@ -1,6 +1,6 @@
 // Entities
 import { BagAndOrders } from "@/core/entities/aggregates/bag-and-orders";
-import { CatalogAndOffers } from "@/core/entities/aggregates/farm-and-offers";
+import { Catalog } from "@/core/entities/aggregates/catalog";
 
 // Types
 import { File } from "@/core/types/file";
@@ -16,7 +16,7 @@ export type SpreadsheetServiceGenerateRequest = {
   type: "sales-report";
   props: {
     bags: BagAndOrders[];
-    catalogs: CatalogAndOffers[];
+    catalogs: Catalog[];
     since?: Date;
     before?: Date;
   };

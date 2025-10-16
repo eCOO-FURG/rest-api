@@ -4,7 +4,7 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { Bag } from "@/core/entities/bag";
 import { Box } from "@/core/entities/box";
 import { Order } from "@/core/entities/order";
-// import { Message } from "@/core/entities/message";
+import { Message } from "@/core/entities/message";
 
 // Repositories
 import { AddressesRepository } from "@/core/repositories/addresses-repository";
@@ -191,20 +191,18 @@ export class RegisterOrderUseCase {
 
     await this.bagsRepository.save(bag);
 
-    // NICKOLAS
+    const view = await this.mailer.load({
+      view: "order-notification",
+      props: { first_name: user.first_name, bag, cycle, market },
+    });
 
-    // const view = await this.mailer.load({
-    //   view: "order-notification",
-    //   props: { first_name: user.first_name, bag, cycle, market },
-    // });
+    const email = Message.create({
+      to: user.email,
+      subject: `Pedido ${bag.code} | eCOO`,
+      content: view,
+    });
 
-    // const email = Message.create({
-    //   to: user.email,
-    //   subject: `Pedido ${bag.code} | eCOO`,
-    //   content: view,
-    // });
-
-    // await this.mailer.send(email);
+    await this.mailer.send(email);
 
     return { bag };
   }
