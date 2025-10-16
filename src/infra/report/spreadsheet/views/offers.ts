@@ -49,7 +49,9 @@ export const OFFERS_VIEW: SpreadsheetView = async ({
         !offer.closes_at ||
         ((!since || offer.opens_at >= since) && (!before || offer.closes_at <= before));
 
-      if (!isOfferInPeriod) continue;
+      if (!isOfferInPeriod) {
+        continue;
+      }
 
       rows.push({
         farm: catalog.name,

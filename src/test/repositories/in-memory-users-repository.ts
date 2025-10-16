@@ -44,7 +44,9 @@ export class InMemoryUsersRepository implements UsersRepository {
       ),
     );
 
-    if (!user) return null;
+    if (!user) {
+      return null;
+    }
     return user as UserEntityOf<T>;
   }
 
@@ -78,7 +80,9 @@ export class InMemoryUsersRepository implements UsersRepository {
       ),
     );
 
-    if (page) users = paginate(users, page);
+    if (page) {
+      users = paginate(users, page);
+    }
 
     return users.map((user) => user as UserEntityOf<T>);
   }

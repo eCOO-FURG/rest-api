@@ -94,7 +94,9 @@ export class PrismaOffersRepository implements OffersRepository {
       },
     });
 
-    if (!offer) return null;
+    if (!offer) {
+      return null;
+    }
 
     switch (type) {
       default:

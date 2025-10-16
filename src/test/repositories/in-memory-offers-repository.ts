@@ -59,7 +59,9 @@ export class InMemoryOffersRepository implements OffersRepository {
       );
     });
 
-    if (!offer) return null;
+    if (!offer) {
+      return null;
+    }
 
     return offer as OfferEntityOf<T>;
   }
@@ -93,7 +95,9 @@ export class InMemoryOffersRepository implements OffersRepository {
       );
     });
 
-    if (page) offers = paginate(offers, page);
+    if (page) {
+      offers = paginate(offers, page);
+    }
 
     return offers as OfferEntityOf<T>[];
   }
@@ -101,7 +105,9 @@ export class InMemoryOffersRepository implements OffersRepository {
   async update(offer: Offer): Promise<void> {
     const index = this.items.findIndex((item) => item.id.equals(offer.id));
 
-    if (index === -1) return;
+    if (index === -1) {
+      return;
+    }
 
     this.items[index] = offer;
   }
@@ -109,7 +115,9 @@ export class InMemoryOffersRepository implements OffersRepository {
   async delete(offer: Offer): Promise<void> {
     const index = this.items.findIndex((item) => item.id.equals(offer.id));
 
-    if (index === -1) return;
+    if (index === -1) {
+      return;
+    }
 
     this.items.splice(index, 1);
   }

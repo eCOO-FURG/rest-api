@@ -31,9 +31,13 @@ export class InMemoryBoxesRepository implements BoxesRepository {
       ),
     );
 
-    if (!box) return null;
+    if (!box) {
+      return null;
+    }
 
-    if (orders?.page) box.orders = paginate(box.orders, orders.page);
+    if (orders?.page) {
+      box.orders = paginate(box.orders, orders.page);
+    }
 
     return box as BoxEntityOf<T>;
   }
@@ -47,10 +51,14 @@ export class InMemoryBoxesRepository implements BoxesRepository {
     );
 
     if (orders?.page) {
-      for (const box of boxes) box.orders = paginate(box.orders, orders.page);
+      for (const box of boxes) {
+        box.orders = paginate(box.orders, orders.page);
+      }
     }
 
-    if (page) boxes = paginate(boxes, page);
+    if (page) {
+      boxes = paginate(boxes, page);
+    }
 
     return boxes as BoxEntityOf<T>[];
   }
@@ -66,7 +74,9 @@ export class InMemoryBoxesRepository implements BoxesRepository {
   async update(box: Box): Promise<void> {
     const found = this.items.findIndex((item) => item.id.equals(box.id));
 
-    if (!found) return;
+    if (!found) {
+      return;
+    }
 
     this.items[found] = box;
   }

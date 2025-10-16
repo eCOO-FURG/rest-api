@@ -69,12 +69,16 @@ export default (container: AwilixContainer) => {
     }),
     pdfService: asClass(Puppeteer).singleton(),
     pixProvider: asFunction(() => {
-      if (deploy) return new OpenPix();
+      if (deploy) {
+        return new OpenPix();
+      }
       return new MockedPixProvider();
     }),
     cacheManager: asClass(RedisCacheManager).singleton(),
     storage: asFunction(() => {
-      if (deploy) return new Cloudinary();
+      if (deploy) {
+        return new Cloudinary();
+      }
       return new MockedStorage();
     }).singleton(),
     spreadsheetService: asClass(ExcelService).singleton(),

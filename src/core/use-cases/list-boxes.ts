@@ -24,7 +24,9 @@ export class ListBoxesUseCase {
       id: cycle_id,
     });
 
-    if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+    if (!cycle) {
+      throw new ResourceNotFoundError("Ciclo", cycle_id);
+    }
 
     const boxes = await this.boxesRepository.list(
       "box-and-farm",

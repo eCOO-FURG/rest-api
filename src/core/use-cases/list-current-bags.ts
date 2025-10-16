@@ -29,7 +29,9 @@ export class ListCurrentBagsUseCase {
       id: cycle_id,
     });
 
-    if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+    if (!cycle) {
+      throw new ResourceNotFoundError("Ciclo", cycle_id);
+    }
 
     const bags = await this.bagsRepository.list(
       "bag-and-details",

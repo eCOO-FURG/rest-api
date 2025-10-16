@@ -11,7 +11,7 @@ import { View } from "@/infra/types/view";
 
 export class BoxPresenter {
   static toHttp(box?: Box): View<BoxProps> {
-    if (box)
+    if (box) {
       return {
         id: box.id.value,
         status: box.status,
@@ -23,5 +23,6 @@ export class BoxPresenter {
         created_at: box.created_at,
         updated_at: box.updated_at,
       };
+    }
   }
 }

@@ -42,7 +42,9 @@ export class FetchCurrentBoxUseCase {
       since: first(cycle.order),
     });
 
-    if (!box) throw new ResourceNotFoundError("Caixa da fazenda", farm_id);
+    if (!box) {
+      throw new ResourceNotFoundError("Caixa da fazenda", farm_id);
+    }
 
     return { box };
   }

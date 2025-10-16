@@ -21,7 +21,9 @@ export class InMemoryCyclesRepository implements CyclesRepository {
   ): Promise<CycleEntityOf<T> | null> {
     const cycle = this.items.find((item) => Boolean(!id || item.id.equals(id)));
 
-    if (!cycle) return null;
+    if (!cycle) {
+      return null;
+    }
 
     return cycle as CycleEntityOf<T>;
   }
@@ -33,7 +35,9 @@ export class InMemoryCyclesRepository implements CyclesRepository {
   ): Promise<CycleEntityOf<T>[]> {
     let cycles = this.items.filter((item) => Boolean(!id || item.id.equals(id)));
 
-    if (page) cycles = paginate(cycles, page);
+    if (page) {
+      cycles = paginate(cycles, page);
+    }
 
     return cycles as CycleEntityOf<T>[];
   }

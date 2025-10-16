@@ -24,7 +24,9 @@ export class InMemoryOtpsRepository implements OtpsRepository {
       ),
     );
 
-    if (!otp) return null;
+    if (!otp) {
+      return null;
+    }
 
     return otp as OtpEntityOf<T>;
   }

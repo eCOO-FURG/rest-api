@@ -38,7 +38,9 @@ export async function ensureAuthenticated(
   try {
     const authHeader = request.headers.authorization;
 
-    if (!authHeader) throw new SessionExpiredError();
+    if (!authHeader) {
+      throw new SessionExpiredError();
+    }
 
     const [, token] = authHeader.split(" ");
 
@@ -50,7 +52,9 @@ export async function ensureAuthenticated(
       id: user_id,
     });
 
-    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+    if (!user) {
+      throw new ResourceNotFoundError("Usuário", user_id);
+    }
 
     const lifetimeInSeconds = new Date().getTime() / 1000 - iat;
 
@@ -66,7 +70,9 @@ export async function ensureAuthenticated(
           since: now({ minus: 60 }),
         });
 
-      if (!session) throw new SessionExpiredError();
+      if (!session) {
+        throw new SessionExpiredError();
+      }
 
       response.header("set-cookie", `token=${sign({ user_id }, env.JWT_SECRET)}`);
     }

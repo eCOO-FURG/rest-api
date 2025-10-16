@@ -26,7 +26,9 @@ export class InMemoryOrdersRepository implements OrdersRepository {
       );
     });
 
-    if (!order) return null;
+    if (!order) {
+      return null;
+    }
 
     return order as OrderEntityOf<T>;
   }

@@ -29,7 +29,9 @@ export class InMemoryFarmsRepository implements FarmsRepository {
       ),
     );
 
-    if (!farm) return null;
+    if (!farm) {
+      return null;
+    }
 
     return farm as FarmEntityOf<T>;
   }

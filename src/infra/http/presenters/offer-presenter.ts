@@ -12,7 +12,7 @@ import { MarketPresenter } from "./market-presenter";
 
 export class OfferPresenter {
   static toHttp(offer?: Offer): View<OfferProps> {
-    if (offer)
+    if (offer) {
       return {
         id: offer.id.value,
         amount: offer.amount,
@@ -36,5 +36,6 @@ export class OfferPresenter {
         created_at: offer.created_at,
         updated_at: offer.updated_at,
       };
+    }
   }
 }

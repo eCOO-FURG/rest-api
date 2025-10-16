@@ -59,9 +59,13 @@ export class InMemoryBagsRepository implements BagsRepository {
       ),
     );
 
-    if (!bag) return null;
+    if (!bag) {
+      return null;
+    }
 
-    if (orders?.page) bag.orders = paginate(bag.orders, orders.page);
+    if (orders?.page) {
+      bag.orders = paginate(bag.orders, orders.page);
+    }
 
     return bag as BagEntityOf<T>;
   }
@@ -111,10 +115,14 @@ export class InMemoryBagsRepository implements BagsRepository {
       ),
     );
 
-    if (page) bags = paginate(bags, page);
+    if (page) {
+      bags = paginate(bags, page);
+    }
 
     if (orders?.page) {
-      for (const bag of bags) bag.orders = paginate(bag.orders, orders.page);
+      for (const bag of bags) {
+        bag.orders = paginate(bag.orders, orders.page);
+      }
     }
 
     return bags as BagEntityOf<T>[];

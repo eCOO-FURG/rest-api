@@ -47,7 +47,9 @@ export class UpdateUserUseCase {
   }: UpdateUserUseCaseRequest) {
     const user = await this.usersRepository.find("user", { id: user_id });
 
-    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+    if (!user) {
+      throw new ResourceNotFoundError("Usuário", user_id);
+    }
 
     user.first_name = first_name ?? user.first_name;
     user.last_name = last_name ?? user.last_name;
@@ -56,7 +58,9 @@ export class UpdateUserUseCase {
     user.cpf = new CPF(cpf ?? user.cpf.value);
     user.phone = new Phone(phone ?? user.phone.value);
 
-    if (password) user.password = await this.encrypter.encrypt(password);
+    if (password) {
+      user.password = await this.encrypter.encrypt(password);
+    }
 
     if (photo) {
       const urls = await this.storage.upload([photo], "users");

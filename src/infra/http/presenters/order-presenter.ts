@@ -10,7 +10,7 @@ import { View } from "@/infra/types/view";
 
 export class OrderPresenter {
   static toHttp(order?: Order): View<OrderProps> {
-    if (order)
+    if (order) {
       return {
         id: order.id.value,
         status: order.status,
@@ -26,5 +26,6 @@ export class OrderPresenter {
         created_at: order.created_at,
         updated_at: order.updated_at,
       };
+    }
   }
 }

@@ -90,7 +90,9 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
       },
     });
 
-    if (!category) return null;
+    if (!category) {
+      return null;
+    }
 
     switch (type) {
       default:

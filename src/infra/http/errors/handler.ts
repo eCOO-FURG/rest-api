@@ -58,8 +58,9 @@ export const handler = (
   if (error instanceof DomainError) {
     const found = HttpErrorMapper.find(error);
 
-    if (found)
+    if (found) {
       return response.status(found.status).send({ message: found.message, code: found.code });
+    }
   }
 
   Logger.log(error);

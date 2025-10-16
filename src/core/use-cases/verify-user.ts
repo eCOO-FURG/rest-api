@@ -36,7 +36,9 @@ export class VerifyUserUsecase {
       id: decoded.user_id,
     });
 
-    if (!user) throw new ResourceNotFoundError("Usuário", decoded.user_id);
+    if (!user) {
+      throw new ResourceNotFoundError("Usuário", decoded.user_id);
+    }
 
     const session = Session.create({
       user_id: user.id,

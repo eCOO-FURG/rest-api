@@ -6,7 +6,7 @@ import { View } from "@/infra/types/view";
 
 export class PaymentPresenter {
   static toHttp(payment?: Payment): View<PaymentProps> {
-    if (payment)
+    if (payment) {
       return {
         id: payment.id.value,
         method: payment.method,
@@ -16,5 +16,6 @@ export class PaymentPresenter {
         created_at: payment.created_at,
         updated_at: payment.updated_at,
       };
+    }
   }
 }

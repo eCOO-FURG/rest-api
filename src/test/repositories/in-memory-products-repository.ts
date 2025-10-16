@@ -30,7 +30,9 @@ export class InMemoryProductsRepository implements ProductsRepository {
       );
     });
 
-    if (!product) return null;
+    if (!product) {
+      return null;
+    }
 
     return product as ProductEntityOf<T>;
   }
@@ -51,7 +53,9 @@ export class InMemoryProductsRepository implements ProductsRepository {
       );
     });
 
-    if (page) products = paginate(products, page);
+    if (page) {
+      products = paginate(products, page);
+    }
 
     return products as ProductEntityOf<T>[];
   }

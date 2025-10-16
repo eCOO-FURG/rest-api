@@ -38,7 +38,9 @@ export class PrismaOrdersRepository implements OrdersRepository {
       },
     });
 
-    if (!order) return null;
+    if (!order) {
+      return null;
+    }
 
     switch (type) {
       default:

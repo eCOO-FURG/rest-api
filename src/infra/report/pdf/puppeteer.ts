@@ -28,7 +28,9 @@ export class Puppeteer implements PDFService {
   }
 
   async generate({ type, props }: PDFServiceGenerateRequest): Promise<File> {
-    if (!this.browser) this.browser = await launch(this.config);
+    if (!this.browser) {
+      this.browser = await launch(this.config);
+    }
 
     const page = await this.browser.newPage();
 

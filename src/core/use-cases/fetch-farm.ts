@@ -16,7 +16,9 @@ export class FetchFarmUseCase {
       id: farm_id,
     });
 
-    if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
+    if (!farm) {
+      throw new ResourceNotFoundError("Fazenda", farm_id);
+    }
 
     return { farm };
   }

@@ -43,7 +43,7 @@ export class PrismaProductRepository implements ProductsRepository {
       },
     });
 
-    if (!product) return null;
+    if (!product) {return null;}
 
     switch (type) {
       default:

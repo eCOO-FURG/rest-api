@@ -25,7 +25,9 @@ export class InMemorySessionsRepository implements SessionsRepository {
       ),
     );
 
-    if (!session) return null;
+    if (!session) {
+      return null;
+    }
 
     return session as SessionEntityOf<T>;
   }

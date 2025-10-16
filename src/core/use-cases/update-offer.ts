@@ -91,7 +91,9 @@ export class UpdateOfferUseCase {
       }
     }
 
-    if (expires_at && offer.product.perishable) throw new InvalidFieldError("expires_at");
+    if (expires_at && offer.product.perishable) {
+      throw new InvalidFieldError("expires_at");
+    }
 
     await this.offersRepository.update(offer);
   }

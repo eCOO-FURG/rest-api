@@ -46,14 +46,18 @@ export class UpdateProductUseCase {
       id: product_id,
     });
 
-    if (!product) throw new ResourceNotFoundError("Produto", product_id);
+    if (!product) {
+      throw new ResourceNotFoundError("Produto", product_id);
+    }
 
     if (category_id) {
       const category = await this.categoriesRepository.find("category", {
         id: category_id,
       });
 
-      if (!category) throw new ResourceNotFoundError("Categoria", category_id);
+      if (!category) {
+        throw new ResourceNotFoundError("Categoria", category_id);
+      }
     }
 
     if (name || pricing) {
@@ -67,12 +71,22 @@ export class UpdateProductUseCase {
       }
     }
 
-    if (name) product.name = name;
-    if (pricing) product.pricing = pricing;
-    if (category_id) product.category_id = new UUID(category_id);
+    if (name) {
+      product.name = name;
+    }
+    if (pricing) {
+      product.pricing = pricing;
+    }
+    if (category_id) {
+      product.category_id = new UUID(category_id);
+    }
 
-    if (typeof archived === "boolean") product.archived = archived;
-    if (typeof perishable === "boolean") product.perishable = perishable;
+    if (typeof archived === "boolean") {
+      product.archived = archived;
+    }
+    if (typeof perishable === "boolean") {
+      product.perishable = perishable;
+    }
 
     if (image) {
       const urls = await this.storage.upload([image], "products");

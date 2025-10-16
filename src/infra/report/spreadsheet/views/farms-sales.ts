@@ -74,7 +74,9 @@ export const FARMS_PRODUCERS_VIEW: SpreadsheetView = async ({
         const isOrderInPeriod =
           (!since || order.created_at >= since) && (!before || order.created_at <= before);
 
-        if (!isOrderInPeriod) continue;
+        if (!isOrderInPeriod) {
+          continue;
+        }
 
         rows.push({
           producer: `${catalog.admin.first_name} ${catalog.admin.last_name}`,

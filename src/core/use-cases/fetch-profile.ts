@@ -14,7 +14,9 @@ export class FetchProfileUseCase {
   async execute({ user_id }: FetchProfileUseCaseRequest) {
     const user = await this.usersRepository.find("user", { id: user_id });
 
-    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+    if (!user) {
+      throw new ResourceNotFoundError("Usuário", user_id);
+    }
 
     return { user };
   }

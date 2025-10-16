@@ -27,7 +27,9 @@ export class InMemoryMarketsRepository implements MarketsRepository {
       ),
     );
 
-    if (!market) return null;
+    if (!market) {
+      return null;
+    }
 
     return market as MarketEntityOf<T>;
   }

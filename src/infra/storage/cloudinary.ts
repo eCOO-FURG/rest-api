@@ -50,8 +50,12 @@ export class Cloudinary implements Storage {
       const url = await new Promise<string>((resolve, reject) => {
         this.client.uploader
           .upload_stream({ folder, resource_type: "image" }, (error, result) => {
-            if (error) reject(error);
-            if (result) resolve(result.secure_url);
+            if (error) {
+              reject(error);
+            }
+            if (result) {
+              resolve(result.secure_url);
+            }
           })
           .end(file.content);
       });

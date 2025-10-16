@@ -7,7 +7,9 @@ import { JoiFile } from "@/infra/http/validation/file";
 type ToFileReturn<T> = T extends JoiFile[] ? File[] : T extends JoiFile ? File : undefined;
 
 export function toFile<T extends JoiFile | JoiFile[] | undefined>(file: T): ToFileReturn<T> {
-  if (!file) return undefined as ToFileReturn<T>;
+  if (!file) {
+    return undefined as ToFileReturn<T>;
+  }
 
   if (Array.isArray(file)) {
     return file.map((f) => ({

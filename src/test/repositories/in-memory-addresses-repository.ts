@@ -24,7 +24,9 @@ export class InMemoryAddressesRepository implements AddressesRepository {
       ),
     );
 
-    if (!address) return null;
+    if (!address) {
+      return null;
+    }
 
     return address as AddressEntityOf<T>;
   }

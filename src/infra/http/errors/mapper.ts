@@ -51,7 +51,9 @@ export class HttpErrorMapper {
       item.errors.find((constructor) => error instanceof constructor),
     );
 
-    if (!found) return null;
+    if (!found) {
+      return null;
+    }
 
     return {
       name: error.name,

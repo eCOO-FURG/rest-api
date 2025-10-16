@@ -96,7 +96,9 @@ export class PrismaBagsRepository implements BagsRepository {
       },
     });
 
-    if (!bag) return null;
+    if (!bag) {
+      return null;
+    }
 
     switch (type) {
       default:

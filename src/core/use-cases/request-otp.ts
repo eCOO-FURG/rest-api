@@ -29,9 +29,13 @@ export class RequestOtpUseCase {
       email,
     });
 
-    if (!user) throw new ResourceNotFoundError("Usuário", email);
+    if (!user) {
+      throw new ResourceNotFoundError("Usuário", email);
+    }
 
-    if (!user.verified_at) throw new UserNotVerifiedError();
+    if (!user.verified_at) {
+      throw new UserNotVerifiedError();
+    }
 
     const otp = Otp.create({ user_id: user.id });
 

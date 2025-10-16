@@ -22,7 +22,9 @@ function config(fields: FieldConfig[]): multer.Options {
     fileFilter: (req, file, callback) => {
       const config = fields.find((f) => f.name === file.fieldname);
 
-      if (!config) return callback(new MulterError("LIMIT_UNEXPECTED_FILE"));
+      if (!config) {
+        return callback(new MulterError("LIMIT_UNEXPECTED_FILE"));
+      }
 
       const files =
         (req.files as { [fieldname: string]: Express.Multer.File[] })?.[file.fieldname] ?? [];
@@ -33,7 +35,9 @@ function config(fields: FieldConfig[]): multer.Options {
 
       const ok = !config.options.allowed || config.options.allowed.includes(file.mimetype);
 
-      if (ok) return callback(null, true);
+      if (ok) {
+        return callback(null, true);
+      }
 
       callback(new MulterError("LIMIT_UNEXPECTED_FILE", file.fieldname));
     },
@@ -58,7 +62,9 @@ export function processFiles(fields: FieldConfig[]) {
         for (const [name, files] of Object.entries(req.files)) {
           const config = fields.find((field) => field.name === name);
 
-          if (!config) continue;
+          if (!config) {
+            continue;
+          }
 
           const max = config.options.max ?? 1;
 

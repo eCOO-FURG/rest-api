@@ -27,7 +27,9 @@ export class FetchPendingsUseCase {
   async execute({ cycle_id }: FetchPendingsUseCaseRequest) {
     const cycle = await this.cyclesRepository.find("cycle", { id: cycle_id });
 
-    if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+    if (!cycle) {
+      throw new ResourceNotFoundError("Ciclo", cycle_id);
+    }
 
     const farms = await this.countFarms();
 

@@ -17,7 +17,7 @@ export class FarmPresenter {
       delete admin.verified_at;
     }
 
-    if (farm)
+    if (farm) {
       return {
         id: farm.id.value,
         name: farm.name,
@@ -33,5 +33,6 @@ export class FarmPresenter {
         created_at: farm.created_at,
         updated_at: farm.updated_at,
       };
+    }
   }
 }

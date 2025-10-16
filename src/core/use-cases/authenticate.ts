@@ -39,15 +39,21 @@ export class AuthenticateUseCase {
   async execute({ email, password, agent, ip, type }: AuthenticateUseCaseRequest) {
     const user = await this.usersRepository.find("user", { email });
 
-    if (!user) throw new WrongCredentialsError();
+    if (!user) {
+      throw new WrongCredentialsError();
+    }
 
     switch (type) {
       case "BASIC": {
-        if (!user.password) throw new MissingFieldError("senha");
+        if (!user.password) {
+          throw new MissingFieldError("senha");
+        }
 
         const isPasswordValid = await this.encrypter.compare(password, user.password);
 
-        if (!isPasswordValid) throw new WrongCredentialsError();
+        if (!isPasswordValid) {
+          throw new WrongCredentialsError();
+        }
 
         break;
       }
@@ -59,7 +65,9 @@ export class AuthenticateUseCase {
           used: false,
         });
 
-        if (!otp || otp.value !== password) throw new WrongCredentialsError();
+        if (!otp || otp.value !== password) {
+          throw new WrongCredentialsError();
+        }
 
         otp.expire();
 
@@ -68,7 +76,9 @@ export class AuthenticateUseCase {
       }
     }
 
-    if (!user.verified_at) throw new UserNotVerifiedError();
+    if (!user.verified_at) {
+      throw new UserNotVerifiedError();
+    }
 
     if (user.roles.includes("PRODUCER")) {
       const farm = await this.farmsRepository.find("farm", { admin: { id: user.id.value } });

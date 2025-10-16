@@ -31,17 +31,23 @@ export class FetchSalesStatsUseCase {
       const month = String(date.getMonth() + 1).padStart(2, "0");
       const day = String(date.getDay() + 1).padStart(2, "0");
 
-      if (!monthly[month]) monthly[month] = 0;
+      if (!monthly[month]) {
+        monthly[month] = 0;
+      }
 
       monthly[month] += bag.total;
 
-      if (!daily[day]) daily[day] = 0;
+      if (!daily[day]) {
+        daily[day] = 0;
+      }
 
       daily[day] += bag.total;
 
       const current = String(now().getMonth() + 1).padStart(2, "0");
 
-      if (month === current) revenue += bag.total;
+      if (month === current) {
+        revenue += bag.total;
+      }
     }
 
     const openPayments = await this.openPaymentsTotal({ since, before });
@@ -75,7 +81,9 @@ export class FetchSalesStatsUseCase {
       const date = new Date(bag.created_at);
       const day = String(date.getDate()).padStart(2, "0");
 
-      if (!daily[day]) daily[day] = 0;
+      if (!daily[day]) {
+        daily[day] = 0;
+      }
       daily[day] += bag.total;
 
       totalSum += bag.total;
@@ -104,7 +112,9 @@ export class FetchSalesStatsUseCase {
       const date = new Date(bag.created_at);
       const day = String(date.getDate()).padStart(2, "0");
 
-      if (!daily[day]) daily[day] = 0;
+      if (!daily[day]) {
+        daily[day] = 0;
+      }
       daily[day] += bag.total;
 
       totalSum += bag.total;

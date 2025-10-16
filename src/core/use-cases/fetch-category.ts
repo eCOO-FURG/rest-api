@@ -30,7 +30,9 @@ export class FetchCategoryUseCase {
   }: FetchCategoryUseCaseRequest) {
     const cycle = cycle_id ? await this.cyclesRepository.find("cycle", { id: cycle_id }) : null;
 
-    if (cycle_id && !cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+    if (cycle_id && !cycle) {
+      throw new ResourceNotFoundError("Ciclo", cycle_id);
+    }
 
     const category = await this.categoriesRepository.find("category-and-offers", {
       id: category_id,
@@ -43,7 +45,9 @@ export class FetchCategoryUseCase {
       },
     });
 
-    if (!category) throw new ResourceNotFoundError("Categoria", category_id);
+    if (!category) {
+      throw new ResourceNotFoundError("Categoria", category_id);
+    }
 
     return { category };
   }

@@ -36,24 +36,35 @@ export class UpdateBagUseCase {
       id: bag_id,
     });
 
-    if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
+    if (!bag) {
+      throw new ResourceNotFoundError("Sacola", bag_id);
+    }
 
     const user = await this.usersRepository.find("user", {
       id: user_id,
     });
 
-    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+    if (!user) {
+      throw new ResourceNotFoundError("Usuário", user_id);
+    }
 
     const owner = bag.customer_id.equals(user.id);
 
-    if (!owner && !user.admin) throw new ResourceNotFoundError("Sacola", bag_id);
+    if (!owner && !user.admin) {
+      throw new ResourceNotFoundError("Sacola", bag_id);
+    }
 
-    if (owner && status !== "CANCELLED") throw new UnauthorizedError();
+    if (owner && status !== "CANCELLED") {
+      throw new UnauthorizedError();
+    }
 
-    if (bag.status === "CANCELLED") throw new ResourceClosedError("Sacola", bag_id);
+    if (bag.status === "CANCELLED") {
+      throw new ResourceClosedError("Sacola", bag_id);
+    }
 
-    if (bag.status === "PENDING" && status !== "CANCELLED")
+    if (bag.status === "PENDING" && status !== "CANCELLED") {
       throw new ResourceNotVerifiedError("Sacola", bag_id);
+    }
 
     bag.status = status ?? bag.status;
     bag.touch();
