@@ -2,7 +2,7 @@
 import { makeBox } from "@/test/factories/make-box";
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeFarm } from "@/test/factories/make-farm";
-import { makeFarmAndAdmin } from "@/test/factories/make-farm-and-admin";
+import { makeProducer } from "@/test/factories/make-producer";
 import { makeBoxAndOrders } from "@/test/factories/make-box-and-orders";
 
 // Use Cases
@@ -60,7 +60,7 @@ describe("fetch current box", () => {
     const farm = makeFarm();
 
     const box = makeBox({
-      farm: makeFarmAndAdmin(farm),
+      farm: makeProducer(farm),
     });
     await boxesRepository.create(box);
 

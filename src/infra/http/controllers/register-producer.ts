@@ -33,21 +33,13 @@ export async function registerProducerController(
   next: NextFunction,
 ) {
   try {
-    const {
-      first_name,
-      last_name,
-      cpf,
-      email,
-      phone,
-      name,
-      tally,
-      chat,
-      photo,
-    } = parse(registerProducerSchema, request.body);
-
-    const registerProducerUseCase = container.resolve<RegisterProducerUseCase>(
-      "registerProducerUseCase",
+    const { first_name, last_name, cpf, email, phone, name, tally, chat, photo } = parse(
+      registerProducerSchema,
+      request.body,
     );
+
+    const registerProducerUseCase =
+      container.resolve<RegisterProducerUseCase>("registerProducerUseCase");
 
     await registerProducerUseCase.execute({
       first_name,

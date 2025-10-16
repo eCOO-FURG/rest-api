@@ -3,7 +3,7 @@ import { Farm as PrismaFarm, User as PrismaUser } from "@prisma/client";
 
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
-import { FarmAndAdmin } from "@/core/entities/aggregates/farm-and-admin";
+import { Producer } from "@/core/entities/aggregates/producer";
 
 // Mappers
 import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
@@ -11,15 +11,15 @@ import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
 // Repositories
 import { FarmEntityOf, FarmRepositoryReturnType } from "@/core/repositories/farms-repository";
 
-export type PrismaFarmAndAdmin = PrismaFarm & {
+export type PrismaProducer = PrismaFarm & {
   admin: PrismaUser;
 };
 
-export class PrismaFarmAndAdminMapper {
-  static toDomain<T extends FarmRepositoryReturnType = "farm-and-admin">(
-    raw: PrismaFarmAndAdmin,
+export class PrismaProducerMapper {
+  static toDomain<T extends FarmRepositoryReturnType = "producer">(
+    raw: PrismaProducer,
   ): FarmEntityOf<T> {
-    return FarmAndAdmin.create({
+    return Producer.create({
       id: new UUID(raw.id),
       status: raw.status,
       name: raw.name,

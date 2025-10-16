@@ -1,11 +1,11 @@
 // Entities
 import { Offer, OfferProps } from "@/core/entities/offer";
 import { Product } from "@/core/entities/product";
-import { FarmAndAdmin } from "@/core/entities/aggregates/farm-and-admin";
+import { Producer } from "@/core/entities/aggregates/producer";
 
 export interface OfferAndDetailsProps extends OfferProps {
   product: Product;
-  farm: FarmAndAdmin;
+  farm: Producer;
 }
 
 export class OfferAndDetails extends Offer<OfferAndDetailsProps> {

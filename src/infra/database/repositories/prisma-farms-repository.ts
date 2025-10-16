@@ -14,11 +14,12 @@ import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
 import { PrismaFarmMapper } from "@/infra/database/mappers/prisma-farm-mapper";
-import { PrismaFarmAndAdminMapper } from "@/infra/database/mappers/prisma-farm-and-admin-mapper";
+import { PrismaProducerMapper } from "@/infra/database/mappers/prisma-producer-mapper";
 import { PrismaCatalog, PrismaCatalogMapper } from "@/infra/database/mappers/prisma-catalog-mapper";
 
 // Utils
 import { now } from "@/core/utils/now";
+import { PrismaUserMapper } from "../mappers/prisma-user-mapper";
 
 export class PrismaFarmsRepository implements FarmsRepository {
   async find<T extends FarmRepositoryReturnType>(
@@ -34,7 +35,7 @@ export class PrismaFarmsRepository implements FarmsRepository {
         admin,
       },
       include: {
-        admin: type === "farm-and-admin",
+        admin: type === "producer",
         ...(type === "catalog" && {
           admin: true,
           offers: {
@@ -115,8 +116,8 @@ export class PrismaFarmsRepository implements FarmsRepository {
     switch (type) {
       default:
         return PrismaFarmMapper.toDomain<T>(farm);
-      case "farm-and-admin":
-        return PrismaFarmAndAdminMapper.toDomain<T>(farm);
+      case "producer":
+        return PrismaProducerMapper.toDomain<T>(farm);
       case "catalog":
         return PrismaCatalogMapper.toDomain<T>(farm as PrismaCatalog);
     }
@@ -191,7 +192,7 @@ export class PrismaFarmsRepository implements FarmsRepository {
         },
       },
       include: {
-        admin: type === "farm-and-admin",
+        admin: type === "producer",
         ...(type === "catalog" && {
           admin: true,
           offers: { include: { product: true } },
@@ -203,8 +204,8 @@ export class PrismaFarmsRepository implements FarmsRepository {
     switch (type) {
       default:
         return farms.map(PrismaFarmMapper.toDomain<T>);
-      case "farm-and-admin":
-        return farms.map(PrismaFarmAndAdminMapper.toDomain<T>);
+      case "producer":
+        return farms.map(PrismaProducerMapper.toDomain<T>);
       case "catalog":
         return farms.map((farm) => PrismaCatalogMapper.toDomain(farm as PrismaCatalog));
     }
@@ -216,10 +217,13 @@ export class PrismaFarmsRepository implements FarmsRepository {
     await prisma.$transaction(async (ctx) => {
       await ctx.farm.create({ data });
 
-      if (farm.admin && !farm.admin.roles.includes("PRODUCER")) {
-        await ctx.user.update({
-          where: { id: farm.admin_id.value },
-          data: { roles: { push: "PRODUCER" } },
+      if (farm.admin) {
+        const admin = PrismaUserMapper.toPrisma(farm.admin);
+
+        await ctx.user.upsert({
+          where: { id: farm.admin.id.value },
+          create: admin,
+          update: admin,
         });
       }
     });

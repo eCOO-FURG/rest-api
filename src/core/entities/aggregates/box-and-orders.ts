@@ -4,10 +4,10 @@ import { OrderAndOffer } from "@/core/entities/aggregates/order-and-offer";
 
 // Types
 import { Optional } from "@/core/types/optional";
-import { FarmAndAdmin } from "./farm-and-admin";
+import { Producer } from "./producer";
 
 export interface BoxAndOrdersProps extends BoxProps {
-  farm: FarmAndAdmin;
+  farm: Producer;
   orders: OrderAndOffer[];
 }
 

@@ -10,7 +10,7 @@ export class ListFarmsUseCase {
   constructor(private farmsRepository: FarmsRepository) {}
 
   async execute({ page, name }: ListFarmsUseCaseRequest) {
-    const farms = await this.farmsRepository.list("farm-and-admin", { name }, page);
+    const farms = await this.farmsRepository.list("producer", { name }, page);
 
     return { farms };
   }

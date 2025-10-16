@@ -1,12 +1,15 @@
-// Use-cases
-import { RegisterUseCase } from "@/core/use-cases/register";
-import { RegisterFarmUseCase } from "@/core/use-cases/register-farm";
+// Entities
+import { User } from "@/core/entities/user";
+import { Producer } from "@/core/entities/aggregates/producer";
+import { CPF } from "@/core/entities/cpf";
+import { Phone } from "@/core/entities/phone";
 
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
+import { FarmsRepository } from "@/core/repositories/farms-repository";
 
 // Errors
-import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 
 // Types
 import { File } from "@/core/types/file";
@@ -26,8 +29,8 @@ interface RegisterProducerUseCaseRequest {
 export class RegisterProducerUseCase {
   constructor(
     private usersRepository: UsersRepository,
-    private registerUseCase: RegisterUseCase,
-    private registerFarmUseCase: RegisterFarmUseCase,
+    private farmsRepository: FarmsRepository,
+    private storage: Storage,
   ) {}
 
   async execute({
@@ -41,30 +44,69 @@ export class RegisterProducerUseCase {
     chat,
     photo,
   }: RegisterProducerUseCaseRequest) {
-    await this.registerUseCase.execute({
+    const userWithSameEmail = await this.usersRepository.find("user", {
+      email,
+    });
+
+    if (userWithSameEmail) {
+      throw new ResourceAlreadyExistsError("Email", email);
+    }
+
+    const userWithSamePhone = await this.usersRepository.find("user", {
+      phone,
+    });
+
+    if (userWithSamePhone) {
+      throw new ResourceAlreadyExistsError("Telefone", phone);
+    }
+
+    const userWithSameCpf = await this.usersRepository.find("user", { cpf });
+
+    if (userWithSameCpf) {
+      throw new ResourceAlreadyExistsError("CPF", cpf);
+    }
+
+    if (chat) {
+      const userWithSameChat = await this.usersRepository.find("user", {
+        chat,
+      });
+
+      if (userWithSameChat) {
+        throw new ResourceAlreadyExistsError("Chat", chat);
+      }
+    }
+
+    const farmWithSameTally = await this.farmsRepository.find("farm", {
+      tally,
+    });
+
+    if (farmWithSameTally) {
+      throw new ResourceAlreadyExistsError("Número do Talão", tally);
+    }
+
+    const user = User.create({
       first_name,
       last_name,
       email,
-      cpf,
-      phone,
-      role: "PRODUCER",
       chat,
-      photo,
+      roles: ["USER", "PRODUCER"],
+      phone: new Phone(phone),
+      cpf: new CPF(cpf),
     });
 
-    const user = await this.usersRepository.find("user", { email });
+    if (photo) {
+      const urls = await this.storage.upload([photo], "users");
 
-    if (!user) throw new ResourceNotFoundError("Usuário", email);
-
-    try {
-      await this.registerFarmUseCase.execute({
-        user_id: user.id.value,
-        name,
-        tally,
-      });
-    } catch (error) {
-      await this.usersRepository.delete(user);
-      throw error;
+      user.photo = urls[0];
     }
+
+    const producer = Producer.create({
+      name,
+      tally,
+      admin_id: user.id,
+      admin: user,
+    });
+
+    await this.farmsRepository.create(producer);
   }
 }

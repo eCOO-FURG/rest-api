@@ -1,12 +1,12 @@
 // Entities
 import { Box, BoxProps } from "@/core/entities/box";
-import { FarmAndAdmin } from "@/core/entities/aggregates/farm-and-admin";
+import { Producer } from "@/core/entities/aggregates/producer";
 
 // Types
 import { Optional } from "@/core/types/optional";
 
 export interface BoxAndFarmProps extends BoxProps {
-  farm: FarmAndAdmin;
+  farm: Producer;
 }
 
 export class BoxAndFarm extends Box<BoxAndFarmProps> {

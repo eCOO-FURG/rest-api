@@ -25,6 +25,11 @@ export interface FarmProps extends EntityRequest {
   offers: Offer[];
 }
 
+export type OptionalFarmProps = Optional<
+  FarmProps,
+  "status" | "fee" | "description" | "photo" | "images" | "offers"
+>;
+
 export class Farm<Props extends FarmProps = FarmProps> extends Entity<Props> {
   get name() {
     return this.props.name;
@@ -102,9 +107,7 @@ export class Farm<Props extends FarmProps = FarmProps> extends Entity<Props> {
     this.props.offers = value;
   }
 
-  static create(
-    props: Optional<FarmProps, "status" | "fee" | "description" | "photo" | "images" | "offers">,
-  ) {
+  static create(props: OptionalFarmProps) {
     return new Farm({
       ...props,
       status: props.status ?? "PENDING",

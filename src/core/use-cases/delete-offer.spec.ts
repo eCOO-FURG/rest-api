@@ -6,7 +6,7 @@ import { makeCycle } from "@/test/factories/make-cycle";
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeOffer } from "@/test/factories/make-offer";
 import { makeMarket } from "@/test/factories/make-market";
-import { makeFarmAndAdmin } from "@/test/factories/make-farm-and-admin";
+import { makeProducer } from "@/test/factories/make-producer";
 
 // Repositories
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
@@ -47,7 +47,7 @@ describe("delete offer", () => {
     const offer = makeOffer({
       farm_id: farm.id,
       cycle_id: cycle.id,
-      farm: makeFarmAndAdmin(farm),
+      farm: makeProducer(farm),
     });
 
     offersRepository.items.push(offer);
@@ -66,7 +66,7 @@ describe("delete offer", () => {
     const offer = makeOffer({
       farm_id: farm.id,
       market_id: market.id,
-      farm: makeFarmAndAdmin(farm),
+      farm: makeProducer(farm),
     });
 
     offersRepository.items.push(offer);
@@ -85,7 +85,7 @@ describe("delete offer", () => {
     const offer = makeOffer({
       farm_id: farm.id,
       market_id: market.id,
-      farm: makeFarmAndAdmin(farm),
+      farm: makeProducer(farm),
     });
 
     offersRepository.items.push(offer);
@@ -108,7 +108,7 @@ describe("delete offer", () => {
     const offer = makeOffer({
       farm_id: farm.id,
       cycle_id: cycle.id,
-      farm: makeFarmAndAdmin(farm),
+      farm: makeProducer(farm),
     });
 
     offersRepository.items.push(offer);
@@ -127,7 +127,7 @@ describe("delete offer", () => {
     const offer = makeOffer({
       farm_id: farm.id,
       cycle_id: cycle.id,
-      farm: makeFarmAndAdmin(farm),
+      farm: makeProducer(farm),
       created_at: new Date(Date.now() - 1000 * 60 * 60 * 24 * 10),
     });
 

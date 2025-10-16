@@ -44,6 +44,9 @@ export class RegisterFarmUseCase {
       throw new ResourceAlreadyExistsError("Agronegócio de", user_id);
     }
 
+    user.roles.push("PRODUCER");
+    user.touch();
+
     const farm = Farm.create({ admin_id: user.id, admin: user, tally, name });
 
     await this.farmsRepository.create(farm);

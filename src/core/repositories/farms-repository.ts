@@ -1,14 +1,14 @@
 // Entities
 import { Farm, FarmStatus } from "@/core/entities/farm";
-import { FarmAndAdmin } from "@/core/entities/aggregates/farm-and-admin";
+import { Producer } from "@/core/entities/aggregates/producer";
 import { Catalog } from "@/core/entities/aggregates/catalog";
 
-export type FarmRepositoryReturnType = "farm" | "farm-and-admin" | "catalog";
+export type FarmRepositoryReturnType = "farm" | "producer" | "catalog";
 
 export type FarmEntityOf<T extends FarmRepositoryReturnType> = T extends "farm"
   ? Farm
-  : T extends "farm-and-admin"
-    ? FarmAndAdmin
+  : T extends "producer"
+    ? Producer
     : T extends "catalog"
       ? Catalog
       : never;

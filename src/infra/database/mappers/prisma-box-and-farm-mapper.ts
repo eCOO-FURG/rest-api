@@ -10,12 +10,12 @@ import { BoxRepositoryReturnType, BoxEntityOf } from "@/core/repositories/boxes-
 
 // Mappers
 import {
-  PrismaFarmAndAdmin,
-  PrismaFarmAndAdminMapper,
-} from "@/infra/database/mappers/prisma-farm-and-admin-mapper";
+  PrismaProducer,
+  PrismaProducerMapper,
+} from "@/infra/database/mappers/prisma-producer-mapper";
 
 export type PrismaBoxAndFarm = PrismaBox & {
-  farm: PrismaFarmAndAdmin;
+  farm: PrismaProducer;
 };
 
 export class PrismaBoxAndFarmMapper {
@@ -27,7 +27,7 @@ export class PrismaBoxAndFarmMapper {
       status: raw.status,
       cycle_id: new UUID(raw.cycle_id),
       farm_id: new UUID(raw.farm_id),
-      farm: PrismaFarmAndAdminMapper.toDomain(raw.farm),
+      farm: PrismaProducerMapper.toDomain(raw.farm),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
     }) as BoxEntityOf<T>;

@@ -37,7 +37,7 @@ export class RequestHelpUseCase {
       throw new ResourceNotFoundError("Usuário", user_id);
     }
 
-    const farm = await this.farmsRepository.find("farm-and-admin", {
+    const farm = await this.farmsRepository.find("producer", {
       admin: { id: user_id },
     });
 

@@ -7,15 +7,15 @@ import { OfferAndDetails } from "@/core/entities/aggregates/offer-and-details";
 
 // Mappers
 import { PrismaProductMapper } from "@/infra/database/mappers/prisma-product-mapper";
-import { PrismaFarmAndAdmin } from "@/infra/database/mappers/prisma-farm-and-admin-mapper";
-import { PrismaFarmAndAdminMapper } from "@/infra/database/mappers/prisma-farm-and-admin-mapper";
+import { PrismaProducer } from "@/infra/database/mappers/prisma-producer-mapper";
+import { PrismaProducerMapper } from "@/infra/database/mappers/prisma-producer-mapper";
 
 // Repositories
 import { OfferRepositoryReturnType, OfferEntityOf } from "@/core/repositories/offers-repository";
 
 export type PrismaOfferAndDetails = PrismaOffer & {
   product: PrismaProduct;
-  farm: PrismaFarmAndAdmin;
+  farm: PrismaProducer;
 };
 
 export class PrismaOfferAndDetailsMapper {
@@ -32,7 +32,7 @@ export class PrismaOfferAndDetailsMapper {
       product_id: new UUID(raw.product_id),
       cycle_id: raw.cycle_id ? new UUID(raw.cycle_id) : null,
       market_id: raw.market_id ? new UUID(raw.market_id) : null,
-      farm: PrismaFarmAndAdminMapper.toDomain(raw.farm),
+      farm: PrismaProducerMapper.toDomain(raw.farm),
       product: PrismaProductMapper.toDomain(raw.product),
       description: raw.description,
       comment: raw.comment,

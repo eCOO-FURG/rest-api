@@ -14,13 +14,13 @@ import {
   PrismaOrderAndOffer,
 } from "@/infra/database/mappers/prisma-order-and-offer-mapper";
 import {
-  PrismaFarmAndAdmin,
-  PrismaFarmAndAdminMapper,
-} from "@/infra/database/mappers/prisma-farm-and-admin-mapper";
+  PrismaProducer,
+  PrismaProducerMapper,
+} from "@/infra/database/mappers/prisma-producer-mapper";
 
 export type PrismaBoxAndOrders = PrismaBox & {
   orders: PrismaOrderAndOffer[];
-  farm: PrismaFarmAndAdmin;
+  farm: PrismaProducer;
 };
 
 export class PrismaBoxAndOrdersMapper {
@@ -32,7 +32,7 @@ export class PrismaBoxAndOrdersMapper {
       status: raw.status,
       cycle_id: new UUID(raw.cycle_id),
       farm_id: new UUID(raw.farm_id),
-      farm: PrismaFarmAndAdminMapper.toDomain(raw.farm),
+      farm: PrismaProducerMapper.toDomain(raw.farm),
       orders: raw.orders.map(PrismaOrderAndOfferMapper.toDomain),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
