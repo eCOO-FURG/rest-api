@@ -45,22 +45,31 @@ export class UpdateFarmUseCase {
   }: UpdateFarmUseCaseRequest) {
     const farm = await this.farmsRepository.find("farm", { id: farm_id });
 
-    if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
+    if (!farm) {
+      throw new ResourceNotFoundError("Fazenda", farm_id);
+    }
 
     const user = await this.usersRepository.find("user", { id: user_id });
 
-    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+    if (!user) {
+      throw new ResourceNotFoundError("Usuário", user_id);
+    }
 
-    if (!farm.admin_id.equals(user.id) && !user.admin)
+    if (!farm.admin_id.equals(user.id) && !user.admin) {
       throw new ResourceNotFoundError("Fazenda", farm_id);
+    }
 
-    if (!user.admin && (status || fee)) throw new UnauthorizedError();
+    if (!user.admin && (status || fee)) {
+      throw new UnauthorizedError();
+    }
 
     farm.tally = tally ?? farm.tally;
     farm.name = name ?? farm.name;
     farm.status = status ?? farm.status;
 
-    if (description) farm.description = description;
+    if (description) {
+      farm.description = description;
+    }
 
     if (photo) {
       const urls = await this.storage.upload([photo], "farms");

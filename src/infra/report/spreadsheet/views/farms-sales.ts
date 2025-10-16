@@ -2,8 +2,8 @@
 import { SpreadsheetColumn } from "@/core/report/spreadsheet-service";
 
 // Entities
+import { Catalog } from "@/core/entities/aggregates/catalog";
 import { BagAndOrders } from "@/core/entities/aggregates/bag-and-orders";
-import { CatalogAndOffers } from "@/core/entities/aggregates/catalog-and-offers";
 
 // Report
 import { SpreadsheetView } from "@/infra/report/spreadsheet/excel";
@@ -51,7 +51,7 @@ const columns: SpreadsheetColumn[] = [
 
 interface FarmsSalesReportViewProps {
   bags: BagAndOrders[];
-  catalogs: CatalogAndOffers[];
+  catalogs: Catalog[];
   since?: Date;
   before?: Date;
 }
@@ -72,15 +72,16 @@ export const FARMS_PRODUCERS_VIEW: SpreadsheetView = async ({
 
       for (const order of orders) {
         const isOrderInPeriod =
-          (!since || order.created_at >= since) &&
-          (!before || order.created_at <= before);
+          (!since || order.created_at >= since) && (!before || order.created_at <= before);
 
-        if (!isOrderInPeriod) continue;
+        if (!isOrderInPeriod) {
+          continue;
+        }
 
         rows.push({
-          producer: `${catalog.farm.admin.first_name} ${catalog.farm.admin.last_name}`,
-          product: offer.product?.name,
-          pricing: offer.product?.pricing === "UNIT" ? "Unidade" : "Kg",
+          producer: `${catalog.admin.first_name} ${catalog.admin.last_name}`,
+          product: offer.product.name,
+          pricing: offer.product.pricing === "UNIT" ? "Unidade" : "Kg",
           status: ORDER_STATUS[order.status],
           price_without_tax: offer.price,
           offer_price: offer.price + (offer.price * catalog.fee) / 100,

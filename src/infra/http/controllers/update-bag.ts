@@ -31,8 +31,7 @@ export async function updateBagController(
     const { bag_id } = parse(updateBagParams, request.params);
     const { status } = parse(updateBagSchema, request.body);
 
-    const updateBagUseCase =
-      container.resolve<UpdateBagUseCase>("updateBagUseCase");
+    const updateBagUseCase = container.resolve<UpdateBagUseCase>("updateBagUseCase");
 
     await updateBagUseCase.execute({
       user_id: request.user_id,

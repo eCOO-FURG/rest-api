@@ -22,7 +22,9 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
       where: { id, bag_id },
     });
 
-    if (!payment) return null;
+    if (!payment) {
+      return null;
+    }
 
     return PrismaPaymentMapper.toDomain<T>(payment);
   }

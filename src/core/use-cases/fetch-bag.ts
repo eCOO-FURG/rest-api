@@ -27,16 +27,22 @@ export class FetchBagUseCase {
       orders: { statuses, page },
     });
 
-    if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
+    if (!bag) {
+      throw new ResourceNotFoundError("Sacola", bag_id);
+    }
 
     const owner = bag.customer_id.equals(user_id);
 
     if (!owner) {
       const user = await this.usersRepository.find("user", { id: user_id });
 
-      if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+      if (!user) {
+        throw new ResourceNotFoundError("Usuário", user_id);
+      }
 
-      if (!user.admin) throw new ResourceNotFoundError("Sacola", bag_id);
+      if (!user.admin) {
+        throw new ResourceNotFoundError("Sacola", bag_id);
+      }
     }
 
     return { bag };

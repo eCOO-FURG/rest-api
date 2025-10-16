@@ -71,23 +71,19 @@ export const PRODUCTS_SALES_VIEW: SpreadsheetView = async ({
   const rows: Record<string, unknown>[] = [];
   for (const bag of bags) {
     for (const order of bag.orders) {
-      const amount =
-        order.offer?.product?.pricing === "UNIT"
-          ? order.amount
-          : order.amount / 1000;
+      const amount = order.offer?.product?.pricing === "UNIT" ? order.amount : order.amount / 1000;
 
       const offerPrice = order.offer?.price ?? 0;
 
       rows.push({
         bag: bag.code,
         product: order.offer?.product?.name,
-        producer: order.offer?.catalog?.farm?.name,
+        producer: order.offer?.farm?.admin.name,
         user: `${bag.customer.first_name} ${bag.customer.last_name}`,
         status: ORDER_STATUS[order.status],
-        fee: (order.offer?.catalog?.fee ?? 0) / 100,
+        fee: (order.offer.farm.fee ?? 0) / 100,
         offer_price_without_tax: offerPrice,
-        offer_price:
-          offerPrice + (offerPrice * (order.offer?.catalog?.fee ?? 0)) / 100,
+        offer_price: offerPrice + (offerPrice * (order.offer.farm.fee ?? 0)) / 100,
         amount,
         total_price: order.total,
         total_price_without_tax: order.subtotal,

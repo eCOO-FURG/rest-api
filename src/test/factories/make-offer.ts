@@ -9,7 +9,10 @@ export function makeOffer(props: Partial<OfferProps> = {}) {
   return Offer.create({
     ...props,
     product_id: props.product_id ?? new UUID(),
-    catalog_id: props.catalog_id ?? new UUID(),
+    farm_id: props.farm_id ?? new UUID(),
+    cycle_id: props.cycle_id ?? null,
+    market_id: props.market_id ?? null,
+    active: props.active ?? true,
     opens_at: props.opens_at ?? faker.date.past(),
     closes_at: props.closes_at ?? faker.date.future(),
     amount: props.amount ?? faker.number.int({ min: 10, max: 12 }),

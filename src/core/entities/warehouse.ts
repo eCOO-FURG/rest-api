@@ -31,9 +31,7 @@ export interface WarehouseProps extends EntityRequest {
   coverage: string[];
 }
 
-export class Warehouse<
-  Props extends WarehouseProps = WarehouseProps,
-> extends Entity<Props> {
+export class Warehouse<Props extends WarehouseProps = WarehouseProps> extends Entity<Props> {
   get name() {
     return this.props.name;
   }
@@ -101,14 +99,7 @@ export class Warehouse<
   static create(
     props: Optional<
       WarehouseProps,
-      | "name"
-      | "CNPJ"
-      | "manager"
-      | "email"
-      | "phone"
-      | "socials"
-      | "address"
-      | "coverage"
+      "name" | "CNPJ" | "manager" | "email" | "phone" | "socials" | "address" | "coverage"
     >,
   ) {
     return new Warehouse({

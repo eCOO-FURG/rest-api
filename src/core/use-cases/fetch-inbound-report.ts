@@ -27,13 +27,15 @@ export class FetchInboundReportUseCase {
         id: cycle_id,
       });
 
-      if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+      if (!cycle) {
+        throw new ResourceNotFoundError("Ciclo", cycle_id);
+      }
     }
 
     const boxes = await this.boxesRepository.list("box-and-orders", {
       since,
       before,
-      catalog: { cycle: { id: cycle_id } },
+      cycle: { id: cycle_id },
     });
 
     const pdf = await this.pdfService.generate({

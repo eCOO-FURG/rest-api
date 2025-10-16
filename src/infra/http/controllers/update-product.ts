@@ -54,9 +54,7 @@ export async function updateProductController(
       request.body,
     );
 
-    const updateProductUseCase = container.resolve<UpdateProductUseCase>(
-      "updateProductUseCase",
-    );
+    const updateProductUseCase = container.resolve<UpdateProductUseCase>("updateProductUseCase");
 
     await updateProductUseCase.execute({
       product_id,

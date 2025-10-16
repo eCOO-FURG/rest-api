@@ -43,9 +43,7 @@ export async function listCategoriesController(
       request.query,
     );
 
-    const listCategoriesUseCase = container.resolve<ListCategoriesUseCase>(
-      "listCategoriesUseCase",
-    );
+    const listCategoriesUseCase = container.resolve<ListCategoriesUseCase>("listCategoriesUseCase");
 
     const { categories } = await listCategoriesUseCase.execute({
       name,

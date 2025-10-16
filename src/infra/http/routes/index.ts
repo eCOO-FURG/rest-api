@@ -26,6 +26,7 @@ import { cycles } from "@/infra/http/routes/cycles";
 import { farms } from "@/infra/http/routes/farms";
 import { help } from "@/infra/http/routes/help";
 import { me } from "@/infra/http/routes/me";
+import { markets } from "@/infra/http/routes/markets";
 import { notifications } from "@/infra/http/routes/notifications";
 import { offers } from "@/infra/http/routes/offers";
 import { orders } from "@/infra/http/routes/orders";
@@ -68,26 +69,12 @@ router.use("/bags", ensureAuthenticated, bags);
 router.use("/payments", ensureAuthenticated, payments);
 router.use("/cycles", cycles);
 router.use("/products", ensureAuthenticated, products);
-router.use(
-  "/producers",
-  ensureAuthenticated,
-  ensureRole(["MANAGER"]),
-  producers,
-);
+router.use("/producers", ensureAuthenticated, ensureRole(["MANAGER"]), producers);
 router.use("/categories", categories);
+router.use("/markets", markets);
 router.use("/pendings", ensureAuthenticated, ensureRole(["BROKER"]), pendings);
 router.use("/stats", ensureAuthenticated, ensureRole(["MANAGER"]), stats);
 router.use("/warehouse", ensureAuthenticated, warehouse);
-router.use(
-  "/reports",
-  ensureAuthenticated,
-  ensureRole(["BROKER", "MANAGER"]),
-  reports,
-);
-router.use(
-  "/notifications",
-  ensureAuthenticated,
-  ensureRole(["MANAGER"]),
-  notifications,
-);
+router.use("/reports", ensureAuthenticated, ensureRole(["BROKER", "MANAGER"]), reports);
+router.use("/notifications", ensureAuthenticated, ensureRole(["MANAGER"]), notifications);
 router.use("/webhooks", ensureIntegration, webhooks);

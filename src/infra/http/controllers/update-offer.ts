@@ -43,8 +43,7 @@ export async function updateOfferController(
       request.body,
     );
 
-    const updateOfferUseCase =
-      container.resolve<UpdateOfferUseCase>("updateOfferUseCase");
+    const updateOfferUseCase = container.resolve<UpdateOfferUseCase>("updateOfferUseCase");
 
     await updateOfferUseCase.execute({
       farm_id: request.farm_id,

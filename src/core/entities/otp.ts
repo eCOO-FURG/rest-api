@@ -6,6 +6,9 @@ import { Entity, EntityRequest } from "@/core/entities/entity";
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { User } from "@/core/entities/user";
 
+// Utils
+import { randomCode } from "@/core/utils/random-code";
+
 export interface OtpProps extends EntityRequest {
   user_id: UUID;
   user?: User;
@@ -36,10 +39,11 @@ export class Otp extends Entity<OtpProps> {
     this.touch();
   }
 
-  static create(props: Optional<OtpProps, "used">) {
+  static create(props: Optional<OtpProps, "used" | "value">) {
     return new Otp({
       ...props,
       used: props.used ?? false,
+      value: props.value ?? randomCode(),
     });
   }
 }

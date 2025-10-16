@@ -15,7 +15,6 @@ import { makeOrder } from "@/test/factories/make-order";
 import { makeProduct } from "@/test/factories/make-product";
 import { makeOffer } from "@/test/factories/make-offer";
 import { makeFarm } from "@/test/factories/make-farm";
-import { makeCatalog } from "@/test/factories/make-catalog";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -40,9 +39,7 @@ describe("Fetch bag", () => {
 
     const farm = makeFarm({ admin_id: user.id });
 
-    const catalog = makeCatalog({ farm_id: farm.id });
-
-    const offer = makeOffer({ product_id: product.id, catalog_id: catalog.id });
+    const offer = makeOffer({ product_id: product.id, farm_id: farm.id });
 
     const bag = makeBag({ customer_id: user.id });
 
@@ -50,7 +47,7 @@ describe("Fetch bag", () => {
 
     bag.orders.push(order);
 
-    await bagsRepository.create(bag);
+    await bagsRepository.save(bag);
 
     const result = await sut.execute({
       bag_id: bag.id.value,
@@ -83,7 +80,7 @@ describe("Fetch bag", () => {
     await usersRepository.create(user2);
 
     const bag = makeBag({ customer_id: user1.id });
-    await bagsRepository.create(bag);
+    await bagsRepository.save(bag);
 
     await expect(() =>
       sut.execute({

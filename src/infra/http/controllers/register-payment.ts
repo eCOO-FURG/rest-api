@@ -36,9 +36,8 @@ export async function registerPaymentController(
   try {
     const { method, flag, bag_id } = parse(registerPaymentSchema, request.body);
 
-    const registerPaymentUseCase = container.resolve<RegisterPaymentUseCase>(
-      "registerPaymentUseCase",
-    );
+    const registerPaymentUseCase =
+      container.resolve<RegisterPaymentUseCase>("registerPaymentUseCase");
 
     await registerPaymentUseCase.execute({
       bag_id,

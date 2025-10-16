@@ -28,20 +28,25 @@ export class RegisterPaymentUseCase {
       id: bag_id,
     });
 
-    if (!bag) throw new ResourceNotFoundError("Sacola", bag_id);
+    if (!bag) {
+      throw new ResourceNotFoundError("Sacola", bag_id);
+    }
 
-    if (bag.status === "PENDING")
+    if (bag.status === "PENDING") {
       throw new ResourceNotVerifiedError("Sacola", bag_id);
+    }
 
-    if (bag.status === "CANCELLED")
+    if (bag.status === "CANCELLED") {
       throw new ResourceClosedError("Sacola", bag_id);
+    }
 
     const previous = await this.paymentsRepository.find("payment", {
       bag_id: bag.id.value,
     });
 
-    if (previous && previous.status === "DONE")
+    if (previous && previous.status === "DONE") {
       throw new ResourceAlreadyExistsError("Pagamento da sacola", bag_id);
+    }
 
     const payment = Payment.create({
       bag_id: new UUID(bag_id),

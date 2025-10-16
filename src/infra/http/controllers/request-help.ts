@@ -23,8 +23,7 @@ export async function requestHelpController(
   try {
     const { message } = parse(requestHelpSchema, request.body);
 
-    const requestHelpUseCase =
-      container.resolve<RequestHelpUseCase>("requestHelpUseCase");
+    const requestHelpUseCase = container.resolve<RequestHelpUseCase>("requestHelpUseCase");
 
     await requestHelpUseCase.execute({
       content: message,

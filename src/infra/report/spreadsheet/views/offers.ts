@@ -1,9 +1,9 @@
 // Types
+import { Catalog } from "@/core/entities/aggregates/catalog";
 import { SpreadsheetColumn } from "@/core/report/spreadsheet-service";
 import { SpreadsheetView } from "@/infra/report/spreadsheet/excel";
 
 // Entities
-import { CatalogAndOffers } from "@/core/entities/aggregates/catalog-and-offers";
 
 const columns: SpreadsheetColumn[] = [
   { header: "Fazenda", key: "farm", width: 25 },
@@ -31,7 +31,7 @@ const columns: SpreadsheetColumn[] = [
 ];
 
 interface OffersReportViewProps {
-  catalogs: CatalogAndOffers[];
+  catalogs: Catalog[];
   since?: Date;
   before?: Date;
 }
@@ -47,13 +47,14 @@ export const OFFERS_VIEW: SpreadsheetView = async ({
     for (const offer of catalog.offers) {
       const isOfferInPeriod =
         !offer.closes_at ||
-        ((!since || offer.opens_at >= since) &&
-          (!before || offer.closes_at <= before));
+        ((!since || offer.opens_at >= since) && (!before || offer.closes_at <= before));
 
-      if (!isOfferInPeriod) continue;
+      if (!isOfferInPeriod) {
+        continue;
+      }
 
       rows.push({
-        farm: catalog.farm.name,
+        farm: catalog.name,
         product: offer.product.name,
         price: offer.price,
         fee: offer.fee,

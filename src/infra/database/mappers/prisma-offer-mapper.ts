@@ -3,10 +3,7 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { Offer } from "@/core/entities/offer";
 
 // Repositories
-import {
-  OfferEntityOf,
-  OfferRepositoryReturnType,
-} from "@/core/repositories/offers-repository";
+import { OfferEntityOf, OfferRepositoryReturnType } from "@/core/repositories/offers-repository";
 
 // Libraries
 import { Prisma, Offer as PrismaOffer } from "@prisma/client";
@@ -19,7 +16,9 @@ export class PrismaOfferMapper {
       id: new UUID(raw.id),
       amount: raw.amount,
       price: raw.price.toNumber(),
-      catalog_id: new UUID(raw.catalog_id),
+      cycle_id: raw.cycle_id ? new UUID(raw.cycle_id) : null,
+      market_id: raw.market_id ? new UUID(raw.market_id) : null,
+      farm_id: new UUID(raw.farm_id),
       product_id: new UUID(raw.product_id),
       description: raw.description,
       comment: raw.comment,
@@ -36,8 +35,10 @@ export class PrismaOfferMapper {
   static toPrisma(offer: Offer): Prisma.OfferUncheckedCreateInput {
     return {
       id: offer.id.value,
-      catalog_id: offer.catalog_id.value,
       product_id: offer.product_id.value,
+      farm_id: offer.farm_id.value,
+      cycle_id: offer.cycle_id ? offer.cycle_id.value : null,
+      market_id: offer.market_id ? offer.market_id.value : null,
       description: offer.description,
       opens_at: offer.opens_at,
       comment: offer.comment,

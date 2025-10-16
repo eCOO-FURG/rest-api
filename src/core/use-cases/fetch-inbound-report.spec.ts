@@ -6,7 +6,6 @@ import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-r
 import { MockedPDFService } from "@/test/report/mocked-pdf-service";
 import { makeBox } from "@/test/factories/make-box";
 import { makeCycle } from "@/test/factories/make-cycle";
-import { makeCatalog } from "@/test/factories/make-catalog";
 
 // Use-cases
 import { FetchInboundReportUseCase } from "./fetch-inbound-report";
@@ -27,21 +26,13 @@ describe("Fetch inbound report", () => {
 
     pdfService = new MockedPDFService();
 
-    sut = new FetchInboundReportUseCase(
-      boxesRepository,
-      cyclesRepository,
-      pdfService,
-    );
+    sut = new FetchInboundReportUseCase(boxesRepository, cyclesRepository, pdfService);
   });
   it("should be able to fetch the cycle inbound report", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
-    const catalog = makeCatalog({ cycle_id: cycle.id });
-
-    const box = makeBox({
-      catalog,
-    });
+    const box = makeBox({ cycle_id: cycle.id });
     boxesRepository.items.push(box);
 
     const { file } = await sut.execute({

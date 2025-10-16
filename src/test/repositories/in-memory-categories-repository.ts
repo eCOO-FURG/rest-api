@@ -26,7 +26,9 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
       ),
     );
 
-    if (!category) return null;
+    if (!category) {
+      return null;
+    }
 
     return category as CategoryEntityOf<T>;
   }
@@ -43,7 +45,9 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
       ),
     );
 
-    if (page) categories = paginate(categories, page);
+    if (page) {
+      categories = paginate(categories, page);
+    }
 
     return categories as CategoryEntityOf<T>[];
   }

@@ -35,14 +35,10 @@ export async function fetchSalesReportController(
   next: NextFunction,
 ) {
   try {
-    const { cycle_id, withdraw, type, since, before } = parse(
-      fetchSalesReportQuery,
-      request.query,
-    );
+    const { cycle_id, withdraw, type, since, before } = parse(fetchSalesReportQuery, request.query);
 
-    const fetchSalesReportUseCase = container.resolve<FetchSalesReportUseCase>(
-      "fetchSalesReportUseCase",
-    );
+    const fetchSalesReportUseCase =
+      container.resolve<FetchSalesReportUseCase>("fetchSalesReportUseCase");
 
     const { file } = await fetchSalesReportUseCase.execute({
       cycle_id,

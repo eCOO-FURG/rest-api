@@ -23,7 +23,9 @@ export class FetchDescriptionSuggestionUseCase {
       id: product_id,
     });
 
-    if (!product) throw new ResourceNotFoundError("Produto", product_id);
+    if (!product) {
+      throw new ResourceNotFoundError("Produto", product_id);
+    }
 
     const stream = this.llmProvider.generate({
       prompt: Prompt.CREATE_DESCRIPTION,

@@ -30,14 +30,10 @@ export async function sendNotificationController(
   next: NextFunction,
 ) {
   try {
-    const { title, message, role, files } = parse(
-      sendNotificationSchema,
-      request.body,
-    );
+    const { title, message, role, files } = parse(sendNotificationSchema, request.body);
 
-    const sendNotificationUseCase = container.resolve<SendNotificationUseCase>(
-      "sendNotificationUseCase",
-    );
+    const sendNotificationUseCase =
+      container.resolve<SendNotificationUseCase>("sendNotificationUseCase");
 
     await sendNotificationUseCase.execute({
       title,
