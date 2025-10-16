@@ -24,7 +24,7 @@ export default defineConfig([
         },
       ],
       "no-undef": "off",
-      "curly": ["error", "all"],
+      curly: ["error", "all"],
     },
   },
 ]);
