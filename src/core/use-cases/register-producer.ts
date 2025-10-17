@@ -11,6 +11,9 @@ import { FarmsRepository } from "@/core/repositories/farms-repository";
 // Errors
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 
+// Storage
+import { Storage } from "@/core/storage/storage";
+
 // Types
 import { File } from "@/core/types/file";
 

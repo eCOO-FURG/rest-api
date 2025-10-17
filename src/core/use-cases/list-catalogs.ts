@@ -50,8 +50,6 @@ export class ListCatalogsUseCase {
       ? await this.marketsRepository.find("market", { id: market_id })
       : null;
 
-    console.log(market_id, market);
-
     if (market_id && !market) {
       throw new ResourceNotFoundError("Feira", market_id);
     }

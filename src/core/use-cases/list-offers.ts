@@ -71,8 +71,6 @@ export class ListOffersUseCase {
       page,
     );
 
-    console.log(offers);
-
     return { offers };
   }
 }

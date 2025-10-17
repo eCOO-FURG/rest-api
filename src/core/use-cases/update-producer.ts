@@ -9,6 +9,9 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 // Types
 import { File } from "@/core/types/file";
 
+// Storage
+import { Storage } from "@/core/storage/storage";
+
 // Entities
 import { CPF } from "@/core/entities/cpf";
 import { Phone } from "@/core/entities/phone";
