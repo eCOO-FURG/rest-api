@@ -32,7 +32,7 @@ import { today } from "@/core/utils/today";
 
 // Test utilities
 import { MockedMailer } from "@/test/mail/mocked-mailer";
-import { makeOfferAndDetails } from "@/test/factories/make-offer-and-details";
+import { makeMerchandise } from "@/test/factories/make-merchandise";
 
 let usersRepository: InMemoryUsersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
@@ -76,7 +76,7 @@ describe("register order", () => {
     cyclesRepository.items.push(cycle);
 
     const offer = makeOffer({ cycle_id: cycle.id, amount: 100 });
-    offersRepository.items.push(makeOfferAndDetails(offer));
+    offersRepository.items.push(makeMerchandise(offer));
 
     const result = await sut.execute({
       user_id: user.id.value,

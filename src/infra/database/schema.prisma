@@ -177,7 +177,6 @@ model Offer {
   active Boolean @default(true)
 
   price Decimal @db.Decimal(10, 2)
-  fee   Decimal @db.Decimal(10, 2)
 
   opens_at   DateTime
   closes_at  DateTime?

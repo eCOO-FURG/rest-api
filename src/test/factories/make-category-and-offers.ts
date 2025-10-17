@@ -4,11 +4,11 @@ import { CategoryAndOffers } from "@/core/entities/aggregates/category-and-offer
 
 // Factories
 import { makeCategory } from "@/test/factories/make-category";
-import { makeOfferAndDetails } from "@/test/factories/make-offer-and-details";
+import { makeMerchandise } from "@/test/factories/make-merchandise";
 
 export function makeCategoryAndOffers(category: Category = makeCategory()) {
   return CategoryAndOffers.create({
     ...category.props,
-    offers: [makeOfferAndDetails()],
+    offers: [makeMerchandise()],
   });
 }

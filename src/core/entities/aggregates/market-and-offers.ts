@@ -1,9 +1,9 @@
 // Entities
 import { Market, MarketProps } from "@/core/entities/market";
-import { OfferAndDetails } from "@/core/entities/aggregates/offer-and-details";
+import { Merchandise } from "@/core/entities/aggregates/merchandise";
 
 export interface MarketAndOffersProps extends MarketProps {
-  offers: OfferAndDetails[];
+  offers: Merchandise[];
 }
 
 export class MarketAndOffers extends Market<MarketAndOffersProps> {

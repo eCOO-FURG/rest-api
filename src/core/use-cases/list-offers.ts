@@ -59,7 +59,7 @@ export class ListOffersUseCase {
     }
 
     const offers = await this.offersRepository.list(
-      "offer-and-details",
+      "merchandise",
       {
         product: { name: product, category: { id: category_id } },
         cycle: { id: cycle_id },

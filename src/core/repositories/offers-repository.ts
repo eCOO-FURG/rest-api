@@ -1,16 +1,16 @@
 // Entities
-import { OfferAndDetails } from "@/core/entities/aggregates/offer-and-details";
+import { Merchandise } from "@/core/entities/aggregates/merchandise";
 import { OfferAndProduct } from "@/core/entities/aggregates/offer-and-product";
 import { Offer } from "@/core/entities/offer";
 
-export type OfferRepositoryReturnType = "offer" | "offer-and-product" | "offer-and-details";
+export type OfferRepositoryReturnType = "offer" | "offer-and-product" | "merchandise";
 
 export type OfferEntityOf<T extends OfferRepositoryReturnType> = T extends "offer"
   ? Offer
   : T extends "offer-and-product"
     ? OfferAndProduct
-    : T extends "offer-and-details"
-      ? OfferAndDetails
+    : T extends "merchandise"
+      ? Merchandise
       : never;
 
 export interface OffersRepositorySearchRequest {

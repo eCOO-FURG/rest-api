@@ -26,7 +26,6 @@ export interface OfferProps extends EntityRequest {
   product?: Product;
 
   price: number;
-  fee: number;
   amount: number;
 
   active: boolean;
@@ -46,14 +45,6 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
 
   get amount() {
     return this.props.amount;
-  }
-
-  get fee() {
-    return this.props.fee;
-  }
-
-  get total() {
-    return this.props.price + this.props.fee;
   }
 
   get description() {

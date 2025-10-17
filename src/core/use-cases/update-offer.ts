@@ -40,7 +40,7 @@ export class UpdateOfferUseCase {
     active,
     comment,
   }: UpdateOfferUseCaseRequest) {
-    const offer = await this.offersRepository.find("offer-and-details", {
+    const offer = await this.offersRepository.find("merchandise", {
       id: offer_id,
     });
 

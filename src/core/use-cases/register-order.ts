@@ -109,7 +109,7 @@ export class RegisterOrderUseCase {
           market_id: market_id ? new UUID(market_id) : null,
         });
 
-    const offers = await this.offersRepository.list("offer-and-details", {
+    const offers = await this.offersRepository.list("merchandise", {
       ids: items.map((order) => order.offer_id),
     });
 

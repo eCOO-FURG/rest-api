@@ -7,9 +7,9 @@ import { Category as PrismaCategory, Product as PrismaProduct } from "@prisma/cl
 
 // Mappers
 import {
-  PrismaOfferAndDetails,
-  PrismaOfferAndDetailsMapper,
-} from "@/infra/database/mappers/prisma-offer-and-details-mapper";
+  PrismaMerchandise,
+  PrismaMerchandiseMapper,
+} from "@/infra/database/mappers/prisma-merchandise";
 
 // Repositories
 import {
@@ -19,7 +19,7 @@ import {
 
 export type PrismaCategoryAndOffers = PrismaCategory & {
   products: (PrismaProduct & {
-    offers: PrismaOfferAndDetails[];
+    offers: PrismaMerchandise[];
   })[];
 };
 
@@ -35,7 +35,7 @@ export class PrismaCategoryAndOffersMapper {
       updated_at: raw.updated_at,
       offers: raw.products.flatMap((product) =>
         product.offers.map((offer) =>
-          PrismaOfferAndDetailsMapper.toDomain({
+          PrismaMerchandiseMapper.toDomain({
             ...offer,
             product: { ...product },
           }),

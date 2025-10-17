@@ -3,7 +3,7 @@ import { Offer as PrismaOffer, Product as PrismaProduct } from "@prisma/client";
 
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
-import { OfferAndDetails } from "@/core/entities/aggregates/offer-and-details";
+import { Merchandise } from "@/core/entities/aggregates/merchandise";
 
 // Mappers
 import { PrismaProductMapper } from "@/infra/database/mappers/prisma-product-mapper";
@@ -13,20 +13,19 @@ import { PrismaProducerMapper } from "@/infra/database/mappers/prisma-producer-m
 // Repositories
 import { OfferRepositoryReturnType, OfferEntityOf } from "@/core/repositories/offers-repository";
 
-export type PrismaOfferAndDetails = PrismaOffer & {
+export type PrismaMerchandise = PrismaOffer & {
   product: PrismaProduct;
   farm: PrismaProducer;
 };
 
-export class PrismaOfferAndDetailsMapper {
-  static toDomain<T extends OfferRepositoryReturnType = "offer-and-details">(
-    raw: PrismaOfferAndDetails,
+export class PrismaMerchandiseMapper {
+  static toDomain<T extends OfferRepositoryReturnType = "merchandise">(
+    raw: PrismaMerchandise,
   ): OfferEntityOf<T> {
-    return OfferAndDetails.create({
+    return Merchandise.create({
       id: new UUID(raw.id),
       amount: raw.amount,
       price: raw.price.toNumber(),
-      fee: raw.fee.toNumber(),
       opens_at: raw.opens_at,
       farm_id: new UUID(raw.farm_id),
       product_id: new UUID(raw.product_id),

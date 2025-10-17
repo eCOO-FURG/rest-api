@@ -76,7 +76,6 @@ export async function seedDevelopment() {
             return {
               product_id: product.id,
               cycle_id: cycleId.value,
-              fee: price * (20 / 100),
               price: price,
               active: true,
               opens_at: first(everyDay),

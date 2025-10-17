@@ -57,8 +57,8 @@ export const OFFERS_VIEW: SpreadsheetView = async ({
         farm: catalog.name,
         product: offer.product.name,
         price: offer.price,
-        fee: offer.fee,
-        total: offer.price + offer.fee,
+        fee: offer.price * (catalog.fee / 100),
+        total: offer.price + offer.price * (catalog.fee / 100),
         unit: offer.product.pricing === "UNIT" ? "Unidade" : "Kg",
         created_at: offer.created_at.toLocaleDateString("pt-BR"),
       });

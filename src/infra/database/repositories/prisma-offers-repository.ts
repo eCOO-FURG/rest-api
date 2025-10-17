@@ -14,9 +14,9 @@ import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
 import {
-  PrismaOfferAndDetails,
-  PrismaOfferAndDetailsMapper,
-} from "@/infra/database/mappers/prisma-offer-and-details-mapper";
+  PrismaMerchandise,
+  PrismaMerchandiseMapper,
+} from "@/infra/database/mappers/prisma-merchandise";
 import {
   PrismaOfferAndProduct,
   PrismaOfferAndProductMapper,
@@ -87,7 +87,7 @@ export class PrismaOffersRepository implements OffersRepository {
       },
       include: {
         ...(type === "offer-and-product" && { product: true }),
-        ...(type === "offer-and-details" && {
+        ...(type === "merchandise" && {
           product: true,
           farm: { include: { admin: true } },
         }),
@@ -103,8 +103,8 @@ export class PrismaOffersRepository implements OffersRepository {
         return PrismaOfferMapper.toDomain<T>(offer);
       case "offer-and-product":
         return PrismaOfferAndProductMapper.toDomain<T>(offer);
-      case "offer-and-details":
-        return PrismaOfferAndDetailsMapper.toDomain<T>(offer as PrismaOfferAndDetails);
+      case "merchandise":
+        return PrismaMerchandiseMapper.toDomain<T>(offer as PrismaMerchandise);
     }
   }
 
@@ -172,7 +172,7 @@ export class PrismaOffersRepository implements OffersRepository {
       },
       include: {
         ...(type === "offer-and-product" && { product: true }),
-        ...(type === "offer-and-details" && {
+        ...(type === "merchandise" && {
           product: true,
           farm: { include: { admin: true } },
         }),
@@ -188,9 +188,9 @@ export class PrismaOffersRepository implements OffersRepository {
         return offers.map((offer) =>
           PrismaOfferAndProductMapper.toDomain<T>(offer as PrismaOfferAndProduct),
         );
-      case "offer-and-details":
+      case "merchandise":
         return offers.map((offer) =>
-          PrismaOfferAndDetailsMapper.toDomain<T>(offer as PrismaOfferAndDetails),
+          PrismaMerchandiseMapper.toDomain<T>(offer as PrismaMerchandise),
         );
     }
   }

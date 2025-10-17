@@ -13,12 +13,12 @@ import { MarketAndOffers } from "@/core/entities/aggregates/market-and-offers";
 
 // Mappers
 import {
-  PrismaOfferAndDetailsMapper,
-  PrismaOfferAndDetails,
-} from "@/infra/database/mappers/prisma-offer-and-details-mapper";
+  PrismaMerchandiseMapper,
+  PrismaMerchandise,
+} from "@/infra/database/mappers/prisma-merchandise";
 
 export type PrismaMarketAndOffers = PrismaMarket & {
-  offers: PrismaOfferAndDetails[];
+  offers: PrismaMerchandise[];
 };
 
 export class PrismaMarketAndOffersMapper {
@@ -30,7 +30,7 @@ export class PrismaMarketAndOffersMapper {
       name: raw.name,
       description: raw.description,
       open: raw.open,
-      offers: raw.offers.map(PrismaOfferAndDetailsMapper.toDomain),
+      offers: raw.offers.map(PrismaMerchandiseMapper.toDomain),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
     }) as MarketEntityOf<T>;

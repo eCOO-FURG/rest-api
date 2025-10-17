@@ -4,11 +4,11 @@ import { OrderAndOffer } from "@/core/entities/aggregates/order-and-offer";
 
 // Factories
 import { makeOrder } from "@/test/factories/make-order";
-import { makeOfferAndDetails } from "@/test/factories/make-offer-and-details";
+import { makeMerchandise } from "@/test/factories/make-merchandise";
 
 export function makeOrderAndOffer(order: Order = makeOrder()) {
   return OrderAndOffer.create({
     ...order.props,
-    offer: makeOfferAndDetails(order.offer),
+    offer: makeMerchandise(order.offer),
   });
 }
