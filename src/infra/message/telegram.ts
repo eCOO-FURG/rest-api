@@ -51,8 +51,13 @@ export class Telegram implements Chat {
       });
 
       return this.ws;
-    } else {
-      return this.ws;
     }
+
+    if (this.ws.readyState === WebSocket.CLOSED) {
+      this.ws = null;
+      return this.client();
+    }
+
+    return this.ws;
   }
 }
