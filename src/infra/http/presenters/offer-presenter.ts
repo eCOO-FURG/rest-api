@@ -18,7 +18,7 @@ export class OfferPresenter {
         id: offer.id.value,
         amount: offer.amount,
         price: offer.price,
-        total: offer.total,
+        subtotal: offer.subtotal,
         fee: offer.fee,
         description: offer.description,
         comment: offer.comment,

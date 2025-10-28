@@ -18,7 +18,7 @@ export class Merchandise extends Offer<MerchandiseProps> {
     return this.props.farm;
   }
 
-  get total() {
+  get subtotal() {
     return this.props.price + this.props.fee;
   }
 
