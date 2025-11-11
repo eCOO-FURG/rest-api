@@ -58,7 +58,7 @@ export class FetchPendingsUseCase {
     if (boxes == null) {
       boxes = await this.boxesRepository.count({
         status: "PENDING",
-        catalog: { cycle: { id: cycle_id } },
+        cycle: { id: cycle_id }
       });
 
       await this.cacheManager.set(`boxes:pending:${cycle_id}:${date}`, boxes);

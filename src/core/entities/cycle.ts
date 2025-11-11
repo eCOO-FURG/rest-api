@@ -2,6 +2,9 @@
 import { Entity, EntityRequest } from "@/core/entities/entity";
 import { Offer } from "@/core/entities/offer";
 
+// Types
+import { Optional } from "@/core/types/optional";
+
 export type CycleWeek = (typeof Cycle.Week)[number][];
 
 export interface CycleProps extends EntityRequest {
@@ -29,9 +32,10 @@ export class Cycle extends Entity<CycleProps> {
     return this.props.deliver;
   }
 
-  static create({ offer, order, deliver, ...props }: CycleProps) {
+  static create({ offer, order, deliver, offers, ...props }: Optional<CycleProps, "offers">) {
     return new Cycle({
       ...props,
+      offers: offers ?? [],
       offer: this.sort(offer),
       order: this.sort(order),
       deliver: this.sort(deliver),

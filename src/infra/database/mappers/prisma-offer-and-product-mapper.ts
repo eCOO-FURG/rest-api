@@ -23,7 +23,6 @@ export class PrismaOfferAndProductMapper {
       id: new UUID(raw.id),
       amount: raw.amount,
       price: raw.price.toNumber(),
-      fee: raw.fee.toNumber(),
       farm_id: new UUID(raw.farm_id),
       cycle_id: raw.cycle_id ? new UUID(raw.cycle_id) : null,
       market_id: raw.market_id ? new UUID(raw.market_id) : null,

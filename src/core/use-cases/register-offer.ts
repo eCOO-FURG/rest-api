@@ -116,7 +116,6 @@ export class RegisterOfferUseCase {
       description,
       comment,
       expires_at,
-      fee: price * (farm.fee / 100),
     });
 
     if (cycle_id) {

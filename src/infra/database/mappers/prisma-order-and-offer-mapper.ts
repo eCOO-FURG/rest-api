@@ -27,7 +27,7 @@ export class PrismaOrderAndOfferMapper {
       offer_id: new UUID(raw.offer_id),
       offer: PrismaOfferAndProductMapper.toDomain(raw.offer),
       bag_id: new UUID(raw.bag_id),
-      box_id: new UUID(raw.box_id),
+      box_id: raw.box_id ? new UUID(raw.box_id) : null,
       amount: raw.amount,
       subtotal: raw.subtotal.toNumber(),
       fee: raw.fee.toNumber(),

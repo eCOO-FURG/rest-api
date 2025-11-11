@@ -32,6 +32,10 @@ export class BagAndOrders extends Bag<BagAndOrdersProps> {
     return this.props.orders;
   }
 
+  set orders(value: OrderAndDetails[]) {
+    this.props.orders = value;
+  }
+
   get paid() {
     return this.props.payment?.status === "DONE";
   }
