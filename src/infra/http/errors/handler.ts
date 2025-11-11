@@ -24,19 +24,15 @@ export const handler = (
   _next: NextFunction,
 ) => {
   if (error instanceof Joi.ValidationError) {
-    const info = error.details[0].context?.message ?? "";
-
     return response.status(400).send({
       message: "Ocorreu um erro de validação.",
       code: "bad-request",
-      details: `${error.message.replace(/['"]/g, "")}. ${info}`,
+      details: `${error.message.replace(/['"]/g, "")}.`,
     });
   }
 
   if (error instanceof SyntaxError) {
-    return response
-      .status(400)
-      .send({ message: "Sintaxe incorreta.", code: "syntax-error" });
+    return response.status(400).send({ message: "Sintaxe incorreta.", code: "syntax-error" });
   }
 
   if (error instanceof MulterError) {
@@ -62,15 +58,12 @@ export const handler = (
   if (error instanceof DomainError) {
     const found = HttpErrorMapper.find(error);
 
-    if (found)
-      return response
-        .status(found.status)
-        .send({ message: found.message, code: found.code });
+    if (found) {
+      return response.status(found.status).send({ message: found.message, code: found.code });
+    }
   }
 
   Logger.log(error);
 
-  return response
-    .status(500)
-    .send({ message: "Ocorreu um erro interno.", code: "internal-error" });
+  return response.status(500).send({ message: "Ocorreu um erro interno.", code: "internal-error" });
 };

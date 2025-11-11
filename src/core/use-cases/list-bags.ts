@@ -26,18 +26,13 @@ export class ListBagsUseCase {
     private cyclesRepository: CyclesRepository,
   ) {}
 
-  async execute({
-    user_id,
-    since,
-    before,
-    page,
-    statuses,
-    cycle_id,
-  }: ListBagsUseCaseRequest) {
+  async execute({ user_id, since, before, page, statuses, cycle_id }: ListBagsUseCaseRequest) {
     if (user_id) {
       const user = await this.usersRepository.find("user", { id: user_id });
 
-      if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+      if (!user) {
+        throw new ResourceNotFoundError("Usuário", user_id);
+      }
     }
 
     if (cycle_id) {
@@ -45,7 +40,9 @@ export class ListBagsUseCase {
         id: cycle_id,
       });
 
-      if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+      if (!cycle) {
+        throw new ResourceNotFoundError("Ciclo", cycle_id);
+      }
     }
 
     const bags = await this.bagsRepository.list(

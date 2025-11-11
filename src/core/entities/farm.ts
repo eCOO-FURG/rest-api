@@ -5,6 +5,7 @@ import { Optional } from "@/core/types/optional";
 import { Entity, EntityRequest } from "@/core/entities/entity";
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { User } from "@/core/entities/user";
+import { Offer } from "@/core/entities/offer";
 
 export type FarmStatus = (typeof Farm.statuses)[number];
 
@@ -21,7 +22,13 @@ export interface FarmProps extends EntityRequest {
   status: FarmStatus;
 
   images: string[];
+  offers: Offer[];
 }
+
+export type OptionalFarmProps = Optional<
+  FarmProps,
+  "status" | "fee" | "description" | "photo" | "images" | "offers"
+>;
 
 export class Farm<Props extends FarmProps = FarmProps> extends Entity<Props> {
   get name() {
@@ -88,12 +95,19 @@ export class Farm<Props extends FarmProps = FarmProps> extends Entity<Props> {
     this.props.fee = value;
   }
 
-  static create(
-    props: Optional<
-      FarmProps,
-      "status" | "fee" | "description" | "photo" | "images"
-    >,
-  ) {
+  get active() {
+    return this.props.status === "ACTIVE";
+  }
+
+  get offers() {
+    return this.props.offers;
+  }
+
+  set offers(value: Offer[]) {
+    this.props.offers = value;
+  }
+
+  static create(props: OptionalFarmProps) {
     return new Farm({
       ...props,
       status: props.status ?? "PENDING",
@@ -101,6 +115,7 @@ export class Farm<Props extends FarmProps = FarmProps> extends Entity<Props> {
       description: props.description ?? null,
       photo: props.photo ?? null,
       images: props.images ?? [],
+      offers: props.offers ?? [],
     });
   }
 

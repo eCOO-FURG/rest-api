@@ -1,9 +1,9 @@
 // Entities
 import { Category, CategoryProps } from "@/core/entities/category";
-import { OfferAndDetails } from "@/core/entities/aggregates/offer-and-details";
+import { Merchandise } from "@/core/entities/aggregates/merchandise";
 
 export interface CategoryAndOffersProps extends CategoryProps {
-  offers: OfferAndDetails[];
+  offers: Merchandise[];
 }
 
 export class CategoryAndOffers extends Category<CategoryAndOffersProps> {

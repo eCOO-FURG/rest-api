@@ -9,10 +9,7 @@ import { OfferAndProduct } from "@/core/entities/aggregates/offer-and-product";
 import { PrismaProductMapper } from "@/infra/database/mappers/prisma-product-mapper";
 
 // Repositories
-import {
-  OfferRepositoryReturnType,
-  OfferEntityOf,
-} from "@/core/repositories/offers-repository";
+import { OfferRepositoryReturnType, OfferEntityOf } from "@/core/repositories/offers-repository";
 
 export type PrismaOfferAndProduct = PrismaOffer & {
   product: PrismaProduct;
@@ -26,8 +23,9 @@ export class PrismaOfferAndProductMapper {
       id: new UUID(raw.id),
       amount: raw.amount,
       price: raw.price.toNumber(),
-      fee: raw.fee.toNumber(),
-      catalog_id: new UUID(raw.catalog_id),
+      farm_id: new UUID(raw.farm_id),
+      cycle_id: raw.cycle_id ? new UUID(raw.cycle_id) : null,
+      market_id: raw.market_id ? new UUID(raw.market_id) : null,
       product_id: new UUID(raw.product_id),
       opens_at: raw.opens_at,
       product: PrismaProductMapper.toDomain(raw.product),

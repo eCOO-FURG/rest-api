@@ -1,19 +1,19 @@
 // Entities
 import { Box, BoxProps } from "@/core/entities/box";
-import { CatalogAndFarm } from "@/core/entities/aggregates/catalog-and-farm";
 import { OrderAndOffer } from "@/core/entities/aggregates/order-and-offer";
 
 // Types
 import { Optional } from "@/core/types/optional";
+import { Producer } from "./producer";
 
 export interface BoxAndOrdersProps extends BoxProps {
-  catalog: CatalogAndFarm;
+  farm: Producer;
   orders: OrderAndOffer[];
 }
 
 export class BoxAndOrders extends Box<BoxAndOrdersProps> {
-  get catalog() {
-    return this.props.catalog;
+  get farm() {
+    return this.props.farm;
   }
 
   static create(props: Optional<BoxAndOrdersProps, "orders">) {

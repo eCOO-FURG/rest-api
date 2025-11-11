@@ -12,11 +12,13 @@ export class FetchFarmUseCase {
   constructor(private farmsRepository: FarmsRepository) {}
 
   async execute({ farm_id }: FetchFarmUseCaseRequest) {
-    const farm = await this.farmsRepository.find("farm-and-admin", {
+    const farm = await this.farmsRepository.find("producer", {
       id: farm_id,
     });
 
-    if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
+    if (!farm) {
+      throw new ResourceNotFoundError("Fazenda", farm_id);
+    }
 
     return { farm };
   }

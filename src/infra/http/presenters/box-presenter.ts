@@ -2,23 +2,27 @@
 import { Box, BoxProps } from "@/core/entities/box";
 
 // Presenters
-import { CatalogPresenter } from "@/infra/http/presenters/catalog-presenter";
+import { CyclePresenter } from "@/infra/http/presenters/cycle-presenter";
 import { OrderPresenter } from "@/infra/http/presenters/order-presenter";
+import { FarmPresenter } from "@/infra/http/presenters/farm-presenter";
 
 // Types
 import { View } from "@/infra/types/view";
 
 export class BoxPresenter {
   static toHttp(box?: Box): View<BoxProps> {
-    if (box)
+    if (box) {
       return {
         id: box.id.value,
         status: box.status,
-        catalog_id: box.catalog_id.value,
-        catalog: CatalogPresenter.toHttp(box.catalog),
+        cycle_id: box.cycle_id.value,
+        cycle: CyclePresenter.toHttp(box.cycle),
+        farm_id: box.farm_id.value,
+        farm: FarmPresenter.toHttp(box.farm),
         orders: box.orders.map(OrderPresenter.toHttp),
         created_at: box.created_at,
         updated_at: box.updated_at,
       };
+    }
   }
 }

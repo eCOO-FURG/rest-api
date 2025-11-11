@@ -34,8 +34,9 @@ export async function registerFarmImageController(
 
     const { image } = parse(registerFarmImageSchema, request.body);
 
-    const registerFarmImageUseCase =
-      container.resolve<RegisterFarmImageUseCase>("registerFarmImageUseCase");
+    const registerFarmImageUseCase = container.resolve<RegisterFarmImageUseCase>(
+      "registerFarmImageUseCase",
+    );
 
     await registerFarmImageUseCase.execute({
       farm_id,

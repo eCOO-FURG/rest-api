@@ -24,9 +24,7 @@ export async function registerFarmController(
   try {
     const { name, tally } = parse(registerFarmSchema, request.body);
 
-    const registerFarmUseCase = container.resolve<RegisterFarmUseCase>(
-      "registerFarmUseCase",
-    );
+    const registerFarmUseCase = container.resolve<RegisterFarmUseCase>("registerFarmUseCase");
 
     await registerFarmUseCase.execute({
       user_id: request.user_id,

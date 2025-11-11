@@ -6,7 +6,7 @@ import { View } from "@/infra/types/view";
 
 export class UserPresenter {
   static toHttp(user?: User): View<UserProps> {
-    if (user)
+    if (user) {
       return {
         id: user.id.value,
         first_name: user.first_name,
@@ -22,5 +22,6 @@ export class UserPresenter {
         created_at: user.created_at,
         updated_at: user.updated_at,
       };
+    }
   }
 }

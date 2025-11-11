@@ -13,6 +13,7 @@ import { makeUser } from "@/test/factories/make-user";
 import { InMemoryOtpsRepository } from "@/test/repositories/in-memory-otps-repository";
 import { InMemorySessionsRepository } from "@/test/repositories/in-memory-sessions-repository";
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
+import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 
 // Errors
 import { WrongCredentialsError } from "@/core/errors/wrong-credentials";
@@ -27,6 +28,7 @@ import { makeOtp } from "@/test/factories/make-otp";
 let usersRepository: InMemoryUsersRepository;
 let otpsRepository: InMemoryOtpsRepository;
 let sessionsRepository: InMemorySessionsRepository;
+let farmsRepository: InMemoryFarmsRepository;
 
 let mockedEncrypter: MockedEncrypter;
 let mockedHasher: MockedHasher;
@@ -38,12 +40,14 @@ describe("authenticate", () => {
     usersRepository = new InMemoryUsersRepository();
     otpsRepository = new InMemoryOtpsRepository();
     sessionsRepository = new InMemorySessionsRepository();
+    farmsRepository = new InMemoryFarmsRepository();
 
     mockedEncrypter = new MockedEncrypter();
     mockedHasher = new MockedHasher();
 
     sut = new AuthenticateUseCase(
       usersRepository,
+      farmsRepository,
       otpsRepository,
       sessionsRepository,
       mockedEncrypter,

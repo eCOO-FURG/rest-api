@@ -16,9 +16,7 @@ export async function fetchWarehouseController(
   next: NextFunction,
 ) {
   try {
-    const fetchWarehouseUseCase = container.resolve<FetchWarehouseUseCase>(
-      "fetchWarehouseUseCase",
-    );
+    const fetchWarehouseUseCase = container.resolve<FetchWarehouseUseCase>("fetchWarehouseUseCase");
 
     const { warehouse } = await fetchWarehouseUseCase.execute();
 

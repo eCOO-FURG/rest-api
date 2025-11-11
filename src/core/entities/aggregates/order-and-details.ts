@@ -1,12 +1,12 @@
 // Entities
 import { Order, OrderProps } from "@/core/entities/order";
-import { OfferAndDetails } from "@/core/entities/aggregates/offer-and-details";
+import { Merchandise } from "@/core/entities/aggregates/merchandise";
 
 export interface OrderAndDetailsProps extends OrderProps {
-  offer: OfferAndDetails;
+  offer: Merchandise;
 }
 
-export class OrderAndDetails extends Order {
+export class OrderAndDetails extends Order<OrderAndDetailsProps> {
   get offer() {
     return this.props.offer;
   }

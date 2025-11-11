@@ -22,24 +22,28 @@ export class DeleteFarmImageUseCase {
     private storage: Storage,
   ) {}
 
-  async execute({
-    user_id,
-    farm_id,
-    image_url,
-  }: DeleteFarmImageUseCaseRequest) {
+  async execute({ user_id, farm_id, image_url }: DeleteFarmImageUseCaseRequest) {
     const farm = await this.farmsRepository.find("farm", { id: farm_id });
 
-    if (!farm) throw new ResourceNotFoundError("Fazenda", farm_id);
+    if (!farm) {
+      throw new ResourceNotFoundError("Fazenda", farm_id);
+    }
 
     const user = await this.usersRepository.find("user", { id: user_id });
 
-    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+    if (!user) {
+      throw new ResourceNotFoundError("Usuário", user_id);
+    }
 
-    if (!farm.admin_id.equals(user.id)) throw new UnauthorizedError();
+    if (!farm.admin_id.equals(user.id)) {
+      throw new UnauthorizedError();
+    }
 
     const image = farm.images.find((image) => image === image_url);
 
-    if (!image) throw new ResourceNotFoundError("Imagem", image_url);
+    if (!image) {
+      throw new ResourceNotFoundError("Imagem", image_url);
+    }
 
     await this.storage.delete(image, "farms");
 

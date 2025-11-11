@@ -2,6 +2,7 @@
 import { Message } from "@/core/entities/message";
 import { Farm } from "@/core/entities/farm";
 import { Cycle } from "@/core/entities/cycle";
+import { Market } from "@/core/entities/market";
 import { Bag } from "@/core/entities/bag";
 
 // Types
@@ -48,8 +49,8 @@ export type MailerLoadRequest =
       props: {
         first_name: string;
         bag: Bag;
-        cycle: Cycle;
-        existed: boolean;
+        cycle: Cycle | null;
+        market: Market | null;
       };
     };
 

@@ -23,8 +23,7 @@ export async function deleteOfferController(
   try {
     const { offer_id } = parse(deleteOfferParams, request.params);
 
-    const deleteOfferUseCase =
-      container.resolve<DeleteOfferUseCase>("deleteOfferUseCase");
+    const deleteOfferUseCase = container.resolve<DeleteOfferUseCase>("deleteOfferUseCase");
 
     await deleteOfferUseCase.execute({
       farm_id: request.farm_id,

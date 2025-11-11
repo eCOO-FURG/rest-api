@@ -3,17 +3,17 @@ import { User } from "@/core/entities/user";
 
 // Repositories
 import {
+  UserEntityOf,
+  UserRepositoryReturnType,
   UsersRepository,
   UsersRepositorySearchRequest,
-  UserRepositoryReturnType,
-  UserEntityOf,
 } from "@/core/repositories/users-repository";
 
 // Utils
 import { paginate } from "@/test/utils/paginate";
 
 export class InMemoryUsersRepository implements UsersRepository {
-  items: User[] = [];
+  items: UserEntityOf<UserRepositoryReturnType>[] = [];
 
   async find<T extends UserRepositoryReturnType>(
     _: T,
@@ -44,7 +44,9 @@ export class InMemoryUsersRepository implements UsersRepository {
       ),
     );
 
-    if (!user) return null;
+    if (!user) {
+      return null;
+    }
     return user as UserEntityOf<T>;
   }
 
@@ -78,7 +80,9 @@ export class InMemoryUsersRepository implements UsersRepository {
       ),
     );
 
-    if (page) users = paginate(users, page);
+    if (page) {
+      users = paginate(users, page);
+    }
 
     return users.map((user) => user as UserEntityOf<T>);
   }
@@ -90,5 +94,12 @@ export class InMemoryUsersRepository implements UsersRepository {
   async update(user: User): Promise<void> {
     const index = this.items.findIndex((item) => item.id.equals(user.id));
     this.items[index] = user;
+  }
+
+  async delete(user: User): Promise<void> {
+    const index = this.items.findIndex((item) => item.id.equals(user.id));
+    if (index !== -1) {
+      this.items.splice(index, 1);
+    }
   }
 }

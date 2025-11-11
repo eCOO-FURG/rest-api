@@ -44,9 +44,8 @@ export async function registerProductController(
       request.body,
     );
 
-    const registerProductUseCase = container.resolve<RegisterProductUseCase>(
-      "registerProductUseCase",
-    );
+    const registerProductUseCase =
+      container.resolve<RegisterProductUseCase>("registerProductUseCase");
 
     await registerProductUseCase.execute({
       name,

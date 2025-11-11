@@ -3,9 +3,7 @@ import { User, UserRole } from "@/core/entities/user";
 
 export type UserRepositoryReturnType = "user";
 
-export type UserEntityOf<T extends UserRepositoryReturnType> = T extends "user"
-  ? User
-  : never;
+export type UserEntityOf<T extends UserRepositoryReturnType> = T extends "user" ? User : never;
 
 export interface UsersRepositorySearchRequest {
   id?: string;
@@ -32,4 +30,5 @@ export interface UsersRepository {
   ): Promise<UserEntityOf<T>[]>;
   create(user: User): Promise<void>;
   update(user: User): Promise<void>;
+  delete(user: User): Promise<void>;
 }

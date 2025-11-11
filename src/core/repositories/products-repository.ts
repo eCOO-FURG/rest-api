@@ -4,12 +4,11 @@ import { ProductAndCategory } from "@/core/entities/aggregates/product-and-categ
 
 export type ProductRepositoryReturnType = "product" | "product-and-category";
 
-export type ProductEntityOf<T extends ProductRepositoryReturnType> =
-  T extends "product"
-    ? Product
-    : T extends "product-and-category"
-      ? ProductAndCategory
-      : never;
+export type ProductEntityOf<T extends ProductRepositoryReturnType> = T extends "product"
+  ? Product
+  : T extends "product-and-category"
+    ? ProductAndCategory
+    : never;
 
 export interface ProductsRepositorySearchRequest {
   id?: string;

@@ -118,7 +118,9 @@ async function seedBase() {
 
   const homolog = ["DEVELOPMENT", "STAGING"].includes(env.ENVIRONMENT);
 
-  if (homolog) await seedDevelopment();
+  if (homolog) {
+    await seedDevelopment();
+  }
 }
 
 seedBase()

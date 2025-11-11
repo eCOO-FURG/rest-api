@@ -7,15 +7,10 @@ import { Bag as PrismaBag } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 
 // Repositories
-import {
-  BagRepositoryReturnType,
-  BagEntityOf,
-} from "@/core/repositories/bags-repository";
+import { BagRepositoryReturnType, BagEntityOf } from "@/core/repositories/bags-repository";
 
 export class PrismaBagMapper {
-  static toDomain<T extends BagRepositoryReturnType = "bag">(
-    raw: PrismaBag,
-  ): BagEntityOf<T> {
+  static toDomain<T extends BagRepositoryReturnType = "bag">(raw: PrismaBag): BagEntityOf<T> {
     return Bag.create({
       id: new UUID(raw.id),
       code: raw.code,
@@ -24,7 +19,8 @@ export class PrismaBagMapper {
       shipping: raw.shipping.toNumber(),
       subtotal: raw.subtotal.toNumber(),
       customer_id: new UUID(raw.customer_id),
-      cycle_id: new UUID(raw.cycle_id),
+      cycle_id: raw.cycle_id ? new UUID(raw.cycle_id) : null,
+      market_id: raw.market_id ? new UUID(raw.market_id) : null,
       address_id: raw.address_id ? new UUID(raw.address_id) : null,
       created_at: raw.created_at,
       updated_at: raw.updated_at,
@@ -35,7 +31,8 @@ export class PrismaBagMapper {
     return {
       id: bag.id.value,
       customer_id: bag.customer_id.value,
-      cycle_id: bag.cycle_id.value,
+      market_id: bag.market_id ? bag.market_id.value : null,
+      cycle_id: bag.cycle_id ? bag.cycle_id.value : null,
       address_id: bag.address_id ? bag.address_id.value : null,
       subtotal: new Decimal(bag.subtotal),
       fee: new Decimal(bag.fee),

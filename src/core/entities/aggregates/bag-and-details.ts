@@ -3,8 +3,6 @@ import { User } from "@/core/entities/user";
 import { Bag, BagProps } from "@/core/entities/bag";
 import { Address } from "@/core/entities/address";
 import { Payment } from "@/core/entities/payment";
-
-// Types
 import { Optional } from "@/core/types/optional";
 
 export interface BagAndDetailsProps extends BagProps {

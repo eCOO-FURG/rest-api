@@ -8,6 +8,8 @@ import { User } from "@/core/entities/user";
 
 // Types
 import { Optional } from "@/core/types/optional";
+import { Market } from "./market";
+import { randomCode } from "../utils/random-code";
 
 export type BagStatus = (typeof Bag.statuses)[number];
 
@@ -15,11 +17,14 @@ export interface BagProps extends EntityRequest {
   customer_id: UUID;
   customer?: User;
 
-  cycle_id: UUID;
+  cycle_id: UUID | null;
   cycle?: Cycle;
 
+  market_id: UUID | null;
+  market?: Market;
+
   address_id: UUID | null;
-  address: Address | null;
+  address?: Address | null;
 
   code: string;
   subtotal: number;
@@ -96,11 +101,19 @@ export class Bag<Props extends BagProps = BagProps> extends Entity<Props> {
     return this.props.cycle_id;
   }
 
+  get market_id() {
+    return this.props.market_id;
+  }
+
+  get market() {
+    return this.props.market;
+  }
+
   set status(value: BagStatus) {
     this.props.status = value;
   }
 
-  add(order: Order) {
+  include(order: Order) {
     this.props.orders.push(order);
 
     this.props.subtotal = this.props.subtotal + order.subtotal;
@@ -112,7 +125,15 @@ export class Bag<Props extends BagProps = BagProps> extends Entity<Props> {
   static create(
     props: Optional<
       BagProps,
-      "status" | "subtotal" | "shipping" | "fee" | "orders" | "address_id"
+      | "status"
+      | "subtotal"
+      | "shipping"
+      | "fee"
+      | "orders"
+      | "address_id"
+      | "cycle_id"
+      | "market_id"
+      | "code"
     >,
   ) {
     const bag = new Bag({
@@ -122,6 +143,9 @@ export class Bag<Props extends BagProps = BagProps> extends Entity<Props> {
       subtotal: props.subtotal ?? 0,
       fee: props.fee ?? 0,
       status: props.status ?? "PENDING",
+      cycle_id: props.cycle_id ?? null,
+      market_id: props.market_id ?? null,
+      code: props.code ?? randomCode(),
       orders: props.orders ?? [],
     });
 

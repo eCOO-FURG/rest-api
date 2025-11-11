@@ -41,13 +41,9 @@ export async function updateFarmController(
   try {
     const { farm_id } = parse(updateFarmParams, request.params);
 
-    const { name, tally, description, photo, status, fee } = parse(
-      updateFarmSchema,
-      request.body,
-    );
+    const { name, tally, description, photo, status, fee } = parse(updateFarmSchema, request.body);
 
-    const updateFarmUseCase =
-      container.resolve<UpdateFarmUseCase>("updateFarmUseCase");
+    const updateFarmUseCase = container.resolve<UpdateFarmUseCase>("updateFarmUseCase");
 
     await updateFarmUseCase.execute({
       user_id: request.user_id,

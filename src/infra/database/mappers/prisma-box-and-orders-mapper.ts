@@ -6,24 +6,21 @@ import { UUID } from "@/core/entities/aggregates/uuid";
 import { Box as PrismaBox } from "@prisma/client";
 
 // Repositories
-import {
-  BoxRepositoryReturnType,
-  BoxEntityOf,
-} from "@/core/repositories/boxes-repository";
+import { BoxRepositoryReturnType, BoxEntityOf } from "@/core/repositories/boxes-repository";
 
 // Mappers
-import {
-  PrismaCatalogAndFarmMapper,
-  PrismaCatalogAndFarm,
-} from "@/infra/database/mappers/prisma-catalog-and-farm-mapper";
 import {
   PrismaOrderAndOfferMapper,
   PrismaOrderAndOffer,
 } from "@/infra/database/mappers/prisma-order-and-offer-mapper";
+import {
+  PrismaProducer,
+  PrismaProducerMapper,
+} from "@/infra/database/mappers/prisma-producer-mapper";
 
 export type PrismaBoxAndOrders = PrismaBox & {
   orders: PrismaOrderAndOffer[];
-  catalog: PrismaCatalogAndFarm;
+  farm: PrismaProducer;
 };
 
 export class PrismaBoxAndOrdersMapper {
@@ -33,11 +30,10 @@ export class PrismaBoxAndOrdersMapper {
     return BoxAndOrders.create({
       id: new UUID(raw.id),
       status: raw.status,
-      catalog_id: new UUID(raw.catalog_id),
-      catalog: PrismaCatalogAndFarmMapper.toDomain(raw.catalog),
-      orders: raw.orders.map((order) =>
-        PrismaOrderAndOfferMapper.toDomain(order),
-      ),
+      cycle_id: new UUID(raw.cycle_id),
+      farm_id: new UUID(raw.farm_id),
+      farm: PrismaProducerMapper.toDomain(raw.farm),
+      orders: raw.orders.map(PrismaOrderAndOfferMapper.toDomain),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
     }) as BoxEntityOf<T>;

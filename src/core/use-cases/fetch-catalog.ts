@@ -1,12 +1,13 @@
 // Repositories
-import { CatalogsRepository } from "@/core/repositories/catalogs-repository";
+import { FarmsRepository } from "@/core/repositories/farms-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 interface FetchCatalogUseCaseRequest {
-  catalog_id: string;
+  farm_id: string;
   page: number;
+  cycle_id?: string;
   product?: string;
   available?: boolean;
   remaining?: boolean;
@@ -15,10 +16,11 @@ interface FetchCatalogUseCaseRequest {
 }
 
 export class FetchCatalogUseCase {
-  constructor(private catalogsRepository: CatalogsRepository) {}
+  constructor(private farmsRepository: FarmsRepository) {}
 
   async execute({
-    catalog_id,
+    farm_id,
+    cycle_id,
     product,
     page,
     remaining,
@@ -26,9 +28,10 @@ export class FetchCatalogUseCase {
     since,
     before,
   }: FetchCatalogUseCaseRequest) {
-    const catalog = await this.catalogsRepository.find("catalog-and-offers", {
-      id: catalog_id,
+    const catalog = await this.farmsRepository.find("catalog", {
+      id: farm_id,
       offers: {
+        cycle: { id: cycle_id },
         product: { name: product },
         remaining,
         available,
@@ -38,7 +41,9 @@ export class FetchCatalogUseCase {
       },
     });
 
-    if (!catalog) throw new ResourceNotFoundError("Catálogo", catalog_id);
+    if (!catalog) {
+      throw new ResourceNotFoundError("Catálogo", farm_id);
+    }
 
     return { catalog };
   }

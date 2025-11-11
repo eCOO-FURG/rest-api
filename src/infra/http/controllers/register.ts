@@ -10,6 +10,7 @@ import container from "@/infra/container";
 
 // Validation
 import { parse } from "@/infra/http/validation/parse";
+import { file } from "@/infra/http/validation/file";
 
 export const registerSchema = Joi.object({
   first_name: Joi.string().required(),
@@ -20,19 +21,17 @@ export const registerSchema = Joi.object({
   password: Joi.string().min(8).optional(),
   role: Joi.string().valid("USER", "PRODUCER").required(),
   chat: Joi.string().optional(),
+  photo: file.optional(),
 });
 
-export async function registerController(
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) {
+export async function registerController(request: Request, response: Response, next: NextFunction) {
   try {
-    const { first_name, last_name, cpf, email, phone, password, chat, role } =
-      parse(registerSchema, request.body);
+    const { first_name, last_name, cpf, email, phone, password, chat, role } = parse(
+      registerSchema,
+      request.body,
+    );
 
-    const registerUseCase =
-      container.resolve<RegisterUseCase>("registerUsecase");
+    const registerUseCase = container.resolve<RegisterUseCase>("registerUsecase");
 
     await registerUseCase.execute({
       first_name,

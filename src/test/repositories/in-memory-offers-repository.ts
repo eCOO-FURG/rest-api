@@ -1,6 +1,4 @@
 // Entities
-import { OfferAndDetails } from "@/core/entities/aggregates/offer-and-details";
-import { OfferAndProduct } from "@/core/entities/aggregates/offer-and-product";
 import { Offer } from "@/core/entities/offer";
 
 // Repositories
@@ -15,18 +13,17 @@ import {
 import { now } from "@/core/utils/now";
 import { paginate } from "@/test/utils/paginate";
 
-// Factories
-import { makeCatalogAndFarm } from "@/test/factories/make-farm-and-catalog";
-import { makeProduct } from "@/test/factories/make-product";
 export class InMemoryOffersRepository implements OffersRepository {
-  items: Offer[] = [];
+  items: OfferEntityOf<OfferRepositoryReturnType>[] = [];
 
   async find<T extends OfferRepositoryReturnType>(
-    type: T,
+    _: T,
     {
       id,
-      catalog,
       product,
+      cycle,
+      farm,
+      market,
       since,
       active,
       recurring,
@@ -37,18 +34,18 @@ export class InMemoryOffersRepository implements OffersRepository {
     const offer = this.items.find((item) => {
       return (
         (!id || item.id.equals(id)) &&
-        (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
-        (!catalog?.cycle?.id ||
-          item.catalog?.cycle_id.value === catalog.cycle.id) &&
         (!product?.id || item.product_id.equals(product.id)) &&
         (!product?.name || item.product?.name === product.name) &&
-        (!product?.category?.id ||
-          item.product?.category_id.value === product.category.id) &&
+        (!product?.category?.id || item.product?.category_id.value === product.category.id) &&
+        (!cycle?.id || item.cycle_id?.value === cycle.id) &&
+        (!farm?.id || item.farm_id?.value === farm.id) &&
+        (!market?.id || item.market_id?.value === market.id) &&
+        (!farm?.name || item.farm?.name === farm.name) &&
+        (!market?.name || item.market?.name === market.name) &&
         (!active || item.active === active) &&
         (!since || item.created_at >= since) &&
         (!before || item.created_at <= before) &&
-        (typeof recurring !== "boolean" ||
-          (recurring ? item.closes_at : !item.closes_at)) &&
+        (typeof recurring !== "boolean" || (recurring ? item.closes_at : !item.closes_at)) &&
         (typeof available !== "boolean" ||
           (available
             ? (item.closes_at === null || item.closes_at > now()) &&
@@ -62,49 +59,26 @@ export class InMemoryOffersRepository implements OffersRepository {
       );
     });
 
-    if (!offer) return null;
-
-    switch (type) {
-      default:
-        return offer as OfferEntityOf<T>;
-      case "offer-and-product":
-        return OfferAndProduct.create({
-          ...offer.props,
-          product: offer.product ?? makeProduct(),
-        }) as OfferEntityOf<T>;
-      case "offer-and-details":
-        return OfferAndDetails.create({
-          ...offer.props,
-          product: offer.product ?? makeProduct(),
-          catalog: makeCatalogAndFarm(offer.catalog),
-        }) as OfferEntityOf<T>;
+    if (!offer) {
+      return null;
     }
+
+    return offer as OfferEntityOf<T>;
   }
 
   async list<T extends OfferRepositoryReturnType>(
-    type: T,
-    {
-      id,
-      ids,
-      catalog,
-      product,
-      available,
-      since,
-      before,
-    }: OffersRepositorySearchRequest,
+    _: T,
+    { id, ids, cycle, product, available, since, before }: OffersRepositorySearchRequest,
     page?: number,
   ): Promise<OfferEntityOf<T>[]> {
     let offers = this.items.filter((item) => {
       return (
         (!id || item.id.equals(id)) &&
         (!ids || ids.includes(item.id.value)) &&
-        (!catalog?.id || item.catalog_id.equals(catalog.id)) &&
-        (!catalog?.cycle?.id ||
-          item.catalog?.cycle_id.value === catalog.cycle.id) &&
+        (!cycle?.id || item.cycle_id?.value === cycle.id) &&
         (!product?.id || item.product_id.equals(product.id)) &&
         (!product?.name || item.product?.name === product.name) &&
-        (!product?.category?.id ||
-          item.product?.category_id.value === product.category.id) &&
+        (!product?.category?.id || item.product?.category_id.value === product.category.id) &&
         (!available ||
           (typeof available === "boolean" &&
             (available
@@ -121,26 +95,19 @@ export class InMemoryOffersRepository implements OffersRepository {
       );
     });
 
-    if (page) offers = paginate(offers, page);
-
-    switch (type) {
-      default:
-        return offers as OfferEntityOf<T>[];
-      case "offer-and-details":
-        return offers.map((offer) => {
-          return OfferAndDetails.create({
-            ...offer.props,
-            product: offer.product ?? makeProduct(),
-            catalog: makeCatalogAndFarm(offer.catalog),
-          }) as OfferEntityOf<T>;
-        });
+    if (page) {
+      offers = paginate(offers, page);
     }
+
+    return offers as OfferEntityOf<T>[];
   }
 
   async update(offer: Offer): Promise<void> {
     const index = this.items.findIndex((item) => item.id.equals(offer.id));
 
-    if (index === -1) return;
+    if (index === -1) {
+      return;
+    }
 
     this.items[index] = offer;
   }
@@ -148,8 +115,14 @@ export class InMemoryOffersRepository implements OffersRepository {
   async delete(offer: Offer): Promise<void> {
     const index = this.items.findIndex((item) => item.id.equals(offer.id));
 
-    if (index === -1) return;
+    if (index === -1) {
+      return;
+    }
 
     this.items.splice(index, 1);
+  }
+
+  async create(offer: Offer): Promise<void> {
+    this.items.push(offer);
   }
 }

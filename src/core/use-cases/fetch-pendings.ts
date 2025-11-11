@@ -27,7 +27,9 @@ export class FetchPendingsUseCase {
   async execute({ cycle_id }: FetchPendingsUseCaseRequest) {
     const cycle = await this.cyclesRepository.find("cycle", { id: cycle_id });
 
-    if (!cycle) throw new ResourceNotFoundError("Ciclo", cycle_id);
+    if (!cycle) {
+      throw new ResourceNotFoundError("Ciclo", cycle_id);
+    }
 
     const farms = await this.countFarms();
 
@@ -51,14 +53,12 @@ export class FetchPendingsUseCase {
   private async countBoxes(cycle_id: string, period: Date) {
     const date = period.toISOString();
 
-    let boxes = await this.cacheManager.get<number>(
-      `boxes:pending:${cycle_id}:${date}`,
-    );
+    let boxes = await this.cacheManager.get<number>(`boxes:pending:${cycle_id}:${date}`);
 
     if (boxes == null) {
       boxes = await this.boxesRepository.count({
         status: "PENDING",
-        catalog: { cycle: { id: cycle_id } },
+        cycle: { id: cycle_id },
       });
 
       await this.cacheManager.set(`boxes:pending:${cycle_id}:${date}`, boxes);

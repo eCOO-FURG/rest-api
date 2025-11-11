@@ -33,13 +33,17 @@ export class RequestHelpUseCase {
       id: user_id,
     });
 
-    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+    if (!user) {
+      throw new ResourceNotFoundError("Usuário", user_id);
+    }
 
-    const farm = await this.farmsRepository.find("farm-and-admin", {
+    const farm = await this.farmsRepository.find("producer", {
       admin: { id: user_id },
     });
 
-    if (!farm) throw new ResourceNotFoundError("Fazenda do usuário", user_id);
+    if (!farm) {
+      throw new ResourceNotFoundError("Fazenda do usuário", user_id);
+    }
 
     const view = await this.mailer.load({
       view: "help",

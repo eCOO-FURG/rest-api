@@ -23,9 +23,7 @@ export async function resetPasswordController(
   try {
     const { email } = parse(resetPasswordSchema, request.body);
 
-    const resetPasswordUseCase = container.resolve<ResetPasswordUseCase>(
-      "resetPasswordUseCase",
-    );
+    const resetPasswordUseCase = container.resolve<ResetPasswordUseCase>("resetPasswordUseCase");
 
     await resetPasswordUseCase.execute({
       email,

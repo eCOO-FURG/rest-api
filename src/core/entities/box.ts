@@ -1,16 +1,21 @@
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
 import { UUID } from "@/core/entities/aggregates/uuid";
+import { Cycle } from "@/core/entities/cycle";
+import { Farm } from "@/core/entities/farm";
 import { Order } from "@/core/entities/order";
-import { Catalog } from "@/core/entities/catalog";
 
 // Types
 import { Optional } from "@/core/types/optional";
 
 export type BoxStatus = (typeof Box.statuses)[number];
+
 export interface BoxProps extends EntityRequest {
-  catalog_id: UUID;
-  catalog?: Catalog;
+  farm_id: UUID;
+  farm?: Farm;
+
+  cycle_id: UUID;
+  cycle?: Cycle;
 
   status: BoxStatus;
 
@@ -34,12 +39,20 @@ export class Box<Props extends BoxProps = BoxProps> extends Entity<Props> {
     this.props.orders = value;
   }
 
-  get catalog_id() {
-    return this.props.catalog_id;
+  get farm_id() {
+    return this.props.farm_id;
   }
 
-  get catalog() {
-    return this.props.catalog;
+  get farm() {
+    return this.props.farm;
+  }
+
+  get cycle_id() {
+    return this.props.cycle_id;
+  }
+
+  get cycle() {
+    return this.props.cycle;
   }
 
   static create(props: Optional<BoxProps, "status" | "orders">) {

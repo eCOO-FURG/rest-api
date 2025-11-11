@@ -3,6 +3,7 @@ import { UsersRepository } from "@/core/repositories/users-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 
 // Services
 import { Encrypter } from "@/core/cryptography/encrypter";
@@ -47,7 +48,39 @@ export class UpdateUserUseCase {
   }: UpdateUserUseCaseRequest) {
     const user = await this.usersRepository.find("user", { id: user_id });
 
-    if (!user) throw new ResourceNotFoundError("Usuário", user_id);
+    if (!user) {
+      throw new ResourceNotFoundError("Usuário", user_id);
+    }
+
+    if (email) {
+      const userWithSameEmail = await this.usersRepository.find("user", {
+        email,
+      });
+
+      if (userWithSameEmail && !userWithSameEmail.id.equals(user.id)) {
+        throw new ResourceAlreadyExistsError("Usuário", "com esse email");
+      }
+    }
+
+    if (cpf) {
+      const userWithSameCpf = await this.usersRepository.find("user", {
+        cpf,
+      });
+
+      if (userWithSameCpf && !userWithSameCpf.id.equals(user.id)) {
+        throw new ResourceAlreadyExistsError("Usuário", "com esse CPF");
+      }
+    }
+
+    if (phone) {
+      const userWithSamePhone = await this.usersRepository.find("user", {
+        phone,
+      });
+
+      if (userWithSamePhone && !userWithSamePhone.id.equals(user.id)) {
+        throw new ResourceAlreadyExistsError("Usuário", "com esse telefone");
+      }
+    }
 
     user.first_name = first_name ?? user.first_name;
     user.last_name = last_name ?? user.last_name;
@@ -56,7 +89,9 @@ export class UpdateUserUseCase {
     user.cpf = new CPF(cpf ?? user.cpf.value);
     user.phone = new Phone(phone ?? user.phone.value);
 
-    if (password) user.password = await this.encrypter.encrypt(password);
+    if (password) {
+      user.password = await this.encrypter.encrypt(password);
+    }
 
     if (photo) {
       const urls = await this.storage.upload([photo], "users");

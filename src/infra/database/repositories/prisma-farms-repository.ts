@@ -14,12 +14,17 @@ import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
 import { PrismaFarmMapper } from "@/infra/database/mappers/prisma-farm-mapper";
-import { PrismaFarmAndAdminMapper } from "@/infra/database/mappers/prisma-farm-and-admin-mapper";
+import { PrismaProducerMapper } from "@/infra/database/mappers/prisma-producer-mapper";
+import { PrismaCatalog, PrismaCatalogMapper } from "@/infra/database/mappers/prisma-catalog-mapper";
+
+// Utils
+import { now } from "@/core/utils/now";
+import { PrismaUserMapper } from "../mappers/prisma-user-mapper";
 
 export class PrismaFarmsRepository implements FarmsRepository {
   async find<T extends FarmRepositoryReturnType>(
     type: T,
-    { id, name, status, tally, admin }: FarmsRepositorySearchRequest,
+    { id, name, status, tally, admin, offers }: FarmsRepositorySearchRequest,
   ): Promise<FarmEntityOf<T> | null> {
     const farm = await prisma.farm.findFirst({
       where: {
@@ -30,23 +35,97 @@ export class PrismaFarmsRepository implements FarmsRepository {
         admin,
       },
       include: {
-        admin: type === "farm-and-admin",
+        admin: type === "producer",
+        ...(type === "catalog" && {
+          admin: true,
+          offers: {
+            include: { product: true },
+            where: {
+              cycle: { id: offers?.cycle?.id },
+              market: { id: offers?.market?.id },
+              ...(offers?.period?.since && {
+                OR: [{ opens_at: { gte: offers.period.since } }, { closes_at: null }],
+              }),
+              ...(offers?.period?.before && {
+                OR: [{ opens_at: { lte: offers.period.before } }, { closes_at: null }],
+              }),
+              product: {
+                name: {
+                  contains: offers?.product?.name,
+                  mode: "insensitive",
+                },
+                category_id: offers?.product?.category?.id,
+              },
+              ...(typeof offers?.remaining === "boolean" &&
+                (offers.remaining
+                  ? {
+                      amount: {
+                        gt: 0,
+                      },
+                    }
+                  : {
+                      amount: {
+                        equals: 0,
+                      },
+                    })),
+              ...(typeof offers?.available === "boolean" &&
+                (offers.available
+                  ? {
+                      AND: [
+                        {
+                          OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+                        },
+                        {
+                          OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                        },
+                        {
+                          active: true,
+                        },
+                      ],
+                    }
+                  : {
+                      OR: [
+                        { closes_at: { not: null, lte: now() } },
+                        { expires_at: { not: null, lte: now() } },
+                        { active: false },
+                      ],
+                    })),
+              created_at: {
+                gte: offers?.since,
+                lte: offers?.before,
+              },
+            },
+            ...(offers?.page && {
+              skip: (offers.page - 1) * 20,
+              take: 20,
+            }),
+            orderBy: {
+              product: {
+                name: "asc",
+              },
+            },
+          },
+        }),
       },
     });
 
-    if (!farm) return null;
+    if (!farm) {
+      return null;
+    }
 
     switch (type) {
       default:
         return PrismaFarmMapper.toDomain<T>(farm);
-      case "farm-and-admin":
-        return PrismaFarmAndAdminMapper.toDomain<T>(farm);
+      case "producer":
+        return PrismaProducerMapper.toDomain<T>(farm);
+      case "catalog":
+        return PrismaCatalogMapper.toDomain<T>(farm as PrismaCatalog);
     }
   }
 
   async list<T extends FarmRepositoryReturnType>(
     type: T,
-    { id, name, status, tally, admin }: FarmsRepositorySearchRequest,
+    { id, name, status, tally, admin, offers }: FarmsRepositorySearchRequest,
     page?: number,
   ): Promise<FarmEntityOf<T>[]> {
     const farms = await prisma.farm.findMany({
@@ -56,16 +135,79 @@ export class PrismaFarmsRepository implements FarmsRepository {
         status,
         tally,
         admin,
+        offers: {
+          some: {
+            cycle: { id: offers?.cycle?.id },
+            market: { id: offers?.market?.id },
+            ...(offers?.period?.since && {
+              OR: [{ opens_at: { gte: offers.period.since } }, { closes_at: null }],
+            }),
+            ...(offers?.period?.before && {
+              OR: [{ opens_at: { lte: offers.period.before } }, { closes_at: null }],
+            }),
+            product: {
+              name: { contains: offers?.product?.name, mode: "insensitive" },
+              category_id: offers?.product?.category?.id,
+            },
+            ...(typeof offers?.remaining === "boolean" &&
+              (offers.remaining
+                ? {
+                    amount: {
+                      gt: 0,
+                    },
+                  }
+                : {
+                    amount: {
+                      equals: 0,
+                    },
+                  })),
+            ...(typeof offers?.available === "boolean" &&
+              (offers.available
+                ? {
+                    AND: [
+                      {
+                        OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+                      },
+                      {
+                        OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                      },
+                      {
+                        active: true,
+                      },
+                    ],
+                  }
+                : {
+                    OR: [
+                      { closes_at: { not: null, lte: now() } },
+                      { expires_at: { not: null, lte: now() } },
+                      { active: false },
+                    ],
+                  })),
+
+            created_at: {
+              gte: offers?.since,
+              lte: offers?.before,
+            },
+          },
+        },
       },
-      include: { admin: type === "farm-and-admin" },
+      include: {
+        admin: type === "producer",
+        ...(type === "catalog" && {
+          admin: true,
+          offers: { include: { product: true } },
+        }),
+      },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
     switch (type) {
       default:
         return farms.map(PrismaFarmMapper.toDomain<T>);
-      case "farm-and-admin":
-        return farms.map(PrismaFarmAndAdminMapper.toDomain<T>);
+      case "producer":
+        return farms.map(PrismaProducerMapper.toDomain<T>);
+      case "catalog":
+        return farms.map((farm) => PrismaCatalogMapper.toDomain(farm as PrismaCatalog));
     }
   }
 
@@ -75,10 +217,13 @@ export class PrismaFarmsRepository implements FarmsRepository {
     await prisma.$transaction(async (ctx) => {
       await ctx.farm.create({ data });
 
-      if (farm.admin && !farm.admin.roles.includes("PRODUCER")) {
-        await ctx.user.update({
-          where: { id: farm.admin_id.value },
-          data: { roles: { push: "PRODUCER" } },
+      if (farm.admin) {
+        const admin = PrismaUserMapper.toPrisma(farm.admin);
+
+        await ctx.user.upsert({
+          where: { id: farm.admin.id.value },
+          create: admin,
+          update: admin,
         });
       }
     });
@@ -91,13 +236,7 @@ export class PrismaFarmsRepository implements FarmsRepository {
     });
   }
 
-  async count({
-    id,
-    name,
-    status,
-    tally,
-    admin,
-  }: FarmsRepositorySearchRequest): Promise<number> {
+  async count({ id, name, status, tally, admin }: FarmsRepositorySearchRequest): Promise<number> {
     return await prisma.farm.count({
       where: {
         id,

@@ -5,10 +5,7 @@ import { Bag } from "@/core/entities/bag";
 import { OrderStatus } from "@/core/entities/order";
 import { PaymentMethod, PaymentStatus } from "@/core/entities/payment";
 
-export type BagRepositoryReturnType =
-  | "bag"
-  | "bag-and-details"
-  | "bag-and-orders";
+export type BagRepositoryReturnType = "bag" | "bag-and-details" | "bag-and-orders";
 
 export type BagEntityOf<T extends BagRepositoryReturnType> = T extends "bag"
   ? Bag
@@ -24,6 +21,7 @@ export interface BagsRepositorySearchRequest {
   statuses?: Bag["status"][];
   user?: { id?: string; name?: string };
   cycle?: { id?: string };
+  market?: { id?: string };
   address?: { id?: string } | null;
   orders?: { id?: string; page?: number; statuses?: OrderStatus[] };
   payment?: {
@@ -44,6 +42,5 @@ export interface BagsRepository {
     filters: BagsRepositorySearchRequest,
     page?: number,
   ): Promise<BagEntityOf<T>[]>;
-  create(bag: Bag): Promise<void>;
-  update(bag: Bag): Promise<void>;
+  save(bag: Bag): Promise<void>;
 }

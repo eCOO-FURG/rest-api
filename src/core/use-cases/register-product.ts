@@ -43,7 +43,9 @@ export class RegisterProductUseCase {
       id: category_id,
     });
 
-    if (!category) throw new ResourceNotFoundError("Categoria", category_id);
+    if (!category) {
+      throw new ResourceNotFoundError("Categoria", category_id);
+    }
 
     const equal = await this.productsRepository.find("product", {
       name,
@@ -65,8 +67,9 @@ export class RegisterProductUseCase {
       return await this.productsRepository.create(product);
     }
 
-    if (!equal.archived)
+    if (!equal.archived) {
       throw new ResourceAlreadyExistsError("Produto", equal.id.value);
+    }
 
     equal.unarchive();
 

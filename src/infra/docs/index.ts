@@ -5,28 +5,12 @@ import j2s, { SwaggerSchema } from "joi-to-swagger";
 import { authenticateSchema } from "@/infra/http/controllers/authenticate";
 import { deleteFarmImageParams } from "@/infra/http/controllers/delete-farm-image";
 import { deleteOfferParams } from "@/infra/http/controllers/delete-offer";
-import {
-  fetchBagParams,
-  fetchBagQuery,
-} from "@/infra/http/controllers/fetch-bag";
-import {
-  fetchBoxParams,
-  fetchBoxQuery,
-} from "@/infra/http/controllers/fetch-box";
-import {
-  fetchCatalogParams,
-  fetchCatalogQuery,
-} from "@/infra/http/controllers/fetch-catalog";
-import {
-  fetchCategoryParams,
-  fetchCategoryQuery,
-} from "@/infra/http/controllers/fetch-category";
+import { fetchBagParams, fetchBagQuery } from "@/infra/http/controllers/fetch-bag";
+import { fetchBoxParams, fetchBoxQuery } from "@/infra/http/controllers/fetch-box";
+import { fetchCatalogParams, fetchCatalogQuery } from "@/infra/http/controllers/fetch-catalog";
+import { fetchCategoryParams, fetchCategoryQuery } from "@/infra/http/controllers/fetch-category";
 import { updateWarehouseSchema } from "@/infra/http/controllers/update-warehouse";
 import { fetchCurrentBoxQuery } from "@/infra/http/controllers/fetch-current-box";
-import {
-  fetchCycleCatalogParams,
-  fetchCycleCatalogQuery,
-} from "@/infra/http/controllers/fetch-cycle-catalog";
 import { fetchFarmParams } from "@/infra/http/controllers/fetch-farm";
 import { fetchInboundReportQuery } from "@/infra/http/controllers/fetch-inbound-report";
 import { fetchPendingsQuery } from "@/infra/http/controllers/fetch-pendings";
@@ -40,6 +24,7 @@ import { listCurrentBagsQuery } from "@/infra/http/controllers/list-current-bags
 import { listFarmsQuery } from "@/infra/http/controllers/list-farms";
 import { listOffersQuery } from "@/infra/http/controllers/list-offers";
 import { listProductsQuery } from "@/infra/http/controllers/list-products";
+import { listUsersQuery } from "@/infra/http/controllers/list-users";
 import { openPaymentSchema } from "@/infra/http/controllers/open-payment";
 import { registerSchema } from "@/infra/http/controllers/register";
 import { registerFarmSchema } from "@/infra/http/controllers/register-farm";
@@ -47,37 +32,28 @@ import { registerFarmImageSchema } from "@/infra/http/controllers/register-farm-
 import { registerOfferSchema } from "@/infra/http/controllers/register-offer";
 import { registerOrderSchema } from "@/infra/http/controllers/register-order";
 import { registerPaymentSchema } from "@/infra/http/controllers/register-payment";
+import { registerProducerSchema } from "@/infra/http/controllers/register-producer";
 import { registerProductSchema } from "@/infra/http/controllers/register-product";
 import { requestHelpSchema } from "@/infra/http/controllers/request-help";
 import { requestOtpSchema } from "@/infra/http/controllers/request-otp";
 import { resetPasswordSchema } from "@/infra/http/controllers/reset-password";
 import { sendNotificationSchema } from "@/infra/http/controllers/send-notification";
 import { updateBagSchema } from "@/infra/http/controllers/update-bag";
-import {
-  updateFarmParams,
-  updateFarmSchema,
-} from "@/infra/http/controllers/update-farm";
-import {
-  updateOfferParams,
-  updateOfferSchema,
-} from "@/infra/http/controllers/update-offer";
-import {
-  updateOrderParams,
-  updateOrderSchema,
-} from "@/infra/http/controllers/update-order";
-import {
-  updatePaymentParams,
-  updatePaymentSchema,
-} from "@/infra/http/controllers/update-payment";
-import {
-  updateProductParams,
-  updateProductSchema,
-} from "@/infra/http/controllers/update-product";
-import { updateUserSchema } from "@/infra/http/controllers/update-user";
+import { updateFarmParams, updateFarmSchema } from "@/infra/http/controllers/update-farm";
+import { updateOfferParams, updateOfferSchema } from "@/infra/http/controllers/update-offer";
+import { updateOrderParams, updateOrderSchema } from "@/infra/http/controllers/update-order";
+import { updatePaymentParams, updatePaymentSchema } from "@/infra/http/controllers/update-payment";
+import { updateProductParams, updateProductSchema } from "@/infra/http/controllers/update-product";
+import { updateUserSchema, updateUserParams } from "@/infra/http/controllers/update-user";
+import { updateProfileSchema } from "@/infra/http/controllers/update-profile";
 import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
 import { openPixSchema } from "@/infra/http/webhooks/open-pix";
 import { fetchDescriptionSuggestionParams } from "@/infra/http/controllers/fetch-description-suggestion";
-import { listUsersQuery } from "@/infra/http/controllers/list-users";
+import { registerMarketSchema } from "@/infra/http/controllers/register-market";
+import { fetchMarketParams, fetchMarketQuery } from "@/infra/http/controllers/fetch-market";
+import { updateMarketParams, updateMarketSchema } from "@/infra/http/controllers/update-market";
+import { listMarketsQuery } from "@/infra/http/controllers/list-markets";
+import { updateProducerSchema } from "@/infra/http/controllers/update-producer";
 
 // Schemas
 const { swagger: authenticateSchemaSwagger } = j2s(authenticateSchema);
@@ -86,13 +62,13 @@ const { swagger: resetPasswordSchemaSwagger } = j2s(resetPasswordSchema);
 const { swagger: verifyUserSchemaSwagger } = j2s(verifyUserSchema);
 const { swagger: registerSchemaSwagger } = j2s(registerSchema);
 const { swagger: updateUserSchemaSwagger } = j2s(updateUserSchema);
+const { swagger: updateProfileSchemaSwagger } = j2s(updateProfileSchema);
+const { swagger: updateUserParamsSwagger } = j2s(updateUserParams);
 const { swagger: requestHelpSchemaSwagger } = j2s(requestHelpSchema);
 const { swagger: listFarmsQuerySwagger } = j2s(listFarmsQuery);
 const { swagger: registerFarmSchemaSwagger } = j2s(registerFarmSchema);
 const { swagger: updateFarmSchemaSwagger } = j2s(updateFarmSchema);
-const { swagger: registerFarmImageSchemaSwagger } = j2s(
-  registerFarmImageSchema,
-);
+const { swagger: registerFarmImageSchemaSwagger } = j2s(registerFarmImageSchema);
 const { swagger: deleteFarmImageParamsSwagger } = j2s(deleteFarmImageParams);
 const { swagger: fetchFarmParamsSwagger } = j2s(fetchFarmParams);
 const { swagger: updateFarmParamsSwagger } = j2s(updateFarmParams);
@@ -127,23 +103,23 @@ const { swagger: listCategoriesQuerySwagger } = j2s(listCategoriesQuery);
 const { swagger: fetchPendingsQuerySwagger } = j2s(fetchPendingsQuery);
 const { swagger: fetchSalesStatsQuerySwagger } = j2s(fetchSalesStatsQuery);
 const { swagger: fetchSalesReportQuerySwagger } = j2s(fetchSalesReportQuery);
-const { swagger: fetchInboundReportQuerySwagger } = j2s(
-  fetchInboundReportQuery,
-);
+const { swagger: fetchInboundReportQuerySwagger } = j2s(fetchInboundReportQuery);
 const { swagger: fetchCategoryParamsSwagger } = j2s(fetchCategoryParams);
 const { swagger: fetchCategoryQuerySwagger } = j2s(fetchCategoryQuery);
 const { swagger: sendNotificationSchemaSwagger } = j2s(sendNotificationSchema);
 const { swagger: openPixSchemaSwagger } = j2s(openPixSchema);
-const { swagger: fetchCycleCatalogQuerySwagger } = j2s(fetchCycleCatalogQuery);
-const { swagger: fetchCycleCatalogParamsSwagger } = j2s(
-  fetchCycleCatalogParams,
-);
 const { swagger: listOffersQuerySwagger } = j2s(listOffersQuery);
-const { swagger: fetchDescriptionSuggestionParamsSwagger } = j2s(
-  fetchDescriptionSuggestionParams,
-);
+const { swagger: fetchDescriptionSuggestionParamsSwagger } = j2s(fetchDescriptionSuggestionParams);
 const { swagger: listUsersQuerySwagger } = j2s(listUsersQuery);
 const { swagger: updateWarehouseSchemaSwagger } = j2s(updateWarehouseSchema);
+const { swagger: registerMarketSchemaSwagger } = j2s(registerMarketSchema);
+const { swagger: fetchMarketParamsSwagger } = j2s(fetchMarketParams);
+const { swagger: fetchMarketQuerySwagger } = j2s(fetchMarketQuery);
+const { swagger: updateMarketParamsSwagger } = j2s(updateMarketParams);
+const { swagger: updateMarketSchemaSwagger } = j2s(updateMarketSchema);
+const { swagger: registerProducerSchemaSwagger } = j2s(registerProducerSchema);
+const { swagger: listMarketsQuerySwagger } = j2s(listMarketsQuery);
+const { swagger: updateProducerSchemaSwagger } = j2s(updateProducerSchema);
 
 const toQueryParams = (query: SwaggerSchema) =>
   Object.entries(query.properties).map(([name, schema]) => ({
@@ -288,6 +264,26 @@ export const docs = {
         },
       },
     },
+    "/users/{user_id}": {
+      patch: {
+        tags: ["Usuários"],
+        summary: "Atualizar usuário",
+        parameters: toRouteParams(updateUserParamsSwagger),
+        requestBody: {
+          required: true,
+          content: {
+            "multipart/form-data": {
+              schema: updateUserSchemaSwagger,
+            },
+          },
+        },
+        responses: {
+          204: {
+            description: "Usuário atualizado com sucesso",
+          },
+        },
+      },
+    },
     "/me": {
       get: {
         tags: ["Perfil"],
@@ -324,7 +320,7 @@ export const docs = {
           required: true,
           content: {
             "multipart/form-data": {
-              schema: updateUserSchemaSwagger,
+              schema: updateProfileSchemaSwagger,
             },
           },
         },
@@ -452,6 +448,44 @@ export const docs = {
         responses: {
           204: {
             description: "Imagem removida com sucesso",
+          },
+        },
+      },
+    },
+    "/producers": {
+      post: {
+        tags: ["Produtores"],
+        summary: "Registrar novo produtor",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: registerProducerSchemaSwagger,
+            },
+          },
+        },
+        responses: {
+          201: {
+            description: "Fazenda registrada com sucesso",
+          },
+        },
+      },
+    },
+    "/producers/{farm_id}": {
+      patch: {
+        tags: ["Produtores"],
+        summary: "Atualizar produtor",
+        requestBody: {
+          required: true,
+          content: {
+            "multipart/form-data": {
+              schema: updateProducerSchemaSwagger,
+            },
+          },
+        },
+        responses: {
+          204: {
+            description: "Fazenda atualizada com sucesso",
           },
         },
       },
@@ -738,16 +772,69 @@ export const docs = {
         },
       },
     },
-    "/cycles/{cycle_id}/catalog": {
+    "/markets": {
       get: {
-        tags: ["Ciclos"],
-        summary: "Obter catálogo do ciclo",
-        parameters: [
-          ...toRouteParams(fetchCycleCatalogParamsSwagger),
-          ...toQueryParams(fetchCycleCatalogQuerySwagger),
-        ],
+        tags: ["Feiras"],
+        summary: "Listar feiras",
+        parameters: toQueryParams(listMarketsQuerySwagger),
+        responses: {
+          200: {
+            description: "Lista de feiras obtida com sucesso",
+          },
+        },
+      },
+      post: {
+        tags: ["Feiras"],
+        summary: "Registrar novo mercado",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: registerMarketSchemaSwagger,
+            },
+          },
+        },
+        responses: {
+          201: {
+            description: "Mercado registrado com sucesso",
+          },
+        },
       },
     },
+    "/markets/{market_id}": {
+      get: {
+        tags: ["Feiras"],
+        summary: "Obter mercado específico",
+        parameters: [
+          ...toRouteParams(fetchMarketParamsSwagger),
+          ...toQueryParams(fetchMarketQuerySwagger),
+        ],
+        responses: {
+          200: {
+            description: "Mercado obtido com sucesso",
+          },
+        },
+      },
+      patch: {
+        tags: ["Feiras"],
+        summary: "Atualizar mercado",
+        parameters: toRouteParams(updateMarketParamsSwagger),
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: updateMarketSchemaSwagger,
+            },
+          },
+        },
+        responses: {
+          204: {
+            description: "Mercado atualizado com sucesso",
+          },
+        },
+      },
+    },
+
     "/products": {
       get: {
         tags: ["Produtos"],
@@ -907,13 +994,12 @@ export const docs = {
                   format: "binary",
                 },
               },
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-                {
-                  schema: {
-                    type: "string",
-                    format: "binary",
-                  },
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                schema: {
+                  type: "string",
+                  format: "binary",
                 },
+              },
             },
           },
         },

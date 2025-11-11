@@ -6,7 +6,7 @@ import { View } from "@/infra/types/view";
 
 export class CyclePresenter {
   static toHttp(cycle?: Cycle): View<CycleProps> {
-    if (cycle)
+    if (cycle) {
       return {
         id: cycle.id.value,
         alias: cycle.alias,
@@ -16,5 +16,6 @@ export class CyclePresenter {
         created_at: cycle.created_at,
         updated_at: cycle.updated_at,
       };
+    }
   }
 }

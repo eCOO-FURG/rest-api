@@ -1,38 +1,43 @@
 // Libraries
-import { Prisma, Catalog as PrismaCatalog } from "@prisma/client";
+import { Farm as PrismaFarm, User as PrismaUser } from "@prisma/client";
 
 // Entities
 import { UUID } from "@/core/entities/aggregates/uuid";
-import { Catalog } from "@/core/entities/catalog";
+import { Producer } from "@/core/entities/aggregates/producer";
 
 // Mappers
-import { CatalogEntityOf } from "@/core/repositories/catalogs-repository";
+import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
+import {
+  PrismaOfferAndProduct,
+  PrismaOfferAndProductMapper,
+} from "@/infra/database/mappers/prisma-offer-and-product-mapper";
 
 // Repositories
-import { CatalogRepositoryReturnType } from "@/core/repositories/catalogs-repository";
+import { FarmEntityOf, FarmRepositoryReturnType } from "@/core/repositories/farms-repository";
+
+export type PrismaCatalog = PrismaFarm & {
+  admin: PrismaUser;
+  offers: PrismaOfferAndProduct[];
+};
 
 export class PrismaCatalogMapper {
-  static toDomain<T extends CatalogRepositoryReturnType = "catalog">(
+  static toDomain<T extends FarmRepositoryReturnType = "producer">(
     raw: PrismaCatalog,
-  ): CatalogEntityOf<T> {
-    return Catalog.create({
+  ): FarmEntityOf<T> {
+    return Producer.create({
       id: new UUID(raw.id),
+      status: raw.status,
+      name: raw.name,
       fee: raw.fee,
-      cycle_id: new UUID(raw.cycle_id),
-      farm_id: new UUID(raw.farm_id),
+      tally: raw.tally,
+      description: raw.description,
+      images: raw.images,
+      photo: raw.photo,
+      offers: raw.offers.map(PrismaOfferAndProductMapper.toDomain),
+      admin_id: new UUID(raw.admin_id),
+      admin: PrismaUserMapper.toDomain(raw.admin),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
-    }) as CatalogEntityOf<T>;
-  }
-
-  static toPrisma(catalog: Catalog): Prisma.CatalogUncheckedCreateInput {
-    return {
-      id: catalog.id.value,
-      fee: catalog.fee,
-      cycle_id: catalog.cycle_id.value,
-      farm_id: catalog.farm_id.value,
-      created_at: catalog.created_at,
-      updated_at: catalog.updated_at,
-    };
+    }) as FarmEntityOf<T>;
   }
 }

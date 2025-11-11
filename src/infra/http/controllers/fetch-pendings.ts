@@ -23,9 +23,7 @@ export async function fetchPendingsController(
   try {
     const { cycle_id } = parse(fetchPendingsQuery, request.query);
 
-    const fetchPendingsUseCase = container.resolve<FetchPendingsUseCase>(
-      "fetchPendingsUseCase",
-    );
+    const fetchPendingsUseCase = container.resolve<FetchPendingsUseCase>("fetchPendingsUseCase");
 
     const pendings = await fetchPendingsUseCase.execute({
       cycle_id,

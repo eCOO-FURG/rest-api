@@ -2,14 +2,12 @@
 import { ListCatalogsUseCase } from "@/core/use-cases/list-catalogs";
 
 // Repositories
-import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { InMemoryCategoriesRepository } from "@/test/repositories/in-memory-categories-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
+import { InMemoryMarketsRepository } from "@/test/repositories/in-memory-markets-repository";
 import { InMemoryFarmsRepository } from "@/test/repositories/in-memory-farms-repository";
 
 // Services
-import { makeCatalog } from "@/test/factories/make-catalog";
-import { makeCategory } from "@/test/factories/make-category";
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeOffer } from "@/test/factories/make-offer";
@@ -23,20 +21,20 @@ let sut: ListCatalogsUseCase;
 
 let cyclesRepository: InMemoryCyclesRepository;
 let farmsRepository: InMemoryFarmsRepository;
-let catalogsRepository: InMemoryCatalogsRepository;
 let categoriesRepository: InMemoryCategoriesRepository;
+let marketRepository: InMemoryMarketsRepository;
 
 describe("list catalogs", () => {
   beforeEach(() => {
     cyclesRepository = new InMemoryCyclesRepository();
     farmsRepository = new InMemoryFarmsRepository();
-    catalogsRepository = new InMemoryCatalogsRepository();
     categoriesRepository = new InMemoryCategoriesRepository();
+    marketRepository = new InMemoryMarketsRepository();
 
     sut = new ListCatalogsUseCase(
       cyclesRepository,
+      marketRepository,
       farmsRepository,
-      catalogsRepository,
       categoriesRepository,
     );
   });
@@ -54,24 +52,14 @@ describe("list catalogs", () => {
 
       const farm = makeFarm({ admin_id: user.id, admin: user });
 
-      farmsRepository.items.push(farm);
-
-      const catalog = makeCatalog({
-        farm_id: farm.id,
-        cycle_id: cycle.id,
-        farm,
-        cycle,
-      });
-
       const offer = makeOffer({
-        catalog_id: catalog.id,
+        farm_id: farm.id,
         product_id: product.id,
         product,
       });
 
-      catalog.offers.push(offer);
-
-      catalogsRepository.items.push(catalog);
+      farm.offers.push(offer);
+      farmsRepository.items.push(farm);
     }
 
     const result = await sut.execute({
@@ -103,89 +91,5 @@ describe("list catalogs", () => {
         category_id: "123",
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
-  });
-
-  it("should be able to list catalogs filtered by a product category", async () => {
-    const cycle = makeCycle();
-    cyclesRepository.items.push(cycle);
-
-    const category = makeCategory({
-      name: "Vegetables",
-    });
-    categoriesRepository.create(category);
-
-    const otherCategory = makeCategory({
-      name: "Fruits",
-    });
-    categoriesRepository.create(otherCategory);
-
-    const product = makeProduct({
-      name: "Potato",
-      category_id: category.id,
-      category,
-    });
-
-    const otherProduct = makeProduct({
-      name: "Apple",
-      category_id: otherCategory.id,
-      category: otherCategory,
-    });
-
-    for (let i = 0; i < 5; i++) {
-      const user = makeUser();
-
-      const farm = makeFarm({ admin_id: user.id, admin: user });
-
-      const catalog = makeCatalog({
-        farm_id: farm.id,
-        cycle_id: cycle.id,
-        farm,
-        cycle,
-      });
-
-      const offer = makeOffer({
-        catalog_id: catalog.id,
-        product_id: product.id,
-        product,
-      });
-
-      catalog.offers.push(offer);
-
-      catalogsRepository.items.push(catalog);
-    }
-
-    for (let i = 0; i < 5; i++) {
-      const user = makeUser();
-
-      const farm = makeFarm({ admin_id: user.id, admin: user });
-
-      const catalog = makeCatalog({
-        farm_id: farm.id,
-        cycle_id: cycle.id,
-        farm,
-        cycle,
-      });
-
-      const offer = makeOffer({
-        catalog_id: catalog.id,
-        product_id: otherProduct.id,
-        product: otherProduct,
-      });
-
-      catalog.offers.push(offer);
-
-      catalogsRepository.items.push(catalog);
-    }
-
-    const result = await sut.execute({
-      cycle_id: cycle.id.value,
-      page: 1,
-      category_id: category.id.value,
-    });
-
-    expect(result.catalogs.length).toBe(5);
-    expect(result.catalogs[0].offers[0].product!.category_id).toEqual(
-      category.id,
-    );
   });
 });

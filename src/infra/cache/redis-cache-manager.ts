@@ -18,7 +18,9 @@ export class RedisCacheManager implements CacheManager {
   async get<T>(key: string): Promise<T | null> {
     const value = await this.client.get(key);
 
-    if (!value) return null;
+    if (!value) {
+      return null;
+    }
 
     return JSON.parse(value) as T;
   }

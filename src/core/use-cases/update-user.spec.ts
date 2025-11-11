@@ -42,11 +42,7 @@ describe("update user", () => {
       storage: new MockedStorage(),
     };
 
-    sut = new UpdateUserUseCase(
-      repositories.users,
-      mocks.encrypter,
-      mocks.storage,
-    );
+    sut = new UpdateUserUseCase(repositories.users, mocks.encrypter, mocks.storage);
   });
 
   it("should be able to update only one user field", async () => {

@@ -4,6 +4,7 @@ import { Session } from "@/core/entities/session";
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
 import { SessionsRepository } from "@/core/repositories/sessions-repository";
+import { FarmsRepository } from "@/core/repositories/farms-repository";
 import { OtpsRepository } from "@/core/repositories/otps-repositoy";
 
 // Services
@@ -14,6 +15,8 @@ import { Hasher } from "@/core/cryptography/hasher";
 import { WrongCredentialsError } from "@/core/errors/wrong-credentials";
 import { MissingFieldError } from "@/core/errors/missing-field";
 import { UserNotVerifiedError } from "@/core/errors/user-not-verified";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 
 interface AuthenticateUseCaseRequest {
   email: string;
@@ -26,33 +29,31 @@ interface AuthenticateUseCaseRequest {
 export class AuthenticateUseCase {
   constructor(
     private usersRepository: UsersRepository,
+    private farmsRepository: FarmsRepository,
     private otpsRepository: OtpsRepository,
     private sessionsRepository: SessionsRepository,
     private encrypter: Encrypter,
     private hasher: Hasher,
   ) {}
 
-  async execute({
-    email,
-    password,
-    agent,
-    ip,
-    type,
-  }: AuthenticateUseCaseRequest) {
+  async execute({ email, password, agent, ip, type }: AuthenticateUseCaseRequest) {
     const user = await this.usersRepository.find("user", { email });
 
-    if (!user) throw new WrongCredentialsError();
+    if (!user) {
+      throw new WrongCredentialsError();
+    }
 
     switch (type) {
       case "BASIC": {
-        if (!user.password) throw new MissingFieldError("senha");
+        if (!user.password) {
+          throw new MissingFieldError("senha");
+        }
 
-        const isPasswordValid = await this.encrypter.compare(
-          password,
-          user.password,
-        );
+        const isPasswordValid = await this.encrypter.compare(password, user.password);
 
-        if (!isPasswordValid) throw new WrongCredentialsError();
+        if (!isPasswordValid) {
+          throw new WrongCredentialsError();
+        }
 
         break;
       }
@@ -64,7 +65,9 @@ export class AuthenticateUseCase {
           used: false,
         });
 
-        if (!otp || otp.value !== password) throw new WrongCredentialsError();
+        if (!otp || otp.value !== password) {
+          throw new WrongCredentialsError();
+        }
 
         otp.expire();
 
@@ -73,7 +76,21 @@ export class AuthenticateUseCase {
       }
     }
 
-    if (!user.verified_at) throw new UserNotVerifiedError();
+    if (!user.verified_at) {
+      throw new UserNotVerifiedError();
+    }
+
+    if (user.roles.includes("PRODUCER")) {
+      const farm = await this.farmsRepository.find("farm", { admin: { id: user.id.value } });
+
+      if (!farm) {
+        throw new ResourceNotFoundError("Fazenda do produtor", user.id.value);
+      }
+
+      if (farm.status !== "ACTIVE") {
+        throw new FarmNotActiveError();
+      }
+    }
 
     const session = Session.create({
       user_id: user.id,

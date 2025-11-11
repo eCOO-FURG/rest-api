@@ -1,24 +1,31 @@
 // Use-cases
 import { DeleteOfferUseCase } from "@/core/use-cases/delete-offer";
 
-// Services
-import { makeCatalog } from "@/test/factories/make-catalog";
+// Factories
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeOffer } from "@/test/factories/make-offer";
-import { makeProduct } from "@/test/factories/make-product";
+import { makeMarket } from "@/test/factories/make-market";
+import { makeProducer } from "@/test/factories/make-producer";
 
 // Repositories
-import { InMemoryCatalogsRepository } from "@/test/repositories/in-memory-catalogs-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
+import { InMemoryMarketsRepository } from "@/test/repositories/in-memory-markets-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { ResourceClosedError } from "@/core/errors/resource-closed";
+
+// Entities
+import { CycleWeek } from "@/core/entities/cycle";
+
+// Utils
+import { today } from "@/core/utils/today";
 
 let offersRepository: InMemoryOffersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
-let catalogsRepository: InMemoryCatalogsRepository;
+let marketsRepository: InMemoryMarketsRepository;
 
 let sut: DeleteOfferUseCase;
 
@@ -26,109 +33,116 @@ describe("delete offer", () => {
   beforeEach(() => {
     cyclesRepository = new InMemoryCyclesRepository();
     offersRepository = new InMemoryOffersRepository();
-    catalogsRepository = new InMemoryCatalogsRepository();
+    marketsRepository = new InMemoryMarketsRepository();
 
-    sut = new DeleteOfferUseCase(
-      offersRepository,
-      catalogsRepository,
-      cyclesRepository,
-    );
+    sut = new DeleteOfferUseCase(offersRepository, cyclesRepository, marketsRepository);
   });
 
-  it("should be able to delete an offer", async () => {
+  it("should be able to delete an offer from a cycle", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
     const farm = makeFarm({ status: "ACTIVE" });
 
-    const catalog = makeCatalog({
-      farm_id: farm.id,
-      farm,
-      cycle_id: cycle.id,
-      cycle,
-    });
-
-    catalogsRepository.create(catalog);
-
     const offer = makeOffer({
-      catalog_id: catalog.id,
-      catalog,
+      farm_id: farm.id,
+      cycle_id: cycle.id,
+      farm: makeProducer(farm),
     });
 
     offersRepository.items.push(offer);
 
     await sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value });
 
-    const deletedOffer = await offersRepository.find("offer", {
-      id: offer.id.value,
-    });
-
-    expect(deletedOffer).toBeNull();
-    expect(offersRepository.items.length).toBe(0);
+    expect(offersRepository.items).toHaveLength(0);
   });
 
-  it("should not be able to delete a nonexistent offer", async () => {
+  it("should be able to delete an offer from a market", async () => {
+    const market = makeMarket({ open: true });
+    marketsRepository.items.push(market);
+
+    const farm = makeFarm({ status: "ACTIVE" });
+
+    const offer = makeOffer({
+      farm_id: farm.id,
+      market_id: market.id,
+      farm: makeProducer(farm),
+    });
+
+    offersRepository.items.push(offer);
+
+    await sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value });
+
+    expect(offersRepository.items).toHaveLength(0);
+  });
+
+  it("should not be able to delete an offer from a closed market", async () => {
+    const market = makeMarket({ open: false });
+    marketsRepository.items.push(market);
+
+    const farm = makeFarm({ status: "ACTIVE" });
+
+    const offer = makeOffer({
+      farm_id: farm.id,
+      market_id: market.id,
+      farm: makeProducer(farm),
+    });
+
+    offersRepository.items.push(offer);
+
+    await expect(() =>
+      sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value }),
+    ).rejects.toBeInstanceOf(ResourceClosedError);
+  });
+
+  it("should not be able to delete an offer from a closed cycle", async () => {
+    const days = [1, 2, 3, 4, 5, 6, 7].filter((day) => day != today());
+
+    const cycle = makeCycle({
+      offer: days as CycleWeek,
+    });
+    cyclesRepository.items.push(cycle);
+
+    const farm = makeFarm({ status: "ACTIVE" });
+
+    const offer = makeOffer({
+      farm_id: farm.id,
+      cycle_id: cycle.id,
+      farm: makeProducer(farm),
+    });
+
+    offersRepository.items.push(offer);
+
+    await expect(() =>
+      sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value }),
+    ).rejects.toBeInstanceOf(ResourceClosedError);
+  });
+
+  it("should not be able to delete an offer from past cycle offering days", async () => {
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
+    const farm = makeFarm({ status: "ACTIVE" });
+
+    const offer = makeOffer({
+      farm_id: farm.id,
+      cycle_id: cycle.id,
+      farm: makeProducer(farm),
+      created_at: new Date(Date.now() - 1000 * 60 * 60 * 24 * 10),
+    });
+
+    offersRepository.items.push(offer);
+
+    await expect(() =>
+      sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value }),
+    ).rejects.toBeInstanceOf(ResourceClosedError);
+  });
+
+  it("should not be able to delete a nonexistent offer", async () => {
     const farm = makeFarm({ status: "ACTIVE" });
 
     await expect(() =>
       sut.execute({ farm_id: farm.id.value, offer_id: "123" }),
-    ).rejects.toBeInstanceOf(ResourceNotFoundError);
-  });
-
-  it("should not be able to delete an offer from a nonexistent cycle", async () => {
-    const farm = makeFarm({ status: "ACTIVE" });
-
-    const product = makeProduct();
-
-    const catalog = makeCatalog({
-      farm,
-    });
-    catalogsRepository.create(catalog);
-
-    const offer = makeOffer({
-      catalog,
-      product_id: product.id,
-    });
-
-    offersRepository.items.push(offer);
-    catalog.offers.push(offer);
-    catalogsRepository.update(catalog);
-
-    await expect(() =>
-      sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value }),
-    ).rejects.toBeInstanceOf(ResourceNotFoundError);
-  });
-
-  it("should not be able to delete an offer from another farm", async () => {
-    const cycle = makeCycle();
-    cyclesRepository.items.push(cycle);
-
-    const farm = makeFarm({ status: "ACTIVE" });
-
-    const anotherFarm = makeFarm({ status: "ACTIVE" });
-
-    const product = makeProduct();
-
-    const catalog = makeCatalog({
-      farm: anotherFarm,
-      cycle_id: cycle.id,
-    });
-    catalogsRepository.create(catalog);
-
-    const offer = makeOffer({
-      catalog,
-      product_id: product.id,
-    });
-    offersRepository.items.push(offer);
-
-    catalog.offers.push(offer);
-    catalogsRepository.update(catalog);
-
-    await expect(() =>
-      sut.execute({ farm_id: farm.id.value, offer_id: offer.id.value }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 });

@@ -25,16 +25,17 @@ model User {
   password    String?
   photo       String?
   chat        String?   @unique
-  roles       ROLE[]    @default([USER])
   verified_at DateTime?
 
   created_at DateTime  @default(now())
   updated_at DateTime?
 
   sessions Session[]
-  otps     Otp[]
-  bags     Bag[]
-  farm     Farm?
+  roles    ROLE[]    @default([USER])
+
+  otps Otp[]
+  bags Bag[]
+  farm Farm?
 
   @@map("users")
 }
@@ -91,7 +92,8 @@ model Farm {
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  catalogs Catalog[]
+  offers Offer[]
+  boxes  Box[]
 
   @@map("farms")
 }
@@ -143,29 +145,26 @@ model Cycle {
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  bags     Bag[]
-  catalogs Catalog[]
+  bags   Bag[]
+  offers Offer[]
+  boxes  Box[]
 
   @@map("cycles")
 }
 
-model Catalog {
-  id  String @id @default(uuid())
-  fee Float
-
-  farm_id String
-  farm    Farm   @relation(fields: [farm_id], references: [id])
-
-  cycle_id String
-  cycle    Cycle  @relation(fields: [cycle_id], references: [id], onDelete: Cascade)
+model Market {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  open        Boolean @default(true)
 
   created_at DateTime  @default(now())
   updated_at DateTime?
 
   offers Offer[]
-  boxes  Box[]
+  bags   Bag[]
 
-  @@map("catalogs")
+  @@map("markets")
 }
 
 model Offer {
@@ -178,17 +177,22 @@ model Offer {
   active Boolean @default(true)
 
   price Decimal @db.Decimal(10, 2)
-  fee   Decimal @db.Decimal(10, 2)
 
   opens_at   DateTime
   closes_at  DateTime?
   expires_at DateTime?
 
-  catalog_id String
-  catalog    Catalog @relation(fields: [catalog_id], references: [id])
+  farm_id String
+  farm    Farm   @relation(fields: [farm_id], references: [id])
 
   product_id String
   product    Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+
+  cycle_id String?
+  cycle    Cycle?  @relation(fields: [cycle_id], references: [id])
+
+  market_id String?
+  market    Market? @relation(fields: [market_id], references: [id])
 
   created_at DateTime  @default(now())
   updated_at DateTime?
@@ -239,8 +243,11 @@ model Bag {
   customer_id String
   customer    User   @relation(fields: [customer_id], references: [id], onDelete: Cascade)
 
-  cycle_id String
-  cycle    Cycle  @relation(fields: [cycle_id], references: [id], onDelete: Cascade)
+  cycle_id String?
+  cycle    Cycle?  @relation(fields: [cycle_id], references: [id], onDelete: Cascade)
+
+  market_id String?
+  market    Market? @relation(fields: [market_id], references: [id])
 
   address_id String?
   address    Address? @relation(fields: [address_id], references: [id])
@@ -300,8 +307,11 @@ model Box {
 
   status BOX_STATUS
 
-  catalog_id String
-  catalog    Catalog @relation(fields: [catalog_id], references: [id], onDelete: Cascade)
+  farm_id String
+  farm    Farm   @relation(fields: [farm_id], references: [id], onDelete: Cascade)
+
+  cycle_id String
+  cycle    Cycle  @relation(fields: [cycle_id], references: [id], onDelete: Cascade)
 
   created_at DateTime  @default(now())
   updated_at DateTime?
@@ -332,8 +342,8 @@ model Order {
   bag_id String
   bag    Bag    @relation(fields: [bag_id], references: [id], onDelete: Cascade)
 
-  box_id String
-  box    Box    @relation(fields: [box_id], references: [id], onDelete: Cascade)
+  box_id String?
+  box    Box?    @relation(fields: [box_id], references: [id], onDelete: Cascade)
 
   created_at DateTime  @default(now())
   updated_at DateTime?

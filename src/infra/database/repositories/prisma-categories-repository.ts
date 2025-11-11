@@ -36,80 +36,69 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
           lte: before,
         },
       },
-      include:
-        type === "category-and-offers"
-          ? {
-              products: {
-                include: {
-                  offers: {
-                    where: {
-                      catalog: { cycle: { id: offers?.catalog?.cycle.id } },
-                      ...(typeof offers?.available === "boolean" &&
-                        (offers.available
-                          ? {
-                              AND: [
-                                {
-                                  OR: [
-                                    { closes_at: null },
-                                    { closes_at: { gt: now() } },
-                                  ],
-                                },
-                                {
-                                  OR: [
-                                    { expires_at: null },
-                                    { expires_at: { gte: now() } },
-                                  ],
-                                },
-                                {
-                                  active: true,
-                                  amount: { not: 0 },
-                                },
-                              ],
-                            }
-                          : {
-                              OR: [
-                                { closes_at: { not: null, lte: now() } },
-                                { expires_at: { not: null, lte: now() } },
-                                { active: false },
-                                { amount: 0 },
-                              ],
-                            })),
-                      created_at: {
-                        gte: offers?.since,
-                        lte: offers?.before,
-                      },
-                    },
-                    include: {
-                      catalog: {
-                        include: {
-                          farm: {
-                            include: {
-                              admin: true,
+      include: {
+        ...(type === "category-and-offers" && {
+          products: {
+            include: {
+              offers: {
+                where: {
+                  cycle: { id: offers?.catalog?.cycle.id },
+                  ...(typeof offers?.available === "boolean" &&
+                    (offers.available
+                      ? {
+                          AND: [
+                            {
+                              OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
                             },
-                          },
-                        },
-                      },
-                    },
-                    ...(offers?.page && {
-                      skip: (offers.page - 1) * 20,
-                      take: 20,
-                    }),
+                            {
+                              OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                            },
+                            {
+                              active: true,
+                              amount: { not: 0 },
+                            },
+                          ],
+                        }
+                      : {
+                          OR: [
+                            { closes_at: { not: null, lte: now() } },
+                            { expires_at: { not: null, lte: now() } },
+                            { active: false },
+                            { amount: 0 },
+                          ],
+                        })),
+                  created_at: {
+                    gte: offers?.since,
+                    lte: offers?.before,
                   },
                 },
+                include: {
+                  farm: {
+                    include: {
+                      admin: true,
+                    },
+                  },
+                },
+                ...(offers?.page && {
+                  skip: (offers.page - 1) * 20,
+                  take: 20,
+                }),
               },
-            }
-          : null,
+            },
+          },
+        }),
+      },
     });
 
-    if (!category) return null;
+    if (!category) {
+      return null;
+    }
 
     switch (type) {
       default:
         return PrismaCategoryMapper.toDomain<T>(category);
       case "category-and-offers":
-        return PrismaCategoryAndOffersMapper.toDomain<T>(
-          category as PrismaCategoryAndOffers,
-        );
+        return PrismaCategoryAndOffersMapper.toDomain<T>(category as PrismaCategoryAndOffers);
     }
   }
 
@@ -131,22 +120,16 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
             some: {
               offers: {
                 some: {
-                  catalog: { cycle: { id: offers.catalog?.cycle.id } },
+                  cycle: { id: offers.catalog?.cycle.id },
                   ...(typeof offers?.available === "boolean" &&
                     (offers.available
                       ? {
                           AND: [
                             {
-                              OR: [
-                                { closes_at: null },
-                                { closes_at: { gt: now() } },
-                              ],
+                              OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
                             },
                             {
-                              OR: [
-                                { expires_at: null },
-                                { expires_at: { gte: now() } },
-                              ],
+                              OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
                             },
                             {
                               active: true,
@@ -171,45 +154,36 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
           },
         }),
       },
-      include:
-        type === "category-and-offers"
-          ? {
-              products: {
+      include: {
+        ...(type === "category-and-offers" && {
+          products: {
+            include: {
+              offers: {
                 include: {
-                  offers: {
+                  farm: {
                     include: {
-                      catalog: {
-                        include: {
-                          farm: {
-                            include: {
-                              admin: true,
-                            },
-                          },
-                        },
-                      },
+                      admin: true,
                     },
-                    ...(offers?.page && {
-                      skip: (offers.page - 1) * 20,
-                      take: 20,
-                    }),
                   },
                 },
+                ...(offers?.page && {
+                  skip: (offers.page - 1) * 20,
+                  take: 20,
+                }),
               },
-            }
-          : null,
+            },
+          },
+        }),
+      },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
     });
 
     switch (type) {
       default:
-        return categories.map((category) =>
-          PrismaCategoryMapper.toDomain<T>(category),
-        );
+        return categories.map((category) => PrismaCategoryMapper.toDomain<T>(category));
       case "category-and-offers":
         return categories.map((category) =>
-          PrismaCategoryAndOffersMapper.toDomain<T>(
-            category as PrismaCategoryAndOffers,
-          ),
+          PrismaCategoryAndOffersMapper.toDomain<T>(category as PrismaCategoryAndOffers),
         );
     }
   }

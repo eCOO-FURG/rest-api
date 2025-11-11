@@ -16,6 +16,7 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 import { MockedEncrypter } from "@/test/cryptography/mocked-encrypter";
 import { MockedMailer } from "@/test/mail/mocked-mailer";
 import { MockedHasher } from "@/test/cryptography/mocked-hasher";
+import { MockedStorage } from "@/test/storage/mocked-storage";
 import { makeUser } from "@/test/factories/make-user";
 
 let repositories: {
@@ -26,6 +27,7 @@ let mocks: {
   encrypter: MockedEncrypter;
   hasher: MockedHasher;
   mailer: MockedMailer;
+  storage: MockedStorage;
 };
 
 let sut: RegisterUseCase;
@@ -40,12 +42,14 @@ describe("register", () => {
       encrypter: new MockedEncrypter(),
       hasher: new MockedHasher(),
       mailer: new MockedMailer(),
+      storage: new MockedStorage(),
     };
 
     sut = new RegisterUseCase(
       repositories.users,
       mocks.encrypter,
       mocks.hasher,
+      mocks.storage,
       mocks.mailer,
     );
   });

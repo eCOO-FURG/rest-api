@@ -16,14 +16,7 @@ interface ListUsersRequest {
 export class ListUsersUseCase {
   constructor(private usersRepository: UsersRepository) {}
 
-  async execute({
-    page,
-    first_name,
-    last_name,
-    roles,
-    since,
-    before,
-  }: ListUsersRequest) {
+  async execute({ page, first_name, last_name, roles, since, before }: ListUsersRequest) {
     const users = await this.usersRepository.list(
       "user",
       { first_name, last_name, roles, since, before },

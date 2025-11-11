@@ -12,9 +12,7 @@ import { UpdatePaymentUseCase } from "@/core/use-cases/update-payment";
 import { parse } from "@/infra/http/validation/parse";
 
 export const openPixSchema = Joi.object({
-  event: Joi.string()
-    .valid("OPENPIX:CHARGE_COMPLETED", "OPENPIX:CHARGE_EXPIRED")
-    .required(),
+  event: Joi.string().valid("OPENPIX:CHARGE_COMPLETED", "OPENPIX:CHARGE_EXPIRED").required(),
   charge: Joi.object({
     correlationID: Joi.string().required(),
   }).required(),
@@ -28,9 +26,7 @@ export const openPixWebhookListener = async (
   try {
     const { event, charge } = parse(openPixSchema, request.body);
 
-    const updatePaymentUseCase = container.resolve<UpdatePaymentUseCase>(
-      "updatePaymentUseCase",
-    );
+    const updatePaymentUseCase = container.resolve<UpdatePaymentUseCase>("updatePaymentUseCase");
 
     const status = event === "OPENPIX:CHARGE_COMPLETED" ? "DONE" : "FAILED";
 

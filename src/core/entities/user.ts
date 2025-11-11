@@ -97,6 +97,10 @@ export class User extends Entity<UserProps> {
     this.props.chat = value;
   }
 
+  get name() {
+    return `${this.props.first_name} ${this.props.last_name}`;
+  }
+
   verify() {
     this.props.verified_at = now();
     this.touch();
@@ -112,9 +116,7 @@ export class User extends Entity<UserProps> {
     return false;
   }
 
-  static create(
-    props: Optional<UserProps, "password" | "verified_at" | "photo" | "chat">,
-  ) {
+  static create(props: Optional<UserProps, "password" | "verified_at" | "photo" | "chat">) {
     return new User({
       ...props,
       password: props.password ?? null,

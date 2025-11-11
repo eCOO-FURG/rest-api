@@ -114,7 +114,7 @@
       </div>
 
       <% let groupedOrders = {}; props.bag.orders.forEach((order) => { let
-      farmName = order.offer.catalog.farm.name; let productName =
+      farmName = order.offer.farm.name; let productName =
       order.offer.product.name; if (!groupedOrders[farmName]) {
       groupedOrders[farmName] = {}; } if (!groupedOrders[farmName][productName]) {
       groupedOrders[farmName][productName] = { totalAmount: 0, totalPrice: order.total,
@@ -142,25 +142,51 @@
 
       <% let today = new Date(); today.setHours(today.getHours() - 3); let
       currentDay = today.getDate(); let currentMonth = today.getMonth() + 1; let
-      currentYear = today.getFullYear(); let firstDay = Math.min(...props.cycle.deliver); let
-      lastDay = Math.max(...props.cycle.deliver); if (lastDay < currentDay) {
-      currentMonth += 1; if (currentMonth > 12) { currentMonth = 1; currentYear
-      += 1; } } let formattedMonth = currentMonth.toString().padStart(2, '0');
-      let formattedFirstDay = firstDay.toString().padStart(2, '0'); let
-      formattedLastDay = lastDay.toString().padStart(2, '0'); %>
+      currentYear = today.getFullYear(); 
+      
+      if (props.cycle) {
+        let firstDay = Math.min(...props.cycle.deliver); let
+        lastDay = Math.max(...props.cycle.deliver); if (lastDay < currentDay) {
+        currentMonth += 1; if (currentMonth > 12) { currentMonth = 1; currentYear
+        += 1; } } let formattedMonth = currentMonth.toString().padStart(2, '0');
+        let formattedFirstDay = firstDay.toString().padStart(2, '0'); let
+        formattedLastDay = lastDay.toString().padStart(2, '0'); %>
 
       <div class="pickup-info">
-        <% if (props.bag.address) { %> Entrega disponível de
-        <strong
-          ><%= formattedFirstDay %>/<%= formattedMonth %> a <%= formattedLastDay
-          %>/<%= formattedMonth %></strong
-        >
-        <% } else { %> A retirada será no Armazém e-COO de
-        <strong
-          ><%= formattedFirstDay %>/<%= formattedMonth %> a <%= formattedLastDay
-          %>/<%= formattedMonth %></strong
-          >
+        <% if (props.bag.address) { %> 
+          <% if (props.cycle) { %>
+            Entrega disponível de
+            <strong
+              ><%= formattedFirstDay %>/<%= formattedMonth %> a <%= formattedLastDay
+              %>/<%= formattedMonth %></strong
+            >
+          <% } else { %>
+            Entrega será realizada conforme cronograma da feira
           <% } %>
+        <% } else { %> 
+          <% if (props.cycle) { %>
+            A retirada será no Armazém e-COO de
+            <strong
+              ><%= formattedFirstDay %>/<%= formattedMonth %> a <%= formattedLastDay
+              %>/<%= formattedMonth %></strong
+            >
+          <% } else if (props.market) { %>
+            A retirada será na feira <%= props.market.name %>
+          <% } else { %>
+            A retirada será no Armazém e-COO
+          <% } %>
+        <% } %>
+      <% } else { %>
+        <div class="pickup-info">
+          <% if (props.bag.address) { %> 
+            Entrega será realizada conforme cronograma da feira
+          <% } else if (props.market) { %>
+            A retirada será na feira <%= props.market.name %>
+          <% } else { %>
+            A retirada será no Armazém e-COO
+          <% } %>
+        </div>
+      <% } %>
         <p>
           <% if (props.existed) { %>
             <p class="subtitle" style="font-size: 8px; line-height: 10px;">Nota: Os seus pedidos foram adicionados a uma sacola já existente, então o valor total da sacola pode ser diferente do valor total do pedidos adicionados.</p>

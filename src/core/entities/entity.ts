@@ -7,10 +7,7 @@ import { Optional } from "@/core/types/optional";
 // Utils
 import { now } from "@/core/utils/now";
 
-export type EntityRequest = Optional<
-  EntityProps,
-  "id" | "created_at" | "updated_at"
->;
+export type EntityRequest = Optional<EntityProps, "id" | "created_at" | "updated_at">;
 
 export interface EntityProps {
   id: UUID;

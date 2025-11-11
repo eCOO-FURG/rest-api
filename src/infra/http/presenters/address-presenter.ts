@@ -6,7 +6,7 @@ import { View } from "@/infra/types/view";
 
 export class AddressPresenter {
   static toHttp(address?: Address): View<AddressProps> {
-    if (address)
+    if (address) {
       return {
         id: address.id.value,
         complement: address.complement,
@@ -16,5 +16,6 @@ export class AddressPresenter {
         created_at: address.created_at,
         updated_at: address.updated_at,
       };
+    }
   }
 }
