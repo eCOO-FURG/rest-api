@@ -7,6 +7,7 @@ import { CyclesRepository } from "@/core/repositories/cycles-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { ResourceClosedError } from "@/core/errors/resource-closed";
 
 // Jobs
 import { Scheduler } from "@/core/jobs/scheduler";
@@ -31,6 +32,10 @@ export class PublishCycleOnMarketUseCase {
 
     if (!market) {
       throw new ResourceNotFoundError("Market", market_id);
+    }
+
+    if (!market.open) {
+      throw new ResourceClosedError("Market", market_id);
     }
 
     const cycle = await this.cyclesRepository.find("cycle", { id: cycle_id });

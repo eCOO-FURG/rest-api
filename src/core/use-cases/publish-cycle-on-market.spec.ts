@@ -11,6 +11,7 @@ import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-r
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { ResourceClosedError } from "@/core/errors/resource-closed";
 
 // Jobs
 import { MockedScheduler } from "@/test/jobs/mocked-scheduler";
@@ -45,6 +46,18 @@ describe("publish cycle on market", () => {
     await expect(() =>
       sut.execute({ market_id: market.id.value, cycle_id: "nonexistent-cycle-id" }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it("should not be able to publish when market is closed", async () => {
+    const market = makeMarket({ open: false });
+    marketsRepository.items.push(market);
+
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
+    await expect(() =>
+      sut.execute({ market_id: market.id.value, cycle_id: cycle.id.value }),
+    ).rejects.toBeInstanceOf(ResourceClosedError);
   });
 
   it("should schedule the publishing of all offers of the cycle to the given market", async () => {
