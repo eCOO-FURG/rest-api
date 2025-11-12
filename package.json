@@ -28,6 +28,7 @@
     "@woovi/node-sdk": "^1.0.1",
     "awilix": "^10.0.2",
     "bcryptjs": "^2.4.3",
+    "bullmq": "^5.63.0",
     "cloudinary": "^2.5.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

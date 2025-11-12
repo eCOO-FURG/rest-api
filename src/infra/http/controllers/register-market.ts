@@ -14,6 +14,7 @@ import { parse } from "@/infra/http/validation/parse";
 export const registerMarketSchema = Joi.object({
   name: Joi.string().required(),
   description: Joi.string().optional().max(200),
+  cycle_id: Joi.string().uuid().optional(),
 });
 
 export async function registerMarketController(
@@ -22,13 +23,14 @@ export async function registerMarketController(
   next: NextFunction,
 ) {
   try {
-    const { name, description } = parse(registerMarketSchema, request.body);
+    const { name, description, cycle_id } = parse(registerMarketSchema, request.body);
 
     const registerMarketUseCase = container.resolve<RegisterMarketUseCase>("registerMarketUseCase");
 
     await registerMarketUseCase.execute({
       name,
       description,
+      cycle_id,
     });
 
     return response.sendStatus(201);

@@ -12,6 +12,7 @@ import { RedisCacheManager } from "@/infra/cache/redis-cache-manager";
 import { Cloudinary } from "@/infra/storage/cloudinary";
 import { ExcelService } from "@/infra/report/spreadsheet/excel";
 import { Telegram } from "@/infra/message/telegram";
+import { BullScheduler } from "@/infra/jobs/bull-scheduler";
 
 // LLM
 import { OpenAIProvider } from "@/infra/llm/open-ai-provider";
@@ -84,6 +85,7 @@ export default (container: AwilixContainer) => {
     spreadsheetService: asClass(ExcelService).singleton(),
     chat: asClass(Telegram).singleton(),
     llmProvider: asClass(OpenAIProvider).singleton(),
+    scheduler: asClass(BullScheduler).singleton(),
   });
 
   container.resolve("chat");

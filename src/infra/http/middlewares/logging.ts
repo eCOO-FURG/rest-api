@@ -27,29 +27,26 @@ export function logging() {
 
       console.log(
         "%s \x1b[32m%s\x1b[0m (%s): \x1b[36m%s\x1b[0m",
-        `\n[${time}]`,
+        `[${time}]`,
         "INFO",
         `${++count}`,
         "request completed",
         {
           id: new UUID().value,
-          ...(request.user_id && { user_id: request.user_id }),
+          user_id: request.user_id ? request.user_id : null,
           request: {
             method: request.method,
             url: request.url,
-            ...(!isEmpty(request.query) && { query: request.query }),
-            ...(!isEmpty(request.body) && {
-              body: JSON.parse(JSON.stringify(request.body)),
-            }),
+            query: isEmpty(request.query) ? null : request.query,
+            params: isEmpty(request.params) ? null : JSON.parse(JSON.stringify(request.params)),
           },
           response: {
             status: response.statusCode,
-            ...(!isEmpty(responseBody) && {
-              body: JSON.parse(JSON.stringify(responseBody)),
-            }),
+            body: isEmpty(responseBody) ? null : JSON.parse(JSON.stringify(responseBody)),
           },
           took: `${took}ms`,
         },
+        "\n",
       );
     });
 

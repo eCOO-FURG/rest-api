@@ -16,7 +16,7 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - redis:/data
+      - redis-cache:/data
     profiles: ["development", "deploy"]
 
   smtp:
@@ -28,6 +28,15 @@ services:
     profiles: ["development"]
     logging:
       driver: "none"
+
+  tasks:
+    container_name: ecoo-tasks
+    image: redis:7-alpine
+    volumes:
+      - redis-tasks:/data
+    profiles: ["development", "deploy"]
+    ports:
+      - "6380:6379"
 
   server: &server
     container_name: ecoo-server
@@ -51,7 +60,9 @@ services:
     profiles: ["development"]
 
 volumes:
-  redis:
+  redis-cache:
+    driver: local
+  redis-tasks:
     driver: local
   storage:
     driver: local
