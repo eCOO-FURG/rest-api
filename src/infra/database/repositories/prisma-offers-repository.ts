@@ -48,7 +48,10 @@ export class PrismaOffersRepository implements OffersRepository {
         id,
         ...(ids && { id: { in: ids } }),
         cycle: { id: cycle?.id },
-        market: { id: market?.id, name: { contains: market?.name, mode: "insensitive" } },
+        market: {
+          id: market?.id,
+          ...(market?.name && { name: { contains: market.name, mode: "insensitive" } }),
+        },
         farm: { id: farm?.id, name: { contains: farm?.name, mode: "insensitive" } },
         active,
         product: {
@@ -132,7 +135,7 @@ export class PrismaOffersRepository implements OffersRepository {
         cycle: { id: cycle?.id },
         market: {
           id: market?.id,
-          name: market?.name && { contains: market.name, mode: "insensitive" },
+          ...(market?.name && { name: { contains: market.name, mode: "insensitive" } }),
         },
         farm: { id: farm?.id, name: farm?.name && { contains: farm.name, mode: "insensitive" } },
         active,
