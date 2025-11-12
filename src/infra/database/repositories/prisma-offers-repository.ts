@@ -215,4 +215,25 @@ export class PrismaOffersRepository implements OffersRepository {
       where: { id: offer.id.value },
     });
   }
+
+  async publishCycleOnMarket(cycle_id: string, market_id: string): Promise<void> {
+    await prisma.offer.updateMany({
+      where: {
+        cycle_id,
+        AND: [
+          {
+            OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+          },
+          {
+            OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+          },
+          {
+            active: true,
+            amount: { not: 0 },
+          },
+        ],
+      },
+      data: { market_id },
+    });
+  }
 }

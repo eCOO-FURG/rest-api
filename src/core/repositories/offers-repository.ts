@@ -40,4 +40,5 @@ export interface OffersRepository {
   create(offer: Offer): Promise<void>;
   update(offer: Offer): Promise<void>;
   delete(offer: Offer): Promise<void>;
+  publishCycleOnMarket(cycle_id: string, market_id: string): Promise<void>;
 }
