@@ -47,12 +47,14 @@ describe("publish cycle on market", () => {
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
-  it("should publish all offers of the cycle to the given market", async () => {
+  it("should schedule the publishing of all offers of the cycle to the given market", async () => {
     const market = makeMarket({ open: true });
     marketsRepository.items.push(market);
 
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
+
+    await sut.execute({ market_id: market.id.value, cycle_id: cycle.id.value });
 
     expect(scheduler.jobs).toHaveLength(1);
   });
