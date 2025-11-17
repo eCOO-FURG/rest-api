@@ -10,6 +10,7 @@ import container from "@/infra/container";
 
 // Validation
 import { parse } from "@/infra/http/validation/parse";
+import { MarketPresenter } from "../presenters/market-presenter";
 
 export const registerMarketSchema = Joi.object({
   name: Joi.string().required(),
@@ -27,13 +28,13 @@ export async function registerMarketController(
 
     const registerMarketUseCase = container.resolve<RegisterMarketUseCase>("registerMarketUseCase");
 
-    await registerMarketUseCase.execute({
+    const { market } = await registerMarketUseCase.execute({
       name,
       description,
       cycle_id,
     });
 
-    return response.sendStatus(201);
+    return response.status(201).send(MarketPresenter.toHttp(market));
   } catch (error) {
     next(error);
   }
