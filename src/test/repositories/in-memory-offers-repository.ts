@@ -1,4 +1,5 @@
 // Entities
+import { UUID } from "@/core/entities/aggregates/uuid";
 import { Offer } from "@/core/entities/offer";
 
 // Repositories
@@ -124,5 +125,19 @@ export class InMemoryOffersRepository implements OffersRepository {
 
   async create(offer: Offer): Promise<void> {
     this.items.push(offer);
+  }
+
+  async publishCycleOnMarket(cycle_id: string, market_id: string): Promise<void> {
+    const offers = this.items.filter((item) => {
+      if (!item.cycle_id) {
+        return false;
+      }
+
+      return item.cycle_id.value === cycle_id;
+    });
+
+    for (const offer of offers) {
+      offer.market_id = new UUID(market_id);
+    }
   }
 }

@@ -9,14 +9,22 @@ import { InMemoryMarketsRepository } from "@/test/repositories/in-memory-markets
 
 // Errors
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
+import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
+
+// Jobs
+import { MockedScheduler } from "@/test/jobs/mocked-scheduler";
 
 let marketsRepository: InMemoryMarketsRepository;
+let cyclesRepository: InMemoryCyclesRepository;
+let scheduler: MockedScheduler;
 let sut: RegisterMarketUseCase;
 
 describe("register market", () => {
   beforeEach(() => {
     marketsRepository = new InMemoryMarketsRepository();
-    sut = new RegisterMarketUseCase(marketsRepository);
+    cyclesRepository = new InMemoryCyclesRepository();
+    scheduler = new MockedScheduler();
+    sut = new RegisterMarketUseCase(marketsRepository, cyclesRepository, scheduler);
   });
 
   it("should be able to register a market", async () => {

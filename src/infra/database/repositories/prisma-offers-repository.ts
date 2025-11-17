@@ -48,7 +48,10 @@ export class PrismaOffersRepository implements OffersRepository {
         id,
         ...(ids && { id: { in: ids } }),
         cycle: { id: cycle?.id },
-        market: { id: market?.id, name: { contains: market?.name, mode: "insensitive" } },
+        market: {
+          id: market?.id,
+          ...(market?.name && { name: { contains: market.name, mode: "insensitive" } }),
+        },
         farm: { id: farm?.id, name: { contains: farm?.name, mode: "insensitive" } },
         active,
         product: {
@@ -132,7 +135,7 @@ export class PrismaOffersRepository implements OffersRepository {
         cycle: { id: cycle?.id },
         market: {
           id: market?.id,
-          name: market?.name && { contains: market.name, mode: "insensitive" },
+          ...(market?.name && { name: { contains: market.name, mode: "insensitive" } }),
         },
         farm: { id: farm?.id, name: farm?.name && { contains: farm.name, mode: "insensitive" } },
         active,
@@ -213,6 +216,27 @@ export class PrismaOffersRepository implements OffersRepository {
   async delete(offer: Offer): Promise<void> {
     await prisma.offer.delete({
       where: { id: offer.id.value },
+    });
+  }
+
+  async publishCycleOnMarket(cycle_id: string, market_id: string): Promise<void> {
+    await prisma.offer.updateMany({
+      where: {
+        cycle_id,
+        AND: [
+          {
+            OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+          },
+          {
+            OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+          },
+          {
+            active: true,
+            amount: { not: 0 },
+          },
+        ],
+      },
+      data: { market_id },
     });
   }
 }

@@ -136,59 +136,60 @@ export class PrismaFarmsRepository implements FarmsRepository {
         tally,
         admin,
         offers: {
-          some: {
-            cycle: { id: offers?.cycle?.id },
-            market: { id: offers?.market?.id },
-            ...(offers?.period?.since && {
-              OR: [{ opens_at: { gte: offers.period.since } }, { closes_at: null }],
-            }),
-            ...(offers?.period?.before && {
-              OR: [{ opens_at: { lte: offers.period.before } }, { closes_at: null }],
-            }),
-            product: {
-              name: { contains: offers?.product?.name, mode: "insensitive" },
-              category_id: offers?.product?.category?.id,
+          ...(offers && {
+            some: {
+              cycle: { id: offers?.cycle?.id },
+              market: { id: offers?.market?.id },
+              ...(offers?.period?.since && {
+                OR: [{ opens_at: { gte: offers.period.since } }, { closes_at: null }],
+              }),
+              ...(offers?.period?.before && {
+                OR: [{ opens_at: { lte: offers.period.before } }, { closes_at: null }],
+              }),
+              product: {
+                name: { contains: offers?.product?.name, mode: "insensitive" },
+                category_id: offers?.product?.category?.id,
+              },
+              ...(typeof offers?.remaining === "boolean" &&
+                (offers.remaining
+                  ? {
+                      amount: {
+                        gt: 0,
+                      },
+                    }
+                  : {
+                      amount: {
+                        equals: 0,
+                      },
+                    })),
+              ...(typeof offers?.available === "boolean" &&
+                (offers.available
+                  ? {
+                      AND: [
+                        {
+                          OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+                        },
+                        {
+                          OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                        },
+                        {
+                          active: true,
+                        },
+                      ],
+                    }
+                  : {
+                      OR: [
+                        { closes_at: { not: null, lte: now() } },
+                        { expires_at: { not: null, lte: now() } },
+                        { active: false },
+                      ],
+                    })),
+              created_at: {
+                gte: offers?.since,
+                lte: offers?.before,
+              },
             },
-            ...(typeof offers?.remaining === "boolean" &&
-              (offers.remaining
-                ? {
-                    amount: {
-                      gt: 0,
-                    },
-                  }
-                : {
-                    amount: {
-                      equals: 0,
-                    },
-                  })),
-            ...(typeof offers?.available === "boolean" &&
-              (offers.available
-                ? {
-                    AND: [
-                      {
-                        OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
-                      },
-                      {
-                        OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
-                      },
-                      {
-                        active: true,
-                      },
-                    ],
-                  }
-                : {
-                    OR: [
-                      { closes_at: { not: null, lte: now() } },
-                      { expires_at: { not: null, lte: now() } },
-                      { active: false },
-                    ],
-                  })),
-
-            created_at: {
-              gte: offers?.since,
-              lte: offers?.before,
-            },
-          },
+          }),
         },
       },
       include: {

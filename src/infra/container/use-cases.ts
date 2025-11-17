@@ -55,6 +55,7 @@ import { UpdateMarketUseCase } from "@/core/use-cases/update-market";
 import { RegisterMarketUseCase } from "@/core/use-cases/register-market";
 import { FetchMarketUseCase } from "@/core/use-cases/fetch-market";
 import { ListMarketsUseCase } from "@/core/use-cases/list-markets";
+import { PublishCycleOnMarketUseCase } from "@/core/use-cases/publish-cycle-on-market";
 
 export default (container: AwilixContainer) => {
   container.register({
@@ -298,7 +299,8 @@ export default (container: AwilixContainer) => {
         new UpdateProducerUseCase(farmsRepository, updateUserUseCase, updateFarmUseCase),
     ),
     registerMarketUseCase: asFunction(
-      ({ marketsRepository }) => new RegisterMarketUseCase(marketsRepository),
+      ({ marketsRepository, cyclesRepository, scheduler }) =>
+        new RegisterMarketUseCase(marketsRepository, cyclesRepository, scheduler),
     ),
     updateMarketUseCase: asFunction(
       ({ marketsRepository }) => new UpdateMarketUseCase(marketsRepository),
@@ -308,6 +310,10 @@ export default (container: AwilixContainer) => {
     ),
     listMarketsUseCase: asFunction(
       ({ marketsRepository }) => new ListMarketsUseCase(marketsRepository),
+    ),
+    publishCycleOnMarketUseCase: asFunction(
+      ({ marketsRepository, cyclesRepository, scheduler }) =>
+        new PublishCycleOnMarketUseCase(marketsRepository, cyclesRepository, scheduler),
     ),
   });
 };

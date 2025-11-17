@@ -53,7 +53,7 @@ export async function registerOrderController(
       items: orders,
     });
 
-    return response.status(200).send(BagPresenter.toHttp(bag));
+    return response.status(201).send(BagPresenter.toHttp(bag));
   } catch (error) {
     next(error);
   }

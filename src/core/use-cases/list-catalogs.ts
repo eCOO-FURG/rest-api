@@ -69,7 +69,7 @@ export class ListCatalogsUseCase {
     }
 
     const catalogs = await this.farmsRepository.list(
-      "catalog",
+      "producer",
       {
         id: farm_id,
         offers: {

@@ -54,6 +54,7 @@ import { fetchMarketParams, fetchMarketQuery } from "@/infra/http/controllers/fe
 import { updateMarketParams, updateMarketSchema } from "@/infra/http/controllers/update-market";
 import { listMarketsQuery } from "@/infra/http/controllers/list-markets";
 import { updateProducerSchema } from "@/infra/http/controllers/update-producer";
+import { publishCycleOnMarketSchema } from "@/infra/http/controllers/publish-cycle-on-market";
 
 // Schemas
 const { swagger: authenticateSchemaSwagger } = j2s(authenticateSchema);
@@ -120,6 +121,7 @@ const { swagger: updateMarketSchemaSwagger } = j2s(updateMarketSchema);
 const { swagger: registerProducerSchemaSwagger } = j2s(registerProducerSchema);
 const { swagger: listMarketsQuerySwagger } = j2s(listMarketsQuery);
 const { swagger: updateProducerSchemaSwagger } = j2s(updateProducerSchema);
+const { swagger: publishCycleOnMarketSchemaSwagger } = j2s(publishCycleOnMarketSchema);
 
 const toQueryParams = (query: SwaggerSchema) =>
   Object.entries(query.properties).map(([name, schema]) => ({
@@ -768,6 +770,26 @@ export const docs = {
         responses: {
           200: {
             description: "Lista de ciclos obtida com sucesso",
+          },
+        },
+      },
+    },
+    "/cycles/publish": {
+      post: {
+        tags: ["Ciclos"],
+        summary: "Publicar ofertas de um ciclo em uma feira",
+        security: [{ bearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: publishCycleOnMarketSchemaSwagger,
+            },
+          },
+        },
+        responses: {
+          201: {
+            description: "Ofertas do ciclo publicadas na feira com sucesso",
           },
         },
       },

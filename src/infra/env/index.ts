@@ -93,6 +93,9 @@ const schema = Joi.object({
 
   // Warehouse
   WAREHOUSE_NAME: Joi.string().required(),
+
+  // Tasks
+  TASKS_QUEUE_URL: Joi.string().required(),
 })
   .unknown(true)
   .required();

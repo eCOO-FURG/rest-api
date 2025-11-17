@@ -123,6 +123,14 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
     this.props.amount = amount;
   }
 
+  set market_id(market_id: UUID | null) {
+    this.props.market_id = market_id;
+  }
+
+  set cycle_id(cycle_id: UUID | null) {
+    this.props.cycle_id = cycle_id;
+  }
+
   set description(description: string | null) {
     this.props.description = description;
   }
