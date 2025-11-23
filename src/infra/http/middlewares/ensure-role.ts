@@ -23,7 +23,7 @@ export function ensureRole(roles: UserRole[]): RequestHandler {
         throw new UnauthorizedError();
       }
 
-      if (roles.includes("PRODUCER")) {
+      if (roles.length === 1 && roles[0] === "PRODUCER") {
         const farm = await container.resolve<FarmsRepository>("farmsRepository").find("farm", {
           admin: { id: request.user_id },
         });
