@@ -1,5 +1,6 @@
 // Entities
 import { Offer } from "@/core/entities/offer";
+import { UUID } from "@/core/entities/aggregates/uuid";
 
 // Repositories
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
@@ -16,11 +17,10 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists";
 
 // Utils
-import { now } from "../utils/now";
+import { now } from "@/core/utils/now";
 import { first } from "@/core/utils/first";
 import { last } from "@/core/utils/last";
 import { inPeriodOf } from "@/core/utils/in-period-of";
-import { UUID } from "../entities/aggregates/uuid";
 
 interface RegisterOfferUseCaseRequest {
   farm_id: string;
@@ -95,13 +95,13 @@ export class RegisterOfferUseCase {
         throw new ResourceClosedError("Mercado", market_id);
       }
 
-      const offerAlreadyExists = await this.offersRepository.find("offer", {
+      const duplicated = await this.offersRepository.find("offer", {
         farm: { id: farm.id.value },
         product: { id: product.id.value },
         market: { id: market_id },
       });
 
-      if (offerAlreadyExists) {
+      if (duplicated) {
         throw new ResourceAlreadyExistsError(`Oferta do produto`, product_id);
       }
     }
@@ -129,14 +129,14 @@ export class RegisterOfferUseCase {
         throw new ResourceClosedError("Ciclo", cycle.id.value);
       }
 
-      const offerAlreadyExists = await this.offersRepository.find("offer", {
+      const duplicated = await this.offersRepository.find("offer", {
         farm: { id: farm.id.value },
         product: { id: product.id.value },
         cycle: { id: cycle_id },
         ...(recurring ? { recurring } : { since: first(cycle.offer) }),
       });
 
-      if (offerAlreadyExists) {
+      if (duplicated) {
         throw new ResourceAlreadyExistsError(`Oferta do produto`, product_id);
       }
 
