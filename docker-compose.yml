@@ -40,7 +40,6 @@ services:
 
   server: &server
     container_name: ecoo-server
-    network_mode: "host"
     build:
       context: .
       dockerfile: Dockerfile
@@ -55,6 +54,7 @@ services:
 
   development-server:
     <<: *server
+    network_mode: "host"
     depends_on:
       - smtp
     profiles: ["development"]
