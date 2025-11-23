@@ -19,8 +19,8 @@ import { toBoolean } from "@/infra/utils/to-boolean";
 export const createRegisterOfferSchema = (isRegisteredByProducer: boolean) =>
   Joi.object({
     product_id: Joi.string().required(),
-    cycle_id: Joi.string().uuid().required(),
-    market_id: Joi.string().uuid().required(),
+    cycle_id: Joi.string().uuid().optional(),
+    market_id: Joi.string().uuid().optional(),
     farm_id: isRegisteredByProducer
       ? Joi.string().uuid().optional()
       : Joi.string().uuid().required(),

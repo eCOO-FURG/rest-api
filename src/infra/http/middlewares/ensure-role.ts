@@ -23,16 +23,16 @@ export function ensureRole(roles: UserRole[]): RequestHandler {
         throw new UnauthorizedError();
       }
 
-      if (roles.length === 1 && roles[0] === "PRODUCER") {
+      if (roles.includes("PRODUCER")) {
         const farm = await container.resolve<FarmsRepository>("farmsRepository").find("farm", {
           admin: { id: request.user_id },
         });
 
-        if (!farm) {
+        if (farm) {
+          request.farm_id = farm.id.value;
+        } else if (roles.length === 1) {
           throw new ResourceNotFoundError("Fazenda", request.user_id);
         }
-
-        request.farm_id = farm.id.value;
       }
 
       next();
