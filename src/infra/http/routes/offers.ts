@@ -13,7 +13,7 @@ import { updateOfferController } from "@/infra/http/controllers/update-offer";
 
 export const offers = Router();
 
-offers.post("/", ensureAuthenticated, ensureRole(["PRODUCER"]), registerOfferController);
+offers.post("/", ensureAuthenticated, ensureRole(["PRODUCER", "MANAGER"]), registerOfferController);
 
 offers.get("/", listOffersController);
 
