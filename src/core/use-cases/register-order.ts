@@ -174,6 +174,7 @@ export class RegisterOrderUseCase {
         });
 
         if (existent) {
+          existent.status = "PENDING";
           boxes.set(offer.farm_id, existent);
           order.pack(existent);
           continue;

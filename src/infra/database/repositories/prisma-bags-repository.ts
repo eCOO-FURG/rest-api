@@ -215,15 +215,11 @@ export class PrismaBagsRepository implements BagsRepository {
 
       for (const order of bag.orders.values()) {
         if (order.box) {
-          const box = await ctx.box.findFirst({
+          await ctx.box.upsert({
             where: { id: order.box.id.value },
+            update: PrismaBoxMapper.toPrisma(order.box),
+            create: PrismaBoxMapper.toPrisma(order.box),
           });
-
-          if (!box) {
-            await ctx.box.create({
-              data: PrismaBoxMapper.toPrisma(order.box),
-            });
-          }
         }
 
         await ctx.offer.update({
