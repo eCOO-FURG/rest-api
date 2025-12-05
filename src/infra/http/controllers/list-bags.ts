@@ -25,6 +25,7 @@ import { Bag } from "@/core/entities/bag";
 export const listBagsQuery = Joi.object({
   page: Joi.number().required().min(1),
   cycle_id: Joi.string().uuid().optional(),
+  market_id: Joi.string().uuid().optional(),
   user_id: Joi.string().uuid().optional(),
   statuses: options(Bag.statuses).optional(),
   since: Joi.string()
@@ -37,7 +38,7 @@ export const listBagsQuery = Joi.object({
 
 export async function listBagsController(request: Request, response: Response, next: NextFunction) {
   try {
-    const { page, since, before, cycle_id, user_id, statuses } = parse(
+    const { page, since, before, cycle_id, market_id, user_id, statuses } = parse(
       listBagsQuery,
       request.query,
     );
@@ -47,6 +48,7 @@ export async function listBagsController(request: Request, response: Response, n
     const { bags } = await listBagsUseCase.execute({
       user_id: request.admin ? user_id : request.user_id,
       cycle_id,
+      market_id,
       statuses: toArray(statuses),
       since: toDate(since),
       before: toDate(before),

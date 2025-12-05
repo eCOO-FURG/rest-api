@@ -14,6 +14,7 @@ interface ListBagsUseCaseRequest {
   user_id?: string;
   statuses?: BagStatus[];
   cycle_id?: string;
+  market_id?: string;
   name?: string;
   since?: Date;
   before?: Date;
@@ -26,7 +27,15 @@ export class ListBagsUseCase {
     private cyclesRepository: CyclesRepository,
   ) {}
 
-  async execute({ user_id, since, before, page, statuses, cycle_id }: ListBagsUseCaseRequest) {
+  async execute({
+    user_id,
+    since,
+    before,
+    page,
+    statuses,
+    cycle_id,
+    market_id,
+  }: ListBagsUseCaseRequest) {
     if (user_id) {
       const user = await this.usersRepository.find("user", { id: user_id });
 
@@ -50,6 +59,7 @@ export class ListBagsUseCase {
       {
         user: { id: user_id },
         cycle: { id: cycle_id },
+        market: { id: market_id },
         statuses,
         since,
         before,
