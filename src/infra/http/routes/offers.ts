@@ -17,6 +17,16 @@ offers.post("/", ensureAuthenticated, ensureRole(["PRODUCER", "MANAGER"]), regis
 
 offers.get("/", listOffersController);
 
-offers.patch("/:offer_id", ensureAuthenticated, ensureRole(["PRODUCER"]), updateOfferController);
+offers.patch(
+  "/:offer_id",
+  ensureAuthenticated,
+  ensureRole(["PRODUCER", "MANAGER"]),
+  updateOfferController,
+);
 
-offers.delete("/:offer_id", ensureAuthenticated, ensureRole(["PRODUCER"]), deleteOfferController);
+offers.delete(
+  "/:offer_id",
+  ensureAuthenticated,
+  ensureRole(["PRODUCER", "MANAGER"]),
+  deleteOfferController,
+);

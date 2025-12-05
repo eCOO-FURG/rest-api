@@ -3,6 +3,7 @@ import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Repositories
+import { UsersRepository } from "@/core/repositories/users-repository";
 import { OffersRepository } from "@/core/repositories/offers-repository";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { MarketsRepository } from "@/core/repositories/markets-repository";
@@ -12,23 +13,37 @@ import { first } from "@/core/utils/first";
 import { inPeriodOf } from "@/core/utils/in-period-of";
 
 interface DeleteOfferUseCaseRequest {
-  farm_id: string;
+  user_id: string;
   offer_id: string;
+  farm_id?: string;
 }
 
 export class DeleteOfferUseCase {
   constructor(
+    private usersRepository: UsersRepository,
     private offersRepository: OffersRepository,
     private cyclesRepository: CyclesRepository,
     private marketsRepository: MarketsRepository,
   ) {}
 
-  async execute({ farm_id, offer_id }: DeleteOfferUseCaseRequest) {
+  async execute({ user_id, farm_id, offer_id }: DeleteOfferUseCaseRequest) {
+    const user = await this.usersRepository.find("user", {
+      id: user_id,
+    });
+
+    if (!user) {
+      throw new ResourceNotFoundError("Usuário", user_id);
+    }
+
     const offer = await this.offersRepository.find("offer", {
       id: offer_id,
     });
 
-    if (!offer || !offer.farm_id.equals(farm_id)) {
+    if (!offer) {
+      throw new ResourceNotFoundError("Oferta", offer_id);
+    }
+
+    if (!user.admin && (!farm_id || !offer.farm_id.equals(farm_id))) {
       throw new ResourceNotFoundError("Oferta", offer_id);
     }
 

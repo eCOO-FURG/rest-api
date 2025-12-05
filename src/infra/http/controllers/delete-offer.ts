@@ -26,6 +26,7 @@ export async function deleteOfferController(
     const deleteOfferUseCase = container.resolve<DeleteOfferUseCase>("deleteOfferUseCase");
 
     await deleteOfferUseCase.execute({
+      user_id: request.user_id,
       farm_id: request.farm_id,
       offer_id,
     });

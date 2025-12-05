@@ -1,4 +1,5 @@
 // Repositories
+import { UsersRepository } from "@/core/repositories/users-repository";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { OffersRepository } from "@/core/repositories/offers-repository";
 import { MarketsRepository } from "@/core/repositories/markets-repository";
@@ -13,8 +14,9 @@ import { first } from "@/core/utils/first";
 import { inPeriodOf } from "@/core/utils/in-period-of";
 
 interface UpdateOfferUseCaseRequest {
-  farm_id: string;
+  user_id: string;
   offer_id: string;
+  farm_id?: string;
   amount?: number;
   price?: number;
   description?: string;
@@ -25,12 +27,14 @@ interface UpdateOfferUseCaseRequest {
 
 export class UpdateOfferUseCase {
   constructor(
+    private usersRepository: UsersRepository,
     private offersRepository: OffersRepository,
     private cyclesRepository: CyclesRepository,
     private marketsRepository: MarketsRepository,
   ) {}
 
   async execute({
+    user_id,
     farm_id,
     offer_id,
     amount,
@@ -40,11 +44,23 @@ export class UpdateOfferUseCase {
     active,
     comment,
   }: UpdateOfferUseCaseRequest) {
+    const user = await this.usersRepository.find("user", {
+      id: user_id,
+    });
+
+    if (!user) {
+      throw new ResourceNotFoundError("Usuário", user_id);
+    }
+
     const offer = await this.offersRepository.find("merchandise", {
       id: offer_id,
     });
 
-    if (!offer || !offer.farm_id.equals(farm_id)) {
+    if (!offer) {
+      throw new ResourceNotFoundError("Oferta", offer_id);
+    }
+
+    if (!user.admin && (!farm_id || !offer.farm_id.equals(farm_id))) {
       throw new ResourceNotFoundError("Oferta", offer_id);
     }
 

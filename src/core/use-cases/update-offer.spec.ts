@@ -2,12 +2,14 @@
 import { UpdateOfferUseCase } from "@/core/use-cases/update-offer";
 
 // Factories
+import { makeUser } from "@/test/factories/make-user";
 import { makeCycle } from "@/test/factories/make-cycle";
 import { makeFarm } from "@/test/factories/make-farm";
 import { makeOffer } from "@/test/factories/make-offer";
 import { makeMarket } from "@/test/factories/make-market";
 
 // Repositories
+import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryMarketsRepository } from "@/test/repositories/in-memory-markets-repository";
@@ -22,6 +24,7 @@ import { CycleWeek } from "@/core/entities/cycle";
 // Utils
 import { today } from "@/core/utils/today";
 
+let usersRepository: InMemoryUsersRepository;
 let offersRepository: InMemoryOffersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 let marketsRepository: InMemoryMarketsRepository;
@@ -30,14 +33,23 @@ let sut: UpdateOfferUseCase;
 
 describe("update offer", () => {
   beforeEach(() => {
+    usersRepository = new InMemoryUsersRepository();
     cyclesRepository = new InMemoryCyclesRepository();
     marketsRepository = new InMemoryMarketsRepository();
     offersRepository = new InMemoryOffersRepository();
 
-    sut = new UpdateOfferUseCase(offersRepository, cyclesRepository, marketsRepository);
+    sut = new UpdateOfferUseCase(
+      usersRepository,
+      offersRepository,
+      cyclesRepository,
+      marketsRepository,
+    );
   });
 
   it("should be able to update an offer from a cycle", async () => {
+    const user = makeUser();
+    usersRepository.items.push(user);
+
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
@@ -51,6 +63,7 @@ describe("update offer", () => {
     offersRepository.items.push(offer);
 
     await sut.execute({
+      user_id: user.id.value,
       farm_id: farm.id.value,
       offer_id: offer.id.value,
       description: "offer description.",
@@ -70,6 +83,9 @@ describe("update offer", () => {
   });
 
   it("should be able to update an offer from a market", async () => {
+    const user = makeUser();
+    usersRepository.items.push(user);
+
     const market = makeMarket({ open: true });
     marketsRepository.items.push(market);
 
@@ -82,6 +98,7 @@ describe("update offer", () => {
     offersRepository.items.push(offer);
 
     await sut.execute({
+      user_id: user.id.value,
       farm_id: farm.id.value,
       offer_id: offer.id.value,
       description: "offer description.",
@@ -101,6 +118,9 @@ describe("update offer", () => {
   });
 
   it("should not be able to update an offer exclusive from a closed market", async () => {
+    const user = makeUser();
+    usersRepository.items.push(user);
+
     const market = makeMarket({ open: false });
     marketsRepository.items.push(market);
 
@@ -114,6 +134,7 @@ describe("update offer", () => {
 
     await expect(() =>
       sut.execute({
+        user_id: user.id.value,
         farm_id: farm.id.value,
         offer_id: offer.id.value,
         description: "offer description.",
@@ -126,6 +147,9 @@ describe("update offer", () => {
   });
 
   it("should be not be able to update an offer exclusive from a closed cycle", async () => {
+    const user = makeUser();
+    usersRepository.items.push(user);
+
     const days = [1, 2, 3, 4, 5, 6, 7].filter((day) => day != today());
 
     const cycle = makeCycle({
@@ -143,6 +167,7 @@ describe("update offer", () => {
 
     await expect(() =>
       sut.execute({
+        user_id: user.id.value,
         farm_id: farm.id.value,
         offer_id: offer.id.value,
         description: "offer description.",
@@ -155,6 +180,9 @@ describe("update offer", () => {
   });
 
   it("should not be able to updated an offer from past cycle offering days", async () => {
+    const user = makeUser();
+    usersRepository.items.push(user);
+
     const cycle = makeCycle();
     cyclesRepository.items.push(cycle);
 
@@ -169,6 +197,7 @@ describe("update offer", () => {
 
     await expect(() =>
       sut.execute({
+        user_id: user.id.value,
         farm_id: farm.id.value,
         offer_id: offer.id.value,
         description: "offer description.",
@@ -181,10 +210,14 @@ describe("update offer", () => {
   });
 
   it("should not be able to update a nonexistent offer", async () => {
+    const user = makeUser();
+    usersRepository.items.push(user);
+
     const farm = makeFarm({ status: "ACTIVE" });
 
     await expect(() =>
       sut.execute({
+        user_id: user.id.value,
         farm_id: farm.id.value,
         offer_id: "123",
         description: "offer description.",
