@@ -12,7 +12,11 @@ import { CyclePresenter } from "@/infra/http/presenters/cycle-presenter";
 import { MarketPresenter } from "@/infra/http/presenters/market-presenter";
 
 export class OfferPresenter {
-  static toHttp(offer?: Offer): View<OfferProps> {
+  static toHttp(offer?: Offer | null): View<OfferProps> | null {
+    if (offer === null) {
+      return null;
+    }
+
     if (offer instanceof Merchandise) {
       return {
         id: offer.id.value,

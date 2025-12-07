@@ -19,7 +19,7 @@ import { PrismaAddressMapper } from "@/infra/database/mappers/prisma-address-map
 import { PrismaPaymentMapper } from "@/infra/database/mappers/prisma-payment-mapper";
 
 export type PrismaBagAndDetails = PrismaBag & {
-  customer: PrismaUser;
+  customer: PrismaUser | null;
   address: PrismaAddress | null;
   payment: PrismaPayment | null;
 };
@@ -35,8 +35,9 @@ export class PrismaBagAndDetailsMapper {
       subtotal: raw.subtotal.toNumber(),
       fee: raw.fee.toNumber(),
       shipping: raw.shipping.toNumber(),
-      customer_id: new UUID(raw.customer_id),
-      customer: PrismaUserMapper.toDomain(raw.customer),
+      comment: raw.comment,
+      customer_id: raw.customer_id ? new UUID(raw.customer_id) : null,
+      customer: raw.customer ? PrismaUserMapper.toDomain(raw.customer) : null,
       market_id: raw.market_id ? new UUID(raw.market_id) : null,
       cycle_id: raw.cycle_id ? new UUID(raw.cycle_id) : null,
       address_id: raw.address_id ? new UUID(raw.address_id) : null,

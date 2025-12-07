@@ -5,7 +5,11 @@ import { Warehouse } from "@/core/entities/warehouse";
 import { View } from "@/infra/types/view";
 
 export class WarehousePresenter {
-  static toHttp(warehouse?: Warehouse): View<Warehouse> {
+  static toHttp(warehouse?: Warehouse | null): View<Warehouse> | null {
+    if (warehouse === null) {
+      return null;
+    }
+
     if (warehouse) {
       return {
         id: warehouse.id.value,

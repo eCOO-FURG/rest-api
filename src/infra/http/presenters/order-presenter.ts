@@ -9,7 +9,11 @@ import { BoxPresenter } from "@/infra/http/presenters/box-presenter";
 import { View } from "@/infra/types/view";
 
 export class OrderPresenter {
-  static toHttp(order?: Order): View<OrderProps> {
+  static toHttp(order?: Order | null): View<OrderProps> | null {
+    if (order === null) {
+      return null;
+    }
+
     if (order) {
       return {
         id: order.id.value,

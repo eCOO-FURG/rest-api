@@ -9,7 +9,11 @@ import { View } from "@/infra/types/view";
 import { OfferPresenter } from "./offer-presenter";
 
 export class FarmPresenter {
-  static toHttp(farm?: Farm): View<FarmProps> {
+  static toHttp(farm?: Farm | null): View<FarmProps> | null {
+    if (farm === null) {
+      return null;
+    }
+
     const admin = UserPresenter.toHttp(farm?.admin);
 
     if (admin) {

@@ -6,7 +6,7 @@ import { Payment } from "@/core/entities/payment";
 import { Optional } from "@/core/types/optional";
 
 export interface BagAndDetailsProps extends BagProps {
-  customer: User;
+  customer: User | null;
   address: Address | null;
   payment: Payment | null;
 }

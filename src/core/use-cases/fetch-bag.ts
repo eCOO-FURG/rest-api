@@ -31,7 +31,7 @@ export class FetchBagUseCase {
       throw new ResourceNotFoundError("Sacola", bag_id);
     }
 
-    const owner = bag.customer_id.equals(user_id);
+    const owner = bag.customer_id && bag.customer_id.equals(user_id);
 
     if (!owner) {
       const user = await this.usersRepository.find("user", { id: user_id });

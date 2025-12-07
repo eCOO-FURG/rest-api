@@ -34,7 +34,7 @@ export class InMemoryBagsRepository implements BagsRepository {
     const bag = this.items.find((item) =>
       Boolean(
         (!id || item.id.equals(id)) &&
-          (!user?.id || item.customer_id.equals(user.id)) &&
+          (!user?.id || item.customer_id?.equals(user.id)) &&
           (typeof withdraw !== "boolean" ||
             (withdraw && item.address_id) ||
             (!withdraw && !item.address_id)) &&
@@ -90,7 +90,7 @@ export class InMemoryBagsRepository implements BagsRepository {
     let bags = this.items.filter((item) =>
       Boolean(
         (!id || item.id.equals(id)) &&
-          (!user?.id || item.customer_id.equals(user.id)) &&
+          (!user?.id || item.customer_id?.equals(user.id)) &&
           (typeof withdraw !== "boolean" ||
             (withdraw && item.address_id) ||
             (!withdraw && !item.address_id)) &&

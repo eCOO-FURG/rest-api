@@ -9,7 +9,11 @@ import { View } from "@/infra/types/view";
 import { OfferPresenter } from "@/infra/http/presenters/offer-presenter";
 
 export class CategoryPresenter {
-  static toHttp(category?: Category | CategoryAndOffers): View<CategoryProps> {
+  static toHttp(category?: Category | CategoryAndOffers): View<CategoryProps> | null {
+    if (category === null) {
+      return null;
+    }
+
     if (category instanceof CategoryAndOffers) {
       return {
         id: category.id.value,

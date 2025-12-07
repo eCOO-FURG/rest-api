@@ -15,8 +15,14 @@ import { BagPresenter } from "@/infra/http/presenters/bag-presenter";
 import { parse } from "@/infra/http/validation/parse";
 
 export const registerOrderSchema = Joi.object({
-  cycle_id: Joi.string().optional(),
-  market_id: Joi.string().optional(),
+  user_id: Joi.string().uuid().when("$admin", {
+    is: true,
+    then: Joi.optional(),
+    otherwise: Joi.forbidden(),
+  }),
+  comment: Joi.string().optional().max(50),
+  cycle_id: Joi.string().uuid().optional(),
+  market_id: Joi.string().uuid().optional(),
   address: Joi.object({
     street: Joi.string().required(),
     number: Joi.string().required(),
@@ -27,7 +33,7 @@ export const registerOrderSchema = Joi.object({
   orders: Joi.array()
     .items(
       Joi.object({
-        offer_id: Joi.string().required(),
+        offer_id: Joi.string().uuid().required(),
         amount: Joi.number().required(),
       }),
     )
@@ -41,16 +47,21 @@ export async function registerOrderController(
   next: NextFunction,
 ) {
   try {
-    const { cycle_id, market_id, address, orders } = parse(registerOrderSchema, request.body);
+    const { user_id, cycle_id, market_id, address, orders, comment } = parse(
+      registerOrderSchema,
+      request.body,
+      { context: { admin: request.admin } },
+    );
 
     const registerOrderUseCase = container.resolve<RegisterOrderUseCase>("registerOrderUseCase");
 
     const { bag } = await registerOrderUseCase.execute({
-      user_id: request.user_id,
+      user_id: request.admin ? user_id : request.user_id,
       cycle_id,
       market_id,
       residence: address,
       items: orders,
+      comment,
     });
 
     return response.status(201).send(BagPresenter.toHttp(bag));

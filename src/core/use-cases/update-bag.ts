@@ -48,7 +48,7 @@ export class UpdateBagUseCase {
       throw new ResourceNotFoundError("Usuário", user_id);
     }
 
-    const owner = bag.customer_id.equals(user.id);
+    const owner = bag.customer_id && bag.customer_id.equals(user_id);
 
     if (!owner && !user.admin) {
       throw new ResourceNotFoundError("Sacola", bag_id);

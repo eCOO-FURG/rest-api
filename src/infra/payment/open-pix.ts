@@ -32,8 +32,8 @@ export class OpenPix implements PixProvider {
         value: bag.total,
         expiresIn: 60 * 15,
         customer: {
-          name: `${bag.customer.first_name} ${bag.customer.last_name}`,
-          phone: bag.customer.phone.value,
+          name: bag.customer ? `${bag.customer.full_name}` : bag.comment || "Cliente Avulso",
+          phone: bag.customer ? bag.customer.phone.format : "",
         },
         additionalInfo: [
           {

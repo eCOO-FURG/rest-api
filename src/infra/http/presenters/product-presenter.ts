@@ -8,7 +8,11 @@ import { View } from "@/infra/types/view";
 import { CategoryPresenter } from "@/infra/http/presenters/category-presenter";
 
 export class ProductPresenter {
-  static toHttp(product?: Product): View<ProductProps> {
+  static toHttp(product?: Product | null): View<ProductProps> | null {
+    if (product === null) {
+      return null;
+    }
+
     if (product) {
       return {
         id: product.id.value,

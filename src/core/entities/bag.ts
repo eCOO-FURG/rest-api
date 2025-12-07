@@ -1,31 +1,34 @@
 // Entities
-import { Address } from "@/core/entities/address";
 import { UUID } from "@/core/entities/aggregates/uuid";
-import { Cycle } from "@/core/entities/cycle";
 import { Entity, EntityRequest } from "@/core/entities/entity";
+import { Address } from "@/core/entities/address";
+import { Market } from "@/core/entities/market";
+import { Cycle } from "@/core/entities/cycle";
 import { Order } from "@/core/entities/order";
 import { User } from "@/core/entities/user";
 
 // Types
 import { Optional } from "@/core/types/optional";
-import { Market } from "./market";
-import { randomCode } from "../utils/random-code";
+
+// Utils
+import { randomCode } from "@/core/utils/random-code";
 
 export type BagStatus = (typeof Bag.statuses)[number];
 
 export interface BagProps extends EntityRequest {
-  customer_id: UUID;
-  customer?: User;
+  customer_id: UUID | null;
+  customer?: User | null;
 
   cycle_id: UUID | null;
-  cycle?: Cycle;
+  cycle?: Cycle | null;
 
   market_id: UUID | null;
-  market?: Market;
+  market?: Market | null;
 
   address_id: UUID | null;
   address?: Address | null;
 
+  comment: string | null;
   code: string;
   subtotal: number;
   shipping: number;
@@ -71,6 +74,14 @@ export class Bag<Props extends BagProps = BagProps> extends Entity<Props> {
 
   get total() {
     return this.props.subtotal + this.props.shipping + this.props.fee;
+  }
+
+  get comment() {
+    return this.props.comment;
+  }
+
+  set comment(value: string | null) {
+    this.props.comment = value;
   }
 
   set subtotal(value: number) {
@@ -133,11 +144,14 @@ export class Bag<Props extends BagProps = BagProps> extends Entity<Props> {
       | "address_id"
       | "cycle_id"
       | "market_id"
+      | "customer_id"
       | "code"
+      | "comment"
     >,
   ) {
-    const bag = new Bag({
+    return new Bag({
       ...props,
+      customer_id: props.customer_id ?? null,
       address_id: props.address_id ?? null,
       shipping: props.address_id ? 10 : 0,
       subtotal: props.subtotal ?? 0,
@@ -145,11 +159,10 @@ export class Bag<Props extends BagProps = BagProps> extends Entity<Props> {
       status: props.status ?? "PENDING",
       cycle_id: props.cycle_id ?? null,
       market_id: props.market_id ?? null,
+      comment: props.comment ?? null,
       code: props.code ?? randomCode(),
       orders: props.orders ?? [],
     });
-
-    return bag;
   }
 
   static statuses = [

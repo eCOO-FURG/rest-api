@@ -29,13 +29,10 @@ import { inPeriodOf } from "@/core/utils/in-period-of";
 import { Mailer } from "@/core/mail/mailer";
 
 interface RegisterOrderUseCaseRequest {
-  user_id: string;
-  items: {
-    offer_id: string;
-    amount: number;
-  }[];
+  user_id?: string;
   market_id?: string;
   cycle_id?: string;
+  comment?: string;
   residence?: {
     street: string;
     number: string;
@@ -43,6 +40,10 @@ interface RegisterOrderUseCaseRequest {
     postal_code: string;
     complement?: string;
   };
+  items: {
+    offer_id: string;
+    amount: number;
+  }[];
 }
 
 export class RegisterOrderUseCase {
@@ -57,10 +58,17 @@ export class RegisterOrderUseCase {
     private mailer: Mailer,
   ) {}
 
-  async execute({ user_id, cycle_id, market_id, residence, items }: RegisterOrderUseCaseRequest) {
-    const user = await this.usersRepository.find("user", { id: user_id });
+  async execute({
+    user_id,
+    cycle_id,
+    market_id,
+    comment,
+    residence,
+    items,
+  }: RegisterOrderUseCaseRequest) {
+    const user = user_id ? await this.usersRepository.find("user", { id: user_id }) : null;
 
-    if (!user) {
+    if (!user && user_id) {
       throw new ResourceNotFoundError("Usuário", user_id);
     }
 
@@ -90,23 +98,26 @@ export class RegisterOrderUseCase {
       ? ((await this.addressesRepository.find("address", residence)) ?? Address.create(residence))
       : null;
 
-    const existent = await this.bagsRepository.find("bag", {
-      user: { id: user.id.value },
-      statuses: ["PENDING"],
-      address: address ? { id: address.id.value } : null,
-      ...(cycle && { since: first(cycle.order) }),
-      ...(cycle_id && { cycle: { id: cycle_id } }),
-      ...(market_id && { market: { id: market_id } }),
-    });
+    const existent = user
+      ? await this.bagsRepository.find("bag", {
+          user: { id: user.id.value },
+          statuses: ["PENDING"],
+          address: address ? { id: address.id.value } : null,
+          ...(cycle && { since: first(cycle.order) }),
+          ...(cycle_id && { cycle: { id: cycle_id } }),
+          ...(market_id && { market: { id: market_id } }),
+        })
+      : null;
 
     const bag = existent
       ? existent
       : Bag.create({
-          customer_id: user.id,
+          customer_id: user ? user.id : null,
           address_id: address ? address.id : null,
           address,
           cycle_id: cycle_id ? new UUID(cycle_id) : null,
           market_id: market_id ? new UUID(market_id) : null,
+          comment,
         });
 
     const offers = await this.offersRepository.list("merchandise", {
@@ -192,18 +203,20 @@ export class RegisterOrderUseCase {
 
     await this.bagsRepository.save(bag);
 
-    const view = await this.mailer.load({
-      view: "order-notification",
-      props: { first_name: user.first_name, bag, cycle, market },
-    });
+    if (user) {
+      const view = await this.mailer.load({
+        view: "order-notification",
+        props: { first_name: user.first_name, bag, cycle, market },
+      });
 
-    const email = Message.create({
-      to: user.email,
-      subject: `Pedido ${bag.code} | eCOO`,
-      content: view,
-    });
+      const email = Message.create({
+        to: user.email,
+        subject: `Pedido ${bag.code} | eCOO`,
+        content: view,
+      });
 
-    await this.mailer.send(email);
+      await this.mailer.send(email);
+    }
 
     return { bag };
   }

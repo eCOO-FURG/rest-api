@@ -5,7 +5,11 @@ import { Payment, PaymentProps } from "@/core/entities/payment";
 import { View } from "@/infra/types/view";
 
 export class PaymentPresenter {
-  static toHttp(payment?: Payment): View<PaymentProps> {
+  static toHttp(payment?: Payment | null): View<PaymentProps> | null {
+    if (payment === null) {
+      return null;
+    }
+
     if (payment) {
       return {
         id: payment.id.value,

@@ -5,7 +5,11 @@ import { Address, AddressProps } from "@/core/entities/address";
 import { View } from "@/infra/types/view";
 
 export class AddressPresenter {
-  static toHttp(address?: Address): View<AddressProps> {
+  static toHttp(address?: Address | null): View<AddressProps> | null {
+    if (address === null) {
+      return null;
+    }
+
     if (address) {
       return {
         id: address.id.value,

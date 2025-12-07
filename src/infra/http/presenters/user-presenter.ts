@@ -5,7 +5,11 @@ import { User, UserProps } from "@/core/entities/user";
 import { View } from "@/infra/types/view";
 
 export class UserPresenter {
-  static toHttp(user?: User): View<UserProps> {
+  static toHttp(user?: User | null): View<UserProps> | null {
+    if (user === null) {
+      return null;
+    }
+
     if (user) {
       return {
         id: user.id.value,

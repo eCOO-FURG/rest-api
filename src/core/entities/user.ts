@@ -33,6 +33,10 @@ export class User extends Entity<UserProps> {
     return this.props.last_name;
   }
 
+  get full_name() {
+    return `${this.props.first_name} ${this.props.last_name}`;
+  }
+
   get email() {
     return this.props.email;
   }

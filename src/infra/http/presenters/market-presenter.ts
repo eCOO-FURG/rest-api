@@ -6,7 +6,11 @@ import { View } from "@/infra/types/view";
 import { OfferPresenter } from "./offer-presenter";
 
 export class MarketPresenter {
-  static toHttp(market?: Market): View<MarketProps> {
+  static toHttp(market?: Market | null): View<MarketProps> | null {
+    if (market === null) {
+      return null;
+    }
+
     if (market) {
       return {
         id: market.id.value,

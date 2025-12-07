@@ -10,7 +10,11 @@ import { FarmPresenter } from "@/infra/http/presenters/farm-presenter";
 import { View } from "@/infra/types/view";
 
 export class BoxPresenter {
-  static toHttp(box?: Box): View<BoxProps> {
+  static toHttp(box?: Box | null): View<BoxProps> | null {
+    if (box === null) {
+      return null;
+    }
+
     if (box) {
       return {
         id: box.id.value,

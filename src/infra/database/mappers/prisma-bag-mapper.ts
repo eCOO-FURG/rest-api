@@ -18,7 +18,8 @@ export class PrismaBagMapper {
       fee: raw.fee.toNumber(),
       shipping: raw.shipping.toNumber(),
       subtotal: raw.subtotal.toNumber(),
-      customer_id: new UUID(raw.customer_id),
+      comment: raw.comment,
+      customer_id: raw.customer_id ? new UUID(raw.customer_id) : null,
       cycle_id: raw.cycle_id ? new UUID(raw.cycle_id) : null,
       market_id: raw.market_id ? new UUID(raw.market_id) : null,
       address_id: raw.address_id ? new UUID(raw.address_id) : null,
@@ -30,7 +31,7 @@ export class PrismaBagMapper {
   static toPrisma(bag: Bag): PrismaBag {
     return {
       id: bag.id.value,
-      customer_id: bag.customer_id.value,
+      customer_id: bag.customer_id ? bag.customer_id.value : null,
       market_id: bag.market_id ? bag.market_id.value : null,
       cycle_id: bag.cycle_id ? bag.cycle_id.value : null,
       address_id: bag.address_id ? bag.address_id.value : null,
@@ -38,6 +39,7 @@ export class PrismaBagMapper {
       fee: new Decimal(bag.fee),
       shipping: new Decimal(bag.shipping),
       code: bag.code,
+      comment: bag.comment,
       status: bag.status,
       created_at: bag.created_at,
       updated_at: bag.updated_at,
