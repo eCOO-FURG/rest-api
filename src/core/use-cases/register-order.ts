@@ -98,16 +98,17 @@ export class RegisterOrderUseCase {
       ? ((await this.addressesRepository.find("address", residence)) ?? Address.create(residence))
       : null;
 
-    const existent = user
-      ? await this.bagsRepository.find("bag", {
-          user: { id: user.id.value },
-          statuses: ["PENDING"],
-          address: address ? { id: address.id.value } : null,
-          ...(cycle && { since: first(cycle.order) }),
-          ...(cycle_id && { cycle: { id: cycle_id } }),
-          ...(market_id && { market: { id: market_id } }),
-        })
-      : null;
+    const existent =
+      user && cycle
+        ? await this.bagsRepository.find("bag", {
+            user: { id: user.id.value },
+            statuses: ["PENDING"],
+            address: address ? { id: address.id.value } : null,
+            ...(cycle && { since: first(cycle.order) }),
+            ...(cycle_id && { cycle: { id: cycle_id } }),
+            ...(market_id && { market: { id: market_id } }),
+          })
+        : null;
 
     const bag = existent
       ? existent
@@ -118,6 +119,7 @@ export class RegisterOrderUseCase {
           cycle_id: cycle_id ? new UUID(cycle_id) : null,
           market_id: market_id ? new UUID(market_id) : null,
           comment,
+          status: cycle ? "PENDING" : "RECEIVED",
         });
 
     const offers = await this.offersRepository.list("merchandise", {
