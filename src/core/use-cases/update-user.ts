@@ -22,6 +22,7 @@ interface UpdateUserUseCaseRequest {
   last_name?: string;
   email?: string;
   cpf?: string;
+  active?: boolean;
   phone?: string;
   password?: string;
   photo?: File;
@@ -45,6 +46,7 @@ export class UpdateUserUseCase {
     password,
     photo,
     chat,
+    active,
   }: UpdateUserUseCaseRequest) {
     const user = await this.usersRepository.find("user", { id: user_id });
 
@@ -88,6 +90,7 @@ export class UpdateUserUseCase {
     user.chat = chat ?? user.chat;
     user.cpf = new CPF(cpf ?? user.cpf.value);
     user.phone = new Phone(phone ?? user.phone.value);
+    user.active = typeof active === "boolean" ? active : user.active;
 
     if (password) {
       user.password = await this.encrypter.encrypt(password);

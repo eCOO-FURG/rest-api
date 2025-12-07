@@ -18,6 +18,7 @@ export interface UserProps extends EntityRequest {
   password: string | null;
   photo: string | null;
   chat: string | null;
+  active: boolean;
   cpf: CPF;
   phone: Phone;
   verified_at: Date | null;
@@ -67,6 +68,14 @@ export class User extends Entity<UserProps> {
 
   get chat() {
     return this.props.chat;
+  }
+
+  get active() {
+    return this.props.active;
+  }
+
+  set active(value: boolean) {
+    this.props.active = value;
   }
 
   set first_name(value: string) {
@@ -120,12 +129,16 @@ export class User extends Entity<UserProps> {
     return false;
   }
 
-  static create(props: Optional<UserProps, "password" | "verified_at" | "photo" | "chat">) {
+  static create(
+    props: Optional<UserProps, "password" | "verified_at" | "photo" | "chat" | "active">,
+    id?: string,
+  ) {
     return new User({
       ...props,
       password: props.password ?? null,
       photo: props.photo ?? null,
       chat: props.chat ?? null,
+      active: props.active ?? true,
       verified_at: props.verified_at ?? null,
     });
   }

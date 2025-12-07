@@ -25,6 +25,7 @@ model User {
   password    String?
   photo       String?
   chat        String?   @unique
+  active      Boolean   @default(true)
   verified_at DateTime?
 
   created_at DateTime  @default(now())

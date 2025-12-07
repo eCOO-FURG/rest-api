@@ -18,6 +18,7 @@ export class UserPresenter {
         photo: user.photo,
         cpf: user.cpf.format,
         email: user.email,
+        active: user.active,
         phone: user.phone.format,
         chat: user.chat,
         admin: user.admin,

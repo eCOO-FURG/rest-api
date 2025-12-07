@@ -13,9 +13,11 @@ import { parse } from "@/infra/http/validation/parse";
 
 // Utils
 import { toFile } from "@/infra/utils/to-file";
+import { toBoolean } from "@/infra/utils/to-boolean";
 
 // Validation
 import { file } from "@/infra/http/validation/file";
+import { boolean } from "@/infra/http/validation/boolean";
 
 export const updateUserParams = Joi.object({
   user_id: Joi.string().uuid().required(),
@@ -29,6 +31,7 @@ export const updateUserSchema = Joi.object({
   phone: Joi.string().min(11).max(11).optional(),
   password: Joi.string().min(8).optional(),
   chat: Joi.string().optional(),
+  active: boolean.optional(),
   photo: file.optional(),
 });
 
@@ -38,7 +41,7 @@ export async function updateUserController(
   next: NextFunction,
 ) {
   try {
-    const { first_name, last_name, email, cpf, phone, password, photo, chat } = parse(
+    const { first_name, last_name, email, cpf, phone, password, photo, chat, active } = parse(
       updateUserSchema,
       request.body,
     );
@@ -52,6 +55,7 @@ export async function updateUserController(
       cpf,
       email,
       password,
+      active: toBoolean(active),
       phone,
       chat,
       photo: toFile(photo),

@@ -17,6 +17,7 @@ import { MissingFieldError } from "@/core/errors/missing-field";
 import { UserNotVerifiedError } from "@/core/errors/user-not-verified";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
+import { UnauthorizedError } from "../errors/unauthorized";
 
 interface AuthenticateUseCaseRequest {
   email: string;
@@ -41,6 +42,10 @@ export class AuthenticateUseCase {
 
     if (!user) {
       throw new WrongCredentialsError();
+    }
+
+    if (!user.active) {
+      throw new UnauthorizedError();
     }
 
     switch (type) {
