@@ -131,7 +131,6 @@ export class User extends Entity<UserProps> {
 
   static create(
     props: Optional<UserProps, "password" | "verified_at" | "photo" | "chat" | "active">,
-    id?: string,
   ) {
     return new User({
       ...props,
