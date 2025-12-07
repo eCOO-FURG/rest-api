@@ -6,6 +6,7 @@ import { UserPresenter } from "@/infra/http/presenters/user-presenter";
 import { AddressPresenter } from "@/infra/http/presenters/address-presenter";
 import { CyclePresenter } from "@/infra/http/presenters/cycle-presenter";
 import { OrderPresenter } from "@/infra/http/presenters/order-presenter";
+import { MarketPresenter } from "@/infra/http/presenters/market-presenter";
 
 // Types
 import { View } from "@/infra/types/view";
@@ -27,6 +28,8 @@ export class BagPresenter {
         code: bag.code,
         cycle_id: bag.cycle_id ? bag.cycle_id.value : null,
         cycle: CyclePresenter.toHttp(bag.cycle),
+        market_id: bag.market_id ? bag.market_id.value : null,
+        market: MarketPresenter.toHttp(bag.market),
         address_id: bag.address_id ? bag.address_id.value : null,
         address: bag.address === null ? null : AddressPresenter.toHttp(bag.address),
         customer_id: bag.customer_id ? bag.customer_id.value : null,

@@ -12,4 +12,4 @@ export const orders = Router();
 
 orders.post("/", registerOrderController);
 
-orders.patch("/:order_id", ensureRole(["BROKER"]), updateOrderController);
+orders.patch("/:order_id", ensureRole(["BROKER", "MANAGER"]), updateOrderController);
