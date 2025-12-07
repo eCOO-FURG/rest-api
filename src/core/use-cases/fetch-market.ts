@@ -12,9 +12,10 @@ interface FetchMarketUseCaseRequest {
 export class FetchMarketUseCase {
   constructor(private marketsRepository: MarketsRepository) {}
 
-  async execute({ market_id }: FetchMarketUseCaseRequest) {
+  async execute({ market_id, page }: FetchMarketUseCaseRequest) {
     const market = await this.marketsRepository.find("market-and-offers", {
       id: market_id,
+      offers: { page },
     });
 
     if (!market) {
