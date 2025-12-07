@@ -42,7 +42,7 @@ export class PrismaBagAndOrdersMapper {
       fee: raw.fee.toNumber(),
       comment: raw.comment,
       customer_id: raw.customer_id ? new UUID(raw.customer_id) : null,
-      customer: PrismaUserMapper.toDomain(raw.customer),
+      customer: raw.customer ? PrismaUserMapper.toDomain<"user">(raw.customer) : null,
       market_id: raw.market_id ? new UUID(raw.market_id) : null,
       cycle_id: raw.cycle_id ? new UUID(raw.cycle_id) : null,
       address_id: raw.address_id ? new UUID(raw.address_id) : null,

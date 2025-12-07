@@ -26,6 +26,7 @@ export class BagPresenter {
         fee: bag.fee,
         shipping: bag.shipping,
         code: bag.code,
+        comment: bag.comment,
         cycle_id: bag.cycle_id ? bag.cycle_id.value : null,
         cycle: CyclePresenter.toHttp(bag.cycle),
         market_id: bag.market_id ? bag.market_id.value : null,

@@ -9,7 +9,7 @@ import { OrderAndDetails } from "@/core/entities/aggregates/order-and-details";
 import { Optional } from "@/core/types/optional";
 
 export interface BagAndOrdersProps extends BagProps {
-  customer: User;
+  customer: User | null;
   address: Address | null;
   payment: Payment | null;
   orders: OrderAndDetails[];

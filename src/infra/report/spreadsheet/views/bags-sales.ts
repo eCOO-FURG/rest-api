@@ -59,8 +59,8 @@ export const BAGS_SALES_VIEW: SpreadsheetView = async ({
     rows.push({
       bag: bag.code,
       status: BAG_STATUS[bag.status],
-      consumer: `${bag.customer.first_name} ${bag.customer.last_name}`,
-      cpf: bag.customer.cpf.format,
+      consumer: bag.customer ? `${bag.customer.first_name} ${bag.customer.last_name}` : bag.comment,
+      cpf: bag.customer ? bag.customer.cpf.value : "-",
       address: bag.address?.format,
       bag_price: bag.subtotal + bag.fee,
       shipping_price: bag.shipping,

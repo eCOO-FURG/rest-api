@@ -79,7 +79,7 @@ export const PRODUCTS_SALES_VIEW: SpreadsheetView = async ({
         bag: bag.code,
         product: order.offer?.product?.name,
         producer: order.offer?.farm?.admin.name,
-        user: `${bag.customer.first_name} ${bag.customer.last_name}`,
+        user: bag.customer ? `${bag.customer.first_name} ${bag.customer.last_name}` : bag.comment,
         status: ORDER_STATUS[order.status],
         fee: (order.offer.farm.fee ?? 0) / 100,
         offer_price_without_tax: offerPrice,

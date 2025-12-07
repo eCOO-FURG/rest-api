@@ -20,7 +20,7 @@ export interface BagProps extends EntityRequest {
   customer?: User | null;
 
   cycle_id: UUID | null;
-  cycle?: Cycle | null;
+  cycle?: Cycle;
 
   market_id: UUID | null;
   market?: Market | null;
