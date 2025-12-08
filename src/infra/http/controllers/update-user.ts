@@ -41,6 +41,8 @@ export async function updateUserController(
   next: NextFunction,
 ) {
   try {
+    const { user_id } = parse(updateUserParams, request.params);
+
     const { first_name, last_name, email, cpf, phone, password, photo, chat, active } = parse(
       updateUserSchema,
       request.body,
@@ -49,7 +51,7 @@ export async function updateUserController(
     const updateUserUsecase = container.resolve<UpdateUserUseCase>("updateUserUseCase");
 
     await updateUserUsecase.execute({
-      user_id: request.user_id,
+      user_id,
       first_name,
       last_name,
       cpf,
