@@ -50,7 +50,7 @@ import { verifyUserSchema } from "@/infra/http/controllers/verify-user";
 import { openPixSchema } from "@/infra/http/webhooks/open-pix";
 import { fetchDescriptionSuggestionParams } from "@/infra/http/controllers/fetch-description-suggestion";
 import { registerMarketSchema } from "@/infra/http/controllers/register-market";
-import { fetchMarketParams, fetchMarketQuery } from "@/infra/http/controllers/fetch-market";
+import { fetchMarketParams } from "@/infra/http/controllers/fetch-market";
 import { updateMarketParams, updateMarketSchema } from "@/infra/http/controllers/update-market";
 import { listMarketsQuery } from "@/infra/http/controllers/list-markets";
 import { updateProducerSchema } from "@/infra/http/controllers/update-producer";
@@ -115,7 +115,6 @@ const { swagger: listUsersQuerySwagger } = j2s(listUsersQuery);
 const { swagger: updateWarehouseSchemaSwagger } = j2s(updateWarehouseSchema);
 const { swagger: registerMarketSchemaSwagger } = j2s(registerMarketSchema);
 const { swagger: fetchMarketParamsSwagger } = j2s(fetchMarketParams);
-const { swagger: fetchMarketQuerySwagger } = j2s(fetchMarketQuery);
 const { swagger: updateMarketParamsSwagger } = j2s(updateMarketParams);
 const { swagger: updateMarketSchemaSwagger } = j2s(updateMarketSchema);
 const { swagger: registerProducerSchemaSwagger } = j2s(registerProducerSchema);
@@ -827,10 +826,7 @@ export const docs = {
       get: {
         tags: ["Feiras"],
         summary: "Obter mercado específico",
-        parameters: [
-          ...toRouteParams(fetchMarketParamsSwagger),
-          ...toQueryParams(fetchMarketQuerySwagger),
-        ],
+        parameters: [...toRouteParams(fetchMarketParamsSwagger)],
         responses: {
           200: {
             description: "Mercado obtido com sucesso",

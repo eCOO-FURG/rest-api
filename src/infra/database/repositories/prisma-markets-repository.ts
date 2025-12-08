@@ -14,10 +14,7 @@ import { prisma } from "@/infra/database/prisma-service";
 
 // Mappers
 import { PrismaMarketMapper } from "@/infra/database/mappers/prisma-market-mapper";
-import {
-  PrismaMarketAndOffers,
-  PrismaMarketAndOffersMapper,
-} from "@/infra/database/mappers/prisma-market-and-offers-mapper";
+import { PrismaMarketAndDetailsMapper } from "@/infra/database/mappers/prisma-market-and-details-mapper";
 
 export class PrismaMarketsRepository implements MarketsRepository {
   async find<T extends MarketsRepositoryReturnType>(
@@ -30,16 +27,6 @@ export class PrismaMarketsRepository implements MarketsRepository {
         name: { contains: name, mode: "insensitive" },
         open,
       },
-      include: {
-        ...(type === "market-and-offers" && {
-          offers: {
-            include: {
-              product: true,
-              farm: { include: { admin: true } },
-            },
-          },
-        }),
-      },
     });
 
     if (!market) {
@@ -49,8 +36,22 @@ export class PrismaMarketsRepository implements MarketsRepository {
     switch (type) {
       default:
         return PrismaMarketMapper.toDomain<T>(market);
-      case "market-and-offers":
-        return PrismaMarketAndOffersMapper.toDomain<T>(market as PrismaMarketAndOffers);
+      case "market-and-details": {
+        const [offers_total, bags_total] = await Promise.all([
+          prisma.offer.count({
+            where: { market_id: market.id },
+          }),
+          prisma.order.count({
+            where: { offer: { market_id: market.id } },
+          }),
+        ]);
+
+        return PrismaMarketAndDetailsMapper.toDomain<T>({
+          ...market,
+          offers_total,
+          bags_total,
+        });
+      }
     }
   }
 
@@ -65,16 +66,6 @@ export class PrismaMarketsRepository implements MarketsRepository {
         name: { contains: name, mode: "insensitive" },
         open,
       },
-      include: {
-        ...(type === "market-and-offers" && {
-          offers: {
-            include: {
-              product: true,
-              farm: { include: { admin: true } },
-            },
-          },
-        }),
-      },
       ...(page && { skip: (page - 1) * 20, take: 20 }),
       orderBy: { created_at: "desc" },
     });
@@ -82,9 +73,24 @@ export class PrismaMarketsRepository implements MarketsRepository {
     switch (type) {
       default:
         return markets.map(PrismaMarketMapper.toDomain<T>);
-      case "market-and-offers":
-        return markets.map((market) =>
-          PrismaMarketAndOffersMapper.toDomain<T>(market as PrismaMarketAndOffers),
+      case "market-and-details":
+        return await Promise.all(
+          markets.map(async (market) => {
+            const [offers_total, bags_total] = await Promise.all([
+              prisma.offer.count({
+                where: { market_id: market.id },
+              }),
+              prisma.order.count({
+                where: { offer: { market_id: market.id } },
+              }),
+            ]);
+
+            return PrismaMarketAndDetailsMapper.toDomain<T>({
+              ...market,
+              offers_total,
+              bags_total,
+            });
+          }),
         );
     }
   }

@@ -1,6 +1,5 @@
 // Entities
 import { Entity, EntityRequest } from "@/core/entities/entity";
-import { Offer } from "@/core/entities/offer";
 
 // Types
 import { Optional } from "@/core/types/optional";
@@ -9,7 +8,6 @@ export interface MarketProps extends EntityRequest {
   name: string;
   description: string | null;
   open: boolean;
-  offers: Offer[];
 }
 
 export class Market<Props extends MarketProps = MarketProps> extends Entity<Props> {
@@ -25,10 +23,6 @@ export class Market<Props extends MarketProps = MarketProps> extends Entity<Prop
     return this.props.open;
   }
 
-  get offers() {
-    return this.props.offers;
-  }
-
   set description(value: string | null) {
     this.props.description = value;
   }
@@ -41,12 +35,11 @@ export class Market<Props extends MarketProps = MarketProps> extends Entity<Prop
     this.props.name = value;
   }
 
-  static create(props: Optional<MarketProps, "open" | "description" | "offers">) {
+  static create(props: Optional<MarketProps, "open" | "description">) {
     return new Market({
       ...props,
       open: props.open ?? true,
       description: props.description ?? null,
-      offers: props.offers ?? [],
     });
   }
 }

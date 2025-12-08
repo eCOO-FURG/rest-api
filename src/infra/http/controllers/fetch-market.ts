@@ -18,10 +18,6 @@ export const fetchMarketParams = Joi.object({
   market_id: Joi.string().uuid().required(),
 });
 
-export const fetchMarketQuery = Joi.object({
-  page: Joi.number().integer().min(1).required(),
-});
-
 export async function fetchMarketController(
   request: Request,
   response: Response,
@@ -29,13 +25,11 @@ export async function fetchMarketController(
 ) {
   try {
     const { market_id } = parse(fetchMarketParams, request.params);
-    const { page } = parse(fetchMarketQuery, request.query);
 
     const fetchMarketUseCase = container.resolve<FetchMarketUseCase>("fetchMarketUseCase");
 
     const { market } = await fetchMarketUseCase.execute({
       market_id,
-      page,
     });
 
     return response.status(200).send(MarketPresenter.toHttp(market));

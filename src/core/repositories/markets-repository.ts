@@ -1,13 +1,13 @@
 // Entities
 import { Market } from "@/core/entities/market";
-import { MarketAndOffers } from "@/core/entities/aggregates/market-and-offers";
+import { MarketAndDetails } from "@/core/entities/aggregates/market-and-details";
 
-export type MarketsRepositoryReturnType = "market" | "market-and-offers";
+export type MarketsRepositoryReturnType = "market" | "market-and-details";
 
 export type MarketEntityOf<T extends MarketsRepositoryReturnType> = T extends "market"
   ? Market
-  : T extends "market-and-offers"
-    ? MarketAndOffers
+  : T extends "market-and-details"
+    ? MarketAndDetails
     : never;
 
 export interface MarketsRepositorySearchRequest {
