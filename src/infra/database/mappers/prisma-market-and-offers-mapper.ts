@@ -11,9 +11,6 @@ import {
 import { UUID } from "@/core/entities/aggregates/uuid";
 import { MarketAndOffers } from "@/core/entities/aggregates/market-and-offers";
 
-// Types
-import { Page } from "@/core/types/page";
-
 // Mappers
 import {
   PrismaMerchandiseMapper,
@@ -21,7 +18,7 @@ import {
 } from "@/infra/database/mappers/prisma-merchandise";
 
 export type PrismaMarketAndOffers = PrismaMarket & {
-  offers: Page<PrismaMerchandise>;
+  offers: PrismaMerchandise[];
 };
 
 export class PrismaMarketAndOffersMapper {
@@ -33,7 +30,7 @@ export class PrismaMarketAndOffersMapper {
       name: raw.name,
       description: raw.description,
       open: raw.open,
-      offers: { ...raw.offers, data: raw.offers.data.map(PrismaMerchandiseMapper.toDomain) },
+      offers: raw.offers.map(PrismaMerchandiseMapper.toDomain),
       created_at: raw.created_at,
       updated_at: raw.updated_at,
     }) as MarketEntityOf<T>;

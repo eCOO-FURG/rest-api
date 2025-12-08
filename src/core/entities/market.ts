@@ -4,14 +4,12 @@ import { Offer } from "@/core/entities/offer";
 
 // Types
 import { Optional } from "@/core/types/optional";
-import { Page } from "@/core/types/page";
-import { paginate } from "@/core/utils/paginate";
 
 export interface MarketProps extends EntityRequest {
   name: string;
   description: string | null;
   open: boolean;
-  offers: Page<Offer>;
+  offers: Offer[];
 }
 
 export class Market<Props extends MarketProps = MarketProps> extends Entity<Props> {
@@ -48,7 +46,7 @@ export class Market<Props extends MarketProps = MarketProps> extends Entity<Prop
       ...props,
       open: props.open ?? true,
       description: props.description ?? null,
-      offers: props.offers ?? paginate(),
+      offers: props.offers ?? [],
     });
   }
 }

@@ -14,7 +14,6 @@ export interface MarketsRepositorySearchRequest {
   id?: string;
   name?: string;
   open?: boolean;
-  offers?: { page: number };
 }
 
 export interface MarketsRepository {
