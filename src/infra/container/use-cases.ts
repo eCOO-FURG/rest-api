@@ -301,12 +301,12 @@ export default (container: AwilixContainer) => {
         new UpdateWarehouseUseCase(usersRepository, warehouseRepository),
     ),
     registerProducerUseCase: asFunction(
-      ({ usersRepository, registerUsecase, registerFarmUseCase }) =>
-        new RegisterProducerUseCase(usersRepository, registerUsecase, registerFarmUseCase),
+      ({ usersRepository, farmsRepository, storage }) =>
+        new RegisterProducerUseCase(usersRepository, farmsRepository, storage),
     ),
     updateProducerUseCase: asFunction(
-      ({ farmsRepository, updateUserUseCase, updateFarmUseCase }) =>
-        new UpdateProducerUseCase(farmsRepository, updateUserUseCase, updateFarmUseCase),
+      ({ farmsRepository, usersRepository, storage }) =>
+        new UpdateProducerUseCase(farmsRepository, usersRepository, storage),
     ),
     registerMarketUseCase: asFunction(
       ({ marketsRepository, cyclesRepository, scheduler }) =>

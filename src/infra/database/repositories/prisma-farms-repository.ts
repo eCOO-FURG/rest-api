@@ -216,8 +216,6 @@ export class PrismaFarmsRepository implements FarmsRepository {
     const data = PrismaFarmMapper.toPrisma(farm);
 
     await prisma.$transaction(async (ctx) => {
-      await ctx.farm.create({ data });
-
       if (farm.admin) {
         const admin = PrismaUserMapper.toPrisma(farm.admin);
 
@@ -227,6 +225,8 @@ export class PrismaFarmsRepository implements FarmsRepository {
           update: admin,
         });
       }
+
+      await ctx.farm.create({ data });
     });
   }
 
