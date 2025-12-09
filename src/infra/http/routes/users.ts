@@ -24,4 +24,15 @@ users.post(
   ]),
   registerController,
 );
-users.patch("/:user_id", ensureAuthenticated, ensureRole(["MANAGER"]), updateUserController);
+users.patch(
+  "/:user_id",
+  processFiles([
+    {
+      name: "photo",
+      options: { allowed: ["image/jpeg", "image/png"], size: 1 },
+    },
+  ]),
+  ensureAuthenticated,
+  ensureRole(["MANAGER"]),
+  updateUserController,
+);
