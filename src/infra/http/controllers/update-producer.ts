@@ -15,6 +15,10 @@ import { parse } from "@/infra/http/validation/parse";
 // Utils
 import { toFile } from "@/infra/utils/to-file";
 
+export const updateFarmParams = Joi.object({
+  farm_id: Joi.string().uuid().required(),
+});
+
 export const updateProducerSchema = Joi.object({
   first_name: Joi.string().optional(),
   last_name: Joi.string().optional(),
@@ -33,7 +37,8 @@ export async function updateProducerController(
   next: NextFunction,
 ) {
   try {
-    const { farm_id } = request.params;
+    const { farm_id } = parse(updateFarmParams, request.params);
+
     const { first_name, last_name, cpf, email, phone, name, tally, chat, photo } = parse(
       updateProducerSchema,
       request.body,
