@@ -213,8 +213,6 @@ export class PrismaFarmsRepository implements FarmsRepository {
   }
 
   async create(farm: Farm): Promise<void> {
-    const data = PrismaFarmMapper.toPrisma(farm);
-
     await prisma.$transaction(async (ctx) => {
       if (farm.admin) {
         const admin = PrismaUserMapper.toPrisma(farm.admin);
@@ -226,14 +224,26 @@ export class PrismaFarmsRepository implements FarmsRepository {
         });
       }
 
-      await ctx.farm.create({ data });
+      await ctx.farm.create({ data: PrismaFarmMapper.toPrisma(farm) });
     });
   }
 
   async update(farm: Farm): Promise<void> {
-    await prisma.farm.update({
-      where: { id: farm.id.value },
-      data: PrismaFarmMapper.toPrisma(farm),
+    await prisma.$transaction(async (ctx) => {
+      if (farm.admin) {
+        const admin = PrismaUserMapper.toPrisma(farm.admin);
+
+        await ctx.user.upsert({
+          where: { id: farm.admin.id.value },
+          create: admin,
+          update: admin,
+        });
+      }
+
+      await ctx.farm.update({
+        where: { id: farm.id.value },
+        data: PrismaFarmMapper.toPrisma(farm),
+      });
     });
   }
 
