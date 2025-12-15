@@ -42,7 +42,10 @@ export class PrismaMarketsRepository implements MarketsRepository {
             where: { market_id: market.id },
           }),
           prisma.bag.findMany({
-            where: { orders: { some: { offer: { market_id: market.id } } } },
+            where: {
+              orders: { some: { offer: { market_id: market.id } } },
+              status: { not: "CANCELLED" },
+            },
             select: { subtotal: true, shipping: true, fee: true },
           }),
         ]);
@@ -89,7 +92,10 @@ export class PrismaMarketsRepository implements MarketsRepository {
                 where: { market_id: market.id },
               }),
               prisma.bag.findMany({
-                where: { orders: { some: { offer: { market_id: market.id } } } },
+                where: {
+                  orders: { some: { offer: { market_id: market.id } } },
+                  status: { not: "CANCELLED" },
+                },
                 select: { subtotal: true, shipping: true, fee: true },
               }),
             ]);
