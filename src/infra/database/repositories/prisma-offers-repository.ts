@@ -220,23 +220,41 @@ export class PrismaOffersRepository implements OffersRepository {
   }
 
   async publishCycleOnMarket(cycle_id: string, market_id: string): Promise<void> {
-    await prisma.offer.updateMany({
-      where: {
-        cycle_id,
-        AND: [
-          {
-            OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
-          },
-          {
-            OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
-          },
-          {
-            active: true,
-            amount: { not: 0 },
-          },
-        ],
-      },
-      data: { market_id },
+    await prisma.$transaction(async (ctx) => {
+      const latestNonRecurringOffer = await ctx.offer.findFirst({
+        where: {
+          cycle_id,
+          closes_at: { not: null },
+        },
+        orderBy: { created_at: "desc" },
+      });
+
+      await ctx.offer.updateMany({
+        where: {
+          cycle_id,
+          AND: [
+            {
+              OR: [
+                { closes_at: null },
+                {
+                  ...(latestNonRecurringOffer && {
+                    opens_at: { gte: latestNonRecurringOffer.opens_at },
+                    closes_at: { lte: latestNonRecurringOffer.closes_at! },
+                  }),
+                },
+              ],
+            },
+            {
+              OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+            },
+            {
+              active: true,
+              amount: { not: 0 },
+            },
+          ],
+        },
+        data: { market_id },
+      });
     });
   }
 }

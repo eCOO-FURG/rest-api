@@ -17,8 +17,9 @@ export class MarketPresenter {
         name: market.name,
         open: market.open,
         description: market.description,
-        offers_total: market.offers_total,
-        bags_total: market.bags_total,
+        offers_count: market.offers_count,
+        bags_count: market.bags_count,
+        revenue: market.revenue,
         created_at: market.created_at,
         updated_at: market.updated_at,
       };

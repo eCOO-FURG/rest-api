@@ -2,17 +2,22 @@
 import { Market, MarketProps } from "@/core/entities/market";
 
 export interface MarketAndDetailsProps extends MarketProps {
-  offers_total: number;
-  bags_total: number;
+  offers_count: number;
+  bags_count: number;
+  revenue: number;
 }
 
 export class MarketAndDetails extends Market<MarketAndDetailsProps> {
-  get offers_total() {
-    return this.props.offers_total;
+  get offers_count() {
+    return this.props.offers_count;
   }
 
-  get bags_total() {
-    return this.props.bags_total;
+  get bags_count() {
+    return this.props.bags_count;
+  }
+
+  get revenue() {
+    return this.props.revenue;
   }
 
   static create(props: MarketAndDetailsProps) {

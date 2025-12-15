@@ -37,19 +37,27 @@ export class PrismaMarketsRepository implements MarketsRepository {
       default:
         return PrismaMarketMapper.toDomain<T>(market);
       case "market-and-details": {
-        const [offers_total, bags_total] = await Promise.all([
+        const [offers_count, bags] = await Promise.all([
           prisma.offer.count({
             where: { market_id: market.id },
           }),
-          prisma.order.count({
-            where: { offer: { market_id: market.id } },
+          prisma.bag.findMany({
+            where: { orders: { some: { offer: { market_id: market.id } } } },
+            select: { subtotal: true, shipping: true, fee: true },
           }),
         ]);
 
+        const revenue = bags.reduce(
+          (acc, bag) =>
+            acc + bag.subtotal.toNumber() + bag.shipping.toNumber() + bag.fee.toNumber(),
+          0,
+        );
+
         return PrismaMarketAndDetailsMapper.toDomain<T>({
           ...market,
-          offers_total,
-          bags_total,
+          offers_count,
+          bags_count: bags.length,
+          revenue,
         });
       }
     }
@@ -76,19 +84,27 @@ export class PrismaMarketsRepository implements MarketsRepository {
       case "market-and-details":
         return await Promise.all(
           markets.map(async (market) => {
-            const [offers_total, bags_total] = await Promise.all([
+            const [offers_count, bags] = await Promise.all([
               prisma.offer.count({
                 where: { market_id: market.id },
               }),
-              prisma.order.count({
-                where: { offer: { market_id: market.id } },
+              prisma.bag.findMany({
+                where: { orders: { some: { offer: { market_id: market.id } } } },
+                select: { subtotal: true, shipping: true, fee: true },
               }),
             ]);
 
+            const revenue = bags.reduce(
+              (acc, bag) =>
+                acc + bag.subtotal.toNumber() + bag.shipping.toNumber() + bag.fee.toNumber(),
+              0,
+            );
+
             return PrismaMarketAndDetailsMapper.toDomain<T>({
               ...market,
-              offers_total,
-              bags_total,
+              offers_count,
+              bags_count: bags.length,
+              revenue,
             });
           }),
         );

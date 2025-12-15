@@ -12,7 +12,7 @@ export class ListMarketsUseCase {
 
   async execute({ page, open, name }: ListMarketsUseCaseRequest) {
     const markets = await this.marketsRepository.list(
-      "market",
+      "market-and-details",
       {
         name,
         open,
