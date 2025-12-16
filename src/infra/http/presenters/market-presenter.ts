@@ -20,6 +20,7 @@ export class MarketPresenter {
         offers_count: market.offers_count,
         bags_count: market.bags_count,
         revenue: market.revenue,
+        fee: market.fee,
         created_at: market.created_at,
         updated_at: market.updated_at,
       };

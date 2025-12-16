@@ -5,6 +5,7 @@ export interface MarketAndDetailsProps extends MarketProps {
   offers_count: number;
   bags_count: number;
   revenue: number;
+  fee: number;
 }
 
 export class MarketAndDetails extends Market<MarketAndDetailsProps> {
@@ -18,6 +19,10 @@ export class MarketAndDetails extends Market<MarketAndDetailsProps> {
 
   get revenue() {
     return this.props.revenue;
+  }
+
+  get fee() {
+    return this.props.fee;
   }
 
   static create(props: MarketAndDetailsProps) {

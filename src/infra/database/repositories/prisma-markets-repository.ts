@@ -50,10 +50,13 @@ export class PrismaMarketsRepository implements MarketsRepository {
           }),
         ]);
 
-        const revenue = bags.reduce(
-          (acc, bag) =>
-            acc + bag.subtotal.toNumber() + bag.shipping.toNumber() + bag.fee.toNumber(),
-          0,
+        const { revenue, fee } = bags.reduce(
+          (acc, bag) => ({
+            revenue:
+              acc.revenue + bag.subtotal.toNumber() + bag.shipping.toNumber() + bag.fee.toNumber(),
+            fee: acc.fee + bag.fee.toNumber(),
+          }),
+          { revenue: 0, fee: 0 },
         );
 
         return PrismaMarketAndDetailsMapper.toDomain<T>({
@@ -61,6 +64,7 @@ export class PrismaMarketsRepository implements MarketsRepository {
           offers_count,
           bags_count: bags.length,
           revenue,
+          fee,
         });
       }
     }
@@ -100,10 +104,16 @@ export class PrismaMarketsRepository implements MarketsRepository {
               }),
             ]);
 
-            const revenue = bags.reduce(
-              (acc, bag) =>
-                acc + bag.subtotal.toNumber() + bag.shipping.toNumber() + bag.fee.toNumber(),
-              0,
+            const { revenue, fee } = bags.reduce(
+              (acc, bag) => ({
+                revenue:
+                  acc.revenue +
+                  bag.subtotal.toNumber() +
+                  bag.shipping.toNumber() +
+                  bag.fee.toNumber(),
+                fee: acc.fee + bag.fee.toNumber(),
+              }),
+              { revenue: 0, fee: 0 },
             );
 
             return PrismaMarketAndDetailsMapper.toDomain<T>({
@@ -111,6 +121,7 @@ export class PrismaMarketsRepository implements MarketsRepository {
               offers_count,
               bags_count: bags.length,
               revenue,
+              fee,
             });
           }),
         );
