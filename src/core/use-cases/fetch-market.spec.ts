@@ -25,7 +25,6 @@ describe("fetch market", () => {
 
     const result = await sut.execute({
       market_id: market.id.value,
-      page: 1,
     });
 
     expect(result.market).toBeDefined();
@@ -39,7 +38,6 @@ describe("fetch market", () => {
 
     const result = await sut.execute({
       market_id: market.id.value,
-      page: 1,
     });
 
     expect(result.market).toBeDefined();
@@ -51,7 +49,6 @@ describe("fetch market", () => {
     await expect(() =>
       sut.execute({
         market_id: "nonexistent-market-id",
-        page: 1,
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
@@ -65,7 +62,6 @@ describe("fetch market", () => {
 
     const result = await sut.execute({
       market_id: market.id.value,
-      page: 1,
     });
 
     expect(result.market).toEqual(
