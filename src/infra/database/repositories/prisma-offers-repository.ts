@@ -1,3 +1,6 @@
+// Libraries
+import { Offer as PrismaOffer } from "@prisma/client";
+
 // Entities
 import { Offer } from "@/core/entities/offer";
 
@@ -221,13 +224,33 @@ export class PrismaOffersRepository implements OffersRepository {
 
   async publishCycleOnMarket(cycle_id: string, market_id: string): Promise<void> {
     await prisma.$transaction(async (ctx) => {
-      const latestNonRecurringOffer = await ctx.offer.findFirst({
+      const latestOneTimeOffer = await ctx.offer.findFirst({
         where: {
           cycle_id,
           closes_at: { not: null },
         },
         orderBy: { created_at: "desc" },
       });
+
+      if (!latestOneTimeOffer) {
+        return await ctx.offer.updateMany({
+          where: {
+            cycle_id,
+            AND: [
+              {
+                OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+              },
+              {
+                active: true,
+                amount: { gt: 0 },
+              },
+            ],
+          },
+          data: { market_id },
+        });
+      }
+
+      const { opens_at, closes_at } = latestOneTimeOffer as PrismaOffer & { closes_at: Date };
 
       await ctx.offer.updateMany({
         where: {
@@ -237,10 +260,8 @@ export class PrismaOffersRepository implements OffersRepository {
               OR: [
                 { closes_at: null },
                 {
-                  ...(latestNonRecurringOffer && {
-                    opens_at: { gte: latestNonRecurringOffer.opens_at },
-                    closes_at: { lte: latestNonRecurringOffer.closes_at! },
-                  }),
+                  opens_at: { gte: opens_at },
+                  closes_at: { lte: closes_at },
                 },
               ],
             },
@@ -249,7 +270,7 @@ export class PrismaOffersRepository implements OffersRepository {
             },
             {
               active: true,
-              amount: { not: 0 },
+              amount: { gt: 0 },
             },
           ],
         },
