@@ -68,28 +68,37 @@ export class PrismaFarmsRepository implements FarmsRepository {
                         equals: 0,
                       },
                     })),
-              ...(typeof offers?.available === "boolean" &&
-                (offers.available
-                  ? {
-                      AND: [
-                        {
-                          OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
-                        },
-                        {
-                          OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
-                        },
-                        {
-                          active: true,
-                        },
-                      ],
-                    }
-                  : {
-                      OR: [
-                        { closes_at: { not: null, lte: now() } },
-                        { expires_at: { not: null, lte: now() } },
-                        { active: false },
-                      ],
-                    })),
+              ...(offers?.available === "CYCLE" && {
+                AND: [
+                  {
+                    opens_at: { not: { gt: now() } },
+                  },
+                  {
+                    OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+                  },
+                  {
+                    OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                  },
+                  {
+                    active: true,
+                    amount: { gt: 0 },
+                  },
+                ],
+              }),
+              ...(offers?.available === "MARKET" && {
+                AND: [
+                  {
+                    opens_at: { not: { gt: now() } },
+                  },
+                  {
+                    OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                  },
+                  {
+                    active: true,
+                    amount: { gt: 0 },
+                  },
+                ],
+              }),
               created_at: {
                 gte: offers?.since,
                 lte: offers?.before,
@@ -162,28 +171,37 @@ export class PrismaFarmsRepository implements FarmsRepository {
                         equals: 0,
                       },
                     })),
-              ...(typeof offers?.available === "boolean" &&
-                (offers.available
-                  ? {
-                      AND: [
-                        {
-                          OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
-                        },
-                        {
-                          OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
-                        },
-                        {
-                          active: true,
-                        },
-                      ],
-                    }
-                  : {
-                      OR: [
-                        { closes_at: { not: null, lte: now() } },
-                        { expires_at: { not: null, lte: now() } },
-                        { active: false },
-                      ],
-                    })),
+              ...(offers.available === "CYCLE" && {
+                AND: [
+                  {
+                    opens_at: { not: { gt: now() } },
+                  },
+                  {
+                    OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+                  },
+                  {
+                    OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                  },
+                  {
+                    active: true,
+                    amount: { gt: 0 },
+                  },
+                ],
+              }),
+              ...(offers.available === "MARKET" && {
+                AND: [
+                  {
+                    opens_at: { not: { gt: now() } },
+                  },
+                  {
+                    OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                  },
+                  {
+                    active: true,
+                    amount: { gt: 0 },
+                  },
+                ],
+              }),
               created_at: {
                 gte: offers?.since,
                 lte: offers?.before,

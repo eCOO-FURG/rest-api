@@ -74,7 +74,7 @@ describe("list offers", () => {
     offersRepository.items.push(availableOffer);
     offersRepository.items.push(unavailableOffer);
 
-    const result = await sut.execute({ page: 1, available: true });
+    const result = await sut.execute({ page: 1, available: "CYCLE" });
 
     expect(result.offers.length).toBe(1);
     expect(result.offers[0].id).toEqual(availableOffer.id);
@@ -98,7 +98,7 @@ describe("list offers", () => {
 
     offersRepository.items.push(closedOffer);
 
-    const result = await sut.execute({ page: 1, available: true });
+    const result = await sut.execute({ page: 1, available: "CYCLE" });
 
     expect(result.offers.length).toBe(0);
   });

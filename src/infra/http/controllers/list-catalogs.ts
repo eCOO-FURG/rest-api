@@ -1,6 +1,6 @@
 // Libraries
-import { NextFunction, Request, Response } from "express";
 import Joi from "joi";
+import { NextFunction, Request, Response } from "express";
 
 // Use-cases
 import { ListCatalogsUseCase } from "@/core/use-cases/list-catalogs";
@@ -19,6 +19,9 @@ import { boolean } from "@/infra/http/validation/boolean";
 import { toBoolean } from "@/infra/utils/to-boolean";
 import { toDate } from "@/infra/utils/to-date";
 
+// Entities
+import { Bag } from "@/core/entities/bag";
+
 export const listCatalogsQuery = Joi.object({
   page: Joi.number().required().min(1),
   cycle_id: Joi.string().uuid().optional(),
@@ -26,7 +29,9 @@ export const listCatalogsQuery = Joi.object({
   farm_id: Joi.string().uuid().optional(),
   product: Joi.string().optional(),
   category_id: Joi.string().uuid().optional(),
-  available: boolean.optional(),
+  available: Joi.string()
+    .valid(...Bag.sources)
+    .optional(),
   remaining: boolean.optional(),
   since: Joi.string()
     .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
@@ -64,7 +69,7 @@ export async function listCatalogsController(
       page,
       product,
       category_id,
-      available: toBoolean(available),
+      available,
       remaining: toBoolean(remaining),
       since: toDate(since),
       before: toDate(before),

@@ -2,6 +2,7 @@
 import { Merchandise } from "@/core/entities/aggregates/merchandise";
 import { OfferAndProduct } from "@/core/entities/aggregates/offer-and-product";
 import { Offer } from "@/core/entities/offer";
+import { BagSource } from "../entities/bag";
 
 export type OfferRepositoryReturnType = "offer" | "offer-and-product" | "merchandise";
 
@@ -22,7 +23,7 @@ export interface OffersRepositorySearchRequest {
   product?: { id?: string; name?: string; category?: { id?: string } };
   recurring?: boolean;
   active?: boolean;
-  available?: boolean;
+  available?: BagSource;
   since?: Date;
   before?: Date;
 }

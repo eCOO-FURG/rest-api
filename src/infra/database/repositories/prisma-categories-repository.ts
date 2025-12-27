@@ -43,30 +43,37 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
               offers: {
                 where: {
                   cycle: { id: offers?.catalog?.cycle.id },
-                  ...(typeof offers?.available === "boolean" &&
-                    (offers.available
-                      ? {
-                          AND: [
-                            {
-                              OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
-                            },
-                            {
-                              OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
-                            },
-                            {
-                              active: true,
-                              amount: { not: 0 },
-                            },
-                          ],
-                        }
-                      : {
-                          OR: [
-                            { closes_at: { not: null, lte: now() } },
-                            { expires_at: { not: null, lte: now() } },
-                            { active: false },
-                            { amount: 0 },
-                          ],
-                        })),
+                  ...(offers?.available === "CYCLE" && {
+                    AND: [
+                      {
+                        opens_at: { not: { gt: now() } },
+                      },
+                      {
+                        OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+                      },
+                      {
+                        OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                      },
+                      {
+                        active: true,
+                        amount: { gt: 0 },
+                      },
+                    ],
+                  }),
+                  ...(offers?.available === "MARKET" && {
+                    AND: [
+                      {
+                        opens_at: { not: { gt: now() } },
+                      },
+                      {
+                        OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                      },
+                      {
+                        active: true,
+                        amount: { gt: 0 },
+                      },
+                    ],
+                  }),
                   created_at: {
                     gte: offers?.since,
                     lte: offers?.before,
@@ -121,30 +128,37 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
               offers: {
                 some: {
                   cycle: { id: offers.catalog?.cycle.id },
-                  ...(typeof offers?.available === "boolean" &&
-                    (offers.available
-                      ? {
-                          AND: [
-                            {
-                              OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
-                            },
-                            {
-                              OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
-                            },
-                            {
-                              active: true,
-                              amount: { not: 0 },
-                            },
-                          ],
-                        }
-                      : {
-                          OR: [
-                            { closes_at: { not: null, lte: now() } },
-                            { expires_at: { not: null, lte: now() } },
-                            { active: false },
-                            { amount: 0 },
-                          ],
-                        })),
+                  ...(offers?.available === "CYCLE" && {
+                    AND: [
+                      {
+                        opens_at: { not: { gt: now() } },
+                      },
+                      {
+                        OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+                      },
+                      {
+                        OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                      },
+                      {
+                        active: true,
+                        amount: { gt: 0 },
+                      },
+                    ],
+                  }),
+                  ...(offers?.available === "MARKET" && {
+                    AND: [
+                      {
+                        opens_at: { not: { gt: now() } },
+                      },
+                      {
+                        OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                      },
+                      {
+                        active: true,
+                        amount: { gt: 0 },
+                      },
+                    ],
+                  }),
                   created_at: {
                     gte: offers.since,
                   },

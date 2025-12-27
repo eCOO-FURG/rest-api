@@ -1,3 +1,6 @@
+// Entities
+import { BagSource } from "@/core/entities/bag";
+
 // Repositories
 import { CategoriesRepository } from "@/core/repositories/categories-repository";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
@@ -14,8 +17,8 @@ interface ListCatalogsUseCaseRequest {
   farm_id?: string;
   category_id?: string;
   product?: string;
-  available?: boolean;
   remaining?: boolean;
+  available?: BagSource;
   since?: Date;
   before?: Date;
 }

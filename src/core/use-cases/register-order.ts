@@ -135,7 +135,7 @@ export class RegisterOrderUseCase {
         throw new ResourceNotFoundError("Oferta", item.offer_id);
       }
 
-      if (!offer.available) {
+      if (!offer.available(bag.source)) {
         throw new ResourceClosedError("Oferta", item.offer_id);
       }
 

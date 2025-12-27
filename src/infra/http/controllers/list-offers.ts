@@ -1,6 +1,6 @@
 // Libraries
-import { NextFunction, Request, Response } from "express";
 import Joi from "joi";
+import { NextFunction, Request, Response } from "express";
 
 // Use-cases
 import { ListOffersUseCase } from "@/core/use-cases/list-offers";
@@ -12,12 +12,13 @@ import container from "@/infra/container";
 import { OfferPresenter } from "@/infra/http/presenters/offer-presenter";
 
 // Validation
-import { boolean } from "@/infra/http/validation/boolean";
 import { parse } from "@/infra/http/validation/parse";
 
 // Utils
-import { toBoolean } from "@/infra/utils/to-boolean";
 import { toDate } from "@/infra/utils/to-date";
+
+// Entities
+import { Bag } from "@/core/entities/bag";
 
 export const listOffersQuery = Joi.object({
   page: Joi.number().required().min(1),
@@ -25,7 +26,9 @@ export const listOffersQuery = Joi.object({
   market_id: Joi.string().uuid().optional(),
   product: Joi.string().optional(),
   category_id: Joi.string().uuid().optional(),
-  available: boolean.optional(),
+  available: Joi.string()
+    .valid(...Bag.sources)
+    .optional(),
   since: Joi.string()
     .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
     .optional(),
@@ -50,10 +53,10 @@ export async function listOffersController(
     const { offers } = await listOffersUseCase.execute({
       cycle_id,
       market_id,
+      category_id,
       page,
       product,
-      category_id,
-      available: toBoolean(available),
+      available,
       since: toDate(since),
       before: toDate(before),
     });

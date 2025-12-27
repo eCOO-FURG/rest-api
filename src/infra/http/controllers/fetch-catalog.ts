@@ -19,6 +19,9 @@ import { toDate } from "@/infra/utils/to-date";
 import { parse } from "@/infra/http/validation/parse";
 import { boolean } from "@/infra/http/validation/boolean";
 
+// Entities
+import { Bag } from "@/core/entities/bag";
+
 export const fetchCatalogParams = Joi.object({
   catalog_id: Joi.string().uuid().required(),
 });
@@ -26,7 +29,9 @@ export const fetchCatalogParams = Joi.object({
 export const fetchCatalogQuery = Joi.object({
   page: Joi.number().integer().min(1).required(),
   product: Joi.string().optional(),
-  available: boolean.optional(),
+  available: Joi.string()
+    .valid(...Bag.sources)
+    .optional(),
   remaining: boolean.optional(),
   since: Joi.string()
     .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
@@ -54,8 +59,8 @@ export async function fetchCatalogController(
       farm_id: catalog_id,
       page,
       product,
+      available,
       remaining: toBoolean(remaining),
-      available: toBoolean(available),
       since: toDate(since),
       before: toDate(before),
     });

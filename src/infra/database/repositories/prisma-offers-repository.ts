@@ -62,30 +62,37 @@ export class PrismaOffersRepository implements OffersRepository {
           name: { contains: product?.name, mode: "insensitive" },
           category: { id: product?.category?.id },
         },
-        ...(typeof available === "boolean" &&
-          (available
-            ? {
-                AND: [
-                  {
-                    OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
-                  },
-                  {
-                    OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
-                  },
-                  {
-                    active: true,
-                    amount: { not: 0 },
-                  },
-                ],
-              }
-            : {
-                OR: [
-                  { closes_at: { not: null, lte: now() } },
-                  { expires_at: { not: null, lte: now() } },
-                  { active: false },
-                  { amount: 0 },
-                ],
-              })),
+        ...(available === "CYCLE" && {
+          AND: [
+            {
+              opens_at: { not: { gt: now() } },
+            },
+            {
+              OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+            },
+            {
+              OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+            },
+            {
+              active: true,
+              amount: { gt: 0 },
+            },
+          ],
+        }),
+        ...(available === "MARKET" && {
+          AND: [
+            {
+              opens_at: { not: { gt: now() } },
+            },
+            {
+              OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+            },
+            {
+              active: true,
+              amount: { gt: 0 },
+            },
+          ],
+        }),
         ...(typeof recurring === "boolean" && {
           closes_at: recurring ? null : { not: null },
         }),
@@ -147,30 +154,37 @@ export class PrismaOffersRepository implements OffersRepository {
           name: { contains: product?.name, mode: "insensitive" },
           category: { id: product?.category?.id },
         },
-        ...(typeof available === "boolean" &&
-          (available
-            ? {
-                AND: [
-                  {
-                    OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
-                  },
-                  {
-                    OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
-                  },
-                  {
-                    active: true,
-                    amount: { not: 0 },
-                  },
-                ],
-              }
-            : {
-                OR: [
-                  { closes_at: { not: null, lte: now() } },
-                  { expires_at: { not: null, lte: now() } },
-                  { active: false },
-                  { amount: 0 },
-                ],
-              })),
+        ...(available === "CYCLE" && {
+          AND: [
+            {
+              opens_at: { not: { gt: now() } },
+            },
+            {
+              OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+            },
+            {
+              OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+            },
+            {
+              active: true,
+              amount: { gt: 0 },
+            },
+          ],
+        }),
+        ...(available === "MARKET" && {
+          AND: [
+            {
+              opens_at: { not: { gt: now() } },
+            },
+            {
+              OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+            },
+            {
+              active: true,
+              amount: { gt: 0 },
+            },
+          ],
+        }),
         ...(typeof recurring === "boolean" && {
           closes_at: recurring ? null : { not: null },
         }),

@@ -2,6 +2,7 @@
 import { Farm, FarmStatus } from "@/core/entities/farm";
 import { Producer } from "@/core/entities/aggregates/producer";
 import { Catalog } from "@/core/entities/aggregates/catalog";
+import { BagSource } from "@/core/entities/bag";
 
 export type FarmRepositoryReturnType = "farm" | "producer" | "catalog";
 
@@ -24,8 +25,8 @@ export interface FarmsRepositorySearchRequest {
     cycle?: { id?: string };
     market?: { id?: string };
     page?: number;
-    available?: boolean;
     remaining?: boolean;
+    available?: BagSource;
     since?: Date;
     before?: Date;
     product?: { name?: string; category?: { id?: string } };

@@ -11,6 +11,7 @@ import { now } from "@/core/utils/now";
 
 // Types
 import { Optional } from "@/core/types/optional";
+import { BagSource } from "./bag";
 
 export interface OfferProps extends EntityRequest {
   farm_id: UUID;
@@ -143,21 +144,22 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
     this.props.expires_at = value;
   }
 
-  exclusive(to: "MARKET" | "CYCLE"): boolean {
-    if (to === "MARKET") {
-      return Boolean(this.props.market_id && !this.props.cycle_id);
-    } else {
-      return Boolean(!this.props.market_id && this.props.cycle_id);
+  available(source: BagSource) {
+    if (source === "CYCLE") {
+      return (
+        this.props.amount > 0 &&
+        this.props.active &&
+        this.props.opens_at <= now() &&
+        (!this.props.expires_at || this.props.expires_at > now()) &&
+        (!this.props.closes_at || this.props.closes_at > now())
+      );
     }
-  }
 
-  get available() {
     return (
       this.props.amount > 0 &&
       this.props.active &&
       this.props.opens_at <= now() &&
-      (!this.props.expires_at || this.props.expires_at > now()) &&
-      (!this.props.closes_at || this.props.closes_at > now())
+      (!this.props.expires_at || this.props.expires_at > now())
     );
   }
 
@@ -167,7 +169,7 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
       "description" | "expires_at" | "active" | "comment" | "closes_at" | "opens_at"
     >,
   ) {
-    const offer = new Offer({
+    return new Offer({
       ...props,
       active: props.active ?? true,
       description: props.description ?? null,
@@ -176,7 +178,5 @@ export class Offer<Props extends OfferProps = OfferProps> extends Entity<Props> 
       opens_at: props.opens_at ?? now(),
       closes_at: props.closes_at ?? null,
     });
-
-    return offer;
   }
 }

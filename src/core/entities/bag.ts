@@ -15,6 +15,7 @@ import { randomCode } from "@/core/utils/random-code";
 
 export type BagStatus = (typeof Bag.statuses)[number];
 
+export type BagSource = "MARKET" | "CYCLE";
 export interface BagProps extends EntityRequest {
   customer_id: UUID | null;
   customer?: User | null;
@@ -120,6 +121,10 @@ export class Bag<Props extends BagProps = BagProps> extends Entity<Props> {
     return this.props.market;
   }
 
+  get source(): BagSource {
+    return this.props.market_id ? "MARKET" : "CYCLE";
+  }
+
   set status(value: BagStatus) {
     this.props.status = value;
   }
@@ -174,4 +179,6 @@ export class Bag<Props extends BagProps = BagProps> extends Entity<Props> {
     "RECEIVED",
     "DEFERRED",
   ] as const;
+
+  static sources = ["MARKET", "CYCLE"] as const;
 }

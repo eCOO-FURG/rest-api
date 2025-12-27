@@ -47,16 +47,18 @@ export class InMemoryOffersRepository implements OffersRepository {
         (!since || item.created_at >= since) &&
         (!before || item.created_at <= before) &&
         (typeof recurring !== "boolean" || (recurring ? item.closes_at : !item.closes_at)) &&
-        (typeof available !== "boolean" ||
-          (available
-            ? (item.closes_at === null || item.closes_at > now()) &&
+        (available === "CYCLE"
+          ? (!item.opens_at || item.opens_at <= now()) &&
+            (item.closes_at === null || item.closes_at > now()) &&
+            (item.expires_at === null || item.expires_at >= now()) &&
+            item.active &&
+            item.amount > 0
+          : available === "MARKET"
+            ? (!item.opens_at || item.opens_at <= now()) &&
               (item.expires_at === null || item.expires_at >= now()) &&
               item.active &&
               item.amount > 0
-            : (item.closes_at !== null && item.closes_at <= now()) ||
-              (item.expires_at !== null && item.expires_at <= now()) ||
-              !item.active ||
-              item.amount === 0))
+            : true)
       );
     });
 
@@ -80,17 +82,18 @@ export class InMemoryOffersRepository implements OffersRepository {
         (!product?.id || item.product_id.equals(product.id)) &&
         (!product?.name || item.product?.name === product.name) &&
         (!product?.category?.id || item.product?.category_id.value === product.category.id) &&
-        (!available ||
-          (typeof available === "boolean" &&
-            (available
-              ? (item.closes_at === null || item.closes_at > now()) &&
-                (item.expires_at === null || item.expires_at >= now()) &&
-                item.active &&
-                item.amount > 0
-              : (item.closes_at !== null && item.closes_at <= now()) ||
-                (item.expires_at !== null && item.expires_at <= now()) ||
-                !item.active ||
-                item.amount === 0))) &&
+        (available === "CYCLE"
+          ? (!item.opens_at || item.opens_at <= now()) &&
+            (item.closes_at === null || item.closes_at > now()) &&
+            (item.expires_at === null || item.expires_at >= now()) &&
+            item.active &&
+            item.amount > 0
+          : available === "MARKET"
+            ? (!item.opens_at || item.opens_at <= now()) &&
+              (item.expires_at === null || item.expires_at >= now()) &&
+              item.active &&
+              item.amount > 0
+            : true) &&
         (!since || item.created_at >= since) &&
         (!before || item.created_at <= before)
       );
