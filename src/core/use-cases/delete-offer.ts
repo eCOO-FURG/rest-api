@@ -1,10 +1,12 @@
 // Errors
 import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { OfferAlreadyOrderedError } from "@/core/errors/offer-already-ordered";
 
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
 import { OffersRepository } from "@/core/repositories/offers-repository";
+import { OrdersRepository } from "@/core/repositories/orders-repository";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { MarketsRepository } from "@/core/repositories/markets-repository";
 
@@ -22,6 +24,7 @@ export class DeleteOfferUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private offersRepository: OffersRepository,
+    private ordersRepository: OrdersRepository,
     private cyclesRepository: CyclesRepository,
     private marketsRepository: MarketsRepository,
   ) {}
@@ -45,6 +48,14 @@ export class DeleteOfferUseCase {
 
     if (!user.admin && (!farm_id || !offer.farm_id.equals(farm_id))) {
       throw new ResourceNotFoundError("Oferta", offer_id);
+    }
+
+    const order = await this.ordersRepository.find("order", {
+      offer: { id: offer.id.value },
+    });
+
+    if (order) {
+      throw new OfferAlreadyOrderedError();
     }
 
     if (offer.market_id) {

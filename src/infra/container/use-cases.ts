@@ -259,10 +259,17 @@ export default (container: AwilixContainer) => {
         new DeleteFarmImageUseCase(farmsRepository, usersRepository, storage),
     ),
     deleteOfferUseCase: asFunction(
-      ({ usersRepository, offersRepository, cyclesRepository, marketsRepository }) =>
+      ({
+        usersRepository,
+        offersRepository,
+        ordersRepository,
+        cyclesRepository,
+        marketsRepository,
+      }) =>
         new DeleteOfferUseCase(
           usersRepository,
           offersRepository,
+          ordersRepository,
           cyclesRepository,
           marketsRepository,
         ),

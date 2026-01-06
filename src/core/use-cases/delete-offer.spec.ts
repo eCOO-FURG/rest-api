@@ -12,6 +12,7 @@ import { makeProducer } from "@/test/factories/make-producer";
 // Repositories
 import { InMemoryUsersRepository } from "@/test/repositories/in-memory-users-repository";
 import { InMemoryCyclesRepository } from "@/test/repositories/in-memory-cycles-repository";
+import { InMemoryOrdersRepository } from "@/test/repositories/in-memory-orders-repository";
 import { InMemoryOffersRepository } from "@/test/repositories/in-memory-offers-repository";
 import { InMemoryMarketsRepository } from "@/test/repositories/in-memory-markets-repository";
 
@@ -26,6 +27,7 @@ import { CycleWeek } from "@/core/entities/cycle";
 import { today } from "@/core/utils/today";
 
 let offersRepository: InMemoryOffersRepository;
+let ordersRepository: InMemoryOrdersRepository;
 let cyclesRepository: InMemoryCyclesRepository;
 let marketsRepository: InMemoryMarketsRepository;
 let userRepository: InMemoryUsersRepository;
@@ -37,11 +39,13 @@ describe("delete offer", () => {
     userRepository = new InMemoryUsersRepository();
     cyclesRepository = new InMemoryCyclesRepository();
     offersRepository = new InMemoryOffersRepository();
+    ordersRepository = new InMemoryOrdersRepository();
     marketsRepository = new InMemoryMarketsRepository();
 
     sut = new DeleteOfferUseCase(
       userRepository,
       offersRepository,
+      ordersRepository,
       cyclesRepository,
       marketsRepository,
     );

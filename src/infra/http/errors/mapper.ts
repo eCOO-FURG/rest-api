@@ -5,19 +5,22 @@ import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exist
 import { FarmNotActiveError } from "@/core/errors/farm-not-active";
 import { UserNotVerifiedError } from "@/core/errors/user-not-verified";
 import { WrongCredentialsError } from "@/core/errors/wrong-credentials";
-import { InvalidWeightError } from "@/core/errors/invalid-weight";
-import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
+import { OfferAlreadyOrderedError } from "@/core/errors/offer-already-ordered";
 import { UnauthorizedError } from "@/core/errors/unauthorized";
 import { SessionExpiredError } from "@/core/errors/session-expired";
 import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { MissingFieldError } from "@/core/errors/missing-field";
 import { ResourceNotVerifiedError } from "@/core/errors/resource-not-verified";
 import { InvalidFieldError } from "@/core/errors/invalid-field";
+import { InvalidWeightError } from "@/core/errors/invalid-weight";
+import { UnavailableAmountError } from "@/core/errors/unavailable-amount";
 
-export const mappedDomainErrors: {
+interface MappedDomainError {
   status: number;
   errors: (typeof DomainError)[];
-}[] = [
+}
+
+export const MAPPED_DOMAIN_ERRORS: MappedDomainError[] = [
   {
     status: 401,
     errors: [UnauthorizedError, SessionExpiredError],
@@ -41,13 +44,13 @@ export const mappedDomainErrors: {
   },
   {
     status: 409,
-    errors: [ResourceAlreadyExistsError, UnavailableAmountError],
+    errors: [ResourceAlreadyExistsError, UnavailableAmountError, OfferAlreadyOrderedError],
   },
 ];
 
 export class HttpErrorMapper {
   static find(error: DomainError) {
-    const found = mappedDomainErrors.find((item) =>
+    const found = MAPPED_DOMAIN_ERRORS.find((item) =>
       item.errors.find((constructor) => error instanceof constructor),
     );
 
