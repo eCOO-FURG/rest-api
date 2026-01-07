@@ -11,6 +11,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 
 // Utils
 import { first } from "@/core/utils/first";
+import { defined } from "@/core/utils/defined";
 import { inPeriodOf } from "@/core/utils/in-period-of";
 
 interface UpdateOfferUseCaseRequest {
@@ -21,6 +22,7 @@ interface UpdateOfferUseCaseRequest {
   price?: number;
   description?: string;
   comment?: string;
+  market_id?: null;
   expires_at?: Date;
   active?: boolean;
 }
@@ -37,6 +39,7 @@ export class UpdateOfferUseCase {
     user_id,
     farm_id,
     offer_id,
+    market_id,
     amount,
     price,
     description,
@@ -64,16 +67,11 @@ export class UpdateOfferUseCase {
       throw new ResourceNotFoundError("Oferta", offer_id);
     }
 
-    offer.amount = amount ?? offer.amount;
-    offer.price = price ?? offer.price;
-    offer.description = description ?? offer.description;
-    offer.expires_at = expires_at ?? offer.expires_at;
-    offer.active = active ?? offer.active;
-    offer.comment = comment ?? offer.comment;
+    if (expires_at && offer.product.perishable) {
+      throw new InvalidFieldError("expires_at");
+    }
 
-    offer.touch();
-
-    if (offer.market_id) {
+    if (offer.market_id && !defined(market_id)) {
       const market = await this.marketsRepository.find("market", {
         id: offer.market_id.value,
       });
@@ -85,11 +83,9 @@ export class UpdateOfferUseCase {
       if (!market.open) {
         throw new ResourceClosedError("Mercado", market.id.value);
       }
-
-      return await this.offersRepository.update(offer);
     }
 
-    if (offer.cycle_id) {
+    if (offer.cycle_id && !defined(market_id)) {
       const cycle = await this.cyclesRepository.find("cycle", {
         id: offer.cycle_id.value,
       });
@@ -107,9 +103,15 @@ export class UpdateOfferUseCase {
       }
     }
 
-    if (expires_at && offer.product.perishable) {
-      throw new InvalidFieldError("expires_at");
-    }
+    offer.market_id = defined(market_id) ? null : offer.market_id;
+    offer.amount = amount ?? offer.amount;
+    offer.price = price ?? offer.price;
+    offer.description = description ?? offer.description;
+    offer.expires_at = expires_at ?? offer.expires_at;
+    offer.active = active ?? offer.active;
+    offer.comment = comment ?? offer.comment;
+
+    offer.touch();
 
     await this.offersRepository.update(offer);
   }

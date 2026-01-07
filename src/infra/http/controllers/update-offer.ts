@@ -15,6 +15,7 @@ import { boolean } from "@/infra/http/validation/boolean";
 // Utils
 import { toBoolean } from "@/infra/utils/to-boolean";
 import { toDate } from "@/infra/utils/to-date";
+
 export const updateOfferParams = Joi.object({
   offer_id: Joi.string().uuid().required(),
 });
@@ -25,6 +26,7 @@ export const updateOfferSchema = Joi.object({
   description: Joi.string().optional(),
   comment: Joi.string().optional(),
   active: boolean.optional(),
+  market_id: Joi.any().valid(null).optional(),
   expires_at: Joi.string()
     .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
     .optional(),
@@ -38,7 +40,7 @@ export async function updateOfferController(
   try {
     const { offer_id } = parse(updateOfferParams, request.params);
 
-    const { amount, price, description, active, expires_at, comment } = parse(
+    const { amount, price, description, active, expires_at, comment, market_id } = parse(
       updateOfferSchema,
       request.body,
     );
@@ -53,6 +55,7 @@ export async function updateOfferController(
       price,
       description,
       comment,
+      market_id,
       active: toBoolean(active),
       expires_at: toDate(expires_at),
     });
