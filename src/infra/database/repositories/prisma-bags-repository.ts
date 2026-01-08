@@ -22,6 +22,7 @@ import {
 import { PrismaBagMapper } from "@/infra/database/mappers/prisma-bag-mapper";
 import { PrismaBoxMapper } from "@/infra/database/mappers/prisma-box-mapper";
 import { PrismaOrderMapper } from "@/infra/database/mappers/prisma-order-mapper";
+
 export class PrismaBagsRepository implements BagsRepository {
   async find<T extends BagRepositoryReturnType>(
     type: T,
@@ -43,8 +44,8 @@ export class PrismaBagsRepository implements BagsRepository {
       where: {
         id,
         status: { in: statuses },
-        cycle,
-        market,
+        cycle_id: cycle?.id,
+        market_id: market?.id,
         address,
         payment: {
           ...(payment?.status && { status: { in: payment.status } }),
@@ -131,8 +132,8 @@ export class PrismaBagsRepository implements BagsRepository {
       where: {
         id,
         status: { in: statuses },
-        cycle,
-        market,
+        cycle_id: cycle?.id,
+        market_id: market?.id,
         address,
         payment: {
           ...(payment?.status && { status: { in: payment.status } }),

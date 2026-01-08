@@ -22,8 +22,8 @@ export interface FarmsRepositorySearchRequest {
   admin?: { id?: string };
   offers?: {
     id?: string;
-    cycle?: { id?: string };
-    market?: { id?: string };
+    cycle?: { id?: string | null };
+    market?: { id?: string | null };
     page?: number;
     remaining?: boolean;
     available?: BagSource;

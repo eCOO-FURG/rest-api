@@ -14,7 +14,8 @@ interface FetchSalesReportUseCaseRequest {
   type: "pdf" | "spreadsheet";
   since?: Date;
   before?: Date;
-  cycle_id?: string;
+  cycle_id?: string | null;
+  market_id?: string | null;
   withdraw?: boolean;
 }
 

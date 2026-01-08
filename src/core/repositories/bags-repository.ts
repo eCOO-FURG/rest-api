@@ -20,8 +20,8 @@ export interface BagsRepositorySearchRequest {
   withdraw?: boolean;
   statuses?: Bag["status"][];
   user?: { id?: string; name?: string };
-  cycle?: { id?: string };
-  market?: { id?: string };
+  cycle?: { id?: string | null };
+  market?: { id?: string | null };
   address?: { id?: string } | null;
   orders?: { id?: string; page?: number; statuses?: OrderStatus[] };
   payment?: {

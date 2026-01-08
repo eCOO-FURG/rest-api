@@ -41,8 +41,8 @@ export class PrismaFarmsRepository implements FarmsRepository {
           offers: {
             include: { product: true },
             where: {
-              cycle: { id: offers?.cycle?.id },
-              market: { id: offers?.market?.id },
+              cycle_id: offers?.cycle?.id,
+              market_id: offers?.market?.id,
               ...(offers?.period?.since && {
                 OR: [{ opens_at: { gte: offers.period.since } }, { closes_at: null }],
               }),
@@ -147,8 +147,8 @@ export class PrismaFarmsRepository implements FarmsRepository {
         offers: {
           ...(offers && {
             some: {
-              cycle: { id: offers?.cycle?.id },
-              market: { id: offers?.market?.id },
+              cycle_id: offers?.cycle?.id,
+              market_id: offers?.market?.id,
               ...(offers?.period?.since && {
                 OR: [{ opens_at: { gte: offers.period.since } }, { closes_at: null }],
               }),

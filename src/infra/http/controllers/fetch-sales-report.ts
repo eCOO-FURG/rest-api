@@ -11,13 +11,15 @@ import container from "@/infra/container";
 // Utils
 import { toDate } from "@/infra/utils/to-date";
 import { toBoolean } from "@/infra/utils/to-boolean";
+import { toNullable } from "@/infra/utils/to-nullable";
 
 // Validation
 import { parse } from "@/infra/http/validation/parse";
 import { boolean } from "@/infra/http/validation/boolean";
 
 export const fetchSalesReportQuery = Joi.object({
-  cycle_id: Joi.string().uuid().optional(),
+  cycle_id: Joi.string().uuid().optional().allow("null"),
+  market_id: Joi.string().uuid().optional().allow("null"),
   withdraw: boolean.optional(),
   type: Joi.string().valid("pdf", "spreadsheet").required(),
   since: Joi.string()
@@ -35,14 +37,18 @@ export async function fetchSalesReportController(
   next: NextFunction,
 ) {
   try {
-    const { cycle_id, withdraw, type, since, before } = parse(fetchSalesReportQuery, request.query);
+    const { cycle_id, market_id, withdraw, type, since, before } = parse(
+      fetchSalesReportQuery,
+      request.query,
+    );
 
     const fetchSalesReportUseCase =
       container.resolve<FetchSalesReportUseCase>("fetchSalesReportUseCase");
 
     const { file } = await fetchSalesReportUseCase.execute({
-      cycle_id,
       type,
+      cycle_id: toNullable(cycle_id),
+      market_id: toNullable(market_id),
       withdraw: toBoolean(withdraw),
       since: toDate(since),
       before: toDate(before),
