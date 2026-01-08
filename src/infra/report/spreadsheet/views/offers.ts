@@ -1,9 +1,9 @@
 // Types
-import { Catalog } from "@/core/entities/aggregates/catalog";
 import { SpreadsheetColumn } from "@/core/report/spreadsheet-service";
 import { SpreadsheetView } from "@/infra/report/spreadsheet/excel";
 
 // Entities
+import { Catalog } from "@/core/entities/aggregates/catalog";
 
 const columns: SpreadsheetColumn[] = [
   { header: "Fazenda", key: "farm", width: 25 },
@@ -27,6 +27,7 @@ const columns: SpreadsheetColumn[] = [
     style: { numFmt: "R$ #,##0.00" },
   },
   { header: "Unidade", key: "unit", width: 15 },
+  { header: "Recorrente", key: "recurring", width: 5 },
   { header: "Criada em", key: "created_at", width: 15 },
 ];
 
@@ -60,6 +61,7 @@ export const OFFERS_VIEW: SpreadsheetView = async ({
         fee: offer.price * (catalog.fee / 100),
         total: offer.price + offer.price * (catalog.fee / 100),
         unit: offer.product.pricing === "UNIT" ? "Unidade" : "Kg",
+        recurring: offer.closes_at ? "Não" : "Sim",
         created_at: offer.created_at.toLocaleDateString("pt-BR"),
       });
     }
