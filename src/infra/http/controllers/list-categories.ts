@@ -25,7 +25,7 @@ export const listCategoriesQuery = Joi.object({
   name: Joi.string().optional(),
   cycle_id: Joi.string().uuid().optional(),
   available: Joi.string()
-    .valid([...Bag.sources, "false"])
+    .valid(...Bag.sources, "false")
     .optional(),
   since: Joi.string()
     .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")

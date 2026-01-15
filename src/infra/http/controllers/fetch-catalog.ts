@@ -30,7 +30,7 @@ export const fetchCatalogQuery = Joi.object({
   page: Joi.number().integer().min(1).required(),
   product: Joi.string().optional(),
   available: Joi.string()
-    .valid([...Bag.sources, "false"])
+    .valid(...Bag.sources, "false")
     .optional(),
   remaining: boolean.optional(),
   since: Joi.string()
