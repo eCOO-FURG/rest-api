@@ -30,7 +30,7 @@ export const fetchCatalogQuery = Joi.object({
   page: Joi.number().integer().min(1).required(),
   product: Joi.string().optional(),
   available: Joi.string()
-    .valid(...Bag.sources)
+    .valid([...Bag.sources, "false"])
     .optional(),
   remaining: boolean.optional(),
   since: Joi.string()
@@ -48,6 +48,7 @@ export async function fetchCatalogController(
 ) {
   try {
     const { catalog_id } = parse(fetchCatalogParams, request.params);
+
     const { page, product, remaining, available, since, before } = parse(
       fetchCatalogQuery,
       request.query,
@@ -59,7 +60,7 @@ export async function fetchCatalogController(
       farm_id: catalog_id,
       page,
       product,
-      available,
+      available: available === "false" ? false : available,
       remaining: toBoolean(remaining),
       since: toDate(since),
       before: toDate(before),

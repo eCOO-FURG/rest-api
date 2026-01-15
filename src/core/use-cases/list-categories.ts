@@ -12,7 +12,7 @@ interface ListCategoriesUseCaseRequest {
   page: number;
   name?: string;
   cycle_id?: string;
-  available?: BagSource;
+  available?: BagSource | false;
   since?: Date;
   before?: Date;
 }

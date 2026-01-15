@@ -23,7 +23,7 @@ export interface OffersRepositorySearchRequest {
   product?: { id?: string; name?: string; category?: { id?: string } };
   recurring?: boolean;
   active?: boolean;
-  available?: BagSource;
+  available?: BagSource | false;
   since?: Date;
   before?: Date;
 }

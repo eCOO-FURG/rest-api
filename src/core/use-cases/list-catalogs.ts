@@ -18,7 +18,7 @@ interface ListCatalogsUseCaseRequest {
   category_id?: string;
   product?: string;
   remaining?: boolean;
-  available?: BagSource;
+  available?: BagSource | false;
   since?: Date;
   before?: Date;
 }

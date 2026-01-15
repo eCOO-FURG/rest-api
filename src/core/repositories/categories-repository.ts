@@ -17,7 +17,7 @@ export interface CategoriesRepositorySearchRequest {
   offers?: {
     catalog?: { cycle: { id?: string } };
     page?: number;
-    available?: BagSource;
+    available?: BagSource | false;
     since?: Date;
     before?: Date;
   };

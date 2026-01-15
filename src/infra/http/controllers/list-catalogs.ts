@@ -30,7 +30,7 @@ export const listCatalogsQuery = Joi.object({
   product: Joi.string().optional(),
   category_id: Joi.string().uuid().optional(),
   available: Joi.string()
-    .valid(...Bag.sources)
+    .valid([...Bag.sources, "false"])
     .optional(),
   remaining: boolean.optional(),
   since: Joi.string()
@@ -69,7 +69,7 @@ export async function listCatalogsController(
       page,
       product,
       category_id,
-      available,
+      available: available === "false" ? false : available,
       remaining: toBoolean(remaining),
       since: toDate(since),
       before: toDate(before),

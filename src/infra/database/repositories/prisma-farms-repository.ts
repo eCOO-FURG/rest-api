@@ -99,6 +99,14 @@ export class PrismaFarmsRepository implements FarmsRepository {
                   },
                 ],
               }),
+              ...(offers?.available === false && {
+                OR: [
+                  { closes_at: { not: null, lte: now() } },
+                  { expires_at: { not: null, lte: now() } },
+                  { active: false },
+                  { amount: 0 },
+                ],
+              }),
               created_at: {
                 gte: offers?.since,
                 lte: offers?.before,
@@ -200,6 +208,14 @@ export class PrismaFarmsRepository implements FarmsRepository {
                     active: true,
                     amount: { gt: 0 },
                   },
+                ],
+              }),
+              ...(offers?.available === false && {
+                OR: [
+                  { closes_at: { not: null, lte: now() } },
+                  { expires_at: { not: null, lte: now() } },
+                  { active: false },
+                  { amount: 0 },
                 ],
               }),
               created_at: {

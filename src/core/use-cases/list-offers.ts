@@ -16,7 +16,7 @@ interface ListOffersUseCaseRequest {
   cycle_id?: string;
   market_id?: string;
   category_id?: string;
-  available?: BagSource;
+  available?: BagSource | false;
   since?: Date;
   before?: Date;
 }

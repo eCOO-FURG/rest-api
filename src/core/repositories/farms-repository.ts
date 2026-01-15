@@ -26,7 +26,7 @@ export interface FarmsRepositorySearchRequest {
     market?: { id?: string | null };
     page?: number;
     remaining?: boolean;
-    available?: BagSource;
+    available?: BagSource | false;
     since?: Date;
     before?: Date;
     product?: { name?: string; category?: { id?: string } };

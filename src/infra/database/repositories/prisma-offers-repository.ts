@@ -93,6 +93,14 @@ export class PrismaOffersRepository implements OffersRepository {
             },
           ],
         }),
+        ...(available === false && {
+          OR: [
+            { closes_at: { not: null, lte: now() } },
+            { expires_at: { not: null, lte: now() } },
+            { active: false },
+            { amount: 0 },
+          ],
+        }),
         ...(typeof recurring === "boolean" && {
           closes_at: recurring ? null : { not: null },
         }),
@@ -183,6 +191,14 @@ export class PrismaOffersRepository implements OffersRepository {
               active: true,
               amount: { gt: 0 },
             },
+          ],
+        }),
+        ...(available === false && {
+          OR: [
+            { closes_at: { not: null, lte: now() } },
+            { expires_at: { not: null, lte: now() } },
+            { active: false },
+            { amount: 0 },
           ],
         }),
         ...(typeof recurring === "boolean" && {

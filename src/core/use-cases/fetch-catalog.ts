@@ -13,7 +13,7 @@ interface FetchCatalogUseCaseRequest {
   cycle_id?: string;
   product?: string;
   remaining?: boolean;
-  available?: BagSource;
+  available?: BagSource | false;
   since?: Date;
   before?: Date;
 }

@@ -74,6 +74,14 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
                       },
                     ],
                   }),
+                  ...(offers?.available === false && {
+                    OR: [
+                      { closes_at: { not: null, lte: now() } },
+                      { expires_at: { not: null, lte: now() } },
+                      { active: false },
+                      { amount: 0 },
+                    ],
+                  }),
                   created_at: {
                     gte: offers?.since,
                     lte: offers?.before,
@@ -157,6 +165,14 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
                         active: true,
                         amount: { gt: 0 },
                       },
+                    ],
+                  }),
+                  ...(offers?.available === false && {
+                    OR: [
+                      { closes_at: { not: null, lte: now() } },
+                      { expires_at: { not: null, lte: now() } },
+                      { active: false },
+                      { amount: 0 },
                     ],
                   }),
                   created_at: {

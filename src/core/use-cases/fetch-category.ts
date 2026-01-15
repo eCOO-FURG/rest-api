@@ -12,7 +12,7 @@ interface FetchCategoryUseCaseRequest {
   category_id: string;
   page: number;
   cycle_id?: string;
-  available?: BagSource;
+  available?: BagSource | false;
   since?: Date;
   before?: Date;
 }

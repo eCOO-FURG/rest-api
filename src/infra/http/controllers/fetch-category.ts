@@ -28,7 +28,7 @@ export const fetchCategoryQuery = Joi.object({
   page: Joi.number().required().min(1),
   cycle_id: Joi.string().uuid().optional(),
   available: Joi.string()
-    .valid(...Bag.sources)
+    .valid([...Bag.sources, "false"])
     .optional(),
   since: Joi.string()
     .regex(/^\d{2}-\d{2}-\d{4}$/, "DD-MM-YYYY")
@@ -54,7 +54,7 @@ export async function fetchCategoryController(
       category_id,
       page,
       cycle_id,
-      available,
+      available: available === "false" ? false : available,
       since: toDate(since),
       before: toDate(before),
     });
