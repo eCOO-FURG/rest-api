@@ -126,7 +126,7 @@ export class RegisterOrderUseCase {
       ids: items.map((order) => order.offer_id),
     });
 
-    const boxes = new Map<UUID, Box>();
+    const boxes = new Map<string, Box>();
 
     for (const item of items) {
       const offer = offers.find((offer) => offer.id.value === item.offer_id);
@@ -173,7 +173,7 @@ export class RegisterOrderUseCase {
       bag.include(order);
 
       if (cycle) {
-        const box = boxes.get(offer.farm_id);
+        const box = boxes.get(offer.farm_id.value);
 
         if (box) {
           order.pack(box);
@@ -188,7 +188,7 @@ export class RegisterOrderUseCase {
 
         if (existent) {
           existent.status = "PENDING";
-          boxes.set(offer.farm_id, existent);
+          boxes.set(offer.farm_id.value, existent);
           order.pack(existent);
           continue;
         }
@@ -198,7 +198,7 @@ export class RegisterOrderUseCase {
           cycle_id: cycle.id,
         });
 
-        boxes.set(offer.farm_id, created);
+        boxes.set(offer.farm_id.value, created);
         order.pack(created);
       }
     }
