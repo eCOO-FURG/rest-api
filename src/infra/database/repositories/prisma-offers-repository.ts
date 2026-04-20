@@ -65,9 +65,6 @@ export class PrismaOffersRepository implements OffersRepository {
         ...(available === "CYCLE" && {
           AND: [
             {
-              opens_at: { not: { gt: now() } },
-            },
-            {
               OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
             },
             {
