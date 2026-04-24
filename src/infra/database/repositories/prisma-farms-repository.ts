@@ -71,9 +71,6 @@ export class PrismaFarmsRepository implements FarmsRepository {
               ...(offers?.available === "CYCLE" && {
                 AND: [
                   {
-                    opens_at: { not: { gt: now() } },
-                  },
-                  {
                     OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
                   },
                   {
