@@ -44,11 +44,11 @@ export class InMemoryOffersRepository implements OffersRepository {
         (!farm?.name || item.farm?.name === farm.name) &&
         (!market?.name || item.market?.name === market.name) &&
         (!active || item.active === active) &&
-        (!since || item.created_at >= since) &&
-        (!before || item.created_at <= before) &&
+        (available !== "CYCLE" ? (!since || item.created_at >= since) : true) &&
+        (available !== "CYCLE" ? (!before || item.created_at <= before) : true) &&
         (typeof recurring !== "boolean" || (recurring ? item.closes_at : !item.closes_at)) &&
         (available === "CYCLE"
-          ? (!item.opens_at || item.opens_at <= now()) &&
+          ? (since ? (item.opens_at <= now() || item.opens_at >= since) : (!item.opens_at || item.opens_at <= now())) &&
             (item.closes_at === null || item.closes_at > now()) &&
             (item.expires_at === null || item.expires_at >= now()) &&
             item.active &&
@@ -83,7 +83,7 @@ export class InMemoryOffersRepository implements OffersRepository {
         (!product?.name || item.product?.name === product.name) &&
         (!product?.category?.id || item.product?.category_id.value === product.category.id) &&
         (available === "CYCLE"
-          ? (!item.opens_at || item.opens_at <= now()) &&
+          ? (since ? (item.opens_at <= now() || item.opens_at >= since) : (!item.opens_at || item.opens_at <= now())) &&
             (item.closes_at === null || item.closes_at > now()) &&
             (item.expires_at === null || item.expires_at >= now()) &&
             item.active &&
@@ -94,8 +94,8 @@ export class InMemoryOffersRepository implements OffersRepository {
               item.active &&
               item.amount > 0
             : true) &&
-        (!since || item.created_at >= since) &&
-        (!before || item.created_at <= before)
+        (available !== "CYCLE" ? !since || item.created_at >= since : true) &&
+        (available !== "CYCLE" ? !before || item.created_at <= before : true)
       );
     });
 

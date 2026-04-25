@@ -70,6 +70,9 @@ export class PrismaFarmsRepository implements FarmsRepository {
                     })),
               ...(offers?.available === "CYCLE" && {
                 AND: [
+                  offers?.since
+                    ? { OR: [{ opens_at: { lte: now() } }, { opens_at: { gte: offers.since } }] }
+                    : { opens_at: { not: { gt: now() } } },
                   {
                     OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
                   },
@@ -104,10 +107,12 @@ export class PrismaFarmsRepository implements FarmsRepository {
                   { amount: 0 },
                 ],
               }),
-              created_at: {
-                gte: offers?.since,
-                lte: offers?.before,
-              },
+              ...(offers?.available !== "CYCLE" && {
+                created_at: {
+                  gte: offers?.since,
+                  lte: offers?.before,
+                },
+              }),
             },
             ...(offers?.page && {
               skip: (offers.page - 1) * 20,
