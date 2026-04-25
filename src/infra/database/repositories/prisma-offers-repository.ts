@@ -64,9 +64,9 @@ export class PrismaOffersRepository implements OffersRepository {
         },
         ...(available === "CYCLE" && {
           AND: [
-            {
-              opens_at: { not: { gt: now() } },
-            },
+            since
+              ? { OR: [{ opens_at: { lte: now() } }, { opens_at: { gte: since } }] }
+              : { opens_at: { not: { gt: now() } } },
             {
               OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
             },
@@ -104,7 +104,7 @@ export class PrismaOffersRepository implements OffersRepository {
         ...(typeof recurring === "boolean" && {
           closes_at: recurring ? null : { not: null },
         }),
-        created_at: { gte: since, lte: before },
+        ...(available !== "CYCLE" && { created_at: { gte: since, lte: before } }),
       },
       include: {
         ...(type === "offer-and-product" && { product: true }),
@@ -164,9 +164,9 @@ export class PrismaOffersRepository implements OffersRepository {
         },
         ...(available === "CYCLE" && {
           AND: [
-            {
-              opens_at: { not: { gt: now() } },
-            },
+            since
+              ? { OR: [{ opens_at: { lte: now() } }, { opens_at: { gte: since } }] }
+              : { opens_at: { not: { gt: now() } } },
             {
               OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
             },
@@ -204,7 +204,7 @@ export class PrismaOffersRepository implements OffersRepository {
         ...(typeof recurring === "boolean" && {
           closes_at: recurring ? null : { not: null },
         }),
-        created_at: { gte: since, lte: before },
+        ...(available !== "CYCLE" && { created_at: { gte: since, lte: before } }),
       },
       include: {
         ...(type === "offer-and-product" && { product: true }),
