@@ -111,18 +111,18 @@ export class PrismaFarmsRepository implements FarmsRepository {
                   {
                     active: false,
                     updated_at: {
-                      gte: offers?.since,
-                      lt: offers?.before,
+                      gte: offers?.before,
                     },
                   },
                 ],
               }),
-              ...(offers?.available !== "CYCLE" && offers?.available !== false && {
-                created_at: {
-                  gte: offers?.since,
-                  lte: offers?.before,
-                },
-              }),
+              ...(offers?.available !== "CYCLE" &&
+                offers?.available !== false && {
+                  created_at: {
+                    gte: offers?.since,
+                    lte: offers?.before,
+                  },
+                }),
             },
             ...(offers?.page && {
               skip: (offers.page - 1) * 20,
@@ -234,8 +234,7 @@ export class PrismaFarmsRepository implements FarmsRepository {
                   {
                     active: false,
                     updated_at: {
-                      gte: offers?.since,
-                      lt: offers?.before,
+                      gte: offers?.before,
                     },
                   },
                 ],
