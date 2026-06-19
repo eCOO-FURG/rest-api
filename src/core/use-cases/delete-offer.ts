@@ -1,7 +1,6 @@
 // Errors
 import { ResourceClosedError } from "@/core/errors/resource-closed";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
-import { OfferAlreadyOrderedError } from "@/core/errors/offer-already-ordered";
 
 // Repositories
 import { UsersRepository } from "@/core/repositories/users-repository";
@@ -55,7 +54,9 @@ export class DeleteOfferUseCase {
     });
 
     if (order) {
-      throw new OfferAlreadyOrderedError();
+      offer.active = false;
+      await this.offersRepository.update(offer);
+      return;
     }
 
     if (offer.market_id) {
