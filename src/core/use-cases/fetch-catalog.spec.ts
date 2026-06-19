@@ -49,6 +49,60 @@ describe("fetch catalog", () => {
     expect(result.catalog.id.equals(farm.id)).toBe(true);
   });
 
+  it("should not filter current cycle offers by their creation date", async () => {
+    const farm = makeFarm();
+    const find = vi.spyOn(farmsRepository, "find");
+
+    await farmsRepository.create(farm);
+
+    await sut.execute({
+      farm_id: farm.id.value,
+      available: "CYCLE",
+      since: new Date("2026-06-14T00:00:00.000Z"),
+      before: new Date("2026-06-21T00:00:00.000Z"),
+      page: 1,
+    });
+
+    expect(find).toHaveBeenCalledWith(
+      "catalog",
+      expect.objectContaining({
+        offers: expect.objectContaining({
+          available: "CYCLE",
+          since: undefined,
+          before: undefined,
+        }),
+      }),
+    );
+  });
+
+  it("should filter previous offers by their creation date", async () => {
+    const farm = makeFarm();
+    const since = new Date("2026-06-14T00:00:00.000Z");
+    const before = new Date("2026-06-21T00:00:00.000Z");
+    const find = vi.spyOn(farmsRepository, "find");
+
+    await farmsRepository.create(farm);
+
+    await sut.execute({
+      farm_id: farm.id.value,
+      available: false,
+      since,
+      before,
+      page: 1,
+    });
+
+    expect(find).toHaveBeenCalledWith(
+      "catalog",
+      expect.objectContaining({
+        offers: expect.objectContaining({
+          available: false,
+          since,
+          before,
+        }),
+      }),
+    );
+  });
+
   it("should not be able to fetch a catalog that does not exists", async () => {
     await expect(() =>
       sut.execute({

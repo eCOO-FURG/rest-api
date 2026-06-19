@@ -31,6 +31,8 @@ export class FetchCatalogUseCase {
     since,
     before,
   }: FetchCatalogUseCaseRequest) {
+    const filterByCreationPeriod = available !== "CYCLE";
+
     const catalog = await this.farmsRepository.find("catalog", {
       id: farm_id,
       offers: {
@@ -38,8 +40,8 @@ export class FetchCatalogUseCase {
         product: { name: product },
         remaining,
         available,
-        since,
-        before,
+        since: filterByCreationPeriod ? since : undefined,
+        before: filterByCreationPeriod ? before : undefined,
         page,
       },
     });
