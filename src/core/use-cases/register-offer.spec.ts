@@ -298,6 +298,52 @@ describe("register offer", () => {
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
   });
 
+  it("should reactivate and update a disabled offer for a market", async () => {
+    const farm = makeFarm({ status: "ACTIVE" });
+    farmsRepository.items.push(farm);
+
+    const product = makeProduct({ perishable: false });
+    productsRepository.items.push(product);
+
+    const market = makeMarket({ open: true });
+    marketsRepository.items.push(market);
+
+    const existingOffer = makeOffer({
+      farm_id: farm.id,
+      product_id: product.id,
+      market_id: market.id,
+      active: false,
+      amount: 1,
+      price: 10,
+    });
+    offersRepository.items.push(existingOffer);
+
+    const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24);
+
+    await sut.execute({
+      farm_id: farm.id.value,
+      product_id: product.id.value,
+      market_id: market.id.value,
+      amount: 20,
+      price: 50,
+      description: "updated description",
+      expires_at: expiresAt,
+    });
+
+    expect(offersRepository.items).toHaveLength(1);
+    expect(offersRepository.items[0]).toEqual(
+      expect.objectContaining({
+        id: existingOffer.id,
+        active: true,
+        amount: 20,
+        price: 50,
+        description: "updated description",
+        expires_at: expiresAt,
+      }),
+    );
+    expect(offersRepository.items[0].updated_at).not.toBeNull();
+  });
+
   it("should not be able to create an offer for a nonexistent cycle", async () => {
     const farm = makeFarm({ status: "ACTIVE" });
     farmsRepository.items.push(farm);
@@ -371,5 +417,52 @@ describe("register offer", () => {
         price: 100,
       }),
     ).rejects.toBeInstanceOf(ResourceAlreadyExistsError);
+  });
+
+  it("should reactivate and update a disabled recurring offer for a cycle", async () => {
+    const farm = makeFarm({ status: "ACTIVE" });
+    farmsRepository.items.push(farm);
+
+    const product = makeProduct({ perishable: true });
+    productsRepository.items.push(product);
+
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
+    const existingOffer = makeOffer({
+      farm_id: farm.id,
+      product_id: product.id,
+      cycle_id: cycle.id,
+      active: false,
+      closes_at: null,
+      amount: 1,
+      price: 10,
+    });
+    offersRepository.items.push(existingOffer);
+
+    await sut.execute({
+      farm_id: farm.id.value,
+      product_id: product.id.value,
+      cycle_id: cycle.id.value,
+      amount: 30,
+      price: 75,
+      description: "reactivated offer",
+      comment: "updated comment",
+      recurring: true,
+    });
+
+    expect(offersRepository.items).toHaveLength(1);
+    expect(offersRepository.items[0]).toEqual(
+      expect.objectContaining({
+        id: existingOffer.id,
+        active: true,
+        amount: 30,
+        price: 75,
+        description: "reactivated offer",
+        comment: "updated comment",
+        closes_at: null,
+      }),
+    );
+    expect(offersRepository.items[0].updated_at).not.toBeNull();
   });
 });

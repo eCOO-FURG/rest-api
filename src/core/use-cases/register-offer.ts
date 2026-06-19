@@ -102,7 +102,22 @@ export class RegisterOfferUseCase {
       });
 
       if (duplicated) {
-        throw new ResourceAlreadyExistsError(`Oferta do produto`, product_id);
+        if (duplicated.active) {
+          throw new ResourceAlreadyExistsError(`Oferta do produto`, product_id);
+        }
+
+        duplicated.amount = amount;
+        duplicated.price = price;
+        duplicated.description = description ?? null;
+        duplicated.comment = comment ?? null;
+        duplicated.expires_at = expires_at ?? null;
+        duplicated.opens_at = now();
+        duplicated.closes_at = null;
+        duplicated.active = true;
+        duplicated.touch();
+
+        await this.offersRepository.update(duplicated);
+        return;
       }
     }
 
@@ -137,7 +152,26 @@ export class RegisterOfferUseCase {
       });
 
       if (duplicated) {
-        throw new ResourceAlreadyExistsError(`Oferta do produto`, product_id);
+        if (duplicated.active) {
+          throw new ResourceAlreadyExistsError(`Oferta do produto`, product_id);
+        }
+
+        duplicated.amount = amount;
+        duplicated.price = price;
+        duplicated.description = description ?? null;
+        duplicated.comment = comment ?? null;
+        duplicated.expires_at = expires_at ?? null;
+        duplicated.opens_at = recurring
+          ? now()
+          : first(cycle.order, last(cycle.order) < now());
+        duplicated.closes_at = recurring
+          ? null
+          : last(cycle.order, last(cycle.order) < now());
+        duplicated.active = true;
+        duplicated.touch();
+
+        await this.offersRepository.update(duplicated);
+        return;
       }
 
       if (!recurring) {
