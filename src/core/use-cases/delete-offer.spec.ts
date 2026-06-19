@@ -118,6 +118,7 @@ describe("delete offer", () => {
 
     expect(offersRepository.items).toHaveLength(1);
     expect(offersRepository.items[0].active).toBe(false);
+    expect(offersRepository.items[0].updated_at).not.toBeNull();
   });
 
   it("should not be able to delete an offer from a closed market", async () => {
