@@ -55,6 +55,7 @@ export class DeleteOfferUseCase {
 
     if (order) {
       offer.active = false;
+      offer.touch();
       await this.offersRepository.update(offer);
       return;
     }

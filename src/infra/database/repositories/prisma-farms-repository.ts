@@ -101,16 +101,28 @@ export class PrismaFarmsRepository implements FarmsRepository {
               }),
               ...(offers?.available === false && {
                 OR: [
-                  { closes_at: { not: null, lte: now() } },
-                  { expires_at: { not: null, lte: now() } },
-                  { active: false },
-                  { amount: 0 },
+                  {
+                    active: true,
+                    opens_at: {
+                      gte: offers?.since,
+                      lt: offers?.before,
+                    },
+                  },
+                  {
+                    active: false,
+                    updated_at: {
+                      gte: offers?.since,
+                      lt: offers?.before,
+                    },
+                  },
                 ],
               }),
-              created_at: {
-                gte: offers?.since,
-                lte: offers?.before,
-              },
+              ...(offers?.available !== "CYCLE" && offers?.available !== false && {
+                created_at: {
+                  gte: offers?.since,
+                  lte: offers?.before,
+                },
+              }),
             },
             ...(offers?.page && {
               skip: (offers.page - 1) * 20,
@@ -212,16 +224,28 @@ export class PrismaFarmsRepository implements FarmsRepository {
               }),
               ...(offers?.available === false && {
                 OR: [
-                  { closes_at: { not: null, lte: now() } },
-                  { expires_at: { not: null, lte: now() } },
-                  { active: false },
-                  { amount: 0 },
+                  {
+                    active: true,
+                    opens_at: {
+                      gte: offers?.since,
+                      lt: offers?.before,
+                    },
+                  },
+                  {
+                    active: false,
+                    updated_at: {
+                      gte: offers?.since,
+                      lt: offers?.before,
+                    },
+                  },
                 ],
               }),
-              created_at: {
-                gte: offers?.since,
-                lte: offers?.before,
-              },
+              ...(offers?.available !== false && {
+                created_at: {
+                  gte: offers?.since,
+                  lte: offers?.before,
+                },
+              }),
             },
           }),
         },
