@@ -1,9 +1,6 @@
 // Entities
 // Repositories
-import {
-  CatalogOffersAvailability,
-  FarmsRepository,
-} from "@/core/repositories/farms-repository";
+import { CatalogOffersAvailability, FarmsRepository } from "@/core/repositories/farms-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";

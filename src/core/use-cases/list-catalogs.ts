@@ -3,10 +3,7 @@
 import { CategoriesRepository } from "@/core/repositories/categories-repository";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { MarketsRepository } from "@/core/repositories/markets-repository";
-import {
-  CatalogOffersAvailability,
-  FarmsRepository,
-} from "@/core/repositories/farms-repository";
+import { CatalogOffersAvailability, FarmsRepository } from "@/core/repositories/farms-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";

@@ -99,6 +99,20 @@ export class PrismaFarmsRepository implements FarmsRepository {
                   },
                 ],
               }),
+              ...(offers?.available === "CYCLE_WITH_SCHEDULED" && {
+                AND: [
+                  {
+                    OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+                  },
+                  {
+                    OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                  },
+                  {
+                    active: true,
+                    amount: { gt: 0 },
+                  },
+                ],
+              }),
               ...(offers?.available === "MARKET" && {
                 AND: [
                   {

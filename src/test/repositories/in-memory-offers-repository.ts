@@ -44,8 +44,8 @@ export class InMemoryOffersRepository implements OffersRepository {
         (!farm?.name || item.farm?.name === farm.name) &&
         (!market?.name || item.market?.name === market.name) &&
         (typeof active !== "boolean" || item.active === active) &&
-        (!since || item.created_at >= since) &&
-        (!before || item.created_at <= before) &&
+        (available !== "CYCLE" ? !since || item.created_at >= since : true) &&
+        (available !== "CYCLE" ? !before || item.created_at <= before : true) &&
         (typeof recurring !== "boolean" || (recurring ? !item.closes_at : !!item.closes_at)) &&
         (available === "CYCLE"
           ? (!item.opens_at || item.opens_at <= now()) &&
