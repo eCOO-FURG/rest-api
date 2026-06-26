@@ -465,4 +465,50 @@ describe("register offer", () => {
     );
     expect(offersRepository.items[0].updated_at).not.toBeNull();
   });
+
+  it("should update an active recurring offer scheduled for the future when offering it again", async () => {
+    const farm = makeFarm({ status: "ACTIVE" });
+    farmsRepository.items.push(farm);
+
+    const product = makeProduct({ perishable: true });
+    productsRepository.items.push(product);
+
+    const cycle = makeCycle();
+    cyclesRepository.items.push(cycle);
+
+    const futureOpenAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 5);
+    const existingOffer = makeOffer({
+      farm_id: farm.id,
+      product_id: product.id,
+      cycle_id: cycle.id,
+      active: true,
+      opens_at: futureOpenAt,
+      closes_at: null,
+      amount: 1,
+      price: 10,
+    });
+    offersRepository.items.push(existingOffer);
+
+    await sut.execute({
+      farm_id: farm.id.value,
+      product_id: product.id.value,
+      cycle_id: cycle.id.value,
+      amount: 30,
+      price: 75,
+      recurring: true,
+    });
+
+    expect(offersRepository.items).toHaveLength(1);
+    expect(offersRepository.items[0]).toEqual(
+      expect.objectContaining({
+        id: existingOffer.id,
+        active: true,
+        amount: 30,
+        price: 75,
+        closes_at: null,
+      }),
+    );
+    expect(offersRepository.items[0].opens_at).not.toEqual(futureOpenAt);
+    expect(offersRepository.items[0].opens_at.getTime()).toBeLessThanOrEqual(Date.now());
+  });
 });

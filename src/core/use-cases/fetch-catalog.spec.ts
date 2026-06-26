@@ -75,6 +75,32 @@ describe("fetch catalog", () => {
     );
   });
 
+  it("should not filter current cycle scheduled offers by their creation date", async () => {
+    const farm = makeFarm();
+    const find = vi.spyOn(farmsRepository, "find");
+
+    await farmsRepository.create(farm);
+
+    await sut.execute({
+      farm_id: farm.id.value,
+      available: "CYCLE_WITH_SCHEDULED",
+      since: new Date("2026-06-14T00:00:00.000Z"),
+      before: new Date("2026-06-21T00:00:00.000Z"),
+      page: 1,
+    });
+
+    expect(find).toHaveBeenCalledWith(
+      "catalog",
+      expect.objectContaining({
+        offers: expect.objectContaining({
+          available: "CYCLE_WITH_SCHEDULED",
+          since: undefined,
+          before: undefined,
+        }),
+      }),
+    );
+  });
+
   it("should filter previous offers by their creation date", async () => {
     const farm = makeFarm();
     const since = new Date("2026-06-14T00:00:00.000Z");

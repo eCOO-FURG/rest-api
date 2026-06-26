@@ -5,6 +5,7 @@ import { Catalog } from "@/core/entities/aggregates/catalog";
 import { BagSource } from "@/core/entities/bag";
 
 export type FarmRepositoryReturnType = "farm" | "producer" | "catalog";
+export type CatalogOffersAvailability = BagSource | false | "CYCLE_WITH_SCHEDULED";
 
 export type FarmEntityOf<T extends FarmRepositoryReturnType> = T extends "farm"
   ? Farm
@@ -26,7 +27,7 @@ export interface FarmsRepositorySearchRequest {
     market?: { id?: string | null };
     page?: number;
     remaining?: boolean;
-    available?: BagSource | false;
+    available?: CatalogOffersAvailability;
     since?: Date;
     before?: Date;
     product?: { name?: string; category?: { id?: string } };

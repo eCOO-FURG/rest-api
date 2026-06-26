@@ -1,8 +1,9 @@
 // Entities
-import { BagSource } from "@/core/entities/bag";
-
 // Repositories
-import { FarmsRepository } from "@/core/repositories/farms-repository";
+import {
+  CatalogOffersAvailability,
+  FarmsRepository,
+} from "@/core/repositories/farms-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -13,7 +14,7 @@ interface FetchCatalogUseCaseRequest {
   cycle_id?: string;
   product?: string;
   remaining?: boolean;
-  available?: BagSource | false;
+  available?: CatalogOffersAvailability;
   since?: Date;
   before?: Date;
 }
@@ -31,7 +32,7 @@ export class FetchCatalogUseCase {
     since,
     before,
   }: FetchCatalogUseCaseRequest) {
-    const filterByCreationPeriod = available !== "CYCLE";
+    const filterByCreationPeriod = available !== "CYCLE" && available !== "CYCLE_WITH_SCHEDULED";
 
     const catalog = await this.farmsRepository.find("catalog", {
       id: farm_id,

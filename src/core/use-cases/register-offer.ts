@@ -152,7 +152,11 @@ export class RegisterOfferUseCase {
       });
 
       if (duplicated) {
-        if (duplicated.active) {
+        if (duplicated.active && !recurring) {
+          throw new ResourceAlreadyExistsError(`Oferta do produto`, product_id);
+        }
+
+        if (duplicated.active && duplicated.available("CYCLE")) {
           throw new ResourceAlreadyExistsError(`Oferta do produto`, product_id);
         }
 
@@ -161,12 +165,8 @@ export class RegisterOfferUseCase {
         duplicated.description = description ?? null;
         duplicated.comment = comment ?? null;
         duplicated.expires_at = expires_at ?? null;
-        duplicated.opens_at = recurring
-          ? now()
-          : first(cycle.order, last(cycle.order) < now());
-        duplicated.closes_at = recurring
-          ? null
-          : last(cycle.order, last(cycle.order) < now());
+        duplicated.opens_at = recurring ? now() : first(cycle.order, last(cycle.order) < now());
+        duplicated.closes_at = recurring ? null : last(cycle.order, last(cycle.order) < now());
         duplicated.active = true;
         duplicated.touch();
 
