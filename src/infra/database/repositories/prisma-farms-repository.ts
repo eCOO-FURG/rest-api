@@ -85,6 +85,20 @@ export class PrismaFarmsRepository implements FarmsRepository {
                   },
                 ],
               }),
+              ...(offers?.available === "CYCLE_WITH_SCHEDULED" && {
+                AND: [
+                  {
+                    OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+                  },
+                  {
+                    OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                  },
+                  {
+                    active: true,
+                    amount: { gt: 0 },
+                  },
+                ],
+              }),
               ...(offers?.available === "MARKET" && {
                 AND: [
                   {
@@ -117,6 +131,7 @@ export class PrismaFarmsRepository implements FarmsRepository {
                 ],
               }),
               ...(offers?.available !== "CYCLE" &&
+                offers?.available !== "CYCLE_WITH_SCHEDULED" &&
                 offers?.available !== false && {
                   created_at: {
                     gte: offers?.since,
@@ -208,6 +223,20 @@ export class PrismaFarmsRepository implements FarmsRepository {
                   },
                 ],
               }),
+              ...(offers.available === "CYCLE_WITH_SCHEDULED" && {
+                AND: [
+                  {
+                    OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+                  },
+                  {
+                    OR: [{ expires_at: null }, { expires_at: { gte: now() } }],
+                  },
+                  {
+                    active: true,
+                    amount: { gt: 0 },
+                  },
+                ],
+              }),
               ...(offers.available === "MARKET" && {
                 AND: [
                   {
@@ -239,12 +268,14 @@ export class PrismaFarmsRepository implements FarmsRepository {
                   },
                 ],
               }),
-              ...(offers?.available !== false && {
-                created_at: {
-                  gte: offers?.since,
-                  lte: offers?.before,
-                },
-              }),
+              ...(offers?.available !== "CYCLE" &&
+                offers?.available !== "CYCLE_WITH_SCHEDULED" &&
+                offers?.available !== false && {
+                  created_at: {
+                    gte: offers?.since,
+                    lte: offers?.before,
+                  },
+                }),
             },
           }),
         },

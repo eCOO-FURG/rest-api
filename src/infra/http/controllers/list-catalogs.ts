@@ -30,7 +30,7 @@ export const listCatalogsQuery = Joi.object({
   product: Joi.string().optional(),
   category_id: Joi.string().uuid().optional(),
   available: Joi.string()
-    .valid(...Bag.sources, "false")
+    .valid(...Bag.sources, "false", "CYCLE_WITH_SCHEDULED")
     .optional(),
   remaining: boolean.optional(),
   since: Joi.string()

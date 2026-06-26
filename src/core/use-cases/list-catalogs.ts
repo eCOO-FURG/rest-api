@@ -1,11 +1,9 @@
 // Entities
-import { BagSource } from "@/core/entities/bag";
-
 // Repositories
 import { CategoriesRepository } from "@/core/repositories/categories-repository";
 import { CyclesRepository } from "@/core/repositories/cycles-repository";
 import { MarketsRepository } from "@/core/repositories/markets-repository";
-import { FarmsRepository } from "@/core/repositories/farms-repository";
+import { CatalogOffersAvailability, FarmsRepository } from "@/core/repositories/farms-repository";
 
 // Errors
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
@@ -18,7 +16,7 @@ interface ListCatalogsUseCaseRequest {
   category_id?: string;
   product?: string;
   remaining?: boolean;
-  available?: BagSource | false;
+  available?: CatalogOffersAvailability;
   since?: Date;
   before?: Date;
 }

@@ -14,7 +14,7 @@ export function makeOffer(props: Partial<OfferProps> = {}) {
     market_id: props.market_id ?? null,
     active: props.active ?? true,
     opens_at: props.opens_at ?? faker.date.past(),
-    closes_at: props.closes_at ?? faker.date.future(),
+    closes_at: "closes_at" in props ? props.closes_at! : faker.date.future(),
     amount: props.amount ?? faker.number.int({ min: 10, max: 12 }),
     price: props.price ?? faker.number.int({ min: 5, max: 50 }),
   });
