@@ -52,7 +52,7 @@ export class FetchCatalogUseCase {
       const seen = new Set<string>();
       catalog.offers = catalog.offers.filter((offer) => {
         const pid = offer.product?.id?.value ?? offer.product?.id;
-        if (!pid || seen.has(pid)) return false;
+        if (!pid || seen.has(pid)) {return false;}
         seen.add(pid);
         return true;
       });
