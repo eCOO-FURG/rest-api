@@ -48,6 +48,16 @@ export class FetchCatalogUseCase {
       throw new ResourceNotFoundError("Catálogo", farm_id);
     }
 
+    if (available === false) {
+      const seen = new Set<string>();
+      catalog.offers = catalog.offers.filter((offer) => {
+        const pid = offer.product?.id?.value ?? offer.product?.id;
+        if (!pid || seen.has(pid)) return false;
+        seen.add(pid);
+        return true;
+      });
+    }
+
     return { catalog };
   }
 }

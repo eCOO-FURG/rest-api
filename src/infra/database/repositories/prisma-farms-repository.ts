@@ -128,18 +128,28 @@ export class PrismaFarmsRepository implements FarmsRepository {
                 ],
               }),
               ...(offers?.available === false && {
-                OR: [
+                AND: [
+                  { opens_at: { gte: offers?.since, lt: offers?.before } },
                   {
-                    active: true,
-                    opens_at: {
-                      gte: offers?.since,
-                      lt: offers?.before,
-                    },
+                    OR: [
+                      { closes_at: { not: null, lte: now() } },
+                      { expires_at: { not: null, lte: now() } },
+                      { active: false },
+                      { amount: 0 },
+                    ],
                   },
                   {
-                    active: false,
-                    updated_at: {
-                      gte: offers?.before,
+                    NOT: {
+                      product: {
+                        offers: {
+                          some: {
+                            farm_id: id,
+                            active: true,
+                            amount: { gt: 0 },
+                            OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+                          },
+                        },
+                      },
                     },
                   },
                 ],
@@ -266,18 +276,28 @@ export class PrismaFarmsRepository implements FarmsRepository {
                 ],
               }),
               ...(offers?.available === false && {
-                OR: [
+                AND: [
+                  { opens_at: { gte: offers?.since, lt: offers?.before } },
                   {
-                    active: true,
-                    opens_at: {
-                      gte: offers?.since,
-                      lt: offers?.before,
-                    },
+                    OR: [
+                      { closes_at: { not: null, lte: now() } },
+                      { expires_at: { not: null, lte: now() } },
+                      { active: false },
+                      { amount: 0 },
+                    ],
                   },
                   {
-                    active: false,
-                    updated_at: {
-                      gte: offers?.before,
+                    NOT: {
+                      product: {
+                        offers: {
+                          some: {
+                            farm_id: id,
+                            active: true,
+                            amount: { gt: 0 },
+                            OR: [{ closes_at: null }, { closes_at: { gt: now() } }],
+                          },
+                        },
+                      },
                     },
                   },
                 ],

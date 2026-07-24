@@ -16,6 +16,9 @@ COPY . .
 
 RUN npx prisma generate
 
+ARG GIT_COMMIT=unknown
+ENV GIT_COMMIT=$GIT_COMMIT
+
 EXPOSE 3333
 
 CMD ["pnpm", "run", "start"]
