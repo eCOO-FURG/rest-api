@@ -31,36 +31,36 @@ export default (container: AwilixContainer) => {
     encrypter: asClass(BcrypterHasher).singleton(),
     hasher: asClass(Jwt).singleton(),
     mailer: asFunction(() => {
+      const providerConfigs = {
+        ZOHO:  { host: env.SMTP_HOST,          port: env.SMTP_PORT,       user: env.EMAIL_ACCOUNT,       pass: env.EMAIL_PASSWORD },
+        GMAIL: { host: env.FALLBACK_SMTP_HOST,  port: 465,                 user: env.FALLBACK_EMAIL_ACCOUNT, pass: env.FALLBACK_EMAIL_PASSWORD },
+        ZEPTO: { host: env.BATCH_SMTP_HOST,     port: env.BATCH_SMTP_PORT, user: env.BATCH_EMAIL_ACCOUNT, pass: env.BATCH_EMAIL_PASSWORD },
+      };
+
+      const primary = providerConfigs[env.EMAIL_PROVIDER as keyof typeof providerConfigs];
+      const batch   = providerConfigs[env.BATCH_EMAIL_PROVIDER as keyof typeof providerConfigs];
+
       const transporter = createTransport({
-        host: env.SMTP_HOST,
-        port: env.SMTP_PORT,
-        ...(deploy && {
-          auth: {
-            user: env.EMAIL_ACCOUNT,
-            pass: env.EMAIL_PASSWORD,
-          },
-        }),
+        host: primary.host,
+        port: primary.port,
+        ...(deploy && { auth: { user: primary.user, pass: primary.pass } }),
       });
 
       const queue = createTransport({
-        host: env.BATCH_SMTP_HOST,
-        port: env.BATCH_SMTP_PORT,
-        ...(deploy && {
-          auth: {
-            user: env.BATCH_EMAIL_ACCOUNT,
-            pass: env.BATCH_EMAIL_PASSWORD,
-          },
-        }),
+        host: batch.host,
+        port: batch.port,
+        ...(deploy && { auth: { user: batch.user, pass: batch.pass } }),
       });
 
       if (deploy) {
+        const fallbackProvider = Object.values(providerConfigs).find(
+          (p) => p.host !== primary.host && p.host !== batch.host,
+        ) ?? providerConfigs.GMAIL;
+
         const fallback = createTransport({
-          host: env.FALLBACK_SMTP_HOST,
-          port: env.SMTP_PORT,
-          auth: {
-            user: env.FALLBACK_EMAIL_ACCOUNT,
-            pass: env.FALLBACK_EMAIL_PASSWORD,
-          },
+          host: fallbackProvider.host,
+          port: fallbackProvider.port,
+          auth: { user: fallbackProvider.user, pass: fallbackProvider.pass },
         });
 
         return new Nodemailer(transporter, queue, fallback);

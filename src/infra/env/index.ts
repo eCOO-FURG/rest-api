@@ -16,6 +16,9 @@ const schema = Joi.object({
   INTEGRATIONS_AUTHORIZATION: Joi.string(),
 
   // Email
+  EMAIL_PROVIDER: Joi.string().valid("ZOHO", "GMAIL", "ZEPTO").default("ZOHO"),
+  BATCH_EMAIL_PROVIDER: Joi.string().valid("ZOHO", "GMAIL", "ZEPTO").default("ZEPTO"),
+
   EMAIL_ACCOUNT: Joi.string().required(),
   EMAIL_PASSWORD: Joi.string().required(),
 
